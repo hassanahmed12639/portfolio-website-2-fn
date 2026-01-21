@@ -102,7 +102,7 @@ export default function BentoGridSection() {
         </motion.div>
 
         {/* Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-5">
           
           {/* ROW 1 */}
           {/* Left: Main Feature Card - Full Image with Overlay */}
@@ -111,7 +111,7 @@ export default function BentoGridSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="lg:col-span-5 lg:row-span-2 relative rounded-3xl overflow-hidden group cursor-pointer h-[500px]"
+            className="lg:col-span-7 lg:row-span-2 relative rounded-3xl overflow-hidden group cursor-pointer h-[500px]"
           >
             <motion.img
               key={selectedIndustry}
@@ -190,14 +190,14 @@ export default function BentoGridSection() {
             </div>
           </motion.div>
 
-          {/* Middle: Dashboard Card */}
+          {/* Right: Live Performance Dashboard Card */}
           <motion.div
             ref={chartRef}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="lg:col-span-4 bg-white rounded-3xl p-5 border border-gray-200 shadow-sm"
+            className="lg:col-span-5 lg:row-start-1 bg-white rounded-3xl p-5 border border-gray-200 shadow-sm"
           >
             <div className="flex items-center justify-between mb-3">
               <div>
@@ -277,65 +277,13 @@ export default function BentoGridSection() {
             </div>
           </motion.div>
 
-          {/* Right: Revenue + Industries - Combined */}
-          <div className="lg:col-span-3 space-y-4">
-            {/* Revenue Metric */}
-            <motion.div
-              ref={countRef}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="bg-white rounded-3xl p-5 border border-gray-200 shadow-sm relative overflow-hidden"
-            >
-              <div 
-                className="absolute inset-0 opacity-30"
-                style={{
-                  background: 'radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.15) 0%, transparent 70%)'
-                }}
-              />
-              <div className="relative text-center py-2">
-                <span className="inline-block px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-medium mb-3">
-                  Total Generated
-                </span>
-                <div className="text-3xl font-bold text-gray-900">
-                  ${countInView ? <CountUp end={5.2} decimals={1} duration={2} /> : '0.0'}M+
-                </div>
-                <p className="text-xs text-gray-500 mt-1">In client revenue</p>
-              </div>
-            </motion.div>
-
-            {/* Industries List */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.15 }}
-              className="bg-white rounded-3xl p-5 border border-gray-200 shadow-sm"
-            >
-              <h3 className="text-base font-bold text-gray-900 mb-3">Industries</h3>
-              <div className="space-y-1">
-                {industries.map((industry, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-2.5 py-1.5 px-2 rounded-lg hover:bg-gray-50 transition-colors"
-                  >
-                    <industry.icon className="w-3.5 h-3.5 text-gray-400" />
-                    <span className="text-xs text-gray-600">{industry.name}</span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-
-          {/* ROW 2 */}
-          {/* Left: Beauty/Cosmetics Image Card */}
+          {/* Right Column: Beauty & Cosmetics Card - Between Live Performance and Nike cards */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.15 }}
-            className="lg:col-span-5 relative rounded-3xl overflow-hidden group cursor-pointer h-[220px]"
+            className="lg:col-span-5 lg:row-start-2 relative rounded-3xl overflow-hidden group cursor-pointer h-[220px]"
           >
             <img
               src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&q=80"
@@ -353,85 +301,13 @@ export default function BentoGridSection() {
             </div>
           </motion.div>
 
-          {/* Middle: Team + Platforms */}
-          <div className="lg:col-span-4 space-y-4">
-            {/* Team/Clients Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="rounded-3xl p-5 border border-gray-200"
-              style={{ backgroundColor: '#F8F9FF' }}
-            >
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-medium text-gray-700">Industries Served</span>
-                <span className="text-xs text-blue-600 font-medium">+4</span>
-              </div>
-              <div className="flex -space-x-2 mb-4">
-                {industryIcons.map((item, index) => (
-                  <div
-                    key={index}
-                    className="w-10 h-10 rounded-full flex items-center justify-center border-2 border-white"
-                    style={{ backgroundColor: item.bg, zIndex: industryIcons.length - index }}
-                  >
-                    <item.icon className="w-4 h-4 text-white" />
-                  </div>
-                ))}
-              </div>
-              <div className="pt-3 border-t border-gray-200/50">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm font-medium text-gray-700">Brand Partners</span>
-                  <span className="text-xs text-blue-600 font-medium">+12</span>
-                </div>
-                <div className="flex -space-x-2">
-                  {brandLogos.map((item, index) => (
-                    <div
-                      key={index}
-                      className="w-10 h-10 rounded-full flex items-center justify-center border-2 border-white text-white font-bold text-sm"
-                      style={{ backgroundColor: item.bg, zIndex: brandLogos.length - index }}
-                    >
-                      {item.letter}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Platforms Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.25 }}
-              className="bg-white rounded-3xl p-5 border border-gray-200 shadow-sm"
-            >
-              <h3 className="text-base font-bold text-gray-900 mb-1">Marketing Platforms</h3>
-              <p className="text-xs text-gray-500 mb-3">Expert in all major ad platforms</p>
-              <div className="grid grid-cols-2 gap-2">
-                {platforms.map((platform, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-2 py-2 px-3 bg-gray-50 hover:bg-gray-100 rounded-xl cursor-pointer transition-colors"
-                  >
-                    <div 
-                      className="w-2 h-2 rounded-full"
-                      style={{ backgroundColor: platform.color }}
-                    />
-                    <span className="text-xs font-medium text-gray-700">{platform.name}</span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Right: Sneakers Image */}
+          {/* Right Column: First Nike Shoe Card */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.25 }}
-            className="lg:col-span-3 relative rounded-3xl overflow-hidden group cursor-pointer h-[220px]"
+            className="lg:col-span-5 lg:row-start-3 relative rounded-3xl overflow-hidden group cursor-pointer h-[220px]"
           >
             <img
               src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80"
@@ -445,11 +321,148 @@ export default function BentoGridSection() {
                 <span className="inline-block px-2.5 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs font-medium text-white">
                   Footwear
                 </span>
+                <span className="inline-block px-2.5 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs font-medium text-white">
+                  Premium Footwear
+                </span>
                 <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
                   <Check className="w-3 h-3 text-white" />
                 </div>
               </div>
               <p className="text-sm text-white/90">28+ successful launches</p>
+            </div>
+          </motion.div>
+
+          {/* Right Column: Second Nike Shoe Card (Duplicate) */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="lg:col-span-5 lg:row-start-4 relative rounded-3xl overflow-hidden group cursor-pointer h-[220px]"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80"
+              alt="Premium Sneakers"
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-4">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="inline-block px-2.5 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs font-medium text-white">
+                  Footwear
+                </span>
+                <span className="inline-block px-2.5 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs font-medium text-white">
+                  Premium Footwear
+                </span>
+                <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                  <Check className="w-3 h-3 text-white" />
+                </div>
+              </div>
+              <p className="text-sm text-white/90">28+ successful launches</p>
+            </div>
+          </motion.div>
+
+          {/* Right Column: Industries List - Bottom */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.35 }}
+            className="lg:col-span-5 lg:row-start-5 bg-white rounded-3xl p-5 border border-gray-200 shadow-sm"
+          >
+            <h3 className="text-base font-bold text-gray-900 mb-3">Industries</h3>
+            <div className="space-y-1">
+              {industries.map((industry, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-2.5 py-1.5 px-2 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  <industry.icon className="w-3.5 h-3.5 text-gray-400" />
+                  <span className="text-xs text-gray-600">{industry.name}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Left Column Row 2: Industries Served + Brand Metrics - Side by Side */}
+          <div className="lg:col-span-7 lg:row-start-3 grid grid-cols-2 gap-5">
+            {/* Industries Served Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="rounded-3xl p-5 border border-gray-200"
+              style={{ backgroundColor: '#F8F9FF' }}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm font-medium text-gray-700">Industries Served</span>
+                <span className="text-xs text-blue-600 font-medium">+4</span>
+              </div>
+              <div className="flex -space-x-2">
+                {industryIcons.map((item, index) => (
+                  <div
+                    key={index}
+                    className="w-10 h-10 rounded-full flex items-center justify-center border-2 border-white"
+                    style={{ backgroundColor: item.bg, zIndex: industryIcons.length - index }}
+                  >
+                    <item.icon className="w-4 h-4 text-white" />
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Brand Partners Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.25 }}
+              className="rounded-3xl p-5 border border-gray-200"
+              style={{ backgroundColor: '#F8F9FF' }}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm font-medium text-gray-700">Brand Partners</span>
+                <span className="text-xs text-blue-600 font-medium">+12</span>
+              </div>
+              <div className="flex -space-x-2">
+                {brandLogos.map((item, index) => (
+                  <div
+                    key={index}
+                    className="w-10 h-10 rounded-full flex items-center justify-center border-2 border-white text-white font-bold text-sm"
+                    style={{ backgroundColor: item.bg, zIndex: brandLogos.length - index }}
+                  >
+                    {item.letter}
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Left Column Row 3: Marketing Platforms */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="lg:col-span-7 lg:row-start-4 bg-white rounded-3xl p-5 border border-gray-200 shadow-sm"
+          >
+            <h3 className="text-base font-bold text-gray-900 mb-1">Marketing Platforms</h3>
+            <p className="text-xs text-gray-500 mb-3">Expert in all major ad platforms</p>
+            <div className="grid grid-cols-2 gap-2">
+              {platforms.map((platform, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-2 py-2 px-3 bg-gray-50 hover:bg-gray-100 rounded-xl cursor-pointer transition-colors"
+                >
+                  <div 
+                    className="w-2 h-2 rounded-full"
+                    style={{ backgroundColor: platform.color }}
+                  />
+                  <span className="text-xs font-medium text-gray-700">{platform.name}</span>
+                </div>
+              ))}
             </div>
           </motion.div>
 
