@@ -1,7 +1,7 @@
 "use client"
 
 import { animate, motion } from "framer-motion"
-import React, { useEffect } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { cn } from "@/lib/utils"
 
 export interface AnimatedCardProps {
@@ -22,31 +22,63 @@ const sizeMap = {
 }
 
 export function AnimatedCard({ className, title, description, icons = [] }: AnimatedCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [isHovered, setIsHovered] = useState(false)
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return
+    
+    const rect = cardRef.current.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    
+    setMousePosition({ x, y })
+  }
+
   return (
     <div
+      ref={cardRef}
       className={cn(
-        "w-full mx-auto p-6 rounded-xl border border-[rgba(255,255,255,0.10)] dark:bg-[rgba(40,40,40,0.70)] bg-gray-100 shadow-[2px_4px_16px_0px_rgba(248,248,248,0.06)_inset] group",
+        "w-[290px] h-[350px] mx-auto rounded-xl relative group p-[3px]",
         className
       )}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
+      {isHovered && (
+        <div
+          className="absolute inset-0 rounded-xl pointer-events-none"
+          style={{
+            background: `radial-gradient(450px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(239, 68, 68, 1) 0%, rgba(239, 68, 68, 0.98) 12%, rgba(239, 68, 68, 0.85) 20%, rgba(239, 68, 68, 0.5) 30%, rgba(239, 68, 68, 0.2) 45%, transparent 65%)`,
+          }}
+        />
+      )}
       <div
         className={cn(
-          "h-[12rem] md:h-[14rem] rounded-xl z-40",
-          "bg-neutral-300 dark:bg-[rgba(40,40,40,0.70)] [mask-image:radial-gradient(50%_50%_at_50%_50%,white_0%,transparent_100%)]"
+          "w-full h-full p-6 rounded-xl border border-[rgba(255,255,255,0.10)] dark:bg-[rgba(40,40,40,0.70)] bg-gray-100 shadow-[2px_4px_16px_0px_rgba(248,248,248,0.06)_inset] relative z-10",
         )}
       >
-        <AnimatedIcons icons={icons} />
+        <div
+          className={cn(
+            "h-[12rem] md:h-[14rem] rounded-xl z-40",
+            "bg-neutral-300 dark:bg-[rgba(40,40,40,0.70)] [mask-image:radial-gradient(50%_50%_at_50%_50%,white_0%,transparent_100%)]"
+          )}
+        >
+          <AnimatedIcons icons={icons} />
+        </div>
+        {title && (
+          <h3 className="text-base font-semibold text-gray-800 dark:text-white py-1.5">
+            {title}
+          </h3>
+        )}
+        {description && (
+          <p className="text-xs font-normal text-neutral-600 dark:text-neutral-400">
+            {description}
+          </p>
+        )}
       </div>
-      {title && (
-        <h3 className="text-base font-semibold text-gray-800 dark:text-white py-1.5">
-          {title}
-        </h3>
-      )}
-      {description && (
-        <p className="text-xs font-normal text-neutral-600 dark:text-neutral-400">
-          {description}
-        </p>
-      )}
     </div>
   )
 }

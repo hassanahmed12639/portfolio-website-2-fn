@@ -1,7 +1,8 @@
 import Header from '@/components/layout/Header'
 import Hero from '@/components/sections/Hero'
 import UnifyFinancesScroll from '@/components/sections/UnifyFinancesScroll'
-import AnimatedCardsSection from '@/components/sections/AnimatedCardsSection'
+import BentoGridSection from '@/components/sections/BentoGridSection'
+import IntegrationsArcSection from '@/components/sections/IntegrationsArcSection'
 
 export default function Home() {
   return (
@@ -9,7 +10,8 @@ export default function Home() {
       <Header />
       <Hero />
       <UnifyFinancesScroll />
-      <AnimatedCardsSection />
+      <BentoGridSection />
+      <IntegrationsArcSection />
     </main>
   )
 }

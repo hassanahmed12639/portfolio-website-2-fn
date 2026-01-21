@@ -1,17 +1,18 @@
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { MotionPathPlugin } from 'gsap/MotionPathPlugin'
 
-// Register ScrollTrigger plugin only once
+// Register GSAP plugins only once
 let isRegistered = false
 
 export const registerGsapPlugins = () => {
   if (typeof window === 'undefined') return
   
   if (!isRegistered) {
-    gsap.registerPlugin(ScrollTrigger)
+    gsap.registerPlugin(ScrollTrigger, MotionPathPlugin)
     isRegistered = true
   }
 }
 
-// Export GSAP and ScrollTrigger for convenience
-export { gsap, ScrollTrigger }
+// Export GSAP and plugins for convenience
+export { gsap, ScrollTrigger, MotionPathPlugin }

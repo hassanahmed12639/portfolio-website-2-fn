@@ -31,8 +31,8 @@ export default function AnimatedCardsSection() {
       ]
     },
     {
-      title: "Feature Rich",
-      description: "Build powerful applications with our comprehensive set of features and tools.",
+      title: "Damn good card",
+      description: "A card that showcases a set of tools that you use to create your product.",
       icons: [
         {
           icon: <ClaudeLogo className="h-3 w-3" />,
@@ -57,8 +57,8 @@ export default function AnimatedCardsSection() {
       ]
     },
     {
-      title: "Scalable Solution",
-      description: "Grow your business with our scalable platform that adapts to your needs.",
+      title: "Damn good card",
+      description: "A card that showcases a set of tools that you use to create your product.",
       icons: [
         {
           icon: <ClaudeLogo className="h-3 w-3" />,
@@ -83,8 +83,60 @@ export default function AnimatedCardsSection() {
       ]
     },
     {
-      title: "Enterprise Ready",
-      description: "Trusted by companies worldwide for mission-critical applications.",
+      title: "Damn good card",
+      description: "A card that showcases a set of tools that you use to create your product.",
+      icons: [
+        {
+          icon: <ClaudeLogo className="h-3 w-3" />,
+          size: "sm" as const,
+        },
+        {
+          icon: <CopilotLogo className="h-4 w-4 dark:text-white" />,
+          size: "md" as const,
+        },
+        {
+          icon: <OpenAILogo className="h-5 w-5 dark:text-white" />,
+          size: "lg" as const,
+        },
+        {
+          icon: <MetaIconOutline className="h-4 w-4" />,
+          size: "md" as const,
+        },
+        {
+          icon: <GeminiLogo className="h-3 w-3" />,
+          size: "sm" as const,
+        },
+      ]
+    },
+    {
+      title: "Damn good card",
+      description: "A card that showcases a set of tools that you use to create your product.",
+      icons: [
+        {
+          icon: <ClaudeLogo className="h-3 w-3" />,
+          size: "sm" as const,
+        },
+        {
+          icon: <CopilotLogo className="h-4 w-4 dark:text-white" />,
+          size: "md" as const,
+        },
+        {
+          icon: <OpenAILogo className="h-5 w-5 dark:text-white" />,
+          size: "lg" as const,
+        },
+        {
+          icon: <MetaIconOutline className="h-4 w-4" />,
+          size: "md" as const,
+        },
+        {
+          icon: <GeminiLogo className="h-3 w-3" />,
+          size: "sm" as const,
+        },
+      ]
+    },
+    {
+      title: "Damn good card",
+      description: "A card that showcases a set of tools that you use to create your product.",
       icons: [
         {
           icon: <ClaudeLogo className="h-3 w-3" />,
@@ -123,8 +175,8 @@ export default function AnimatedCardsSection() {
           </p>
         </div>
 
-        {/* Cards Grid - 2 per row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 w-full">
+        {/* Cards Grid - 3 per row */}
+        <div className="grid grid-cols-3 gap-1 w-full justify-items-center">
           {cards.map((card, index) => (
             <AnimatedCard
               key={index}
