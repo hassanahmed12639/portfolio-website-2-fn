@@ -111,7 +111,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="w-full bg-white py-12 md:py-16 lg:py-20 xl:py-24 2xl:py-32">
+    <section className="w-full bg-white py-16 md:py-20 lg:py-24 xl:py-28 2xl:py-32">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
         <div className="max-w-5xl mx-auto text-center">
           {/* Main Headline */}

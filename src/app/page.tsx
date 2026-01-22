@@ -3,15 +3,25 @@ import Hero from '@/components/sections/Hero'
 import UnifyFinancesScroll from '@/components/sections/UnifyFinancesScroll'
 import BentoGridSection from '@/components/sections/BentoGridSection'
 import IntegrationsArcSection from '@/components/sections/IntegrationsArcSection'
+import PerformanceMarketingArchitecture from '@/components/sections/PerformanceMarketingArchitecture'
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-white">
       <Header />
       <Hero />
-      <UnifyFinancesScroll />
-      <BentoGridSection />
-      <IntegrationsArcSection />
+      <div className="py-16 md:py-24">
+        <UnifyFinancesScroll />
+      </div>
+      <div className="py-16 md:py-24">
+        <BentoGridSection />
+      </div>
+      <div className="py-16 md:py-24">
+        <IntegrationsArcSection />
+      </div>
+      <div className="py-16 md:py-24">
+        <PerformanceMarketingArchitecture />
+      </div>
     </main>
   )
 }

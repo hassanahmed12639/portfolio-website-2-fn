@@ -159,13 +159,13 @@ export default function IntegrationsArcSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[200vh] py-20 rounded-[48px]"
+      className="relative min-h-[200vh] rounded-3xl"
       style={{ backgroundColor: '#f0f1f3' }}
     >
       {/* Sticky container */}
       <div className="sticky top-0 h-screen flex flex-col items-center justify-center">
-        <h2 className="text-3xl md:text-4xl font-semibold mb-16 md:mb-20 text-gray-900 text-center px-4">
-          Integrate with your existing tools in seconds
+        <h2 className="text-3xl md:text-4xl font-semibold mb-12 md:mb-16 text-gray-900 text-center px-4">
+          Integrate with your existing tools
         </h2>
 
         {/* Icons container with overflow hidden */}

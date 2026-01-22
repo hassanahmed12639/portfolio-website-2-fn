@@ -83,7 +83,7 @@ export default function BentoGridSection() {
   const { ref: countRef, inView: countInView } = useInView({ triggerOnce: true, threshold: 0.5 })
 
   return (
-    <section className="py-20 px-4 md:px-6 bg-white">
+    <section className="px-4 md:px-6 bg-white">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <motion.div
@@ -91,7 +91,7 @@ export default function BentoGridSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Proven Results Across Industries
@@ -102,7 +102,7 @@ export default function BentoGridSection() {
         </motion.div>
 
         {/* Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6">
           
           {/* ROW 1 */}
           {/* Left: Main Feature Card - Full Image with Overlay */}
@@ -111,7 +111,7 @@ export default function BentoGridSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="lg:col-span-7 lg:row-span-2 relative rounded-3xl overflow-hidden group cursor-pointer h-[500px]"
+            className="lg:col-span-7 lg:row-span-2 relative rounded-2xl overflow-hidden group cursor-pointer h-[500px]"
           >
             <motion.img
               key={selectedIndustry}
@@ -197,7 +197,7 @@ export default function BentoGridSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="lg:col-span-5 lg:row-start-1 bg-white rounded-3xl p-5 border border-gray-200 shadow-sm"
+            className="lg:col-span-5 lg:row-start-1 bg-white rounded-2xl p-6 border border-gray-100"
           >
             <div className="flex items-center justify-between mb-3">
               <div>
@@ -283,7 +283,7 @@ export default function BentoGridSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.15 }}
-            className="lg:col-span-5 lg:row-start-2 relative rounded-3xl overflow-hidden group cursor-pointer h-[220px]"
+            className="lg:col-span-5 lg:row-start-2 relative rounded-2xl overflow-hidden group cursor-pointer h-[220px]"
           >
             <img
               src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&q=80"
@@ -307,7 +307,7 @@ export default function BentoGridSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.25 }}
-            className="lg:col-span-5 lg:row-start-3 relative rounded-3xl overflow-hidden group cursor-pointer h-[220px]"
+            className="lg:col-span-5 lg:row-start-3 relative rounded-2xl overflow-hidden group cursor-pointer h-[220px]"
           >
             <img
               src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80"
@@ -332,44 +332,13 @@ export default function BentoGridSection() {
             </div>
           </motion.div>
 
-          {/* Right Column: Second Nike Shoe Card (Duplicate) */}
+          {/* Right Column: Industries List */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="lg:col-span-5 lg:row-start-4 relative rounded-3xl overflow-hidden group cursor-pointer h-[220px]"
-          >
-            <img
-              src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80"
-              alt="Premium Sneakers"
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              loading="lazy"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-4">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="inline-block px-2.5 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs font-medium text-white">
-                  Footwear
-                </span>
-                <span className="inline-block px-2.5 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs font-medium text-white">
-                  Premium Footwear
-                </span>
-                <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
-                  <Check className="w-3 h-3 text-white" />
-                </div>
-              </div>
-              <p className="text-sm text-white/90">28+ successful launches</p>
-            </div>
-          </motion.div>
-
-          {/* Right Column: Industries List - Bottom */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.35 }}
-            className="lg:col-span-5 lg:row-start-5 bg-white rounded-3xl p-5 border border-gray-200 shadow-sm"
+            className="lg:col-span-5 lg:row-start-4 bg-white rounded-2xl p-6 border border-gray-100"
           >
             <h3 className="text-base font-bold text-gray-900 mb-3">Industries</h3>
             <div className="space-y-1">
@@ -386,14 +355,14 @@ export default function BentoGridSection() {
           </motion.div>
 
           {/* Left Column Row 2: Industries Served + Brand Metrics - Side by Side */}
-          <div className="lg:col-span-7 lg:row-start-3 grid grid-cols-2 gap-5">
+          <div className="lg:col-span-7 lg:row-start-3 grid grid-cols-2 gap-6">
             {/* Industries Served Card */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="rounded-3xl p-5 border border-gray-200"
+              className="rounded-2xl p-6 border border-gray-100"
               style={{ backgroundColor: '#F8F9FF' }}
             >
               <div className="flex items-center justify-between mb-3">
@@ -419,7 +388,7 @@ export default function BentoGridSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.25 }}
-              className="rounded-3xl p-5 border border-gray-200"
+              className="rounded-2xl p-6 border border-gray-100"
               style={{ backgroundColor: '#F8F9FF' }}
             >
               <div className="flex items-center justify-between mb-3">
@@ -446,7 +415,7 @@ export default function BentoGridSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="lg:col-span-7 lg:row-start-4 bg-white rounded-3xl p-5 border border-gray-200 shadow-sm"
+            className="lg:col-span-7 lg:row-start-4 bg-white rounded-2xl p-6 border border-gray-100"
           >
             <h3 className="text-base font-bold text-gray-900 mb-1">Marketing Platforms</h3>
             <p className="text-xs text-gray-500 mb-3">Expert in all major ad platforms</p>
