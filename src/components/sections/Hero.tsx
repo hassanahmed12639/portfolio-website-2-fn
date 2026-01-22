@@ -111,27 +111,27 @@ export default function Hero() {
   };
 
   return (
-    <section className="w-full bg-white py-16 md:py-20 lg:py-24 xl:py-28 2xl:py-32">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
-        <div className="max-w-5xl mx-auto text-center">
+    <section className="w-full bg-white py-12 sm:py-16 md:py-20 lg:py-24">
+      <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 max-w-7xl">
+        <div className="max-w-4xl mx-auto text-center">
           {/* Main Headline */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-bold text-black mb-6 md:mb-8 lg:mb-10 leading-[1.1] tracking-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-bold text-black mb-5 sm:mb-6 md:mb-7 lg:mb-8 leading-[1.2] tracking-tight">
             Here to be Your{' '}
             <span className="italic font-bold">Performance</span> Focused{' '}
             <span className="italic font-bold">Partner</span>
           </h1>
 
           {/* Description */}
-          <p className="text-base md:text-lg lg:text-xl xl:text-2xl text-gray-600 mb-8 md:mb-10 lg:mb-12 xl:mb-14 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 mb-8 sm:mb-10 md:mb-12 max-w-2xl mx-auto leading-relaxed">
             With Zyntrex, you can set company-wide goals, strategic plans, and get work done on a single monthly plan.
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-5 lg:gap-6">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-5">
             <button
               onClick={handleClick}
               disabled={isLoading || isCompleted}
-              className="relative bg-blue-600 hover:bg-blue-700 disabled:bg-blue-600 text-white font-medium px-8 py-3 rounded-full flex items-center gap-2 transition-all duration-200 w-[200px] justify-center overflow-hidden"
+              className="relative bg-blue-600 hover:bg-blue-700 disabled:bg-blue-600 text-white font-medium px-6 sm:px-8 py-3 rounded-full flex items-center gap-2 transition-all duration-200 w-full sm:w-auto min-w-[180px] justify-center overflow-hidden"
             >
               {/* Progress bar background */}
               {isLoading && (
@@ -162,7 +162,7 @@ export default function Hero() {
               </div>
             </button>
             <MagneticButton distance={0.3}>
-              <button className="bg-white border border-black text-black px-8 py-3 rounded-full font-medium text-base w-[200px] flex items-center justify-center">
+              <button className="bg-white border border-black text-black px-6 sm:px-8 py-3 rounded-full font-medium text-sm sm:text-base w-full sm:w-auto min-w-[180px] flex items-center justify-center hover:bg-gray-50 transition-colors">
                 See Pricing &gt;
               </button>
             </MagneticButton>
