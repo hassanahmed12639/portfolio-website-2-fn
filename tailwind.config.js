@@ -56,7 +56,8 @@ module.exports = {
   			}
   		},
   		animation: {
-  			move: 'move 5s linear infinite'
+  			move: 'move 5s linear infinite',
+  			'float-gentle': 'floatGentle 4s ease-in-out infinite'
   		},
   		keyframes: {
   			move: {
@@ -65,6 +66,14 @@ module.exports = {
   				},
   				'100%': {
   					transform: 'translateX(200px)'
+  				}
+  			},
+  			floatGentle: {
+  				'0%, 100%': {
+  					transform: 'translateY(0px)'
+  				},
+  				'50%': {
+  					transform: 'translateY(-15px)'
   				}
   			}
   		}
