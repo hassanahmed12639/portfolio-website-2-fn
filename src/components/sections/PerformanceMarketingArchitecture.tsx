@@ -1,14 +1,26 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Server, Activity, BarChart3, Database, Globe, Zap, TrendingUp, Shield, Cloud, Layers, Filter, Target, MousePointer, RefreshCw, ShoppingCart, GitBranch, Play, Pause, Plus, Users, Eye } from 'lucide-react';
+import { Server, Activity, BarChart3, Database, Globe, Zap, TrendingUp, Shield, Cloud, Layers, Filter, Target, MousePointer, RefreshCw, ShoppingCart, GitBranch, Play, Pause, Plus, Users, Eye, LucideIcon } from 'lucide-react';
+
+type DiagramNode = {
+  id: string;
+  title: string;
+  icon: LucideIcon;
+  x: number;
+  y: number;
+  step: number;
+  desc?: string;
+  subtitle?: string;
+  count?: string;
+};
 
 const PerformanceMarketingArchitecture = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [dragging, setDragging] = useState(null);
+  const [dragging, setDragging] = useState<{ id: string; column: 'left' | 'center' | 'right' } | null>(null);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
-  const animationRef = useRef(null);
+  const animationRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const initialNodes = {
     left: [
@@ -38,12 +50,12 @@ const PerformanceMarketingArchitecture = () => {
     setIsPlaying(!isPlaying);
   };
 
-  const handleStepChange = (step) => {
+  const handleStepChange = (step: number) => {
     setCurrentStep(step);
     setIsPlaying(false);
   };
 
-  const handleMouseDown = (e, nodeId, column) => {
+  const handleMouseDown = (e: React.MouseEvent, nodeId: string, column: 'left' | 'center' | 'right') => {
     e.stopPropagation();
     const rect = e.currentTarget.getBoundingClientRect();
     setDragging({ id: nodeId, column });
@@ -53,7 +65,7 @@ const PerformanceMarketingArchitecture = () => {
     });
   };
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = (e: MouseEvent) => {
     if (!dragging) return;
 
     const container = document.getElementById('diagram-container');
@@ -111,7 +123,7 @@ const PerformanceMarketingArchitecture = () => {
     };
   }, [isPlaying]);
 
-  const NodeCard = ({ node, column, isActive }) => {
+  const NodeCard = ({ node, column, isActive }: { node: DiagramNode; column: 'left' | 'center' | 'right'; isActive: boolean }) => {
     const Icon = node.icon;
     
     return (
@@ -195,13 +207,13 @@ const PerformanceMarketingArchitecture = () => {
     );
   };
 
-  const getNodeCenter = (node, column) => {
+  const getNodeCenter = (node: DiagramNode, column: 'left' | 'center' | 'right') => {
     const width = column === 'center' ? 260 : 240;
     const height = column === 'center' ? 140 : 80;
     return { x: node.x + width / 2, y: node.y + height / 2 };
   };
 
-  const ConnectionLine = ({ from, to, fromColumn, toColumn, isActive, isAnimating }) => {
+  const ConnectionLine = ({ from, to, fromColumn, toColumn, isActive, isAnimating }: { from: DiagramNode; to: DiagramNode; fromColumn: 'left' | 'center' | 'right'; toColumn: 'left' | 'center' | 'right'; isActive: boolean; isAnimating: boolean }) => {
     const start = getNodeCenter(from, fromColumn);
     const end = getNodeCenter(to, toColumn);
     
@@ -283,7 +295,7 @@ const PerformanceMarketingArchitecture = () => {
     );
   };
 
-  const connections = [
+  const connections: { from: string; to: string; fromCol: 'left' | 'center' | 'right'; toCol: 'left' | 'center' | 'right'; activeStep: number }[] = [
     // Left to center flow
     { from: 'visitor', to: 'datalayer', fromCol: 'left', toCol: 'center', activeStep: 1 },
     { from: 'click', to: 'datalayer', fromCol: 'left', toCol: 'center', activeStep: 2 },
@@ -447,7 +459,7 @@ const PerformanceMarketingArchitecture = () => {
           </svg>
 
           {/* Render all nodes */}
-          {Object.entries(nodes).map(([column, nodeList]) =>
+          {(Object.entries(nodes) as [('left' | 'center' | 'right'), DiagramNode[]][]).map(([column, nodeList]) =>
             nodeList.map(node => (
               <NodeCard
                 key={node.id}

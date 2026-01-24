@@ -86,24 +86,27 @@ export function AnimatedCard({ className, title, description, icons = [] }: Anim
 function AnimatedIcons({ icons }: { icons: AnimatedCardProps["icons"] }) {
   const scale = [1, 1.1, 1]
   const transform = ["translateY(0px)", "translateY(-4px)", "translateY(0px)"]
+  const iconList = icons ?? []
   
-  const sequence = icons.map((_, index) => [
+  const sequence = iconList.map((_, index) => [
     `.circle-${index + 1}`,
     { scale, transform },
     { duration: 0.8 },
   ])
 
   useEffect(() => {
-    animate(sequence, {
+    if (sequence.length === 0) return
+    const controls = animate(sequence as Parameters<typeof animate>[0], {
       repeat: Infinity,
       repeatDelay: 1,
     })
+    return () => controls?.stop?.()
   }, [])
 
   return (
     <div className="p-6 overflow-hidden h-full relative flex items-center justify-center">
       <div className="flex flex-row flex-shrink-0 justify-center items-center gap-2">
-        {icons.map((icon, index) => (
+        {iconList.map((icon, index) => (
           <Container
             key={index}
             className={cn(

@@ -4,15 +4,15 @@ import { useState, useEffect, useRef } from 'react';
 import { Download, CheckCircle } from 'lucide-react';
 import { TextRevealByWord } from '@/components/ui/text-reveal';
 
-function MagneticButton({ children, distance = 0.3 }) {
+function MagneticButton({ children, distance = 0.3 }: { children: React.ReactNode; distance?: number }) {
   const [isHovered, setIsHovered] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement | null>(null);
   const currentPos = useRef({ x: 0, y: 0 });
   const targetPos = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
-    let rafId = null;
+    let rafId: number | null = null;
     
     const animate = () => {
       const dx = targetPos.current.x - currentPos.current.x;
@@ -31,7 +31,7 @@ function MagneticButton({ children, distance = 0.3 }) {
       }
     };
     
-    const calculateDistance = (e) => {
+    const calculateDistance = (e: MouseEvent) => {
       if (ref.current) {
         const rect = ref.current.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;

@@ -4,6 +4,20 @@ import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger, registerGsapPlugins } from "@/lib/gsap";
 import { TrendingDown, BarChart3, ArrowLeftRight, CheckCircle2, Megaphone, Lock } from "lucide-react";
 
+type CardSize = "largest" | "medium" | "smallMedium" | "small";
+
+const CARDS_LAYOUT: {
+  color: string;
+  size: CardSize;
+  zIndex: number;
+}[] = [
+  { color: "#5897D4", size: "medium", zIndex: 3 }, // Blue EUR
+  { color: "#2CC84D", size: "largest", zIndex: 2 }, // Green Exchange
+  { color: "#FCDA7F", size: "small", zIndex: 4 }, // Pink
+  { color: "#EF4444", size: "largest", zIndex: 5 }, // Coffee
+  { color: "#8B5CF6", size: "smallMedium", zIndex: 1 }, // Person laptop
+];
+
 export default function UnifyFinancesScroll() {
   const sectionRef = useRef<HTMLElement>(null);
   const textRef = useRef<HTMLHeadingElement>(null);
@@ -18,26 +32,21 @@ export default function UnifyFinancesScroll() {
       const sectionWidth = section.offsetWidth;
       const sectionHeight = section.offsetHeight;
 
-      // Initial positions: cards start from outside screen corners
-      // Add extra offset to ensure they're completely off-screen
-      // Ensure left and right cards travel the exact same distance for identical transitions
-      const offScreenOffset = 600; // Increased to ensure cards are fully hidden
+      const offScreenOffset = 600;
       const stackOffset = 6; // offset for final stacking
-      const cardPositions = [
+      const startPositions = [
         { x: -(sectionWidth / 2 + offScreenOffset), y: -(sectionHeight / 2 + offScreenOffset) }, // top-left - card 0
-        { x: sectionWidth / 2 + offScreenOffset + stackOffset, y: -(sectionHeight / 2 + offScreenOffset) }, // top-right - card 1 (add stackOffset to match distance)
+        { x: sectionWidth / 2 + offScreenOffset + stackOffset, y: -(sectionHeight / 2 + offScreenOffset) }, // top-right - card 1
         { x: -(sectionWidth / 2 + offScreenOffset), y: sectionHeight / 2 + offScreenOffset }, // bottom-left - card 2
-        { x: sectionWidth / 2 + offScreenOffset + stackOffset, y: sectionHeight / 2 + offScreenOffset }, // bottom-right - card 3 (add stackOffset to match distance)
+        { x: sectionWidth / 2 + offScreenOffset + stackOffset, y: sectionHeight / 2 + offScreenOffset }, // bottom-right - card 3
         { x: sectionWidth / 2 + offScreenOffset, y: 0 }, // right-center - card 4
       ];
 
-      // Set initial positions (off-screen and invisible) for all 5 cards
-      // Apply identical rendering optimizations to prevent visual artifacts
       cardsRef.current.forEach((card, i) => {
-        if (card && cardPositions[i]) {
+        if (card && startPositions[i]) {
           gsap.set(card, {
-            x: cardPositions[i].x,
-            y: cardPositions[i].y,
+            x: startPositions[i].x,
+            y: startPositions[i].y,
             opacity: 0,
             force3D: true,
             transformOrigin: "center center",
@@ -77,8 +86,6 @@ export default function UnifyFinancesScroll() {
         },
       });
 
-      /* Cards animate in from corners and stack in center - all 5 cards */
-      // Ensure identical transitions for left and right side cards
       const animationConfig = {
         opacity: 1,
         duration: 3,
@@ -89,9 +96,7 @@ export default function UnifyFinancesScroll() {
 
       cardsRef.current.forEach((card, i) => {
         if (card) {
-          // Start with no shadow to prevent line artifacts during animation
           gsap.set(card, { boxShadow: "none" });
-          
           tl.to(
             card,
             {
@@ -101,8 +106,6 @@ export default function UnifyFinancesScroll() {
             },
             i * 0.3 // stagger slightly - each card starts after the previous
           );
-          
-          // Add shadow after animation completes to prevent rendering artifacts
           tl.to(
             card,
             {
@@ -167,22 +170,28 @@ export default function UnifyFinancesScroll() {
 
         {/* CARDS - On top */}
         <div className="relative w-full h-full pointer-events-none z-10" style={{ overflow: "hidden" }}>
-          {[
-            { color: "#5897D4" }, // Blue
-            { color: "#2CC84D" }, // Green
-            { color: "#FCDA7F" }, // Light Amber
-            { color: "#EF4444" }, // Red
-            { color: "#8B5CF6" }, // Purple
-          ].map((card, i) => (
+          {(() => {
+            const sizeClasses: Record<CardSize, string> = {
+              largest:
+                "w-[120px] h-[115px] xs:w-[150px] xs:h-[143px] sm:w-[180px] sm:h-[172px] md:w-[200px] md:h-[191px] lg:w-[240px] lg:h-[230px] xl:w-[280px] xl:h-[268px] 2xl:w-[320px] 2xl:h-[306px]",
+              medium:
+                "w-[104px] h-[100px] xs:w-[131px] xs:h-[124px] sm:w-[157px] sm:h-[150px] md:w-[174px] md:h-[166px] lg:w-[209px] lg:h-[200px] xl:w-[244px] xl:h-[233px] 2xl:w-[278px] 2xl:h-[266px]",
+              smallMedium:
+                "w-[96px] h-[92px] xs:w-[120px] xs:h-[114px] sm:w-[144px] sm:h-[138px] md:w-[160px] md:h-[153px] lg:w-[192px] lg:h-[184px] xl:w-[224px] xl:h-[214px] 2xl:w-[256px] 2xl:h-[245px]",
+              small:
+                "w-[90px] h-[86px] xs:w-[113px] xs:h-[107px] sm:w-[135px] sm:h-[129px] md:w-[150px] md:h-[143px] lg:w-[180px] lg:h-[173px] xl:w-[210px] xl:h-[201px] 2xl:w-[240px] 2xl:h-[230px]",
+            };
+            return CARDS_LAYOUT.map((card, i) => (
             <div
               key={i}
               ref={(el) => {
                 cardsRef.current[i] = el;
               }}
-              className="absolute left-1/2 top-1/2 w-[120px] h-[115px] xs:w-[150px] xs:h-[143px] sm:w-[180px] sm:h-[172px] md:w-[200px] md:h-[191px] lg:w-[240px] lg:h-[230px] xl:w-[280px] xl:h-[268px] 2xl:w-[320px] 2xl:h-[306px] rounded-2xl sm:rounded-3xl"
+              className={`absolute left-1/2 top-1/2 ${sizeClasses[card.size]} rounded-2xl sm:rounded-3xl`}
               style={{
                 backgroundColor: card.color,
                 opacity: 1,
+                zIndex: card.zIndex,
                 transform: "translate(-50%, -50%) translateZ(0)",
                 willChange: "transform, opacity",
                 backfaceVisibility: "hidden",
@@ -297,14 +306,24 @@ export default function UnifyFinancesScroll() {
                 <div className="h-full w-full">
                   {/* Fashion Image - Full Card, No Padding */}
                   <img 
-                    src="/fashion-clothing.jpg" 
+                    src="/fashion-clothing.jpeg" 
                     alt="Fashion clothing" 
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover rounded-2xl sm:rounded-3xl"
+                  />
+                </div>
+              ) : i === 4 ? (
+                <div className="h-full w-full">
+                  {/* Serrum Image - Full Card, No Padding */}
+                  <img 
+                    src="/serrum.webp" 
+                    alt="Serrum" 
+                    className="w-full h-full object-cover rounded-2xl sm:rounded-3xl"
                   />
                 </div>
               ) : null}
             </div>
-          ))}
+            ));
+          })()}
         </div>
       </section>
     </>
