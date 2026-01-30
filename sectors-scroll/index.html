@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>5 Sectors Scroll Animation - White Background</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  
+  <section class="scroll-animation-section">
+    <div class="scroll-container">
+      <div class="sticky-viewport">
+        
+        <!-- HERO SECTION - White background with centered cards -->
+        <div class="section-layer" id="hero-section">
+          
+          <!-- Hero text on LEFT side -->
+          <div class="hero-content">
+            <h1 class="hero-title">
+              We work to accelerate progress across every source of emissions, 
+              transforming the five sectors of the global economy into 
+              <span class="highlight">a landscape of opportunity.</span>
+            </h1>
+          </div>
+          
+          <!-- Scattered cards - absolute positions per reference -->
+          <div class="cards-container">
+            <div class="sector-card floating-card" data-sector="manufacturing" id="card-manufacturing">
+              <img src="/mnt/user-data/uploads/1769690619176_image.png" alt="Manufacturing">
+              <div class="card-label">Manufacturing</div>
+            </div>
+            <div class="sector-card floating-card" data-sector="electricity" id="card-electricity">
+              <img src="/mnt/user-data/uploads/1769690619176_image.png" alt="Electricity">
+              <div class="card-label">Electricity</div>
+            </div>
+            <div class="sector-card floating-card" data-sector="agriculture" id="card-agriculture">
+              <img src="/mnt/user-data/uploads/1769690619176_image.png" alt="Agriculture">
+              <div class="card-label">Agriculture</div>
+            </div>
+            <div class="sector-card floating-card" data-sector="transportation" id="card-transportation">
+              <img src="/mnt/user-data/uploads/1769690619176_image.png" alt="Transportation">
+              <div class="card-label">Transportation</div>
+            </div>
+            <div class="sector-card floating-card" data-sector="buildings" id="card-buildings">
+              <img src="/mnt/user-data/uploads/1769690619176_image.png" alt="Buildings">
+              <div class="card-label">Buildings</div>
+            </div>
+          </div>
+          
+          <!-- Scroll hint at bottom -->
+          <div class="scroll-hint">
+            <span>SCROLL</span>
+            <div class="scroll-mouse"></div>
+          </div>
+          
+        </div>
+        <!-- End of hero-section -->
+        
+        <!-- ============================================
+             MANUFACTURING FULL SECTION 
+             ============================================ -->
+        <div class="section-layer full-section" id="manufacturing-section">
+          <div class="full-section-image">
+            <img src="/mnt/user-data/uploads/1769690619176_image.png" 
+                 class="zoomed-image" 
+                 alt="Manufacturing"
+                 id="img-manufacturing">
+          </div>
+          
+          <div class="section-content">
+            <h2 class="section-title" id="title-manufacturing">
+              <span class="letter-white">M</span><span class="letter-green">anufacturing</span>
+            </h2>
+            
+            <div class="info-content" id="content-manufacturing">
+              <span class="emissions-badge">30% emissions</span>
+              <p class="description-text">
+                The clean industrial revolution starts with transforming how we make 
+                everything in the world—from steel and cement to everyday materials.
+              </p>
+              <button class="action-button">29 Manufacturing Companies</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- ============================================
+             ELECTRICITY FULL SECTION 
+             ============================================ -->
+        <div class="section-layer full-section" id="electricity-section">
+          <div class="full-section-image">
+            <img src="/mnt/user-data/uploads/1769690619176_image.png" 
+                 class="zoomed-image" 
+                 alt="Electricity"
+                 id="img-electricity">
+          </div>
+          
+          <div class="section-content">
+            <h2 class="section-title" id="title-electricity">
+              <span class="letter-white">E</span><span class="letter-green">lectricity</span>
+            </h2>
+            
+            <div class="info-content" id="content-electricity">
+              <span class="emissions-badge">28% emissions</span>
+              <p class="description-text">
+                The world must build 21st century grids while delivering energy 
+                abundance—clean, affordable, and reliable power for everyone.
+              </p>
+              <button class="action-button">26 Electricity Companies</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- ============================================
+             AGRICULTURE FULL SECTION 
+             ============================================ -->
+        <div class="section-layer full-section" id="agriculture-section">
+          <div class="full-section-image">
+            <img src="/mnt/user-data/uploads/1769690619176_image.png" 
+                 class="zoomed-image" 
+                 alt="Agriculture"
+                 id="img-agriculture">
+          </div>
+          
+          <div class="section-content">
+            <h2 class="section-title title-all-green" id="title-agriculture">
+              Agriculture
+            </h2>
+            
+            <div class="info-content" id="content-agriculture">
+              <span class="emissions-badge">19% emissions</span>
+              <p class="description-text">
+                From growing rice to raising cattle, innovating how we feed ourselves 
+                is a prime opportunity. Meet the innovators who will feed the world 
+                for decades to come.
+              </p>
+              <button class="action-button">20 Agriculture Companies</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- ============================================
+             TRANSPORTATION FULL SECTION 
+             ============================================ -->
+        <div class="section-layer full-section" id="transportation-section">
+          <div class="full-section-image">
+            <img src="/mnt/user-data/uploads/1769690619176_image.png" 
+                 class="zoomed-image" 
+                 alt="Transportation"
+                 id="img-transportation">
+          </div>
+          
+          <div class="section-content">
+            <h2 class="section-title" id="title-transportation">
+              <span class="letter-white">T</span><span class="letter-green">ransportation</span>
+            </h2>
+            
+            <div class="info-content" id="content-transportation">
+              <span class="emissions-badge">25% emissions</span>
+              <p class="description-text">
+                Revolutionizing how people and goods move around the world with 
+                clean, efficient transportation solutions.
+              </p>
+              <button class="action-button">18 Transportation Companies</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- ============================================
+             BUILDINGS FULL SECTION 
+             ============================================ -->
+        <div class="section-layer full-section" id="buildings-section">
+          <div class="full-section-image">
+            <img src="/mnt/user-data/uploads/1769690619176_image.png" 
+                 class="zoomed-image" 
+                 alt="Buildings"
+                 id="img-buildings">
+          </div>
+          
+          <div class="section-content">
+            <h2 class="section-title" id="title-buildings">
+              <span class="letter-white">B</span><span class="letter-green">uildings</span>
+            </h2>
+            
+            <div class="info-content" id="content-buildings">
+              <span class="emissions-badge">22% emissions</span>
+              <p class="description-text">
+                Creating sustainable spaces where we live and work, reducing energy 
+                consumption while improving comfort and efficiency.
+              </p>
+              <button class="action-button">15 Building Companies</button>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+      <!-- End of sticky-viewport -->
+      
+      <!-- Navigation Dots (right side) -->
+      <nav class="nav-dots" aria-label="Section navigation">
+        <button class="nav-dot active" data-section="0" aria-label="Hero section"></button>
+        <button class="nav-dot" data-section="1" aria-label="Manufacturing section"></button>
+        <button class="nav-dot" data-section="2" aria-label="Electricity section"></button>
+        <button class="nav-dot" data-section="3" aria-label="Agriculture section"></button>
+        <button class="nav-dot" data-section="4" aria-label="Transportation section"></button>
+        <button class="nav-dot" data-section="5" aria-label="Buildings section"></button>
+      </nav>
+      
+    </div>
+  </section>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="script.js"></script>
+  
+</body>
+</html>
