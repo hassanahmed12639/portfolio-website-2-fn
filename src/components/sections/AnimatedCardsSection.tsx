@@ -1,6 +1,6 @@
 "use client"
 
-import { AnimatedCard } from "@/components/ui/feature-block-animated-card"
+import { AnimatedCard } from "../ui/feature-block-animated-card"
 
 export default function AnimatedCardsSection() {
   const cards = [

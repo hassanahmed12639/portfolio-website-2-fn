@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { gsap, ScrollTrigger, registerGsapPlugins } from "@/lib/gsap";
+import { gsap, ScrollTrigger, registerGsapPlugins } from "../../lib/gsap";
 import { TrendingDown, BarChart3, ArrowLeftRight, CheckCircle2, Megaphone, Lock } from "lucide-react";
 
 type CardSize = "largest" | "medium" | "smallMedium" | "small";

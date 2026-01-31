@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic"
 
 const NavBar = dynamic(
-  () => import("@/components/layout/NavBar").then((m) => ({ default: m.NavBar })),
+  () => import("./NavBar").then((m) => ({ default: m.NavBar })),
   { ssr: false }
 )
 

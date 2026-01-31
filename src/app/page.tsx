@@ -1,8 +1,8 @@
-import Header from '@/components/layout/Header'
-import Hero from '@/components/sections/Hero'
-import UnifyFinancesScroll from '@/components/sections/UnifyFinancesScroll'
-import IntegrationsArcSection from '@/components/sections/IntegrationsArcSection'
-import PerformanceMarketingArchitecture from '@/components/sections/PerformanceMarketingArchitecture'
+import Header from '../components/layout/Header'
+import Hero from '../components/sections/Hero'
+import UnifyFinancesScroll from '../components/sections/UnifyFinancesScroll'
+import IntegrationsArcSection from '../components/sections/IntegrationsArcSection'
+import SectorScrollSection from '../components/sections/SectorScrollSection'
 
 export default function Home() {
   return (
@@ -16,7 +16,7 @@ export default function Home() {
         <IntegrationsArcSection />
       </div>
       <div className="py-16 md:py-24">
-        <PerformanceMarketingArchitecture />
+        <SectorScrollSection />
       </div>
     </main>
   )

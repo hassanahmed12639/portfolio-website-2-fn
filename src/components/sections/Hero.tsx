@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Download, CheckCircle } from 'lucide-react';
-import { TextRevealByWord } from '@/components/ui/text-reveal';
+import { TextRevealByWord } from '../ui/text-reveal';
 
 function MagneticButton({ children, distance = 0.3 }: { children: React.ReactNode; distance?: number }) {
   const [isHovered, setIsHovered] = useState(false);
