@@ -2,8 +2,6 @@ import Header from '../components/layout/Header'
 import Hero from '../components/sections/Hero'
 import UnifyFinancesScroll from '../components/sections/UnifyFinancesScroll'
 import IntegrationsArcSection from '../components/sections/IntegrationsArcSection'
-import SectorScrollSection from '../components/sections/SectorScrollSection'
-
 export default function Home() {
   return (
     <main className="min-h-screen bg-white">
@@ -14,9 +12,6 @@ export default function Home() {
       </div>
       <div className="py-16 md:py-24">
         <IntegrationsArcSection />
-      </div>
-      <div className="py-16 md:py-24">
-        <SectorScrollSection />
       </div>
     </main>
   )
