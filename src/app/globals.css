@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;800&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -407,4 +409,255 @@ html {
   background: #d4ff00;
   height: 32px;
   border-radius: 5px;
+}
+
+/* Arch section (above IntegrationsArcSection) */
+.arch-section {
+  color: #121212;
+  background-color: #f9ffe7;
+  font-family: "Outfit", sans-serif;
+}
+
+.arch-section .container {
+  max-width: 1440px;
+  padding: 2rem;
+  margin: 0 auto;
+}
+
+.arch-section .spacer {
+  width: 100%;
+  height: 30vh;
+}
+
+.arch-section .arch {
+  display: flex;
+  gap: 60px;
+  justify-content: space-between;
+  max-width: 1100px;
+  margin-inline: auto;
+}
+
+.arch-section .arch__left {
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
+}
+
+.arch-section .arch__left .arch__info {
+  max-width: 356px;
+  height: 100vh;
+  display: grid;
+  place-items: center;
+}
+
+.arch-section .arch__left .arch__info h2.header {
+  font-family: Outfit, sans-serif;
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -0.84px;
+}
+
+.arch-section .arch__left .arch__info p.desc {
+  color: rgba(18, 18, 18, 0.8);
+  font-size: 18px;
+  letter-spacing: -0.54px;
+  margin-block: 6px 28px;
+  line-height: normal;
+}
+
+.arch-section .arch__left .arch__info a.link {
+  text-decoration: none;
+  padding: 16px 18px;
+  color: inherit;
+  border-radius: 40px;
+  display: flex;
+  gap: 4px;
+  width: fit-content;
+  align-items: center;
+}
+
+.arch-section .arch__right {
+  flex-shrink: 1;
+  height: 100vh;
+  width: 100%;
+  max-width: 540px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.arch-section .arch__right .img-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  height: 400px;
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.arch-section .arch__right .img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+@media (max-width: 900px) {
+  .arch-section .arch {
+    gap: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .arch-section .arch {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .arch-section .arch__left,
+  .arch-section .arch__right {
+    display: contents;
+  }
+
+  .arch-section .arch__right {
+    height: auto;
+    max-width: 100%;
+  }
+
+  .arch-section .arch__right .img-wrapper {
+    position: static;
+    transform: none;
+    height: 360px;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .arch-section .arch__left .arch__info {
+    height: auto;
+    padding: 20px 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .arch-section .arch {
+    gap: 12px;
+  }
+
+  .arch-section .container {
+    padding: 10px;
+  }
+
+  .arch-section .arch__right .img-wrapper {
+    border-radius: 10px;
+    height: 280px;
+  }
+}
+
+/* Who I Am section (below ArchSection) */
+.who-i-am-section {
+  font-family: "Outfit", sans-serif;
+}
+
+.who-i-am-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 5vw, 4rem);
+}
+
+.who-i-am-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.who-i-am-content {
+  flex: 1 1 0%;
+  min-width: 0;
+  max-width: 680px;
+}
+
+.who-i-am-lead {
+  font-size: clamp(1.125rem, 2vw, 1.375rem);
+  font-weight: 600;
+  line-height: 1.45;
+  color: #121212;
+  margin: 0 0 1rem 0;
+}
+
+.who-i-am-highlight {
+  padding: 0.1em 0.25em;
+  border-radius: 2px;
+  border: 1px solid;
+}
+
+.who-i-am-highlight--blue {
+  background-color: #e8f4fc;
+  border-color: #7dd6ff;
+}
+
+.who-i-am-highlight--orange {
+  background-color: #fff4ed;
+  border-color: #ffa17b;
+}
+
+.who-i-am-highlight--green {
+  background-color: #f0fde8;
+  border-color: #a8e06c;
+}
+
+.who-i-am-tagline {
+  font-size: clamp(0.875rem, 1.2vw, 1rem);
+  color: #121212;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.who-i-am-tagline-accent {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.who-i-am-cta-wrap {
+  flex-shrink: 0;
+}
+
+.who-i-am-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  font-size: clamp(0.9375rem, 1.1vw, 1rem);
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.who-i-am-cta:hover {
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
+  transform: translateY(-1px);
+}
+
+.who-i-am-cta-icon {
+  font-size: 1.1em;
+  line-height: 1;
+}
+
+@media (max-width: 768px) {
+  .who-i-am-inner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .who-i-am-cta-wrap {
+    display: flex;
+    justify-content: flex-start;
+  }
 }

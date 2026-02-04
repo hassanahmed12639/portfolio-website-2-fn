@@ -1,6 +1,8 @@
 import Header from '../components/layout/Header'
 import Hero from '../components/sections/Hero'
 import UnifyFinancesScroll from '../components/sections/UnifyFinancesScroll'
+import ArchSection from '../components/sections/ArchSection'
+import WhoIAmSection from '../components/sections/WhoIAmSection'
 import IntegrationsArcSection from '../components/sections/IntegrationsArcSection'
 export default function Home() {
   return (
@@ -10,6 +12,8 @@ export default function Home() {
       <div className="py-16 md:py-24">
         <UnifyFinancesScroll />
       </div>
+      <ArchSection />
+      <WhoIAmSection />
       <div className="py-16 md:py-24">
         <IntegrationsArcSection />
       </div>

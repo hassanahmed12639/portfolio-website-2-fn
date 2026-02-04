@@ -115,9 +115,8 @@ export default function Hero() {
   return (
     <section className="w-full bg-white py-12 sm:py-16 md:py-20 lg:py-24">
       <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 max-w-7xl">
-        <div className="flex flex-col lg:flex-row items-center lg:items-center gap-8 lg:gap-12 -mt-8">
-          {/* Left side - Content */}
-          <div className="flex-1 text-left lg:text-left">
+        <div className="flex flex-col items-center justify-center text-center -mt-8">
+          <div className="flex flex-col items-center max-w-3xl">
             {/* Main Headline */}
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-bold text-black mb-5 sm:mb-6 md:mb-7 lg:mb-8 leading-[1.2] tracking-tight">
               Here to be Your{' '}
@@ -128,11 +127,11 @@ export default function Hero() {
             {/* Description */}
             <TextRevealByWord 
               text="With Zyntrex, you can set company-wide goals, strategic plans, and get work done on a single monthly plan."
-              className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 mb-8 sm:mb-10 md:mb-12 max-w-2xl leading-relaxed"
+              className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 mb-8 sm:mb-10 md:mb-12 max-w-2xl leading-relaxed text-center"
             />
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-5">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-5">
               <button
                 onClick={handleClick}
                 disabled={isLoading || isCompleted}
@@ -171,18 +170,6 @@ export default function Hero() {
                   See Pricing &gt;
                 </button>
               </MagneticButton>
-            </div>
-          </div>
-
-          {/* Right side - Image */}
-          <div className="flex-1 flex items-center justify-center lg:justify-end">
-            <div className="relative w-full max-w-md lg:max-w-lg overflow-hidden">
-              <img 
-                src="/hero-image-1.png" 
-                alt="Hero illustration" 
-                className="w-full h-auto relative z-0"
-              />
-              <div className="absolute inset-0 z-10 gradient-beam"></div>
             </div>
           </div>
         </div>
