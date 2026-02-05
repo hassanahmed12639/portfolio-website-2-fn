@@ -1,4 +1,5 @@
 import Header from '../components/layout/Header'
+import Footer from '../components/layout/Footer'
 import Hero from '../components/sections/Hero'
 import UnifyFinancesScroll from '../components/sections/UnifyFinancesScroll'
 import ArchSection from '../components/sections/ArchSection'
@@ -17,6 +18,7 @@ export default function Home() {
       <div className="py-16 md:py-24">
         <IntegrationsArcSection />
       </div>
+      <Footer />
     </main>
   )
 }
