@@ -59,7 +59,7 @@ export default function Hero() {
               <div className="row-span-2 overflow-hidden rounded-2xl bg-gray-100 shadow-[0_8px_30px_rgba(0,0,0,0.08)] md:min-h-0">
                 <div className="relative aspect-[3/4] w-full min-h-[280px] sm:min-h-[340px] md:aspect-[3/4] md:min-h-0">
                   <Image
-                    src="/hero-image.svg"
+                    src="/hero-image.jpeg"
                     alt="App preview"
                     fill
                     className="object-cover object-center"

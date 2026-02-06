@@ -60,9 +60,14 @@ module.exports = {
   		},
   		animation: {
   			move: 'move 5s linear infinite',
-  			'float-gentle': 'floatGentle 4s ease-in-out infinite'
+  			'float-gentle': 'floatGentle 4s ease-in-out infinite',
+  			marquee: 'marquee 30s linear infinite'
   		},
   		keyframes: {
+  			marquee: {
+  				'0%': { transform: 'translateX(0)' },
+  				'100%': { transform: 'translateX(-50%)' }
+  			},
   			move: {
   				'0%': {
   					transform: 'translateX(-200px)'
