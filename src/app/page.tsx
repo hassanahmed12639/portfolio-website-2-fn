@@ -6,6 +6,8 @@ import UnifyFinancesScroll from '../components/sections/UnifyFinancesScroll'
 import ArchSection from '../components/sections/ArchSection'
 import WhoIAmSection from '../components/sections/WhoIAmSection'
 import IntegrationsArcSection from '../components/sections/IntegrationsArcSection'
+import { HomePage } from '../components/sections/EmpoweringSection'
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-white">
@@ -20,6 +22,7 @@ export default function Home() {
       <div className="py-16 md:py-24">
         <IntegrationsArcSection />
       </div>
+      <HomePage />
       <Footer />
     </main>
   )
