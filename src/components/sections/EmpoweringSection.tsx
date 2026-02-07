@@ -1,19 +1,12 @@
 "use client"
 
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 
 export function HomePage() {
   const [scrollY, setScrollY] = useState(0)
-  const sectionRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (!sectionRef.current) return
-      const rect = sectionRef.current.getBoundingClientRect()
-      const sectionTop = rect.top + window.scrollY
-      setScrollY(Math.max(0, window.scrollY - sectionTop))
-    }
-    handleScroll()
+    const handleScroll = () => setScrollY(window.scrollY)
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
@@ -22,7 +15,7 @@ export function HomePage() {
   const expandRadius = animationProgress * 300
 
   return (
-    <div ref={sectionRef} className="min-h-[200vh] bg-[#ffffff] dark:bg-black">
+    <div className="min-h-[200vh] bg-[#ffffff] dark:bg-black">
       <div className="h-screen flex items-center justify-center p-8 sticky top-0">
         <div className="relative">
           <div
