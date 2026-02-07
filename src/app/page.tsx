@@ -7,6 +7,7 @@ import ArchSection from '../components/sections/ArchSection'
 import WhoIAmSection from '../components/sections/WhoIAmSection'
 import IntegrationsArcSection from '../components/sections/IntegrationsArcSection'
 import { HomePage } from '../components/sections/EmpoweringSection'
+import CTASection from '../components/sections/CTASection'
 
 export default function Home() {
   return (
@@ -23,6 +24,9 @@ export default function Home() {
         <IntegrationsArcSection />
       </div>
       <HomePage />
+      <section className="px-4 py-16 md:py-24">
+        <CTASection />
+      </section>
       <Footer />
     </main>
   )
