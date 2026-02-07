@@ -6,6 +6,8 @@ const nextConfig = {
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "img.clerk.com", pathname: "/**" },
+      { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
+      { protocol: "https", hostname: "plus.unsplash.com", pathname: "/**" },
     ],
   },
   webpack: (config) => {

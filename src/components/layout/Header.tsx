@@ -8,8 +8,8 @@ const NavBar = dynamic(
 )
 
 const navItems = [
-  { name: "Home", url: "#" },
-  { name: "About", url: "#" },
+  { name: "Home", url: "/" },
+  { name: "About", url: "/about-me" },
   { name: "Projects", url: "#" },
   { name: "Resume", url: "#" },
 ]
