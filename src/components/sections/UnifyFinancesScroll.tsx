@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger, registerGsapPlugins } from "../../lib/gsap";
-import { TrendingDown, BarChart3, ArrowLeftRight, CheckCircle2, Megaphone, Lock } from "lucide-react";
+import { CheckCircle2, Globe, TrendingUp, Calendar, Lock } from "lucide-react";
 
 type CardSize = "largest" | "medium" | "smallMedium" | "small";
 
@@ -11,11 +11,11 @@ const CARDS_LAYOUT: {
   size: CardSize;
   zIndex: number;
 }[] = [
-  { color: "#5897D4", size: "medium", zIndex: 3 }, // Blue EUR
-  { color: "#2CC84D", size: "largest", zIndex: 2 }, // Green Exchange
-  { color: "#FCDA7F", size: "small", zIndex: 4 }, // Pink
-  { color: "#EF4444", size: "largest", zIndex: 5 }, // Coffee
-  { color: "#8B5CF6", size: "smallMedium", zIndex: 1 }, // Person laptop
+  { color: "#f0f0f0", size: "largest", zIndex: 1 },   // Top-left: Man with phone (image)
+  { color: "#eff6ff", size: "medium", zIndex: 3 },   // Top-right: Conversion Rate (light blue)
+  { color: "#2CC84D", size: "largest", zIndex: 2 },   // Bottom-left: Green Exchange
+  { color: "#e5e5e5", size: "small", zIndex: 5 },     // Bottom-right: Coffee (image)
+  { color: "#fbcfe8", size: "medium", zIndex: 4 },   // Right-center: Pink Jane Thomas
 ];
 
 export default function UnifyFinancesScroll() {
@@ -173,13 +173,13 @@ export default function UnifyFinancesScroll() {
           {(() => {
             const sizeClasses: Record<CardSize, string> = {
               largest:
-                "w-[120px] h-[115px] xs:w-[150px] xs:h-[143px] sm:w-[180px] sm:h-[172px] md:w-[200px] md:h-[191px] lg:w-[240px] lg:h-[230px] xl:w-[280px] xl:h-[268px] 2xl:w-[320px] 2xl:h-[306px]",
+                "w-[96px] h-[110px] xs:w-[120px] xs:h-[138px] sm:w-[144px] sm:h-[166px] md:w-[160px] md:h-[184px] lg:w-[192px] lg:h-[220px] xl:w-[224px] xl:h-[256px] 2xl:w-[256px] 2xl:h-[294px]",
               medium:
-                "w-[104px] h-[100px] xs:w-[131px] xs:h-[124px] sm:w-[157px] sm:h-[150px] md:w-[174px] md:h-[166px] lg:w-[209px] lg:h-[200px] xl:w-[244px] xl:h-[233px] 2xl:w-[278px] 2xl:h-[266px]",
+                "w-[94px] h-[112px] xs:w-[118px] xs:h-[140px] sm:w-[142px] sm:h-[168px] md:w-[156px] md:h-[188px] lg:w-[188px] lg:h-[224px] xl:w-[220px] xl:h-[262px] 2xl:w-[250px] 2xl:h-[300px]",
               smallMedium:
-                "w-[96px] h-[92px] xs:w-[120px] xs:h-[114px] sm:w-[144px] sm:h-[138px] md:w-[160px] md:h-[153px] lg:w-[192px] lg:h-[184px] xl:w-[224px] xl:h-[214px] 2xl:w-[256px] 2xl:h-[245px]",
+                "w-[86px] h-[84px] xs:w-[108px] xs:h-[102px] sm:w-[130px] sm:h-[124px] md:w-[144px] md:h-[138px] lg:w-[172px] lg:h-[166px] xl:w-[200px] xl:h-[192px] 2xl:w-[230px] 2xl:h-[220px]",
               small:
-                "w-[90px] h-[86px] xs:w-[113px] xs:h-[107px] sm:w-[135px] sm:h-[129px] md:w-[150px] md:h-[143px] lg:w-[180px] lg:h-[173px] xl:w-[210px] xl:h-[201px] 2xl:w-[240px] 2xl:h-[230px]",
+                "w-[82px] h-[86px] xs:w-[100px] xs:h-[108px] sm:w-[122px] sm:h-[130px] md:w-[136px] md:h-[144px] lg:w-[162px] lg:h-[172px] xl:w-[190px] xl:h-[200px] 2xl:w-[216px] 2xl:h-[230px]",
             };
             return CARDS_LAYOUT.map((card, i) => (
             <div
@@ -211,63 +211,54 @@ export default function UnifyFinancesScroll() {
               aria-hidden="true"
             >
               {i === 0 ? (
-                <div className="h-full flex flex-col p-3 sm:p-4 md:p-5 lg:p-6">
-                  {/* White Content Panel */}
-                  <div className="bg-white rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-5 flex-1 flex flex-col mb-3 sm:mb-4">
-                    {/* Top Row */}
-                    <div className="flex items-center justify-between mb-3 sm:mb-4">
-                      <div className="flex items-center gap-1.5 sm:gap-2">
-                        <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full bg-blue-600 flex items-center justify-center flex-shrink-0">
-                          <span className="text-white text-[10px] sm:text-xs md:text-sm font-bold">€</span>
-                        </div>
-                        <span className="text-xs sm:text-sm md:text-base font-semibold text-gray-900">EUR</span>
-                        <TrendingDown className="w-3 h-3 sm:w-4 sm:h-4 text-orange-500 flex-shrink-0" />
-                      </div>
-                      <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-gray-500 flex-shrink-0" />
-                    </div>
-                    
-                    {/* Middle Section - Conversions */}
-                    <div className="mb-3 sm:mb-4">
-                      <div className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-gray-900 leading-tight">
-                        Conversions: 1,245
-                      </div>
-                      <div className="text-xs sm:text-sm md:text-base text-gray-700 mt-1.5 sm:mt-2">
-                        CTR: 5.2%
-                      </div>
-                    </div>
-                    
-                    {/* Bottom - Balance */}
-                    <div className="mt-auto text-xs sm:text-sm text-gray-400 text-center pt-2">
-                      Balance
-                    </div>
-                  </div>
-                  
-                  {/* CTA Button */}
-                  <button className="w-full bg-blue-700 hover:bg-blue-800 text-white text-xs sm:text-sm md:text-base font-medium py-2.5 sm:py-3 md:py-3.5 rounded-full transition-colors">
-                    Optimize Campaign
-                  </button>
+                <div className="h-full w-full">
+                  <img
+                    src="/man-phone.jpeg"
+                    alt="Person with phone at desk"
+                    className="w-full h-full object-cover rounded-2xl sm:rounded-3xl"
+                  />
                 </div>
               ) : i === 1 ? (
+                <div className="h-full flex flex-col p-3 sm:p-4 md:p-5 lg:p-6">
+                  <div className="flex items-center gap-1.5 sm:gap-2 mb-3 sm:mb-4">
+                    <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full bg-blue-400 flex items-center justify-center flex-shrink-0">
+                      <Globe className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
+                    </div>
+                    <span className="text-xs sm:text-sm md:text-base font-semibold text-gray-900">Conversion Rate</span>
+                  </div>
+                  <div className="flex-1 flex flex-col justify-center">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">15.7%</span>
+                      <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-green-500 flex-shrink-0" />
+                    </div>
+                    <div className="text-xs sm:text-sm text-gray-500 mt-2">
+                      impressions: 8.9M / Clicks: 670K
+                    </div>
+                  </div>
+                  <div className="mt-auto">
+                    <button className="w-full bg-white hover:bg-gray-50 text-blue-600 text-xs sm:text-sm md:text-base font-medium py-2.5 sm:py-3 rounded-full transition-colors border border-blue-200">
+                      Analyze Funnel
+                    </button>
+                  </div>
+                </div>
+              ) : i === 2 ? (
                 <div className="h-full flex flex-col p-3 sm:p-4 md:p-5 lg:p-6 text-white">
-                  {/* Top Section */}
                   <div className="flex items-center gap-2 mb-4 sm:mb-5">
-                    <ArrowLeftRight className="w-4 h-4 sm:w-5 sm:h-5 text-white/80" />
-                    <span className="text-xs sm:text-sm md:text-base text-white/70 font-medium">
-                      Campaign Budget
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/25 flex items-center justify-center flex-shrink-0">
+                      <span className="text-white text-xs sm:text-sm font-bold">S</span>
+                    </div>
+                    <span className="text-xs sm:text-sm md:text-base text-white/90 font-medium">
+                      Exchange
                     </span>
                   </div>
-                  
-                  {/* Middle Section - Currency Values */}
                   <div className="flex-1 flex flex-col justify-center">
-                    <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white mb-2 sm:mb-3">
+                    <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white/90 mb-2 sm:mb-3">
                       - €500.00
                     </div>
                     <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white">
                       + zł2,179.92
                     </div>
                   </div>
-                  
-                  {/* Bottom - Approved Badge */}
                   <div className="mt-auto">
                     <div className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 bg-white/20 backdrop-blur-sm rounded-full">
                       <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
@@ -275,50 +266,35 @@ export default function UnifyFinancesScroll() {
                     </div>
                   </div>
                 </div>
-              ) : i === 2 ? (
-                <div className="h-full flex flex-col p-3 sm:p-4 md:p-5 lg:p-6">
-                  {/* Top Content Panel - White */}
-                  <div className="bg-white rounded-lg sm:rounded-xl md:rounded-2xl p-4 sm:p-5 md:p-6 mb-3 sm:mb-4 flex flex-col items-center">
-                    {/* Megaphone Icon */}
-                    <Megaphone className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 text-red-500 mb-2 sm:mb-3" />
-                    {/* Text */}
-                    <div className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-gray-900 text-center">
-                      Audience Marketing
-                    </div>
+              ) : i === 3 ? (
+                <div className="h-full w-full relative">
+                  <img
+                    src="/coffee.jpeg"
+                    alt="People enjoying coffee"
+                    className="w-full h-full object-cover rounded-2xl sm:rounded-3xl"
+                  />
+                  <div className="absolute top-2 left-2 sm:top-3 sm:left-3 flex items-center gap-1.5 px-2 py-1.5 sm:px-3 sm:py-2 bg-white/95 rounded-lg shadow-sm">
+                    <Calendar className="w-3 h-3 sm:w-4 sm:h-4 text-gray-600 flex-shrink-0" />
+                    <span className="text-xs sm:text-sm font-medium text-gray-800">Enjoy the coffee!</span>
                   </div>
-                  
-                  {/* Middle Section - Secure Payment */}
-                  <div className="flex items-center gap-2 mb-4 sm:mb-5">
-                    <Lock className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500" />
-                    <span className="text-xs sm:text-sm md:text-base text-gray-600">
-                      Secure Payment
-                    </span>
+                </div>
+              ) : i === 4 ? (
+                <div className="h-full flex flex-col p-3 sm:p-4 md:p-5 lg:p-6 items-center text-gray-800">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-white/60 flex items-center justify-center flex-shrink-0 mb-2 sm:mb-3 overflow-hidden">
+                    <span className="text-lg sm:text-xl font-bold text-gray-600">JT</span>
                   </div>
-                  
-                  {/* Bottom - Send Button */}
-                  <div className="mt-auto">
-                    <button className="w-full bg-[#FCDA7F] hover:bg-[#FCD34D] text-purple-900 text-xs sm:text-sm md:text-base font-bold py-2.5 sm:py-3 md:py-3.5 rounded-full transition-colors">
+                  <div className="text-sm sm:text-base md:text-lg font-bold text-center mb-2">
+                    Jane Thomas
+                  </div>
+                  <div className="flex items-center gap-1.5 mb-4 sm:mb-5">
+                    <Lock className="w-3 h-3 sm:w-4 sm:h-4 text-gray-600" />
+                    <span className="text-xs sm:text-sm text-gray-700">Secure payment</span>
+                  </div>
+                  <div className="mt-auto w-full">
+                    <button className="w-full bg-pink-400 hover:bg-pink-500 text-white text-xs sm:text-sm md:text-base font-medium py-2.5 sm:py-3 rounded-full transition-colors">
                       Send
                     </button>
                   </div>
-                </div>
-              ) : i === 3 ? (
-                <div className="h-full w-full">
-                  {/* Fashion Image - Full Card, No Padding */}
-                  <img 
-                    src="/fashion-clothing.jpeg" 
-                    alt="Fashion clothing" 
-                    className="w-full h-full object-cover rounded-2xl sm:rounded-3xl"
-                  />
-                </div>
-              ) : i === 4 ? (
-                <div className="h-full w-full">
-                  {/* Serrum Image - Full Card, No Padding */}
-                  <img 
-                    src="/serrum.webp" 
-                    alt="Serrum" 
-                    className="w-full h-full object-cover rounded-2xl sm:rounded-3xl"
-                  />
                 </div>
               ) : null}
             </div>
