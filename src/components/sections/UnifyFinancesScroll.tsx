@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger, registerGsapPlugins } from "../../lib/gsap";
-import { CheckCircle2, Globe, TrendingUp, Calendar, Lock } from "lucide-react";
+import { Globe, TrendingUp, ArrowLeftRight, Calendar, Lock } from "lucide-react";
 
 type CardSize = "largest" | "medium" | "smallMedium" | "small";
 
@@ -242,27 +242,30 @@ export default function UnifyFinancesScroll() {
                   </div>
                 </div>
               ) : i === 2 ? (
-                <div className="h-full flex flex-col p-3 sm:p-4 md:p-5 lg:p-6 text-white">
-                  <div className="flex items-center gap-2 mb-4 sm:mb-5">
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/25 flex items-center justify-center flex-shrink-0">
-                      <span className="text-white text-xs sm:text-sm font-bold">S</span>
-                    </div>
-                    <span className="text-xs sm:text-sm md:text-base text-white/90 font-medium">
+                <div className="h-full flex flex-col p-3 sm:p-4 md:p-5 lg:p-6">
+                  <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                    <ArrowLeftRight className="w-4 h-4 sm:w-5 sm:h-5 text-white/90" />
+                    <span className="text-xs sm:text-sm md:text-base text-white/80 font-medium">
                       Exchange
                     </span>
                   </div>
-                  <div className="flex-1 flex flex-col justify-center">
-                    <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white/90 mb-2 sm:mb-3">
-                      - €500.00
+                  <div className="flex-1 flex flex-col justify-center gap-1 sm:gap-1.5">
+                    <div className="text-xs sm:text-sm md:text-base font-semibold text-gray-900">
+                      Campaign ROI
                     </div>
-                    <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white">
-                      + zł2,179.92
+                    <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
+                      +350%
+                    </div>
+                    <div className="text-xs sm:text-sm md:text-base font-semibold text-gray-900">
+                      Budget Allocation
+                    </div>
+                    <div className="text-xs sm:text-sm md:text-base font-semibold text-gray-900">
+                      Optimization +€12k
                     </div>
                   </div>
                   <div className="mt-auto">
-                    <div className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 bg-white/20 backdrop-blur-sm rounded-full">
-                      <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
-                      <span className="text-xs sm:text-sm font-medium text-white">Approved</span>
+                    <div className="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 bg-green-200 rounded-full">
+                      <span className="text-xs sm:text-sm font-medium text-green-800">Approved</span>
                     </div>
                   </div>
                 </div>
