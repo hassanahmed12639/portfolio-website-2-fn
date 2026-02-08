@@ -25,7 +25,7 @@ export default function CTASection({
   email = "beratberkaygokdemir@gmail.com",
   avatarSrc = "https://img.clerk.com/eyJ0eXBlIjoicHJveHkiLCJzcmMiOiJodHRwczovL2ltYWdlcy5jbGVyay5kZXYvb2F1dGhfZ2l0aHViL2ltZ18yc2pLdFl5STR0MkZMcUNKaVNMQVJXRmNBSXIifQ",
   statusText = "Available for work",
-  statusColor = "bg-lime-500",
+  statusColor = "bg-accent",
   glowText = "Currently High on Creativity",
   className,
 }: ComponentProps) {
@@ -55,15 +55,15 @@ export default function CTASection({
       transition={{ duration: 0.4, ease: "easeOut" }}
       className={cn("relative w-full max-w-3xl mx-auto", className)}
     >
-      <div className="pointer-events-none absolute inset-x-0 -bottom-8 top-[72%] rounded-[28px] bg-lime-400/90 shadow-[0_40px_80px_-16px_rgba(163,230,53,0.8)] z-0" />
+      <div className="pointer-events-none absolute inset-x-0 -bottom-8 top-[72%] rounded-[28px] bg-accent/20 shadow-[0_40px_80px_-16px_rgba(233,79,55,0.3)] z-0" />
 
       <div className="absolute inset-x-0 -bottom-8 z-0">
-        <div className="flex items-center justify-center gap-2 bg-transparent py-3 text-center text-sm font-medium text-black">
+        <div className="flex items-center justify-center gap-2 bg-transparent py-3 text-center text-sm font-medium text-textPrimary">
           <Zap className="h-4 w-4 shrink-0" /> <span className="truncate">{glowText}</span>
         </div>
       </div>
 
-      <Card className="relative z-10 w-full overflow-visible rounded-[28px] border-0 bg-[radial-gradient(120%_120%_at_30%_10%,#1a1a1a_0%,#0f0f10_60%,#0b0b0c_100%)] text-white shadow-2xl">
+      <Card className="relative z-10 w-full overflow-visible rounded-[28px] border-0 bg-[radial-gradient(120%_120%_at_30%_10%,#393E41_0%,#2a2d30_60%,#1f2224_100%)] text-white shadow-2xl">
         <CardContent className="p-4 sm:p-6 md:p-8">
           <div className="mb-4 sm:mb-6 flex flex-wrap items-center justify-between gap-2 text-sm text-neutral-300">
             <div className="flex items-center gap-2 min-w-0">
@@ -97,7 +97,7 @@ export default function CTASection({
           <div className="mt-4 sm:mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <Button
               variant="secondary"
-              className="h-11 sm:h-12 justify-start gap-3 rounded-2xl bg-white/10 text-white hover:bg-white/15 text-sm sm:text-base"
+              className="h-11 sm:h-12 justify-start gap-3 rounded-2xl bg-accent text-designBg hover:bg-accentHover text-sm sm:text-base font-semibold px-6 md:px-8"
             >
               <Plus className="h-4 w-4 shrink-0" /> Hire Me
             </Button>
@@ -105,7 +105,7 @@ export default function CTASection({
             <Button
               variant="secondary"
               onClick={handleCopy}
-              className="h-11 sm:h-12 justify-start gap-3 rounded-2xl bg-white/10 text-white hover:bg-white/15 text-sm sm:text-base"
+              className="h-11 sm:h-12 justify-start gap-3 rounded-2xl bg-accent text-designBg hover:bg-accentHover text-sm sm:text-base font-semibold px-6 md:px-8"
             >
               <Copy className="h-4 w-4 shrink-0" /> {copied ? "Copied" : "Copy Email"}
             </Button>

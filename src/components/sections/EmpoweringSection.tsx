@@ -22,23 +22,23 @@ export function HomePage() {
   const expandRadius = animationProgress * 300
 
   return (
-    <div ref={sectionRef} className="min-h-[200vh] bg-[#ffffff] dark:bg-black">
+    <div ref={sectionRef} className="min-h-[140vh] bg-designBg">
       <div className="h-screen flex items-center justify-center p-8 sticky top-0">
         <div className="relative">
           <div
             className={`w-[600px] h-[600px] rounded-full flex items-center justify-center transition-all duration-500 ${
-              scrollY > 300 ? "border-2 border-[#e9e9e9] dark:border-gray-700" : ""
+              scrollY > 300 ? "border-2 border-[#393E41]/20" : ""
             }`}
           >
             <div
               className={`w-[500px] h-[500px] rounded-full flex items-center justify-center relative transition-all duration-500 ${
-                scrollY > 100 ? "border-2 border-blue-100 dark:border-blue-800" : ""
+                scrollY > 100 ? "border-2 border-[#393E41]/15" : ""
               }`}
             >
-              <div className="w-[400px] h-[400px] rounded-full bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 dark:from-purple-600 dark:via-pink-600 dark:to-red-600 p-0.5 flex items-center justify-center relative">
-                <div className="w-full h-full rounded-full bg-[#ffffff] dark:bg-black flex items-center justify-center relative">
+              <div className="w-[400px] h-[400px] rounded-full bg-gradient-to-r from-accent via-accent to-accentHover p-0.5 flex items-center justify-center relative">
+                <div className="w-full h-full rounded-full bg-designBg flex items-center justify-center relative">
                   <div
-                    className="absolute w-24 h-24 rounded-2xl overflow-hidden border-4 border-white dark:border-gray-800 shadow-lg transition-transform duration-300 ease-out z-0"
+                    className="absolute w-24 h-24 rounded-2xl overflow-hidden border-4 border-designBg shadow-lg transition-transform duration-300 ease-out z-0"
                     style={{
                       transform: `translate(${expandRadius * Math.cos(0)}px, ${expandRadius * Math.sin(0)}px)`,
                     }}
@@ -51,7 +51,7 @@ export function HomePage() {
                   </div>
 
                   <div
-                    className="absolute w-24 h-24 rounded-2xl overflow-hidden border-4 border-white dark:border-gray-800 shadow-lg transition-transform duration-300 ease-out z-0"
+                    className="absolute w-24 h-24 rounded-2xl overflow-hidden border-4 border-designBg shadow-lg transition-transform duration-300 ease-out z-0"
                     style={{
                       transform: `translate(${expandRadius * Math.cos(Math.PI / 4)}px, ${expandRadius * Math.sin(Math.PI / 4)}px)`,
                     }}
@@ -64,7 +64,7 @@ export function HomePage() {
                   </div>
 
                   <div
-                    className="absolute w-24 h-24 rounded-2xl overflow-hidden border-4 border-white dark:border-gray-800 shadow-lg transition-transform duration-300 ease-out z-0"
+                    className="absolute w-24 h-24 rounded-2xl overflow-hidden border-4 border-designBg shadow-lg transition-transform duration-300 ease-out z-0"
                     style={{
                       transform: `translate(${expandRadius * Math.cos(Math.PI / 2)}px, ${expandRadius * Math.sin(Math.PI / 2)}px)`,
                     }}
@@ -77,7 +77,7 @@ export function HomePage() {
                   </div>
 
                   <div
-                    className="absolute w-24 h-24 rounded-2xl overflow-hidden border-4 border-white dark:border-gray-800 shadow-lg transition-transform duration-300 ease-out z-0"
+                    className="absolute w-24 h-24 rounded-2xl overflow-hidden border-4 border-designBg shadow-lg transition-transform duration-300 ease-out z-0"
                     style={{
                       transform: `translate(${expandRadius * Math.cos((3 * Math.PI) / 4)}px, ${expandRadius * Math.sin((3 * Math.PI) / 4)}px)`,
                     }}
@@ -90,7 +90,7 @@ export function HomePage() {
                   </div>
 
                   <div
-                    className="absolute w-24 h-24 rounded-2xl overflow-hidden border-4 border-white dark:border-gray-800 shadow-lg transition-transform duration-300 ease-out z-0"
+                    className="absolute w-24 h-24 rounded-2xl overflow-hidden border-4 border-designBg shadow-lg transition-transform duration-300 ease-out z-0"
                     style={{
                       transform: `translate(${expandRadius * Math.cos(Math.PI)}px, ${expandRadius * Math.sin(Math.PI)}px)`,
                     }}
@@ -103,7 +103,7 @@ export function HomePage() {
                   </div>
 
                   <div
-                    className="absolute w-24 h-24 rounded-2xl overflow-hidden border-4 border-white dark:border-gray-800 shadow-lg transition-transform duration-300 ease-out z-0"
+                    className="absolute w-24 h-24 rounded-2xl overflow-hidden border-4 border-designBg shadow-lg transition-transform duration-300 ease-out z-0"
                     style={{
                       transform: `translate(${expandRadius * Math.cos((5 * Math.PI) / 4)}px, ${expandRadius * Math.sin((5 * Math.PI) / 4)}px)`,
                     }}
@@ -116,7 +116,7 @@ export function HomePage() {
                   </div>
 
                   <div
-                    className="absolute w-24 h-24 rounded-2xl overflow-hidden border-4 border-white dark:border-gray-800 shadow-lg transition-transform duration-300 ease-out z-0"
+                    className="absolute w-24 h-24 rounded-2xl overflow-hidden border-4 border-designBg shadow-lg transition-transform duration-300 ease-out z-0"
                     style={{
                       transform: `translate(${expandRadius * Math.cos((3 * Math.PI) / 2)}px, ${expandRadius * Math.sin((3 * Math.PI) / 2)}px)`,
                     }}
@@ -129,7 +129,7 @@ export function HomePage() {
                   </div>
 
                   <div
-                    className="absolute w-24 h-24 rounded-2xl overflow-hidden border-4 border-white dark:border-gray-800 shadow-lg transition-transform duration-300 ease-out z-0"
+                    className="absolute w-24 h-24 rounded-2xl overflow-hidden border-4 border-designBg shadow-lg transition-transform duration-300 ease-out z-0"
                     style={{
                       transform: `translate(${expandRadius * Math.cos((7 * Math.PI) / 4)}px, ${expandRadius * Math.sin((7 * Math.PI) / 4)}px)`,
                     }}
@@ -146,10 +146,10 @@ export function HomePage() {
                       scrollY > 250 ? "opacity-100" : "opacity-0"
                     }`}
                   >
-                    <h1 className="text-4xl font-bold text-gray-800 dark:text-white text-center mb-2">Empowering</h1>
-                    <h1 className="text-4xl font-bold text-gray-800 dark:text-white text-center mb-4">Every User</h1>
+                    <h1 className="text-4xl font-bold text-textPrimary text-center mb-2">Empowering</h1>
+                    <h1 className="text-4xl font-bold text-textPrimary text-center mb-4">Every User</h1>
 
-                    <p className="text-gray-500 dark:text-gray-400 text-center max-w-xs">
+                    <p className="text-textPrimary/70 text-center max-w-xs">
                       From entrepreneurs to educators, Gen AI provides tools to simplify work.
                     </p>
                   </div>

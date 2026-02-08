@@ -14,7 +14,7 @@ import {
 import { Facebook, Instagram, Linkedin, Moon, Send, Sun, Twitter } from "lucide-react"
 
 function Footer() {
-  const [isDarkMode, setIsDarkMode] = React.useState(true)
+  const [isDarkMode, setIsDarkMode] = React.useState(false)
 
   React.useEffect(() => {
     if (isDarkMode) {
@@ -25,9 +25,9 @@ function Footer() {
   }, [isDarkMode])
 
   return (
-    <footer className="relative border-t bg-background text-foreground transition-colors duration-300">
-      <div className="container mx-auto px-4 py-12 md:px-6 lg:px-8">
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+    <footer className="relative w-full m-0 py-12 md:py-16 bg-designBg text-foreground transition-colors duration-300">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="grid gap-8 md:gap-12 md:grid-cols-2 lg:grid-cols-4">
           <div className="relative">
             <h2 className="mb-4 text-3xl font-bold tracking-tight">Stay Connected</h2>
             <p className="mb-6 text-muted-foreground">
@@ -149,7 +149,7 @@ function Footer() {
             </div>
           </div>
         </div>
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 text-center md:flex-row">
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 pt-8 text-center md:flex-row">
           <p className="text-sm text-muted-foreground">
             © 2024 Your Company. All rights reserved.
           </p>

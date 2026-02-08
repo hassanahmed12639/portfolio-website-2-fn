@@ -9,6 +9,7 @@ module.exports = {
   theme: {
   	extend: {
   		fontFamily: {
+  			sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
   			playfair: ['Playfair Display', 'serif']
   		},
   		borderRadius: {
@@ -17,6 +18,10 @@ module.exports = {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
+  			designBg: '#F6F7ED',
+  			textPrimary: '#393E41',
+  			accent: '#E94F37',
+  			accentHover: '#d43d2a',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {

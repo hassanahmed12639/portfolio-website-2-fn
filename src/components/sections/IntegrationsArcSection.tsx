@@ -81,72 +81,51 @@ export default function IntegrationsArcSection() {
         return 1 - Math.min(0.25, distFromCenter * 0.18)
       }
 
-      // Set initial positions - evenly spaced, starting from left
-      iconElements.forEach((icon, i) => {
-        const x = i * iconWidth - iconWidth * 2 // Start a bit to the left
-        const y = getArcY(x)
-        const opacity = getOpacity(x)
-        const scale = getScale(x)
-        const shadowOpacity = opacity < 0.3 ? 0 : 0.08
+      const loops = 1.1
+      const totalMovement = totalTrackWidth * loops
 
-        gsap.set(icon, {
-          x: x,
-          y: y,
-          opacity: opacity,
-          scale: scale,
-          boxShadow: `0 4px 24px rgba(0,0,0,${shadowOpacity})`,
+      const applyProgress = (progress: number) => {
+        const p = Math.max(0, Math.min(1, progress))
+        const currentOffset = p * totalMovement
+        iconElements.forEach((icon, i) => {
+          const baseX = i * iconWidth - iconWidth * 2
+          let x = baseX - currentOffset
+          const wrapBoundary = iconWidth * 2
+          while (x < -wrapBoundary) x += totalTrackWidth
+          while (x > containerWidth + wrapBoundary) x -= totalTrackWidth
+          const y = getArcY(x)
+          const opacity = getOpacity(x)
+          const scale = getScale(x)
+          const shadowOpacity = opacity < 0.3 ? 0 : 0.08
+          gsap.set(icon, {
+            x: Math.round(x * 100) / 100,
+            y: Math.round(y * 100) / 100,
+            opacity,
+            scale,
+            force3D: true,
+            boxShadow: `0 4px 24px rgba(0,0,0,${shadowOpacity})`,
+          })
         })
-      })
+      }
 
-      // Create ScrollTrigger for the looping animation
+      applyProgress(0)
+
+      // Pin until all icons revealed. Section height = pin distance so unpin has no layout jump.
       ScrollTrigger.create({
         trigger: sectionRef.current,
         start: 'top top',
-        end: 'bottom bottom',
-        scrub: 4, // Higher = smoother, more lag
+        end: '+=400vh',
+        pin: true,
+        anticipatePin: 1,
+        scrub: 2.5,
+        invalidateOnRefresh: true,
         onUpdate: (self) => {
-          const progress = self.progress
-          
-          // Calculate how much to move based on scroll progress
-          // Fewer loops = slower movement per scroll
-          const loops = 0.8 // Number of complete loops (adjusted for shorter section)
-          const totalMovement = totalTrackWidth * loops
-          const currentOffset = progress * totalMovement
-
-          iconElements.forEach((icon, i) => {
-            // Base position for this icon
-            const baseX = i * iconWidth - iconWidth * 2
-            
-            // Current X with scroll offset, wrapped for infinite loop
-            let x = baseX - currentOffset
-            
-            // Wrap around: if icon goes too far left, move it to the right
-            // Use same boundary distance on both sides for symmetric transitions
-            const wrapBoundary = iconWidth * 2
-            while (x < -wrapBoundary) {
-              x += totalTrackWidth
-            }
-            while (x > containerWidth + wrapBoundary) {
-              x -= totalTrackWidth
-            }
-
-            // Calculate arc position and styling
-            const y = getArcY(x)
-            const opacity = getOpacity(x)
-            const scale = getScale(x)
-            
-            // Hide shadow when icon is fading out to prevent line artifacts
-            const shadowOpacity = opacity < 0.3 ? 0 : 0.08
-
-            gsap.set(icon, {
-              x: x,
-              y: y,
-              opacity: opacity,
-              scale: scale,
-              boxShadow: `0 4px 24px rgba(0,0,0,${shadowOpacity})`,
-            })
-          })
-        }
+          applyProgress(self.progress)
+        },
+        onLeave: () => {
+          applyProgress(1)
+          requestAnimationFrame(() => applyProgress(1))
+        },
       })
 
     }, sectionRef)
@@ -159,12 +138,11 @@ export default function IntegrationsArcSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[200vh] rounded-3xl"
-      style={{ backgroundColor: '#f0f1f3' }}
+      className="relative h-[400vh] overflow-hidden rounded-3xl bg-designBg"
+      style={{ transform: 'translateZ(0)' }}
     >
-      {/* Sticky container */}
       <div className="sticky top-0 h-screen flex flex-col items-center justify-center">
-        <h2 className="text-3xl md:text-4xl font-semibold mb-12 md:mb-16 text-gray-900 text-center px-4">
+        <h2 className="text-3xl md:text-4xl font-semibold mb-12 md:mb-16 text-textPrimary text-center px-4">
           Integrate with your existing tools
         </h2>
 

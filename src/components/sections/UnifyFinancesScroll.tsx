@@ -11,11 +11,11 @@ const CARDS_LAYOUT: {
   size: CardSize;
   zIndex: number;
 }[] = [
-  { color: "#f0f0f0", size: "largest", zIndex: 1 },   // Top-left: Man with phone (image)
-  { color: "#eff6ff", size: "medium", zIndex: 3 },   // Top-right: Conversion Rate (light blue)
-  { color: "#2CC84D", size: "largest", zIndex: 2 },   // Bottom-left: Green Exchange
-  { color: "#e5e5e5", size: "small", zIndex: 5 },     // Bottom-right: Coffee (image)
-  { color: "#ffffff", size: "medium", zIndex: 4 },   // Right-center: Cross-Platform Scaling (white, cyan border)
+  { color: "#F6F7ED", size: "largest", zIndex: 1 },   // Top-left: Man with phone (image)
+  { color: "#F6F7ED", size: "medium", zIndex: 3 },   // Top-right: Conversion Rate
+  { color: "#E94F37", size: "largest", zIndex: 2 },   // Bottom-left: Exchange (accent)
+  { color: "#F6F7ED", size: "small", zIndex: 5 },     // Bottom-right: Coffee (image)
+  { color: "#ffffff", size: "medium", zIndex: 4 },   // Right-center: Cross-Platform Scaling (white, accent border)
 ];
 
 export default function UnifyFinancesScroll() {
@@ -148,7 +148,7 @@ export default function UnifyFinancesScroll() {
     <>
       <section
         ref={sectionRef}
-        className="relative h-screen overflow-hidden flex items-center justify-center bg-white"
+        className="relative h-screen overflow-hidden flex items-center justify-center bg-designBg"
         aria-label="Winning Your Audience section"
       >
         {/* CENTER TEXT - Behind cards */}
@@ -157,7 +157,7 @@ export default function UnifyFinancesScroll() {
           className="absolute text-center text-[clamp(3.5rem,9vw,7rem)] md:text-[clamp(4.5rem,10.5vw,8.5rem)] lg:text-[clamp(5.5rem,12.5vw,10.5rem)] xl:text-[clamp(6rem,14vw,12rem)] 2xl:text-[clamp(7rem,16vw,14rem)] font-bold tracking-tight z-0 px-4 leading-[1.1]"
           style={{ 
             willChange: "transform, opacity", 
-            color: "#FF4B3A",
+            color: "#E94F37",
             backfaceVisibility: "hidden",
             WebkitBackfaceVisibility: "hidden",
             transform: "translateZ(0)",
@@ -198,7 +198,7 @@ export default function UnifyFinancesScroll() {
                 WebkitBackfaceVisibility: "hidden",
                 WebkitTransform: "translate(-50%, -50%) translateZ(0)",
                 outline: "none",
-                ...(i === 4 ? { border: "1px solid #a5f3fc", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.08)", overflow: "visible" as const } : { border: "0", borderWidth: "0", borderStyle: "none", boxShadow: "none", overflow: "hidden" as const }),
+                ...(i === 4 ? { border: "none", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.08)", overflow: "visible" as const } : { border: "0", borderWidth: "0", borderStyle: "none", boxShadow: "none", overflow: "hidden" as const }),
                 isolation: "isolate",
                 contain: i === 4 ? "none" : "layout style paint",
                 WebkitFontSmoothing: "antialiased",
@@ -217,22 +217,22 @@ export default function UnifyFinancesScroll() {
               ) : i === 1 ? (
                 <div className="h-full flex flex-col p-3 sm:p-4 md:p-5 lg:p-6">
                   <div className="flex items-center gap-1.5 sm:gap-2 mb-3 sm:mb-4">
-                    <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full bg-blue-400 flex items-center justify-center flex-shrink-0">
-                      <Globe className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
+                    <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full bg-accent flex items-center justify-center flex-shrink-0">
+                      <Globe className="w-3 h-3 sm:w-4 sm:h-4 text-designBg" />
                     </div>
-                    <span className="text-xs sm:text-sm md:text-base font-semibold text-gray-900">Conversion Rate</span>
+                    <span className="text-xs sm:text-sm md:text-base font-semibold text-textPrimary">Conversion Rate</span>
                   </div>
                   <div className="flex-1 flex flex-col justify-center">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">15.7%</span>
-                      <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-green-500 flex-shrink-0" />
+                      <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-textPrimary">15.7%</span>
+                      <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-accent flex-shrink-0" />
                     </div>
-                    <div className="text-xs sm:text-sm text-gray-500 mt-2">
+                    <div className="text-xs sm:text-sm text-textPrimary/70 mt-2">
                       impressions: 8.9M / Clicks: 670K
                     </div>
                   </div>
                   <div className="mt-auto">
-                    <button className="w-full bg-white hover:bg-gray-50 text-blue-600 text-xs sm:text-sm md:text-base font-medium py-2.5 sm:py-3 rounded-full transition-colors border border-blue-200">
+                    <button className="w-full bg-accent hover:bg-accentHover text-designBg text-xs sm:text-sm md:text-base font-medium py-2.5 sm:py-3 rounded-full transition-colors border border-accent/20">
                       Analyze Funnel
                     </button>
                   </div>
@@ -240,28 +240,28 @@ export default function UnifyFinancesScroll() {
               ) : i === 2 ? (
                 <div className="h-full flex flex-col p-3 sm:p-4 md:p-5 lg:p-6">
                   <div className="flex items-center gap-2 mb-3 sm:mb-4">
-                    <ArrowLeftRight className="w-4 h-4 sm:w-5 sm:h-5 text-white/90" />
-                    <span className="text-xs sm:text-sm md:text-base text-white/80 font-medium">
+                    <ArrowLeftRight className="w-4 h-4 sm:w-5 sm:h-5 text-designBg/90" />
+                    <span className="text-xs sm:text-sm md:text-base text-designBg/90 font-medium">
                       Exchange
                     </span>
                   </div>
                   <div className="flex-1 flex flex-col justify-center gap-1 sm:gap-1.5">
-                    <div className="text-xs sm:text-sm md:text-base font-semibold text-gray-900">
+                    <div className="text-xs sm:text-sm md:text-base font-semibold text-designBg">
                       Campaign ROI
                     </div>
-                    <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
+                    <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-designBg leading-tight">
                       +350%
                     </div>
-                    <div className="text-xs sm:text-sm md:text-base font-semibold text-gray-900">
+                    <div className="text-xs sm:text-sm md:text-base font-semibold text-designBg">
                       Budget Allocation
                     </div>
-                    <div className="text-xs sm:text-sm md:text-base font-semibold text-gray-900">
+                    <div className="text-xs sm:text-sm md:text-base font-semibold text-designBg">
                       Optimization +€12k
                     </div>
                   </div>
                   <div className="mt-auto">
-                    <div className="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 bg-green-200 rounded-full">
-                      <span className="text-xs sm:text-sm font-medium text-green-800">Approved</span>
+                    <div className="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 bg-designBg/20 rounded-full">
+                      <span className="text-xs sm:text-sm font-medium text-designBg">Approved</span>
                     </div>
                   </div>
                 </div>
@@ -273,13 +273,13 @@ export default function UnifyFinancesScroll() {
                     className="w-full h-full object-cover rounded-2xl sm:rounded-3xl"
                   />
                   <div className="absolute top-2 left-2 sm:top-3 sm:left-3 flex items-center gap-1.5 px-2 py-1.5 sm:px-3 sm:py-2 bg-white/95 rounded-lg shadow-sm">
-                    <Calendar className="w-3 h-3 sm:w-4 sm:h-4 text-gray-600 flex-shrink-0" />
-                    <span className="text-xs sm:text-sm font-medium text-gray-800">Enjoy the coffee!</span>
+                    <Calendar className="w-3 h-3 sm:w-4 sm:h-4 text-textPrimary flex-shrink-0" />
+                    <span className="text-xs sm:text-sm font-medium text-textPrimary">Enjoy the coffee!</span>
                   </div>
                 </div>
               ) : i === 4 ? (
                 <div className="h-full flex flex-col p-2 sm:p-3 md:p-4 items-center text-center overflow-visible">
-                  <h3 className="text-xs sm:text-sm font-medium text-gray-800 mb-1.5 sm:mb-2 flex-shrink-0">
+                  <h3 className="text-xs sm:text-sm font-medium text-textPrimary mb-1.5 sm:mb-2 flex-shrink-0">
                     Cross-Platform Scaling
                   </h3>
                   <div className="flex-1 min-h-0 w-full flex items-center justify-center py-1">
@@ -314,10 +314,10 @@ export default function UnifyFinancesScroll() {
                       <text x="102" y="58" textAnchor="middle" style={{ fontSize: "8px", fontWeight: 600, fill: "#1f2937" }}>50%</text>
                     </svg>
                   </div>
-                  <div className="rounded-full bg-teal-500 px-3 py-1.5 flex-shrink-0">
-                    <span className="text-xs sm:text-sm font-medium text-white">Customer Journey</span>
+                  <div className="rounded-full bg-accent px-3 py-1.5 flex-shrink-0">
+                    <span className="text-xs sm:text-sm font-medium text-designBg">Customer Journey</span>
                   </div>
-                  <div className="flex items-center justify-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-gray-400 mt-1 flex-shrink-0">
+                  <div className="flex items-center justify-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-textPrimary/60 mt-1 flex-shrink-0">
                     <span>0</span>
                     <span className="w-3 h-3 rounded-full bg-gray-300/80" aria-hidden />
                     <span>2</span>

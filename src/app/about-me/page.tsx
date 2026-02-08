@@ -4,9 +4,9 @@ import { TestimonialCarousel } from "@/components/sections/TestimonialCarousel";
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-white">
+    <main className="w-full min-h-screen m-0 p-0 bg-designBg">
       <Header />
-      <section className="pt-24 sm:pt-32 pb-16 md:pb-24">
+      <section className="w-full m-0 py-12 md:py-16 lg:py-20 px-6 md:px-[5%]">
         <TestimonialCarousel />
       </section>
       <Footer />
