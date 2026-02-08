@@ -47,7 +47,7 @@ export default function UnifyFinancesScroll() {
           gsap.set(card, {
             x: startPositions[i].x,
             y: startPositions[i].y,
-            opacity: 0,
+            opacity: 1,
             force3D: true,
             transformOrigin: "center center",
             backfaceVisibility: "hidden",
@@ -87,7 +87,6 @@ export default function UnifyFinancesScroll() {
       });
 
       const animationConfig = {
-        opacity: 1,
         duration: 3,
         ease: "sine.out" as const,
         force3D: true,
@@ -102,6 +101,7 @@ export default function UnifyFinancesScroll() {
             {
               x: (i % 2) * 6, // slight offset for stacking (left/right)
               y: Math.floor(i / 2) * 6, // slight offset for stacking (top/bottom)
+              opacity: 1,
               ...animationConfig,
             },
             i * 0.3 // stagger slightly - each card starts after the previous
