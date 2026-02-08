@@ -15,7 +15,7 @@ const CARDS_LAYOUT: {
   { color: "#eff6ff", size: "medium", zIndex: 3 },   // Top-right: Conversion Rate (light blue)
   { color: "#2CC84D", size: "largest", zIndex: 2 },   // Bottom-left: Green Exchange
   { color: "#e5e5e5", size: "small", zIndex: 5 },     // Bottom-right: Coffee (image)
-  { color: "#fbcfe8", size: "medium", zIndex: 4 },   // Right-center: Pink Jane Thomas
+  { color: "#ffffff", size: "medium", zIndex: 4 },   // Right-center: Cross-Platform Scaling (white, cyan border)
 ];
 
 export default function UnifyFinancesScroll() {
@@ -198,13 +198,9 @@ export default function UnifyFinancesScroll() {
                 WebkitBackfaceVisibility: "hidden",
                 WebkitTransform: "translate(-50%, -50%) translateZ(0)",
                 outline: "none",
-                border: "0",
-                borderWidth: "0",
-                borderStyle: "none",
-                boxShadow: "none",
-                overflow: "hidden",
+                ...(i === 4 ? { border: "1px solid #a5f3fc", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.08)", overflow: "visible" as const } : { border: "0", borderWidth: "0", borderStyle: "none", boxShadow: "none", overflow: "hidden" as const }),
                 isolation: "isolate",
-                contain: "layout style paint",
+                contain: i === 4 ? "none" : "layout style paint",
                 WebkitFontSmoothing: "antialiased",
                 MozOsxFontSmoothing: "grayscale",
               }}
@@ -282,21 +278,49 @@ export default function UnifyFinancesScroll() {
                   </div>
                 </div>
               ) : i === 4 ? (
-                <div className="h-full flex flex-col p-3 sm:p-4 md:p-5 lg:p-6 items-center text-gray-800">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-white/60 flex items-center justify-center flex-shrink-0 mb-2 sm:mb-3 overflow-hidden">
-                    <span className="text-lg sm:text-xl font-bold text-gray-600">JT</span>
+                <div className="h-full flex flex-col p-2 sm:p-3 md:p-4 items-center text-center overflow-visible">
+                  <h3 className="text-xs sm:text-sm font-medium text-gray-800 mb-1.5 sm:mb-2 flex-shrink-0">
+                    Cross-Platform Scaling
+                  </h3>
+                  <div className="flex-1 min-h-0 w-full flex items-center justify-center py-1">
+                    <svg viewBox="0 0 120 100" className="w-full h-full max-h-[72px] sm:max-h-[88px] md:max-h-[100px]" preserveAspectRatio="xMidYMid meet">
+                      <defs>
+                        <linearGradient id="funnelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="0%" stopColor="#a5f3fc" />
+                          <stop offset="100%" stopColor="#67e8f9" />
+                        </linearGradient>
+                        <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                          <path d="M0,0 L6,3 L0,6 Z" fill="#94a3b8" />
+                        </marker>
+                      </defs>
+                      <path d="M35 12 L85 12 L70 55 L50 55 Z" fill="url(#funnelGrad)" stroke="#a5f3fc" strokeWidth="0.5" />
+                      <line x1="20" y1="25" x2="38" y2="35" stroke="#cbd5e1" strokeWidth="0.8" strokeDasharray="3 2" markerEnd="url(#arrow)" />
+                      <line x1="20" y1="55" x2="45" y2="48" stroke="#cbd5e1" strokeWidth="0.8" strokeDasharray="3 2" markerEnd="url(#arrow)" />
+                      <line x1="82" y1="35" x2="100" y2="25" stroke="#cbd5e1" strokeWidth="0.8" strokeDasharray="3 2" markerEnd="url(#arrow)" />
+                      <line x1="75" y1="48" x2="100" y2="55" stroke="#cbd5e1" strokeWidth="0.8" strokeDasharray="3 2" markerEnd="url(#arrow)" />
+                      <circle cx="18" cy="25" r="10" fill="white" stroke="#a5f3fc" strokeWidth="1" />
+                      <circle cx="18" cy="55" r="10" fill="white" stroke="#a5f3fc" strokeWidth="1" />
+                      <circle cx="102" cy="25" r="10" fill="white" stroke="#a5f3fc" strokeWidth="1" />
+                      <circle cx="102" cy="55" r="10" fill="white" stroke="#a5f3fc" strokeWidth="1" />
+                      <g transform="translate(13.5, 20.5) scale(0.5)" fill="none" stroke="#22d3ee" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                        <path d="M3 3v5h5" />
+                      </g>
+                      <g transform="translate(13, 50) scale(0.5)" fill="none" stroke="#22d3ee" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="2" y="4" width="14" height="12" rx="2" />
+                        <path d="m2 7 7 5 7-5" />
+                      </g>
+                      <text x="102" y="28" textAnchor="middle" style={{ fontSize: "8px", fontWeight: 600, fill: "#1f2937" }}>18%</text>
+                      <text x="102" y="58" textAnchor="middle" style={{ fontSize: "8px", fontWeight: 600, fill: "#1f2937" }}>50%</text>
+                    </svg>
                   </div>
-                  <div className="text-sm sm:text-base md:text-lg font-bold text-center mb-2">
-                    Jane Thomas
+                  <div className="rounded-full bg-teal-500 px-3 py-1.5 flex-shrink-0">
+                    <span className="text-xs sm:text-sm font-medium text-white">Customer Journey</span>
                   </div>
-                  <div className="flex items-center gap-1.5 mb-4 sm:mb-5">
-                    <Lock className="w-3 h-3 sm:w-4 sm:h-4 text-gray-600" />
-                    <span className="text-xs sm:text-sm text-gray-700">Secure payment</span>
-                  </div>
-                  <div className="mt-auto w-full">
-                    <button className="w-full bg-pink-400 hover:bg-pink-500 text-white text-xs sm:text-sm md:text-base font-medium py-2.5 sm:py-3 rounded-full transition-colors">
-                      Send
-                    </button>
+                  <div className="flex items-center justify-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-gray-400 mt-1 flex-shrink-0">
+                    <span>0</span>
+                    <span className="w-3 h-3 rounded-full bg-gray-300/80" aria-hidden />
+                    <span>2</span>
                   </div>
                 </div>
               ) : null}
