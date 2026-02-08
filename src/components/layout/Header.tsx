@@ -10,7 +10,7 @@ const NavBar = dynamic(
 const navItems = [
   { name: "Home", url: "/" },
   { name: "About", url: "/about-me" },
-  { name: "Projects", url: "#" },
+  { name: "Projects", url: "/project" },
   { name: "Resume", url: "#" },
 ]
 
