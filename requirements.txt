@@ -1,0 +1,7 @@
+openai
+langchain
+langchain-google-genai
+langchain-community
+gradio
+faiss-cpu
+python-dotenv

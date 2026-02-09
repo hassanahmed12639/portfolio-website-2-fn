@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import ChatWidget from '@/components/ChatWidget'
 
 export const metadata: Metadata = {
   title: 'Next.js GSAP Portfolio',
@@ -13,7 +14,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="m-0 p-0">{children}</body>
+      <body className="m-0 p-0">
+        {children}
+        <ChatWidget />
+      </body>
     </html>
   )
 }

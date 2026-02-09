@@ -1,0 +1,198 @@
+# ======= ABOUT HASSAN AHMED =======
+
+Name: Hassan Ahmed
+Role: Performance Marketer
+Experience: 5+ years
+
+Summary:
+Hassan Ahmed is a Performance Marketer with over 5 years of experience turning ad spend into business results and stronger brand presence. He designs omni-channel campaigns that generate qualified leads while building trust and brand recognition. By optimizing sales funnels, leveraging CRO, and aligning paid media with brand objectives, Hassan ensures every campaign drives measurable growth. He works across Google Ads, social media, display advertising, and remarketing strategies to consistently engage audiences and reinforce brand identity.
+
+Core Strengths:
+- Reviving struggling campaigns into profit drivers
+- Finding keywords that attract buyers
+- Turning complex data into smart campaign decisions
+- Creating original strategies across multiple ad platforms
+
+Hard Skills:
+- Keyword Research
+- Technical SEO
+- Ad Account Audit
+- PPC Campaign Optimization
+- Conversion Tracking
+- A/B Testing
+- Data Visualization & Insights
+- Content Semantics & User Intent
+- Account Structuring
+
+Tools:
+- SEMrush, Ahrefs, Moz, Screaming Frog
+- Google Analytics, Google Data Studio, Looker Studio
+- Zoho, Trello, Monday.com, Hubspot
+- Google Tag Manager
+
+Languages:
+- English: Proficient
+- Urdu: Native
+
+Achievements:
+- Built high-converting ad funnels across eCommerce, SaaS, and service industries
+- Delivered full-funnel strategies across Google, Meta, and beyond
+- 100+ A/B Tests Run
+- 3x Lower CPA Achieved
+- Managing server-side tracking setup
+
+Approach:
+Hassan blends sharp targeting, continuous A/B testing, and real-time optimization to keep performance strong and costs low. He builds full-funnel strategies that drive revenue, not just clicks. His campaigns are engineered for measurable results across the funnel.
+
+---
+
+# ======= CASE STUDIES =======
+
+Case Study 1: VegOutOrganics.com
+Industry: Organic Products
+Location Focus: United States
+Objective: Scale online purchases profitably
+Ad Type: Google Search + Performance Max + Shopping
+Target Audience: Health-conscious consumers seeking clean, organic products
+Strategy:
+- Bottom-funnel keyword targeting high-intent terms like “buy organic spirulina online,” “superfoods for immunity,” “vegan plant protein powder”
+- Optimized product feeds in Merchant Center
+- Layered Performance Max campaigns with custom audience signals
+- Segmented SKUs by category and ROAS goals
+- Dynamic Search + traditional Search campaigns
+- Real-time performance scaling & pausing underperformers
+Results:
+- 10,200+ sales
+- $642K revenue
+- 2.98x ROAS
+- Cost per sale: $21.14
+Follow-up: Ask user about their product/brand to suggest a tailored marketing approach
+
+Case Study 2: Little Laser Clinic
+Industry: Laser & Skincare Treatments
+Location Focus: Local clinic area
+Objective: Generate booked consultations and appointment calls
+Ad Type: Google Search Ads
+Target Audience: Users searching for laser and skincare treatments with strong purchase intent
+Strategy:
+- High-intent keywords like “laser hair removal near me” and “acne scar treatment”
+- Tested multiple ad copy variations highlighting benefits and offers
+- Implemented call extensions, appointment-focused sitelinks
+- Optimized bids based on performance
+- Paused poor-performing elements, shifted budget to top-performing services
+Results:
+- 445 conversions
+- Cost per lead: $20.74
+- CTR: 13.89%
+Follow-up: Ask user if they want help designing high-converting local campaigns
+
+Case Study 3: Comporta Experience
+Industry: Luxury Travel & Real Estate
+Location Focus: Europe & high-income international markets
+Objective: Generate booking inquiries & website conversions
+Ad Type: Google Search Ads
+Strategy:
+- Split campaigns into two phases targeting intent-driven keywords like “luxury villas in Comporta” and “Comporta vacation rentals”
+- Created tightly themed ad groups with negative keywords
+- Crafted ad copy emphasizing exclusivity, private pools, beachfront views, concierge services
+- Responsive search ads aligned with user intent
+- Geo-targeted high-value markets (France, UK, Germany, Switzerland)
+- Continuous bid optimization & performance tracking
+Results:
+- Phase 1: 113 conversions, CTR 13.91%, cost per conversion €70.73
+- Phase 2: 156 conversions, CTR 12.57%, cost per conversion €57.70
+- Total: 269 high-quality conversions
+Follow-up: Ask user if they want advice on luxury market campaigns
+
+Case Study 4: Tradelocks
+Industry: Locksmith & Security Tools
+Location Focus: United Kingdom
+Objective: Drive online sales and product page conversions
+Ad Type: Google Search Ads
+Strategy:
+- Targeted purchase-ready keywords like “buy locksmith tools UK,” “key cutting machine for sale,” “Lishi picks”
+- Tightly themed ad groups, custom ad copy emphasizing USPs
+- Used ad extensions (sitelinks, callouts, structured snippets)
+- Paused underperformers, scaled top-performing ads, strategic budget allocation
+Results:
+- 1,300+ high-intent clicks
+- 153 conversions
+- Cost per conversion: £14.01
+Follow-up: Ask user if they want advice on eCommerce performance campaigns
+
+Case Study 5: DriveUCars
+Industry: Car Rentals
+Location Focus: USA
+Objective: Generate phone calls and website conversions
+Ad Type: Google Search Ads
+Strategy:
+- High-intent keyword targeting (“car rental near me,” “best car rentals”)
+- Multiple ad copy variations, continuous A/B testing
+- Paused underperforming ads, optimized CTR and conversion
+Results:
+- 277 phone calls
+- 167 conversions
+- Cost-effective spend: $1.48K
+Follow-up: Ask user about their service to suggest tailored campaign strategies
+
+Case Study 6: RC Custom Landscapes
+Industry: Landscaping & Outdoor Design
+Location Focus: United States (local)
+Objective: Generate phone calls and form submissions
+Ad Type: Google Search Ads
+Strategy:
+- High-intent keywords: “landscaping companies near me,” “custom backyard design”
+- Tested multiple ad copy versions highlighting trust and specialties
+- Enabled ad extensions, scheduled ads during peak hours
+- Monitored performance, optimized bids, shifted budget to top performers
+Results:
+- 360+ conversions
+- CTR: 12.21%
+Follow-up: Ask user if they want advice on lead generation campaigns for local services
+
+Case Study 7: Mala Yachts (Mala.ae)
+Industry: Luxury Tourism & Yachts
+Location Focus: Dubai, GCC & international
+Objective: Dominate high-conversion keywords, increase organic lead flow
+Service Type: Full-stack SEO (Technical, On-Page, Content, Local)
+Strategy:
+- Technical SEO overhaul (indexation, mobile optimization, duplicate removal)
+- Keyword mapping: “yacht rental Dubai,” “dinner cruise Dubai Marina”
+- Long-form SEO-rich guides, schema markup, internal linking
+- Google My Business optimization
+- Continuous performance tracking & UX adjustments
+Results:
+- Impressions: 5.7M
+- Clicks: 101K
+- Daily impressions: 30K+
+Follow-up: Ask user if they want tips for SEO in luxury tourism
+
+Case Study 8: Steve Apparel
+Industry: Apparel / B2B Fashion
+Location Focus: USA, Canada, UK
+Objective: Improve search engine rankings, capture leads
+Service Type: Technical SEO, Content SEO, On-Page Optimization, Link Building
+Strategy:
+- Technical SEO audit, crawl issue resolution, page speed improvements
+- Keyword mapping: “private label clothing manufacturer USA,” “custom t-shirt printing service”
+- Long-form research articles, internal linking, schema markup
+- Continuous A/B testing of titles and CTAs
+Results:
+- Organic clicks: 22.9K+
+- Impressions: 1.32M
+Follow-up: Ask usesr if they want help improving organic search performance
+
+Case Study 9: Alliance Shipping
+Industry: Freight & Logistics
+Location Focus: Global (UAE, Pakistan, USA)
+Objective: Increase visibility for high-intent keywords, drive qualified organic traffic
+Service Type: Technical & Content SEO
+Strategy:
+- SEO audit, keyword mapping targeting high-intent terms (“freight forwarding Dubai,” “cargo shipping Karachi to USA”)
+- Optimized content, internal linking, structured data, SEO-friendly URLs
+- Continuous performance refinement using Google Search Console
+Results:
+- Impressions: 1.09M+
+- Clicks: 15,200+
+- CTR rising steadily
+Follow-up: Ask user if they want advice on international SEO campaigns
