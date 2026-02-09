@@ -1,6 +1,6 @@
 import Header from '../components/layout/Header'
 import Footer from '../components/layout/Footer'
-import Hero from '../components/sections/Hero'
+import { FloatingIconsHero } from '../components/sections/Hero'
 import LogoMarquee from '../components/sections/LogoMarquee'
 import UnifyFinancesScroll from '../components/sections/UnifyFinancesScroll'
 import WhoIAmSection from '../components/sections/WhoIAmSection'
@@ -11,7 +11,12 @@ export default function Home() {
   return (
     <main className="w-full min-h-screen m-0 p-0 bg-designBg">
       <Header />
-      <Hero />
+      <FloatingIconsHero
+        title="Welcome to the innovation oasis"
+        subtitle="Step into our innovation oasis, where groundbreaking ideas bloom, and every click is a step into a world of endless possibilities."
+        ctaText="Get Started"
+        ctaHref="#"
+      />
       <LogoMarquee />
       <UnifyFinancesScroll />
       <WhoIAmSection />

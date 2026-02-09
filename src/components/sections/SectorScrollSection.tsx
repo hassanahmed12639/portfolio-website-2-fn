@@ -80,6 +80,7 @@ export default function SectorScrollSection() {
       const layout3 = { manufacturing: { top: '20%', left: '38%' }, electricity: { top: '18%', left: '70%' }, agriculture: { top: '50%', left: '50%' } }
       const layout2 = { manufacturing: { top: '35%', left: '45%' }, electricity: { top: '60%', left: '55%' } }
 
+      // Cast to any to avoid GSAP timeline.to() overload conflicts with TweenVars
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: container,
@@ -95,7 +96,7 @@ export default function SectorScrollSection() {
             else gsap.to(scrollHintRef.current, { opacity: 0.6, duration: 0.3 })
           },
         },
-      })
+      }) as any
 
       tl.to(cardManufacturingRef.current, { opacity: 1, x: 0, y: 0, duration: 1.2, ease: [0.22, 1, 0.36, 1] }, 0)
         .to(cardElectricityRef.current, { opacity: 1, x: 0, y: 0, duration: 1.2, delay: 0.15, ease: [0.22, 1, 0.36, 1] }, 0)

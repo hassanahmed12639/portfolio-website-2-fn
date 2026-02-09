@@ -66,7 +66,9 @@ module.exports = {
   		animation: {
   			move: 'move 5s linear infinite',
   			'float-gentle': 'floatGentle 4s ease-in-out infinite',
-  			marquee: 'marquee 30s linear infinite'
+  			marquee: 'marquee 30s linear infinite',
+  			'beam-scatter-1': 'beamScatter1 12s ease-in-out infinite',
+  			'beam-scatter-2': 'beamScatter2 15s ease-in-out infinite'
   		},
   		keyframes: {
   			marquee: {
@@ -88,6 +90,21 @@ module.exports = {
   				'50%': {
   					transform: 'translateY(-15px)'
   				}
+  			},
+  			beamScatter1: {
+  				'0%': { transform: 'translate(0, 0) rotate(-12deg)' },
+  				'20%': { transform: 'translate(80px, -60px) rotate(8deg)' },
+  				'40%': { transform: 'translate(-40px, 40px) rotate(-5deg)' },
+  				'60%': { transform: 'translate(100px, 30px) rotate(15deg)' },
+  				'80%': { transform: 'translate(-60px, -40px) rotate(-8deg)' },
+  				'100%': { transform: 'translate(0, 0) rotate(-12deg)' }
+  			},
+  			beamScatter2: {
+  				'0%': { transform: 'translate(0, 0) rotate(20deg)' },
+  				'25%': { transform: 'translate(-90px, 50px) rotate(5deg)' },
+  				'50%': { transform: 'translate(50px, -70px) rotate(28deg)' },
+  				'75%': { transform: 'translate(-70px, -30px) rotate(12deg)' },
+  				'100%': { transform: 'translate(0, 0) rotate(20deg)' }
   			}
   		}
   	}
