@@ -36,11 +36,9 @@ const FloatingIconsHero = React.forwardRef<
                 layout
                 transition={{ type: 'spring', damping: 30, stiffness: 400 }}
               >
-                I build systems
+                I build systems that
               </motion.span>
-              <span className="inline-flex items-center justify-center">
-                <span className="mr-2 sm:mr-2.5 md:mr-3">that </span>
-                <TextRotate
+              <TextRotate
                 texts={[
                   'Convert!',
                   'Scale!',
@@ -60,7 +58,6 @@ const FloatingIconsHero = React.forwardRef<
                 transition={{ type: 'spring', damping: 30, stiffness: 400 }}
                 rotationInterval={2000}
               />
-              </span>
             </motion.span>
           </LayoutGroup>
         </h1>
