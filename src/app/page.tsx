@@ -13,7 +13,7 @@ export default function Home() {
       <Header />
       <FloatingIconsHero
         title="Welcome to the innovation oasis"
-        subtitle="Step into our innovation oasis, where groundbreaking ideas bloom, and every click is a step into a world of endless possibilities."
+        subtitle="Hi, I'm Hassan Ahmed, a performance marketer with 5 years of experience. I design marketing systems that analyze, optimize, and amplify results, turning complex campaigns into predictable growth."
         ctaText="Get Started"
         ctaHref="#"
       />
