@@ -3,7 +3,6 @@ import Footer from '../components/layout/Footer'
 import Hero from '../components/sections/Hero'
 import LogoMarquee from '../components/sections/LogoMarquee'
 import UnifyFinancesScroll from '../components/sections/UnifyFinancesScroll'
-import ArchSection from '../components/sections/ArchSection'
 import WhoIAmSection from '../components/sections/WhoIAmSection'
 import IntegrationsArcSection from '../components/sections/IntegrationsArcSection'
 import CTASection from '../components/sections/CTASection'
@@ -15,7 +14,6 @@ export default function Home() {
       <Hero />
       <LogoMarquee />
       <UnifyFinancesScroll />
-      <ArchSection />
       <WhoIAmSection />
       <IntegrationsArcSection />
       <section className="w-full m-0 py-12 md:py-16 lg:py-20 px-6 md:px-[5%] bg-designBg">
