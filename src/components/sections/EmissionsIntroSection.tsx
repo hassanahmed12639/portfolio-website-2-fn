@@ -50,27 +50,18 @@ const getManufacturingZoomConfig = () => {
 
   if (viewportWidth < 768) {
     return {
-      driftX: -76,
-      zoomX: -104,
-      zoomY: 500,
-      zoomScale: 4.15,
+      driftX: -52,
     }
   }
 
   if (viewportWidth < 1200) {
     return {
-      driftX: -92,
-      zoomX: -122,
-      zoomY: 506,
-      zoomScale: 4.55,
+      driftX: -68,
     }
   }
 
   return {
-    driftX: -105,
-    zoomX: -138,
-    zoomY: 512,
-    zoomScale: 4.8,
+    driftX: -78,
   }
 }
 
@@ -79,6 +70,7 @@ export default function EmissionsIntroSection() {
   const headingRef = useRef<HTMLHeadingElement>(null)
   const textBlockRef = useRef<HTMLDivElement>(null)
   const contentWrapRef = useRef<HTMLDivElement>(null)
+  const manufacturingImageRef = useRef<HTMLImageElement>(null)
   const revealWrapRef = useRef<HTMLDivElement>(null)
   const revealTitleRef = useRef<HTMLDivElement>(null)
   const revealImageRef = useRef<HTMLImageElement>(null)
@@ -117,9 +109,10 @@ export default function EmissionsIntroSection() {
     gsap.set(revealWrap, { autoAlpha: 0 })
     gsap.set(revealTitle, { y: 28, opacity: 0 })
     gsap.set(revealImage, {
-      scale: 1.08,
-      clipPath: 'inset(36% 24% 36% 24% round 8px)',
-      filter: 'blur(8px)',
+      x: 0,
+      y: 0,
+      scaleX: 1,
+      scaleY: 1,
       transformOrigin: 'center center',
     })
     gsap.set(revealCopy, { y: 32, opacity: 0 })
@@ -131,6 +124,36 @@ export default function EmissionsIntroSection() {
     const [manufacturingCard, ...otherCards] = cards
     gsap.set(manufacturingCard, { zIndex: 30 })
     gsap.set(otherCards, { zIndex: 20 })
+
+    const getManufacturingZoomTarget = () => {
+      const sourceImage = manufacturingImageRef.current
+      const targetImage = revealImageRef.current
+      const fallbackX = Number(gsap.getProperty(manufacturingCard, 'x')) || 0
+      const fallbackY = Number(gsap.getProperty(manufacturingCard, 'y')) || 0
+
+      if (!sourceImage || !targetImage) {
+        return { x: fallbackX, y: fallbackY, scale: 4.4 }
+      }
+
+      const sourceRect = sourceImage.getBoundingClientRect()
+      const targetRect = targetImage.getBoundingClientRect()
+      if (!sourceRect.width || !sourceRect.height || !targetRect.width || !targetRect.height) {
+        return { x: fallbackX, y: fallbackY, scale: 4.4 }
+      }
+
+      const sourceCenterX = sourceRect.left + sourceRect.width / 2
+      const sourceCenterY = sourceRect.top + sourceRect.height / 2
+      const targetCenterX = targetRect.left + targetRect.width / 2
+      const targetCenterY = targetRect.top + targetRect.height / 2
+
+      const targetScale = Math.max(targetRect.width / sourceRect.width, targetRect.height / sourceRect.height)
+
+      return {
+        x: fallbackX + (targetCenterX - sourceCenterX),
+        y: fallbackY + (targetCenterY - sourceCenterY),
+        scale: targetScale,
+      }
+    }
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -207,24 +230,43 @@ export default function EmissionsIntroSection() {
 
     // Final push: manufacturing card zooms, then transitions into section content.
     tl.to(manufacturingCard, {
-      x: () => getManufacturingZoomConfig().zoomX,
-      y: () => getManufacturingZoomConfig().zoomY,
-      scale: () => getManufacturingZoomConfig().zoomScale,
+      x: () => getManufacturingZoomTarget().x,
+      y: () => getManufacturingZoomTarget().y,
+      scale: () => getManufacturingZoomTarget().scale,
       transformOrigin: 'center center',
-      duration: 1.85,
+      duration: 1.9,
       ease: 'power2.inOut',
     })
 
-    // Clean handoff: expanded card finishes first, then swap to reveal layer.
+    // Clean handoff: match reveal image to the card's exact live bounds first.
+    tl.add(() => {
+      const sourceRect = manufacturingImageRef.current?.getBoundingClientRect()
+      const targetRect = revealImage.getBoundingClientRect()
+      if (!sourceRect || !targetRect.width || !targetRect.height) return
+
+      const sourceCenterX = sourceRect.left + sourceRect.width / 2
+      const sourceCenterY = sourceRect.top + sourceRect.height / 2
+      const targetCenterX = targetRect.left + targetRect.width / 2
+      const targetCenterY = targetRect.top + targetRect.height / 2
+
+      gsap.set(revealImage, {
+        x: sourceCenterX - targetCenterX,
+        y: sourceCenterY - targetCenterY,
+        scaleX: sourceRect.width / targetRect.width,
+        scaleY: sourceRect.height / targetRect.height,
+      })
+    })
+
     tl.set(revealWrap, { autoAlpha: 1 })
     tl.set(manufacturingCard, { autoAlpha: 0 })
 
     tl.to(revealImage, {
-      scale: 1,
-      clipPath: 'inset(0% 0% 0% 0% round 0px)',
-      filter: 'blur(0px)',
-      duration: 0.95,
-      ease: 'power2.out',
+      x: 0,
+      y: 0,
+      scaleX: 1,
+      scaleY: 1,
+      duration: 1.05,
+      ease: 'power1.out',
     })
 
     // Text appears after the image expansion is established.
@@ -301,6 +343,7 @@ export default function EmissionsIntroSection() {
               className={`absolute ${card.className} will-change-transform`}
             >
               <img
+                ref={card.id === 'manufacturing' ? manufacturingImageRef : null}
                 src={card.src}
                 alt={card.alt}
                 className="h-[78px] w-full rounded-[2px] object-cover shadow-[0_10px_30px_rgba(0,0,0,0.5)] md:h-[96px]"
@@ -330,7 +373,7 @@ export default function EmissionsIntroSection() {
                 ref={revealImageRef}
                 src={CARDS[0].src}
                 alt="Industrial manufacturing detail"
-                className="h-[320px] w-full object-cover md:h-[460px]"
+                className="aspect-[5/3] w-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
               <div
