@@ -6,6 +6,7 @@ import UnifyFinancesScroll from '../components/sections/UnifyFinancesScroll'
 import WhoIAmSection from '../components/sections/WhoIAmSection'
 import ParallaxSection from '../components/sections/ParallaxSection'
 import EmissionsIntroSection from '../components/sections/EmissionsIntroSection'
+import ManufacturingFeatureSection from '../components/sections/ManufacturingFeatureSection'
 import IntegrationsArcSection from '../components/sections/IntegrationsArcSection'
 import CTASection from '../components/sections/CTASection'
 
@@ -24,6 +25,7 @@ export default function Home() {
       <WhoIAmSection />
       <ParallaxSection />
       <EmissionsIntroSection />
+      <ManufacturingFeatureSection />
       <IntegrationsArcSection />
       <section className="w-full m-0 py-12 md:py-16 lg:py-20 px-6 md:px-[5%] bg-designBg">
         <div className="max-w-7xl mx-auto">
