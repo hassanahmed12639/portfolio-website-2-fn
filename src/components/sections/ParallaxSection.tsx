@@ -12,7 +12,7 @@ const LINES = [
   'data and testing to bear on the toughest challenges.',
 ];
 
-const PIN_SCROLL_DISTANCE = 800;
+const PIN_SCROLL_DISTANCE = 1400;
 
 const PARALLAX_BG_STYLE: React.CSSProperties = {
   backgroundImage: "url('https://picsum.photos/1600/900')",
@@ -44,15 +44,20 @@ export default function ParallaxSection() {
         trigger: section,
         start: 'top top',
         end: `+=${PIN_SCROLL_DISTANCE}`,
-        scrub: 1,
+        scrub: 1.2,
         pin: pinEl,
+        pinSpacing: true,
+        anticipatePin: 1,
       },
     });
 
-    const step = 1 / lines.length;
-    lines.forEach((line, i) => {
-      tl.to(line, { x: 0, opacity: 1, duration: 0.3, ease: 'power2.out' }, i * step);
+    // Phase 1: reveal all quote lines while parallax stays fixed in place.
+    lines.forEach((line) => {
+      tl.to(line, { x: 0, opacity: 1, duration: 0.2, ease: 'power2.out' });
     });
+
+    // Keep full text visible briefly before releasing to next section.
+    tl.to({}, { duration: 1.2 });
 
     const st = tl.scrollTrigger;
     return () => {
@@ -63,7 +68,7 @@ export default function ParallaxSection() {
   return (
     <section
       ref={sectionRef}
-      className="parallax-section relative min-h-screen w-full"
+      className="parallax-section relative z-20 min-h-screen w-full overflow-hidden"
       style={PARALLAX_BG_STYLE}
     >
       <div
