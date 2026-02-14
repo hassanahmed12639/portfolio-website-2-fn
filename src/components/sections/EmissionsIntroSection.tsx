@@ -58,26 +58,10 @@ export default function EmissionsIntroSection() {
     const contentWrap = contentWrapRef.current
     if (!section || !heading || !contentWrap) return
 
-    const revealTween = gsap.fromTo(
-      contentWrap,
-      { y: 48, opacity: 0.35 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.9,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: section,
-          start: 'top 85%',
-          end: 'top 60%',
-          scrub: 1,
-        },
-      }
-    )
-
     const lines = Array.from(heading.querySelectorAll<HTMLElement>('.intro-line'))
     if (!lines.length) return
 
+    gsap.set(contentWrap, { y: 50, opacity: 0.35 })
     const [firstLine, ...otherLines] = lines
     gsap.set(firstLine, { x: 0, opacity: 1 })
     gsap.set(otherLines, { x: -48, opacity: 0 })
@@ -94,6 +78,15 @@ export default function EmissionsIntroSection() {
       },
     })
 
+    // First: visibly reveal the whole section right after parallax handoff.
+    tl.to(contentWrap, {
+      y: 0,
+      opacity: 1,
+      duration: 0.9,
+      ease: 'power2.out',
+    })
+
+    // Then run the line-by-line headline reveal.
     tl.to(otherLines, {
       x: 0,
       opacity: 1,
@@ -103,8 +96,6 @@ export default function EmissionsIntroSection() {
     })
 
     return () => {
-      revealTween.scrollTrigger?.kill()
-      revealTween.kill()
       tl.scrollTrigger?.kill()
       tl.kill()
     }
