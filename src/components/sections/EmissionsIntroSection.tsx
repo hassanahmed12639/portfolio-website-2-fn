@@ -48,13 +48,32 @@ const HEADLINE_LINES = [
 export default function EmissionsIntroSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
+  const contentWrapRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     registerGsapPlugins()
 
     const section = sectionRef.current
     const heading = headingRef.current
-    if (!section || !heading) return
+    const contentWrap = contentWrapRef.current
+    if (!section || !heading || !contentWrap) return
+
+    const revealTween = gsap.fromTo(
+      contentWrap,
+      { y: 48, opacity: 0.35 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.9,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top 85%',
+          end: 'top 60%',
+          scrub: 1,
+        },
+      }
+    )
 
     const lines = Array.from(heading.querySelectorAll<HTMLElement>('.intro-line'))
     if (!lines.length) return
@@ -84,6 +103,8 @@ export default function EmissionsIntroSection() {
     })
 
     return () => {
+      revealTween.scrollTrigger?.kill()
+      revealTween.kill()
       tl.scrollTrigger?.kill()
       tl.kill()
     }
@@ -91,7 +112,10 @@ export default function EmissionsIntroSection() {
 
   return (
     <section ref={sectionRef} className="relative w-full bg-black px-6 py-16 md:px-[5%] md:py-24">
-      <div className="mx-auto flex min-h-[540px] w-full max-w-7xl flex-col justify-center gap-12 md:min-h-[640px] md:flex-row md:items-center md:gap-8">
+      <div
+        ref={contentWrapRef}
+        className="mx-auto flex min-h-[540px] w-full max-w-7xl flex-col justify-center gap-12 md:min-h-[640px] md:flex-row md:items-center md:gap-8"
+      >
         <div className="max-w-xl md:w-[48%]">
           <h2
             ref={headingRef}
