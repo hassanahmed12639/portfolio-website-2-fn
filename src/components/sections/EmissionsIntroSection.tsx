@@ -9,7 +9,7 @@ const CARDS = [
     id: 'manufacturing',
     src: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=900&q=80',
     alt: 'Industrial facility',
-    className: 'top-4 left-[8%] w-32 md:top-0 md:left-[6%] md:w-40',
+    className: 'top-4 left-[8%] w-32 md:top-0 md:left-[4.5%] md:w-40',
   },
   {
     id: 'electricity',
@@ -33,7 +33,7 @@ const CARDS = [
     id: 'buildings',
     src: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=900&q=80',
     alt: 'Buildings and city',
-    className: 'bottom-4 left-[46%] w-36 -translate-x-1/2 md:bottom-0 md:left-[50%] md:w-44',
+    className: 'bottom-4 left-[46%] w-36 -translate-x-1/2 md:bottom-[10%] md:left-[50%] md:w-44',
   },
 ]
 
@@ -45,26 +45,6 @@ const HEADLINE_LINES = [
   'a landscape of opportunity.',
 ]
 
-const getManufacturingZoomConfig = () => {
-  const viewportWidth = window.innerWidth
-
-  if (viewportWidth < 768) {
-    return {
-      driftX: -52,
-    }
-  }
-
-  if (viewportWidth < 1200) {
-    return {
-      driftX: -68,
-    }
-  }
-
-  return {
-    driftX: -78,
-  }
-}
-
 export default function EmissionsIntroSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
@@ -75,6 +55,27 @@ export default function EmissionsIntroSection() {
   const revealTitleRef = useRef<HTMLDivElement>(null)
   const revealImageRef = useRef<HTMLImageElement>(null)
   const revealCopyRef = useRef<HTMLDivElement>(null)
+  const revealButtonRef = useRef<HTMLButtonElement>(null)
+  const electricityStageRef = useRef<HTMLDivElement>(null)
+  const electricityTitleRef = useRef<HTMLDivElement>(null)
+  const electricityImageRef = useRef<HTMLImageElement>(null)
+  const electricityCopyRef = useRef<HTMLDivElement>(null)
+  const electricityButtonRef = useRef<HTMLButtonElement>(null)
+  const agricultureStageRef = useRef<HTMLDivElement>(null)
+  const agricultureTitleRef = useRef<HTMLDivElement>(null)
+  const agricultureImageRef = useRef<HTMLImageElement>(null)
+  const agricultureCopyRef = useRef<HTMLDivElement>(null)
+  const agricultureButtonRef = useRef<HTMLButtonElement>(null)
+  const transportationStageRef = useRef<HTMLDivElement>(null)
+  const transportationTitleRef = useRef<HTMLDivElement>(null)
+  const transportationImageRef = useRef<HTMLImageElement>(null)
+  const transportationCopyRef = useRef<HTMLDivElement>(null)
+  const transportationButtonRef = useRef<HTMLButtonElement>(null)
+  const buildingsStageRef = useRef<HTMLDivElement>(null)
+  const buildingsTitleRef = useRef<HTMLDivElement>(null)
+  const buildingsImageRef = useRef<HTMLImageElement>(null)
+  const buildingsCopyRef = useRef<HTMLDivElement>(null)
+  const buildingsButtonRef = useRef<HTMLButtonElement>(null)
   const cardRefs = useRef<Array<HTMLDivElement | null>>([])
 
   useEffect(() => {
@@ -88,6 +89,27 @@ export default function EmissionsIntroSection() {
     const revealTitle = revealTitleRef.current
     const revealImage = revealImageRef.current
     const revealCopy = revealCopyRef.current
+    const revealButton = revealButtonRef.current
+    const electricityStage = electricityStageRef.current
+    const electricityTitle = electricityTitleRef.current
+    const electricityImage = electricityImageRef.current
+    const electricityCopy = electricityCopyRef.current
+    const electricityButton = electricityButtonRef.current
+    const agricultureStage = agricultureStageRef.current
+    const agricultureTitle = agricultureTitleRef.current
+    const agricultureImage = agricultureImageRef.current
+    const agricultureCopy = agricultureCopyRef.current
+    const agricultureButton = agricultureButtonRef.current
+    const transportationStage = transportationStageRef.current
+    const transportationTitle = transportationTitleRef.current
+    const transportationImage = transportationImageRef.current
+    const transportationCopy = transportationCopyRef.current
+    const transportationButton = transportationButtonRef.current
+    const buildingsStage = buildingsStageRef.current
+    const buildingsTitle = buildingsTitleRef.current
+    const buildingsImage = buildingsImageRef.current
+    const buildingsCopy = buildingsCopyRef.current
+    const buildingsButton = buildingsButtonRef.current
     const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[]
     if (
       !section ||
@@ -98,6 +120,27 @@ export default function EmissionsIntroSection() {
       !revealTitle ||
       !revealImage ||
       !revealCopy ||
+      !revealButton ||
+      !electricityStage ||
+      !electricityTitle ||
+      !electricityImage ||
+      !electricityCopy ||
+      !electricityButton ||
+      !agricultureStage ||
+      !agricultureTitle ||
+      !agricultureImage ||
+      !agricultureCopy ||
+      !agricultureButton ||
+      !transportationStage ||
+      !transportationTitle ||
+      !transportationImage ||
+      !transportationCopy ||
+      !transportationButton ||
+      !buildingsStage ||
+      !buildingsTitle ||
+      !buildingsImage ||
+      !buildingsCopy ||
+      !buildingsButton ||
       cards.length !== CARDS.length
     )
       return
@@ -116,14 +159,64 @@ export default function EmissionsIntroSection() {
       transformOrigin: 'center center',
     })
     gsap.set(revealCopy, { y: 32, opacity: 0 })
+    gsap.set(revealButton, { y: 24, opacity: 0 })
+    gsap.set(electricityStage, { autoAlpha: 0 })
+    gsap.set(electricityTitle, { y: 22, opacity: 0 })
+    gsap.set(electricityImage, { y: 180, scale: 0.9, transformOrigin: 'center center' })
+    gsap.set(electricityCopy, { y: 20, opacity: 0 })
+    gsap.set(electricityButton, { y: 16, opacity: 0 })
+    gsap.set(agricultureStage, { autoAlpha: 0 })
+    gsap.set(agricultureTitle, { y: 22, opacity: 0 })
+    gsap.set(agricultureImage, { y: 180, scale: 0.9, transformOrigin: 'center center' })
+    gsap.set(agricultureCopy, { y: 20, opacity: 0 })
+    gsap.set(agricultureButton, { y: 16, opacity: 0 })
+    gsap.set(transportationStage, { autoAlpha: 0 })
+    gsap.set(transportationTitle, { y: 22, opacity: 0 })
+    gsap.set(transportationImage, { y: 180, scale: 0.9, transformOrigin: 'center center' })
+    gsap.set(transportationCopy, { y: 20, opacity: 0 })
+    gsap.set(transportationButton, { y: 16, opacity: 0 })
+    gsap.set(buildingsStage, { autoAlpha: 0 })
+    gsap.set(buildingsTitle, { y: 22, opacity: 0 })
+    gsap.set(buildingsImage, { y: 180, scale: 0.9, transformOrigin: 'center center' })
+    gsap.set(buildingsCopy, { y: 20, opacity: 0 })
+    gsap.set(buildingsButton, { y: 16, opacity: 0 })
     const [firstLine, ...otherLines] = lines
     gsap.set(firstLine, { x: 0, opacity: 1 })
     gsap.set(otherLines, { x: -48, opacity: 0 })
     gsap.set(cards, { force3D: true, transformOrigin: 'center center' })
 
     const [manufacturingCard, ...otherCards] = cards
+    const electricityCard = cards[1]
+    const agricultureCard = cards[2]
+    const transportationCard = cards[3]
+    const buildingsCard = cards[4]
+    const firstDropOrder = [buildingsCard, transportationCard, agricultureCard, electricityCard, manufacturingCard]
     gsap.set(manufacturingCard, { zIndex: 30 })
     gsap.set(otherCards, { zIndex: 20 })
+    gsap.set(buildingsCard, { zIndex: 18 })
+    gsap.set(transportationCard, { zIndex: 19 })
+    gsap.set(agricultureCard, { zIndex: 21 })
+    gsap.set(electricityCard, { zIndex: 22 })
+
+    const getBottomCenterTarget = (card: HTMLDivElement, bottomOffset = 24, laneOffsetX = 0) => {
+      const stage = card.parentElement as HTMLDivElement | null
+      const fallbackX = Number(gsap.getProperty(card, 'x')) || 0
+      const fallbackY = Number(gsap.getProperty(card, 'y')) || 0
+      if (!stage) return { x: fallbackX, y: fallbackY }
+
+      const stageRect = stage.getBoundingClientRect()
+      const cardRect = card.getBoundingClientRect()
+      if (!stageRect.width || !cardRect.width || !cardRect.height) return { x: fallbackX, y: fallbackY }
+
+      const cardCenterX = cardRect.left + cardRect.width / 2
+      const targetCenterX = stageRect.left + stageRect.width / 2 + laneOffsetX
+      const targetTop = stageRect.bottom - bottomOffset - cardRect.height
+
+      return {
+        x: fallbackX + (targetCenterX - cardCenterX),
+        y: fallbackY + (targetTop - cardRect.top),
+      }
+    }
 
     const getManufacturingZoomTarget = () => {
       const sourceImage = manufacturingImageRef.current
@@ -159,8 +252,8 @@ export default function EmissionsIntroSection() {
       scrollTrigger: {
         trigger: section,
         start: 'top top',
-        end: '+=2150',
-        scrub: 1,
+        end: '+=4200',
+        scrub: 0.7,
         pin: true,
         anticipatePin: 2,
         invalidateOnRefresh: true,
@@ -184,59 +277,121 @@ export default function EmissionsIntroSection() {
       ease: 'none',
     })
 
-    // All cards move down in a linear way as the user scrolls.
-    tl.to(cards, {
+    // First drop order with continuous staggered flow.
+    tl.to(firstDropOrder, {
       y: 170,
-      duration: 1.25,
-      stagger: 0.1,
+      duration: 0.56,
+      stagger: {
+        each: 0.14,
+        from: 'start',
+      },
       ease: 'none',
     })
 
-    // Four cards continue down and fade away.
+    // Buildings exits first (down, out of frame).
+    tl.to(buildingsCard, {
+      y: '+=360',
+      opacity: 0,
+      scale: 0.92,
+      duration: 0.52,
+      ease: 'none',
+    })
+
+    // Transportation exits second (down, out of frame).
     tl.to(
-      otherCards,
+      transportationCard,
       {
-        y: '+=260',
+        y: '+=360',
         opacity: 0,
         scale: 0.92,
-        duration: 1.25,
+        duration: 0.52,
         ease: 'none',
       },
-      '<'
+      '<+0.1'
     )
 
-    // Manufacturing card keeps moving and does not disappear.
+    // Agriculture moves to bottom-center with a slight size increase.
+    tl.to(
+      agricultureCard,
+      {
+        x: () => getBottomCenterTarget(agricultureCard, 26, -72).x,
+        y: () => getBottomCenterTarget(agricultureCard, 26, -72).y,
+        scale: 1.08,
+        duration: 0.62,
+        ease: 'none',
+      },
+      '<+0.08'
+    )
+    // Keep manufacturing subtly moving so flow never feels paused.
     tl.to(
       manufacturingCard,
       {
-        y: '+=300',
-        x: () => getManufacturingZoomConfig().driftX,
-        duration: 1.35,
+        y: '+=64',
+        x: -14,
+        duration: 0.62,
         ease: 'none',
       },
       '<'
     )
+    tl.to(agricultureCard, {
+      opacity: 0,
+      y: '+=120',
+      duration: 0.34,
+      ease: 'none',
+    })
+
+    // Electricity moves to bottom-center with a slight size increase.
+    tl.to(electricityCard, {
+      x: () => getBottomCenterTarget(electricityCard, 26, 72).x,
+      y: () => getBottomCenterTarget(electricityCard, 26, 72).y,
+      scale: 1.1,
+      duration: 0.62,
+      ease: 'none',
+    })
 
     tl.to(
       textBlock,
       {
         opacity: 0,
         x: -48,
+        duration: 0.74,
+        ease: 'none',
+      },
+      '<+0.08'
+    )
+
+    // Electricity exits while manufacturing advances.
+    tl.to(electricityCard, {
+      y: '+=280',
+      opacity: 0,
+      scale: 0.94,
+      duration: 0.54,
+      ease: 'none',
+    })
+    tl.to(
+      manufacturingCard,
+      {
+        y: '+=240',
+        x: -46,
         duration: 0.9,
         ease: 'none',
       },
-      '<+0.2'
+      '<'
     )
 
-    // Final push: manufacturing card zooms, then transitions into section content.
-    tl.to(manufacturingCard, {
-      x: () => getManufacturingZoomTarget().x,
-      y: () => getManufacturingZoomTarget().y,
-      scale: () => getManufacturingZoomTarget().scale,
-      transformOrigin: 'center center',
-      duration: 1.9,
-      ease: 'power2.inOut',
-    })
+    // Final manufacturing zoom into reveal.
+    tl.to(
+      manufacturingCard,
+      {
+        x: () => getManufacturingZoomTarget().x,
+        y: () => getManufacturingZoomTarget().y,
+        scale: () => getManufacturingZoomTarget().scale,
+        transformOrigin: 'center center',
+        duration: 1.7,
+        ease: 'power2.inOut',
+      },
+      '>'
+    )
 
     // Clean handoff: match reveal image to the card's exact live bounds first.
     tl.add(() => {
@@ -292,11 +447,259 @@ export default function EmissionsIntroSection() {
       '<+0.1'
     )
 
-    // Small hold to avoid abrupt unpin right after reveal.
+    tl.to(
+      revealButton,
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.6,
+        ease: 'power2.out',
+      },
+      '<+0.18'
+    )
+
+    // Next card progression: current card shrinks up, next card rises from below.
+    tl.to(revealWrap, {
+      y: -120,
+      scale: 0.84,
+      duration: 0.95,
+      ease: 'power1.inOut',
+    })
+
+    tl.set(electricityStage, { autoAlpha: 1 }, '<+0.04')
+    tl.to(
+      electricityImage,
+      {
+        y: 0,
+        scale: 1,
+        duration: 0.9,
+        ease: 'power2.out',
+      },
+      '<'
+    )
+    tl.to(
+      electricityButton,
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.45,
+        ease: 'power2.out',
+      },
+      '<+0.22'
+    )
+    tl.to(
+      electricityTitle,
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.65,
+        ease: 'power2.out',
+      },
+      '>-0.05'
+    )
+    tl.to(
+      electricityCopy,
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.65,
+        ease: 'power2.out',
+      },
+      '<+0.1'
+    )
+    tl.to(
+      revealWrap,
+      {
+        y: -230,
+        scale: 0.78,
+        duration: 0.85,
+        ease: 'power1.inOut',
+      },
+      '<+0.1'
+    )
+
+    // Electricity -> Agriculture
+    tl.to(electricityStage, {
+      y: -120,
+      scale: 0.84,
+      duration: 0.95,
+      ease: 'power1.inOut',
+    })
+    tl.set(agricultureStage, { autoAlpha: 1 }, '<+0.04')
+    tl.to(
+      agricultureImage,
+      {
+        y: 0,
+        scale: 1,
+        duration: 0.9,
+        ease: 'power2.out',
+      },
+      '<'
+    )
+    tl.to(
+      agricultureButton,
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.45,
+        ease: 'power2.out',
+      },
+      '<+0.22'
+    )
+    tl.to(
+      agricultureTitle,
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.65,
+        ease: 'power2.out',
+      },
+      '>-0.05'
+    )
+    tl.to(
+      agricultureCopy,
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.65,
+        ease: 'power2.out',
+      },
+      '<+0.1'
+    )
+    tl.to(
+      electricityStage,
+      {
+        y: -230,
+        scale: 0.78,
+        duration: 0.85,
+        ease: 'power1.inOut',
+      },
+      '<+0.1'
+    )
+
+    // Agriculture -> Transportation
+    tl.to(agricultureStage, {
+      y: -120,
+      scale: 0.84,
+      duration: 0.95,
+      ease: 'power1.inOut',
+    })
+    tl.set(transportationStage, { autoAlpha: 1 }, '<+0.04')
+    tl.to(
+      transportationImage,
+      {
+        y: 0,
+        scale: 1,
+        duration: 0.9,
+        ease: 'power2.out',
+      },
+      '<'
+    )
+    tl.to(
+      transportationButton,
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.45,
+        ease: 'power2.out',
+      },
+      '<+0.22'
+    )
+    tl.to(
+      transportationTitle,
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.65,
+        ease: 'power2.out',
+      },
+      '>-0.05'
+    )
+    tl.to(
+      transportationCopy,
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.65,
+        ease: 'power2.out',
+      },
+      '<+0.1'
+    )
+    tl.to(
+      agricultureStage,
+      {
+        y: -230,
+        scale: 0.78,
+        duration: 0.85,
+        ease: 'power1.inOut',
+      },
+      '<+0.1'
+    )
+
+    // Transportation -> Buildings
+    tl.to(transportationStage, {
+      y: -120,
+      scale: 0.84,
+      duration: 0.95,
+      ease: 'power1.inOut',
+    })
+    tl.set(buildingsStage, { autoAlpha: 1 }, '<+0.04')
+    tl.to(
+      buildingsImage,
+      {
+        y: 0,
+        scale: 1,
+        duration: 0.9,
+        ease: 'power2.out',
+      },
+      '<'
+    )
+    tl.to(
+      buildingsButton,
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.45,
+        ease: 'power2.out',
+      },
+      '<+0.22'
+    )
+    tl.to(
+      buildingsTitle,
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.65,
+        ease: 'power2.out',
+      },
+      '>-0.05'
+    )
+    tl.to(
+      buildingsCopy,
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.65,
+        ease: 'power2.out',
+      },
+      '<+0.1'
+    )
+    tl.to(
+      transportationStage,
+      {
+        y: -230,
+        scale: 0.78,
+        duration: 0.85,
+        ease: 'power1.inOut',
+      },
+      '<+0.1'
+    )
+
+    // Hold final stage briefly.
     tl.to(
       {},
       {
-        duration: 0.8,
+        duration: 0.9,
       }
     )
 
@@ -315,10 +718,10 @@ export default function EmissionsIntroSection() {
         ref={contentWrapRef}
         className="mx-auto flex min-h-[540px] w-full max-w-7xl flex-col justify-center gap-12 md:min-h-[640px] md:flex-row md:items-center md:gap-8"
       >
-        <div ref={textBlockRef} className="max-w-xl md:w-[48%]">
+        <div ref={textBlockRef} className="max-w-xl md:w-[48%] md:-translate-y-6">
           <h2
             ref={headingRef}
-            className="text-2xl font-semibold leading-[1.25] text-white md:text-[34px]"
+            className="text-2xl font-semibold leading-[1.25] text-white md:-translate-y-2 md:text-[34px]"
           >
             {HEADLINE_LINES.map((line, i) => (
               <span
@@ -333,7 +736,7 @@ export default function EmissionsIntroSection() {
           </h2>
         </div>
 
-        <div className="relative h-[360px] w-full md:h-[560px] md:w-[52%]">
+        <div className="relative h-[360px] w-full md:h-[560px] md:w-[52%] md:-translate-y-6">
           {CARDS.map((card, index) => (
             <div
               key={card.id}
@@ -354,40 +757,260 @@ export default function EmissionsIntroSection() {
       </div>
 
       <div ref={revealWrapRef} className="pointer-events-none absolute inset-0">
-        <div className="mx-auto flex h-full w-full max-w-7xl items-center">
+        <div className="mx-auto flex h-full w-full max-w-7xl items-center px-8 py-8 md:px-14 md:py-10">
           <div className="w-full">
-            <div ref={revealTitleRef} className="relative mb-8 md:mb-12">
-              <h2 className="text-[58px] font-semibold leading-[0.88] tracking-[-0.03em] text-white md:text-[140px]">
+            <div
+              ref={revealTitleRef}
+              className="relative z-20 mx-auto -mb-8 w-full max-w-[920px] md:-mb-12"
+            >
+              <h2 className="text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-white md:text-[110px]">
                 Manufacturing
               </h2>
               <h2
                 aria-hidden="true"
-                className="pointer-events-none absolute left-0 top-[22%] text-[58px] font-semibold leading-[0.88] tracking-[-0.03em] text-[#d7ff4c] md:text-[140px]"
+                className="pointer-events-none absolute left-0 top-[22%] text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-[#d7ff4c] md:text-[110px]"
               >
                 Manufacturing
               </h2>
             </div>
 
-            <div className="relative overflow-hidden">
+            <div className="relative z-10 mx-auto w-full max-w-[980px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:-translate-y-10">
               <img
                 ref={revealImageRef}
                 src={CARDS[0].src}
                 alt="Industrial manufacturing detail"
-                className="aspect-[5/3] w-full object-cover"
+                className="aspect-[22/9] w-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
               <div
                 ref={revealCopyRef}
-                className="absolute bottom-6 left-6 max-w-[430px] text-white md:bottom-10 md:left-10"
+                className="absolute inset-0 flex flex-col justify-end p-6 text-white md:p-10"
               >
                 <span className="mb-4 inline-flex rounded-full bg-white/20 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm">
                   30% emissions
                 </span>
-                <p className="text-2xl font-semibold leading-[1.18] text-white md:text-[38px]">
+                <p className="max-w-[650px] text-xl font-semibold leading-[1.3] text-white md:text-[40px]">
                   The clean industrial revolution starts with transforming how we make everything in
                   the world from steel and cement to everyday materials.
                 </p>
               </div>
+            </div>
+            <div className="mt-6 flex justify-center md:mt-8">
+              <button
+                ref={revealButtonRef}
+                type="button"
+                className="rounded-full bg-[#d7ff4c] px-8 py-3 text-sm font-semibold text-black md:px-10 md:py-3.5 md:text-base"
+              >
+                29 Manufacturing Companies
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div ref={electricityStageRef} className="pointer-events-none absolute inset-0">
+        <div className="mx-auto flex h-full w-full max-w-7xl items-center px-8 py-8 md:px-14 md:py-10">
+          <div className="w-full">
+            <div
+              ref={electricityTitleRef}
+              className="relative z-20 mx-auto -mb-8 w-full max-w-[920px] md:-mb-12"
+            >
+              <h2 className="text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-white md:text-[110px]">
+                Electricity
+              </h2>
+              <h2
+                aria-hidden="true"
+                className="pointer-events-none absolute left-0 top-[22%] text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-[#d7ff4c] md:text-[110px]"
+              >
+                Electricity
+              </h2>
+            </div>
+
+            <div className="relative z-10 mx-auto w-full max-w-[980px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:-translate-y-10">
+              <img
+                ref={electricityImageRef}
+                src={CARDS[1].src}
+                alt="Electricity infrastructure"
+                className="aspect-[22/9] w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
+              <div
+                ref={electricityCopyRef}
+                className="absolute inset-0 flex flex-col justify-end p-6 text-white md:p-10"
+              >
+                <span className="mb-4 inline-flex rounded-full bg-white/20 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm">
+                  28% emissions
+                </span>
+                <p className="max-w-[650px] text-xl font-semibold leading-[1.3] text-white md:text-[40px]">
+                  The world must build 21st century grids while delivering energy abundance - clean,
+                  affordable, and reliable power for everyone.
+                </p>
+              </div>
+            </div>
+            <div className="mt-6 flex justify-center md:mt-8">
+              <button
+                ref={electricityButtonRef}
+                type="button"
+                className="rounded-full bg-[#d7ff4c] px-8 py-3 text-sm font-semibold text-black md:px-10 md:py-3.5 md:text-base"
+              >
+                26 Electricity Companies
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div ref={agricultureStageRef} className="pointer-events-none absolute inset-0">
+        <div className="mx-auto flex h-full w-full max-w-7xl items-center px-8 py-8 md:px-14 md:py-10">
+          <div className="w-full">
+            <div
+              ref={agricultureTitleRef}
+              className="relative z-20 mx-auto -mb-8 w-full max-w-[920px] md:-mb-12"
+            >
+              <h2 className="text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-white md:text-[110px]">
+                Agriculture
+              </h2>
+              <h2
+                aria-hidden="true"
+                className="pointer-events-none absolute left-0 top-[22%] text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-[#d7ff4c] md:text-[110px]"
+              >
+                Agriculture
+              </h2>
+            </div>
+
+            <div className="relative z-10 mx-auto w-full max-w-[980px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:-translate-y-10">
+              <img
+                ref={agricultureImageRef}
+                src={CARDS[2].src}
+                alt="Agriculture fields"
+                className="aspect-[22/9] w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
+              <div
+                ref={agricultureCopyRef}
+                className="absolute inset-0 flex flex-col justify-end p-6 text-white md:p-10"
+              >
+                <span className="mb-4 inline-flex rounded-full bg-white/20 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm">
+                  19% emissions
+                </span>
+                <p className="max-w-[650px] text-xl font-semibold leading-[1.3] text-white md:text-[40px]">
+                  From growing rice to raising cattle, innovating how we feed ourselves is a prime
+                  opportunity. Meet the innovators who will feed the world for decades to come.
+                </p>
+              </div>
+            </div>
+            <div className="mt-6 flex justify-center md:mt-8">
+              <button
+                ref={agricultureButtonRef}
+                type="button"
+                className="rounded-full bg-[#d7ff4c] px-8 py-3 text-sm font-semibold text-black md:px-10 md:py-3.5 md:text-base"
+              >
+                20 Agriculture Companies
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div ref={transportationStageRef} className="pointer-events-none absolute inset-0">
+        <div className="mx-auto flex h-full w-full max-w-7xl items-center px-8 py-8 md:px-14 md:py-10">
+          <div className="w-full">
+            <div
+              ref={transportationTitleRef}
+              className="relative z-20 mx-auto -mb-8 w-full max-w-[920px] md:-mb-12"
+            >
+              <h2 className="text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-white md:text-[110px]">
+                Transportation
+              </h2>
+              <h2
+                aria-hidden="true"
+                className="pointer-events-none absolute left-0 top-[22%] text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-[#d7ff4c] md:text-[110px]"
+              >
+                Transportation
+              </h2>
+            </div>
+
+            <div className="relative z-10 mx-auto w-full max-w-[980px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:-translate-y-10">
+              <img
+                ref={transportationImageRef}
+                src={CARDS[3].src}
+                alt="Transportation networks"
+                className="aspect-[22/9] w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
+              <div
+                ref={transportationCopyRef}
+                className="absolute inset-0 flex flex-col justify-end p-6 text-white md:p-10"
+              >
+                <span className="mb-4 inline-flex rounded-full bg-white/20 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm">
+                  25% emissions
+                </span>
+                <p className="max-w-[650px] text-xl font-semibold leading-[1.3] text-white md:text-[40px]">
+                  Revolutionizing how people and goods move around the world with clean, efficient
+                  transportation solutions.
+                </p>
+              </div>
+            </div>
+            <div className="mt-6 flex justify-center md:mt-8">
+              <button
+                ref={transportationButtonRef}
+                type="button"
+                className="rounded-full bg-[#d7ff4c] px-8 py-3 text-sm font-semibold text-black md:px-10 md:py-3.5 md:text-base"
+              >
+                18 Transportation Companies
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div ref={buildingsStageRef} className="pointer-events-none absolute inset-0">
+        <div className="mx-auto flex h-full w-full max-w-7xl items-center px-8 py-8 md:px-14 md:py-10">
+          <div className="w-full">
+            <div
+              ref={buildingsTitleRef}
+              className="relative z-20 mx-auto -mb-8 w-full max-w-[920px] md:-mb-12"
+            >
+              <h2 className="text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-white md:text-[110px]">
+                Buildings
+              </h2>
+              <h2
+                aria-hidden="true"
+                className="pointer-events-none absolute left-0 top-[22%] text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-[#d7ff4c] md:text-[110px]"
+              >
+                Buildings
+              </h2>
+            </div>
+
+            <div className="relative z-10 mx-auto w-full max-w-[980px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:-translate-y-10">
+              <img
+                ref={buildingsImageRef}
+                src={CARDS[4].src}
+                alt="Urban buildings"
+                className="aspect-[22/9] w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
+              <div
+                ref={buildingsCopyRef}
+                className="absolute inset-0 flex flex-col justify-end p-6 text-white md:p-10"
+              >
+                <span className="mb-4 inline-flex rounded-full bg-white/20 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm">
+                  22% emissions
+                </span>
+                <p className="max-w-[650px] text-xl font-semibold leading-[1.3] text-white md:text-[40px]">
+                  Creating sustainable spaces where we live and work, reducing energy consumption
+                  while improving comfort and efficiency.
+                </p>
+              </div>
+            </div>
+            <div className="mt-6 flex justify-center md:mt-8">
+              <button
+                ref={buildingsButtonRef}
+                type="button"
+                className="rounded-full bg-[#d7ff4c] px-8 py-3 text-sm font-semibold text-black md:px-10 md:py-3.5 md:text-base"
+              >
+                15 Building Companies
+              </button>
             </div>
           </div>
         </div>
