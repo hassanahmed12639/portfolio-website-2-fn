@@ -10,9 +10,6 @@ export default function OpportunityOrbitSection() {
   const radarContainerRef = useRef<HTMLDivElement>(null)
   const radarRef = useRef<HTMLDivElement>(null)
   const sweepGradientRef = useRef<HTMLDivElement>(null)
-  const progressIndicatorRef = useRef<HTMLDivElement>(null)
-  const progressBarRef = useRef<HTMLDivElement>(null)
-  const progressLabelRef = useRef<HTMLSpanElement>(null)
 
   useEffect(() => {
     const scrollTrack = scrollTrackRef.current
@@ -22,9 +19,6 @@ export default function OpportunityOrbitSection() {
     const radarContainer = radarContainerRef.current
     const radar = radarRef.current
     const sweepGradient = sweepGradientRef.current
-    const progressIndicator = progressIndicatorRef.current
-    const progressBar = progressBarRef.current
-    const progressLabel = progressLabelRef.current
 
     if (
       !scrollTrack ||
@@ -33,10 +27,7 @@ export default function OpportunityOrbitSection() {
       !section ||
       !radarContainer ||
       !radar ||
-      !sweepGradient ||
-      !progressIndicator ||
-      !progressBar ||
-      !progressLabel
+      !sweepGradient
     ) {
       return
     }
@@ -167,14 +158,6 @@ export default function OpportunityOrbitSection() {
       section.style.zIndex = '20'
     }
 
-    const updateProgressIndicator = (pinProgress: number) => {
-      const progressPercent = Math.round(pinProgress * 100)
-      const isPinned = pinProgress > 0 && pinProgress < 1
-      progressIndicator.style.opacity = isPinned ? '1' : '0'
-      progressBar.style.width = `${progressPercent}%`
-      progressLabel.textContent = `${progressPercent}%`
-    }
-
     const updateRadar = () => {
       const trackRect = scrollTrack.getBoundingClientRect()
       const pinProgress = Math.max(0, Math.min(1, -trackRect.top / pinDistance))
@@ -183,7 +166,6 @@ export default function OpportunityOrbitSection() {
       const rotation = pinProgress * 360
 
       updatePinnedState(pinProgress)
-      updateProgressIndicator(pinProgress)
 
       radarCircles.forEach((circle, index) => {
         const layerProgress = Math.max(0, Math.min(1, revealProgress * radarCircles.length - index))
@@ -243,16 +225,7 @@ export default function OpportunityOrbitSection() {
       <div ref={sectionSlotRef} aria-hidden />
       <div ref={pinSpacerRef} aria-hidden />
       <section ref={sectionRef} className="h-[130vh] w-full overflow-hidden bg-[#f2f2f0] px-6 py-8 md:h-[140vh] md:px-[5%] md:py-12">
-      <div ref={progressIndicatorRef} className="pointer-events-none absolute left-1/2 top-6 z-30 w-[220px] -translate-x-1/2 rounded-full bg-black/10 px-3 py-2 opacity-0 transition-opacity duration-200">
-        <div className="mb-1 flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.12em] text-black/55">
-          <span>Radar progress</span>
-          <span ref={progressLabelRef}>0%</span>
-        </div>
-        <div className="h-1.5 overflow-hidden rounded-full bg-black/10">
-          <div ref={progressBarRef} className="h-full w-0 rounded-full bg-[#c8e664] transition-[width] duration-75" />
-        </div>
-      </div>
-      <div className="mx-auto flex min-h-[130vh] w-full max-w-7xl items-center md:min-h-[140vh]">
+      <div className="mx-auto flex h-full w-full max-w-7xl items-center">
         <div className="absolute left-2 top-1/2 hidden -translate-y-1/2 flex-col items-center gap-3 md:flex">
           <span className="h-[5px] w-[5px] rounded-full bg-[#cfff3f]" />
           <span className="h-[5px] w-[5px] rounded-full border border-black/20" />
@@ -267,7 +240,7 @@ export default function OpportunityOrbitSection() {
           <div className="hidden max-w-[520px] md:pl-12">
           </div>
 
-          <div className="relative mx-auto -mt-16 h-[460px] w-full max-w-[680px] md:-mt-20 md:h-[620px] md:max-w-[760px]">
+          <div className="relative mx-auto h-[460px] w-full max-w-[680px] md:h-[620px] md:max-w-[760px]">
             <div ref={radarContainerRef} className="radar-container">
               <div className="radar-sticky">
                 <div ref={radarRef} className="radar">

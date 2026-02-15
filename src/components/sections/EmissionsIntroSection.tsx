@@ -579,13 +579,13 @@ export default function EmissionsIntroSection() {
     <>
       <section
         ref={sectionRef}
-        className="relative w-full overflow-hidden bg-black px-6 py-16 md:px-[5%] md:py-24"
+        className="relative h-[130vh] w-full overflow-hidden bg-black px-6 py-8 md:h-[140vh] md:px-[5%] md:py-12"
       >
       <div
         ref={contentWrapRef}
-        className="mx-auto flex min-h-[540px] w-full max-w-7xl flex-col justify-center gap-12 md:min-h-[640px] md:flex-row md:items-center md:gap-8"
+        className="mx-auto flex h-full w-full max-w-7xl flex-col items-center justify-center gap-12 md:flex-row md:gap-8"
       >
-        <div ref={textBlockRef} className="max-w-xl md:w-[48%] md:-translate-y-6">
+        <div ref={textBlockRef} className="max-w-xl md:w-[48%]">
           <h2
             ref={headingRef}
             className="text-2xl font-semibold leading-[1.25] text-white md:-translate-y-2 md:text-[34px]"
@@ -603,7 +603,7 @@ export default function EmissionsIntroSection() {
           </h2>
         </div>
 
-        <div className="relative h-[360px] w-full md:h-[560px] md:w-[52%] md:-translate-y-6">
+        <div className="relative h-[360px] w-full md:h-[560px] md:w-[52%]">
           {CARDS.map((card, index) => (
             <div
               key={card.id}
