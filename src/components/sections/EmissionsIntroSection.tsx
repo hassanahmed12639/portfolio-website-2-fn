@@ -55,27 +55,22 @@ export default function EmissionsIntroSection() {
   const revealTitleRef = useRef<HTMLDivElement>(null)
   const revealImageRef = useRef<HTMLImageElement>(null)
   const revealCopyRef = useRef<HTMLDivElement>(null)
-  const revealButtonRef = useRef<HTMLButtonElement>(null)
   const electricityStageRef = useRef<HTMLDivElement>(null)
   const electricityTitleRef = useRef<HTMLDivElement>(null)
   const electricityImageRef = useRef<HTMLImageElement>(null)
   const electricityCopyRef = useRef<HTMLDivElement>(null)
-  const electricityButtonRef = useRef<HTMLButtonElement>(null)
   const agricultureStageRef = useRef<HTMLDivElement>(null)
   const agricultureTitleRef = useRef<HTMLDivElement>(null)
   const agricultureImageRef = useRef<HTMLImageElement>(null)
   const agricultureCopyRef = useRef<HTMLDivElement>(null)
-  const agricultureButtonRef = useRef<HTMLButtonElement>(null)
   const transportationStageRef = useRef<HTMLDivElement>(null)
   const transportationTitleRef = useRef<HTMLDivElement>(null)
   const transportationImageRef = useRef<HTMLImageElement>(null)
   const transportationCopyRef = useRef<HTMLDivElement>(null)
-  const transportationButtonRef = useRef<HTMLButtonElement>(null)
   const buildingsStageRef = useRef<HTMLDivElement>(null)
   const buildingsTitleRef = useRef<HTMLDivElement>(null)
   const buildingsImageRef = useRef<HTMLImageElement>(null)
   const buildingsCopyRef = useRef<HTMLDivElement>(null)
-  const buildingsButtonRef = useRef<HTMLButtonElement>(null)
   const cardRefs = useRef<Array<HTMLDivElement | null>>([])
 
   useEffect(() => {
@@ -89,27 +84,22 @@ export default function EmissionsIntroSection() {
     const revealTitle = revealTitleRef.current
     const revealImage = revealImageRef.current
     const revealCopy = revealCopyRef.current
-    const revealButton = revealButtonRef.current
     const electricityStage = electricityStageRef.current
     const electricityTitle = electricityTitleRef.current
     const electricityImage = electricityImageRef.current
     const electricityCopy = electricityCopyRef.current
-    const electricityButton = electricityButtonRef.current
     const agricultureStage = agricultureStageRef.current
     const agricultureTitle = agricultureTitleRef.current
     const agricultureImage = agricultureImageRef.current
     const agricultureCopy = agricultureCopyRef.current
-    const agricultureButton = agricultureButtonRef.current
     const transportationStage = transportationStageRef.current
     const transportationTitle = transportationTitleRef.current
     const transportationImage = transportationImageRef.current
     const transportationCopy = transportationCopyRef.current
-    const transportationButton = transportationButtonRef.current
     const buildingsStage = buildingsStageRef.current
     const buildingsTitle = buildingsTitleRef.current
     const buildingsImage = buildingsImageRef.current
     const buildingsCopy = buildingsCopyRef.current
-    const buildingsButton = buildingsButtonRef.current
     const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[]
     if (
       !section ||
@@ -120,27 +110,22 @@ export default function EmissionsIntroSection() {
       !revealTitle ||
       !revealImage ||
       !revealCopy ||
-      !revealButton ||
       !electricityStage ||
       !electricityTitle ||
       !electricityImage ||
       !electricityCopy ||
-      !electricityButton ||
       !agricultureStage ||
       !agricultureTitle ||
       !agricultureImage ||
       !agricultureCopy ||
-      !agricultureButton ||
       !transportationStage ||
       !transportationTitle ||
       !transportationImage ||
       !transportationCopy ||
-      !transportationButton ||
       !buildingsStage ||
       !buildingsTitle ||
       !buildingsImage ||
       !buildingsCopy ||
-      !buildingsButton ||
       cards.length !== CARDS.length
     )
       return
@@ -159,27 +144,22 @@ export default function EmissionsIntroSection() {
       transformOrigin: 'center center',
     })
     gsap.set(revealCopy, { y: 32, opacity: 0 })
-    gsap.set(revealButton, { y: 24, opacity: 0 })
     gsap.set(electricityStage, { autoAlpha: 0 })
     gsap.set(electricityTitle, { y: 22, opacity: 0 })
     gsap.set(electricityImage, { y: 180, scale: 0.9, transformOrigin: 'center center' })
     gsap.set(electricityCopy, { y: 20, opacity: 0 })
-    gsap.set(electricityButton, { y: 16, opacity: 0 })
     gsap.set(agricultureStage, { autoAlpha: 0 })
     gsap.set(agricultureTitle, { y: 22, opacity: 0 })
     gsap.set(agricultureImage, { y: 180, scale: 0.9, transformOrigin: 'center center' })
     gsap.set(agricultureCopy, { y: 20, opacity: 0 })
-    gsap.set(agricultureButton, { y: 16, opacity: 0 })
     gsap.set(transportationStage, { autoAlpha: 0 })
     gsap.set(transportationTitle, { y: 22, opacity: 0 })
     gsap.set(transportationImage, { y: 180, scale: 0.9, transformOrigin: 'center center' })
     gsap.set(transportationCopy, { y: 20, opacity: 0 })
-    gsap.set(transportationButton, { y: 16, opacity: 0 })
     gsap.set(buildingsStage, { autoAlpha: 0 })
     gsap.set(buildingsTitle, { y: 22, opacity: 0 })
     gsap.set(buildingsImage, { y: 180, scale: 0.9, transformOrigin: 'center center' })
     gsap.set(buildingsCopy, { y: 20, opacity: 0 })
-    gsap.set(buildingsButton, { y: 16, opacity: 0 })
     const [firstLine, ...otherLines] = lines
     gsap.set(firstLine, { x: 0, opacity: 1 })
     gsap.set(otherLines, { x: -48, opacity: 0 })
@@ -447,252 +427,86 @@ export default function EmissionsIntroSection() {
       '<+0.1'
     )
 
-    tl.to(
-      revealButton,
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.6,
-        ease: 'power2.out',
-      },
-      '<+0.18'
-    )
+    // Scroll-by-scroll handoff: hold, current exits up, then next enters (no overlap).
+    const handoffToNextStage = (
+      currentStage: HTMLDivElement,
+      nextStage: HTMLDivElement,
+      nextImage: HTMLImageElement,
+      nextTitle: HTMLDivElement,
+      nextCopy: HTMLDivElement
+    ) => {
+      // Hold the current stage briefly before changing cards.
+      tl.to(
+        {},
+        {
+          duration: 0.75,
+        }
+      )
 
-    // Next card progression: current card shrinks up, next card rises from below.
-    tl.to(revealWrap, {
-      y: -120,
-      scale: 0.84,
-      duration: 0.95,
-      ease: 'power1.inOut',
-    })
+      tl.to(
+        currentStage,
+        {
+          y: -520,
+          scale: 0.92,
+          duration: 0.9,
+          ease: 'none',
+        }
+      )
+      tl.set(currentStage, { autoAlpha: 0 })
 
-    tl.set(electricityStage, { autoAlpha: 1 }, '<+0.04')
-    tl.to(
-      electricityImage,
-      {
-        y: 0,
-        scale: 1,
-        duration: 0.9,
-        ease: 'power2.out',
-      },
-      '<'
-    )
-    tl.to(
-      electricityButton,
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.45,
-        ease: 'power2.out',
-      },
-      '<+0.22'
-    )
-    tl.to(
-      electricityTitle,
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.65,
-        ease: 'power2.out',
-      },
-      '>-0.05'
-    )
-    tl.to(
-      electricityCopy,
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.65,
-        ease: 'power2.out',
-      },
-      '<+0.1'
-    )
-    tl.to(
-      revealWrap,
-      {
-        y: -230,
-        scale: 0.78,
-        duration: 0.85,
-        ease: 'power1.inOut',
-      },
-      '<+0.1'
-    )
+      tl.set(nextStage, { autoAlpha: 1 })
+      tl.to(
+        nextImage,
+        {
+          y: 0,
+          scale: 1,
+          duration: 0.85,
+          ease: 'none',
+        }
+      )
+      tl.to(
+        nextTitle,
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.55,
+          ease: 'power2.out',
+        },
+        '<+0.1'
+      )
+      tl.to(
+        nextCopy,
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.55,
+          ease: 'power2.out',
+        },
+        '<+0.08'
+      )
+    }
 
-    // Electricity -> Agriculture
-    tl.to(electricityStage, {
-      y: -120,
-      scale: 0.84,
-      duration: 0.95,
-      ease: 'power1.inOut',
-    })
-    tl.set(agricultureStage, { autoAlpha: 1 }, '<+0.04')
-    tl.to(
-      agricultureImage,
-      {
-        y: 0,
-        scale: 1,
-        duration: 0.9,
-        ease: 'power2.out',
-      },
-      '<'
-    )
-    tl.to(
-      agricultureButton,
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.45,
-        ease: 'power2.out',
-      },
-      '<+0.22'
-    )
-    tl.to(
-      agricultureTitle,
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.65,
-        ease: 'power2.out',
-      },
-      '>-0.05'
-    )
-    tl.to(
-      agricultureCopy,
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.65,
-        ease: 'power2.out',
-      },
-      '<+0.1'
-    )
-    tl.to(
+    handoffToNextStage(revealWrap, electricityStage, electricityImage, electricityTitle, electricityCopy)
+    handoffToNextStage(
       electricityStage,
-      {
-        y: -230,
-        scale: 0.78,
-        duration: 0.85,
-        ease: 'power1.inOut',
-      },
-      '<+0.1'
-    )
-
-    // Agriculture -> Transportation
-    tl.to(agricultureStage, {
-      y: -120,
-      scale: 0.84,
-      duration: 0.95,
-      ease: 'power1.inOut',
-    })
-    tl.set(transportationStage, { autoAlpha: 1 }, '<+0.04')
-    tl.to(
-      transportationImage,
-      {
-        y: 0,
-        scale: 1,
-        duration: 0.9,
-        ease: 'power2.out',
-      },
-      '<'
-    )
-    tl.to(
-      transportationButton,
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.45,
-        ease: 'power2.out',
-      },
-      '<+0.22'
-    )
-    tl.to(
-      transportationTitle,
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.65,
-        ease: 'power2.out',
-      },
-      '>-0.05'
-    )
-    tl.to(
-      transportationCopy,
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.65,
-        ease: 'power2.out',
-      },
-      '<+0.1'
-    )
-    tl.to(
       agricultureStage,
-      {
-        y: -230,
-        scale: 0.78,
-        duration: 0.85,
-        ease: 'power1.inOut',
-      },
-      '<+0.1'
+      agricultureImage,
+      agricultureTitle,
+      agricultureCopy
     )
-
-    // Transportation -> Buildings
-    tl.to(transportationStage, {
-      y: -120,
-      scale: 0.84,
-      duration: 0.95,
-      ease: 'power1.inOut',
-    })
-    tl.set(buildingsStage, { autoAlpha: 1 }, '<+0.04')
-    tl.to(
-      buildingsImage,
-      {
-        y: 0,
-        scale: 1,
-        duration: 0.9,
-        ease: 'power2.out',
-      },
-      '<'
-    )
-    tl.to(
-      buildingsButton,
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.45,
-        ease: 'power2.out',
-      },
-      '<+0.22'
-    )
-    tl.to(
-      buildingsTitle,
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.65,
-        ease: 'power2.out',
-      },
-      '>-0.05'
-    )
-    tl.to(
-      buildingsCopy,
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.65,
-        ease: 'power2.out',
-      },
-      '<+0.1'
-    )
-    tl.to(
+    handoffToNextStage(
+      agricultureStage,
       transportationStage,
-      {
-        y: -230,
-        scale: 0.78,
-        duration: 0.85,
-        ease: 'power1.inOut',
-      },
-      '<+0.1'
+      transportationImage,
+      transportationTitle,
+      transportationCopy
+    )
+    handoffToNextStage(
+      transportationStage,
+      buildingsStage,
+      buildingsImage,
+      buildingsTitle,
+      buildingsCopy
     )
 
     // Hold final stage briefly.
@@ -796,13 +610,6 @@ export default function EmissionsIntroSection() {
               </div>
             </div>
             <div className="mt-6 flex justify-center md:mt-8">
-              <button
-                ref={revealButtonRef}
-                type="button"
-                className="rounded-full bg-[#d7ff4c] px-8 py-3 text-sm font-semibold text-black md:px-10 md:py-3.5 md:text-base"
-              >
-                29 Manufacturing Companies
-              </button>
             </div>
           </div>
         </div>
@@ -848,13 +655,6 @@ export default function EmissionsIntroSection() {
               </div>
             </div>
             <div className="mt-6 flex justify-center md:mt-8">
-              <button
-                ref={electricityButtonRef}
-                type="button"
-                className="rounded-full bg-[#d7ff4c] px-8 py-3 text-sm font-semibold text-black md:px-10 md:py-3.5 md:text-base"
-              >
-                26 Electricity Companies
-              </button>
             </div>
           </div>
         </div>
@@ -900,13 +700,6 @@ export default function EmissionsIntroSection() {
               </div>
             </div>
             <div className="mt-6 flex justify-center md:mt-8">
-              <button
-                ref={agricultureButtonRef}
-                type="button"
-                className="rounded-full bg-[#d7ff4c] px-8 py-3 text-sm font-semibold text-black md:px-10 md:py-3.5 md:text-base"
-              >
-                20 Agriculture Companies
-              </button>
             </div>
           </div>
         </div>
@@ -952,13 +745,6 @@ export default function EmissionsIntroSection() {
               </div>
             </div>
             <div className="mt-6 flex justify-center md:mt-8">
-              <button
-                ref={transportationButtonRef}
-                type="button"
-                className="rounded-full bg-[#d7ff4c] px-8 py-3 text-sm font-semibold text-black md:px-10 md:py-3.5 md:text-base"
-              >
-                18 Transportation Companies
-              </button>
             </div>
           </div>
         </div>
@@ -1004,13 +790,6 @@ export default function EmissionsIntroSection() {
               </div>
             </div>
             <div className="mt-6 flex justify-center md:mt-8">
-              <button
-                ref={buildingsButtonRef}
-                type="button"
-                className="rounded-full bg-[#d7ff4c] px-8 py-3 text-sm font-semibold text-black md:px-10 md:py-3.5 md:text-base"
-              >
-                15 Building Companies
-              </button>
             </div>
           </div>
         </div>
