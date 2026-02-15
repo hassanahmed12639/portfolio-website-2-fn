@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { registerGsapPlugins } from '../../lib/gsap'
+import OrbitalScrollAnimationSection from './OrbitalScrollAnimationSection'
 
 const CARDS = [
   {
@@ -47,6 +48,7 @@ const HEADLINE_LINES = [
 
 const FINAL_MESSAGE_LINE_1 = ['This', 'is', 'energy', 'innovation']
 const FINAL_MESSAGE_LINE_2 = ['on', 'a', 'global', 'scale']
+const MANUFACTURING_ZOOM_SCALE_FACTOR = 0.86
 
 export default function EmissionsIntroSection() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -217,13 +219,13 @@ export default function EmissionsIntroSection() {
       const fallbackY = Number(gsap.getProperty(manufacturingCard, 'y')) || 0
 
       if (!sourceImage || !targetImage) {
-        return { x: fallbackX, y: fallbackY, scale: 4.4 }
+        return { x: fallbackX, y: fallbackY, scale: 3.8 }
       }
 
       const sourceRect = sourceImage.getBoundingClientRect()
       const targetRect = targetImage.getBoundingClientRect()
       if (!sourceRect.width || !sourceRect.height || !targetRect.width || !targetRect.height) {
-        return { x: fallbackX, y: fallbackY, scale: 4.4 }
+        return { x: fallbackX, y: fallbackY, scale: 3.8 }
       }
 
       const sourceCenterX = sourceRect.left + sourceRect.width / 2
@@ -231,7 +233,9 @@ export default function EmissionsIntroSection() {
       const targetCenterX = targetRect.left + targetRect.width / 2
       const targetCenterY = targetRect.top + targetRect.height / 2
 
-      const targetScale = Math.max(targetRect.width / sourceRect.width, targetRect.height / sourceRect.height)
+      const targetScale =
+        Math.max(targetRect.width / sourceRect.width, targetRect.height / sourceRect.height) *
+        MANUFACTURING_ZOOM_SCALE_FACTOR
 
       return {
         x: fallbackX + (targetCenterX - sourceCenterX),
@@ -240,12 +244,39 @@ export default function EmissionsIntroSection() {
       }
     }
 
+    const getRevealImageMatchTransform = () => {
+      const sourceImage = manufacturingImageRef.current
+      const targetImage = revealImageRef.current
+      if (!sourceImage || !targetImage) return { x: 0, y: 0, scaleX: 1, scaleY: 1 }
+
+      const sourceRect = sourceImage.getBoundingClientRect()
+      const targetRect = targetImage.getBoundingClientRect()
+      if (!sourceRect.width || !sourceRect.height || !targetRect.width || !targetRect.height) {
+        return { x: 0, y: 0, scaleX: 1, scaleY: 1 }
+      }
+
+      const sourceCenterX = sourceRect.left + sourceRect.width / 2
+      const sourceCenterY = sourceRect.top + sourceRect.height / 2
+      const targetCenterX = targetRect.left + targetRect.width / 2
+      const targetCenterY = targetRect.top + targetRect.height / 2
+
+      return {
+        x: sourceCenterX - targetCenterX,
+        y: sourceCenterY - targetCenterY,
+        scaleX: sourceRect.width / targetRect.width,
+        scaleY: sourceRect.height / targetRect.height,
+      }
+    }
+
+    let manufacturingZoomTarget = { x: 0, y: 0, scale: 1 }
+    let revealImageMatch = { x: 0, y: 0, scaleX: 1, scaleY: 1 }
+
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: section,
         start: 'top top',
         end: '+=5200',
-        scrub: 0.7,
+        scrub: 1.1,
         pin: true,
         anticipatePin: 2,
         invalidateOnRefresh: true,
@@ -372,49 +403,35 @@ export default function EmissionsIntroSection() {
     )
 
     // Final manufacturing zoom into reveal.
+    tl.add(() => {
+      manufacturingZoomTarget = getManufacturingZoomTarget()
+    })
     tl.to(
       manufacturingCard,
       {
-        x: () => getManufacturingZoomTarget().x,
-        y: () => getManufacturingZoomTarget().y,
-        scale: () => getManufacturingZoomTarget().scale,
+        x: () => manufacturingZoomTarget.x,
+        y: () => manufacturingZoomTarget.y,
+        scale: () => manufacturingZoomTarget.scale,
         transformOrigin: 'center center',
-        duration: 1.7,
-        ease: 'power2.inOut',
+        duration: 2.1,
+        ease: 'none',
       },
       '>'
     )
 
-    // Clean handoff: match reveal image to the card's exact live bounds first.
+    // Hard cut handoff: keep reveal image exactly same size as final card frame.
     tl.add(() => {
-      const sourceRect = manufacturingImageRef.current?.getBoundingClientRect()
-      const targetRect = revealImage.getBoundingClientRect()
-      if (!sourceRect || !targetRect.width || !targetRect.height) return
-
-      const sourceCenterX = sourceRect.left + sourceRect.width / 2
-      const sourceCenterY = sourceRect.top + sourceRect.height / 2
-      const targetCenterX = targetRect.left + targetRect.width / 2
-      const targetCenterY = targetRect.top + targetRect.height / 2
-
-      gsap.set(revealImage, {
-        x: sourceCenterX - targetCenterX,
-        y: sourceCenterY - targetCenterY,
-        scaleX: sourceRect.width / targetRect.width,
-        scaleY: sourceRect.height / targetRect.height,
-      })
+      revealImageMatch = getRevealImageMatchTransform()
     })
-
-    tl.set(revealWrap, { autoAlpha: 1 })
-    tl.set(manufacturingCard, { autoAlpha: 0 })
-
-    tl.to(revealImage, {
-      x: 0,
-      y: 0,
-      scaleX: 1,
-      scaleY: 1,
-      duration: 1.05,
-      ease: 'power1.out',
+    tl.set(revealImage, {
+      x: () => revealImageMatch.x,
+      y: () => revealImageMatch.y,
+      scaleX: () => revealImageMatch.scaleX,
+      scaleY: () => revealImageMatch.scaleY,
+      opacity: 1,
     })
+    tl.set(revealWrap, { autoAlpha: 1 }, '>')
+    tl.set(manufacturingCard, { autoAlpha: 0 }, '>')
 
     // Text appears after the image expansion is established.
     tl.to(
@@ -425,7 +442,7 @@ export default function EmissionsIntroSection() {
         duration: 0.85,
         ease: 'power2.out',
       },
-      '>-0.1'
+      '+=0.14'
     )
 
     tl.to(
@@ -455,8 +472,7 @@ export default function EmissionsIntroSection() {
         }
       )
 
-      // Line-up handoff: current goes up while next rises from below.
-      tl.set(nextStage, { autoAlpha: 1 })
+      // Strict handoff: current exits first, then next enters (prevents overlap).
       tl.to(
         currentStage,
         {
@@ -466,6 +482,8 @@ export default function EmissionsIntroSection() {
           ease: 'none',
         }
       )
+      tl.set(currentStage, { autoAlpha: 0 }, '>')
+      tl.set(nextStage, { autoAlpha: 1 }, '>')
       tl.to(
         nextImage,
         {
@@ -474,9 +492,8 @@ export default function EmissionsIntroSection() {
           duration: 0.95,
           ease: 'none',
         },
-        '<+0.45'
+        '>'
       )
-      tl.set(currentStage, { autoAlpha: 0 }, '>')
       tl.to(
         nextTitle,
         {
@@ -559,10 +576,11 @@ export default function EmissionsIntroSection() {
   }, [])
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative w-full overflow-hidden bg-black px-6 py-16 md:px-[5%] md:py-24"
-    >
+    <>
+      <section
+        ref={sectionRef}
+        className="relative w-full overflow-hidden bg-black px-6 py-16 md:px-[5%] md:py-24"
+      >
       <div
         ref={contentWrapRef}
         className="mx-auto flex min-h-[540px] w-full max-w-7xl flex-col justify-center gap-12 md:min-h-[640px] md:flex-row md:items-center md:gap-8"
@@ -607,7 +625,7 @@ export default function EmissionsIntroSection() {
 
       <div ref={revealWrapRef} className="pointer-events-none absolute inset-0 z-20">
         <div className="mx-auto flex h-full w-full max-w-7xl items-center px-8 py-8 md:px-14 md:py-10">
-          <div className="w-full md:-translate-y-20">
+          <div className="relative w-full md:-translate-y-20">
             <div
               ref={revealTitleRef}
               className="relative z-20 mx-auto -mb-6 w-full max-w-[920px] -translate-y-2 text-center md:-mb-10 md:-translate-y-7"
@@ -861,6 +879,8 @@ export default function EmissionsIntroSection() {
           </div>
         </div>
       </div>
-    </section>
+      </section>
+      <OrbitalScrollAnimationSection />
+    </>
   )
 }
