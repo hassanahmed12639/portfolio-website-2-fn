@@ -4,35 +4,58 @@ import { useEffect, useRef } from 'react'
 
 export default function OpportunityOrbitSection() {
   const scrollTrackRef = useRef<HTMLDivElement>(null)
+  const sectionSlotRef = useRef<HTMLDivElement>(null)
+  const pinSpacerRef = useRef<HTMLDivElement>(null)
   const sectionRef = useRef<HTMLElement>(null)
   const radarContainerRef = useRef<HTMLDivElement>(null)
   const radarRef = useRef<HTMLDivElement>(null)
   const sweepGradientRef = useRef<HTMLDivElement>(null)
+  const progressIndicatorRef = useRef<HTMLDivElement>(null)
+  const progressBarRef = useRef<HTMLDivElement>(null)
+  const progressLabelRef = useRef<HTMLSpanElement>(null)
 
   useEffect(() => {
     const scrollTrack = scrollTrackRef.current
+    const sectionSlot = sectionSlotRef.current
+    const pinSpacer = pinSpacerRef.current
     const section = sectionRef.current
     const radarContainer = radarContainerRef.current
     const radar = radarRef.current
     const sweepGradient = sweepGradientRef.current
+    const progressIndicator = progressIndicatorRef.current
+    const progressBar = progressBarRef.current
+    const progressLabel = progressLabelRef.current
 
-    if (!scrollTrack || !section || !radarContainer || !radar || !sweepGradient) return
+    if (
+      !scrollTrack ||
+      !sectionSlot ||
+      !pinSpacer ||
+      !section ||
+      !radarContainer ||
+      !radar ||
+      !sweepGradient ||
+      !progressIndicator ||
+      !progressBar ||
+      !progressLabel
+    ) {
+      return
+    }
 
     const radarCircles = Array.from(radar.querySelectorAll<HTMLDivElement>('.radar-circle'))
     const radarDots = Array.from(radar.querySelectorAll<HTMLDivElement>('.radar-dot'))
     const circleFills = Array.from(radar.querySelectorAll<HTMLDivElement>('.circle-fill'))
 
+    const scannedDots = new Set<string>()
+    const PIN_SCROLL_MULTIPLIER = 2
+    let pinDistance = window.innerHeight * PIN_SCROLL_MULTIPLIER
     let isAutoRotating = false
     let autoRotationAngle = 0
     let animationFrameId: number | null = null
-    let firstRotationComplete = false
-    const scannedDots = new Set<string>()
-
-    const radarScale = radar.clientWidth / 390
 
     radarDots.forEach((dot, index) => {
       const angle = Number.parseFloat(dot.dataset.angle ?? '0')
       const distance = Number.parseFloat(dot.dataset.distance ?? '0')
+      const radarScale = radar.clientWidth / 390
       const radians = (angle - 90) * (Math.PI / 180)
       const x = Math.cos(radians) * (distance * 1.68 * radarScale)
       const y = Math.sin(radians) * (distance * 1.68 * radarScale)
@@ -72,19 +95,43 @@ export default function OpportunityOrbitSection() {
       })
     }
 
+    const resetDots = () => {
+      scannedDots.clear()
+      radarDots.forEach((dot) => {
+        dot.classList.remove('detected')
+        dot.classList.remove('active')
+      })
+    }
+
+    const applyRadarSweep = (rotation: number, shouldFill = true) => {
+      sweepGradient.style.transform = `rotate(${rotation}deg)`
+      circleFills.forEach((fill) => {
+        if (shouldFill) {
+          fill.style.background = `conic-gradient(from 0deg at 50% 50%, rgba(200, 230, 100, 0.10) 0deg, rgba(200, 230, 100, 0.10) ${rotation}deg, transparent ${rotation}deg, transparent 360deg)`
+        } else {
+          fill.style.background = 'transparent'
+        }
+      })
+    }
+
+    const stopAutoRotation = () => {
+      isAutoRotating = false
+      if (animationFrameId !== null) {
+        window.cancelAnimationFrame(animationFrameId)
+        animationFrameId = null
+      }
+    }
+
     const startAutoRotation = () => {
       if (isAutoRotating) return
       isAutoRotating = true
 
       const animate = () => {
         if (!isAutoRotating) return
-        autoRotationAngle += 2
+        autoRotationAngle += 1.8
         if (autoRotationAngle >= 360) autoRotationAngle = 0
 
-        sweepGradient.style.transform = `rotate(${autoRotationAngle}deg)`
-        circleFills.forEach((fill) => {
-          fill.style.background = `conic-gradient(from 0deg at 50% 50%, rgba(200, 230, 100, 0.10) 0deg, rgba(200, 230, 100, 0.10) ${autoRotationAngle}deg, transparent ${autoRotationAngle}deg, transparent 360deg)`
-        })
+        applyRadarSweep(autoRotationAngle, true)
         updateDots(autoRotationAngle)
         animationFrameId = window.requestAnimationFrame(animate)
       }
@@ -92,18 +139,51 @@ export default function OpportunityOrbitSection() {
       animate()
     }
 
+    const applyPinLayoutSizing = () => {
+      const sectionHeight = section.getBoundingClientRect().height
+      pinDistance = window.innerHeight * PIN_SCROLL_MULTIPLIER
+      sectionSlot.style.height = `${sectionHeight}px`
+      pinSpacer.style.height = `${pinDistance}px`
+      scrollTrack.style.minHeight = `${sectionHeight + pinDistance}px`
+    }
+
+    const updatePinnedState = (pinProgress: number) => {
+      if (pinProgress <= 0) {
+        section.style.position = 'absolute'
+        section.style.top = '0px'
+        section.style.left = '0px'
+        section.style.width = '100%'
+      } else if (pinProgress < 1) {
+        section.style.position = 'fixed'
+        section.style.top = '0px'
+        section.style.left = '0px'
+        section.style.width = '100%'
+      } else {
+        section.style.position = 'absolute'
+        section.style.top = `${pinDistance}px`
+        section.style.left = '0px'
+        section.style.width = '100%'
+      }
+      section.style.zIndex = '20'
+    }
+
+    const updateProgressIndicator = (pinProgress: number) => {
+      const progressPercent = Math.round(pinProgress * 100)
+      const isPinned = pinProgress > 0 && pinProgress < 1
+      progressIndicator.style.opacity = isPinned ? '1' : '0'
+      progressBar.style.width = `${progressPercent}%`
+      progressLabel.textContent = `${progressPercent}%`
+    }
+
     const updateRadar = () => {
       const trackRect = scrollTrack.getBoundingClientRect()
-      const viewportHeight = window.innerHeight
-      const totalTravel = scrollTrack.offsetHeight + viewportHeight
-      const traveled = viewportHeight - trackRect.top
-      const scrollProgress = Math.max(0, Math.min(1, traveled / totalTravel))
-      const revealPortion = 0.28
-      const sweepPortion = 0.52
-      const autoTriggerPortion = 0.9
-      const revealProgress = Math.max(0, Math.min(1, scrollProgress / revealPortion))
-      const radarProgress = Math.max(0, Math.min(1, (scrollProgress - revealPortion) / sweepPortion))
-      const rotation = radarProgress * 360
+      const pinProgress = Math.max(0, Math.min(1, -trackRect.top / pinDistance))
+      const revealPortion = 0.3
+      const revealProgress = Math.max(0, Math.min(1, pinProgress / revealPortion))
+      const rotation = pinProgress * 360
+
+      updatePinnedState(pinProgress)
+      updateProgressIndicator(pinProgress)
 
       radarCircles.forEach((circle, index) => {
         const layerProgress = Math.max(0, Math.min(1, revealProgress * radarCircles.length - index))
@@ -111,58 +191,29 @@ export default function OpportunityOrbitSection() {
         circle.style.transform = `translate(-50%, -50%) scale(${0.96 + layerProgress * 0.04})`
       })
 
-      if (radarProgress >= 1 && !firstRotationComplete) {
-        firstRotationComplete = true
-      }
-
-      if (firstRotationComplete && scrollProgress >= autoTriggerPortion && !isAutoRotating) {
-        autoRotationAngle = 0
-        startAutoRotation()
+      if (pinProgress <= 0) {
+        stopAutoRotation()
+        applyRadarSweep(0, false)
+        resetDots()
         return
       }
-      if (isAutoRotating) return
 
-      sweepGradient.style.transform = `rotate(${rotation}deg)`
-      circleFills.forEach((fill) => {
-        if (radarProgress > 0) {
-          fill.style.background = `conic-gradient(from 0deg at 50% 50%, rgba(200, 230, 100, 0.10) 0deg, rgba(200, 230, 100, 0.10) ${rotation}deg, transparent ${rotation}deg, transparent 360deg)`
-        } else {
-          fill.style.background = 'transparent'
+      if (pinProgress >= 1) {
+        if (!isAutoRotating) {
+          autoRotationAngle = 0
+          resetDots()
+          startAutoRotation()
         }
-      })
+        return
+      }
 
+      if (isAutoRotating) {
+        stopAutoRotation()
+      }
+
+      applyRadarSweep(rotation, true)
       const currentAngle = rotation % 360
-      const sweepWidth = 30
-      radarDots.forEach((dot) => {
-        const dotAngle = Number.parseFloat(dot.dataset.angle ?? '0')
-        const dotIndex = dot.dataset.index ?? ''
-
-        if (radarProgress <= 0) {
-          dot.classList.remove('detected')
-          dot.classList.remove('active')
-          scannedDots.delete(dotIndex)
-          return
-        }
-
-        const angleDiff = (dotAngle - currentAngle + 360) % 360
-        const isSweepOver = angleDiff <= sweepWidth
-
-        if (isSweepOver) {
-          scannedDots.add(dotIndex)
-          dot.classList.add('detected')
-          dot.classList.add('active')
-          return
-        }
-
-        if (scannedDots.has(dotIndex)) {
-          dot.classList.add('detected')
-          dot.classList.remove('active')
-          return
-        }
-
-        dot.classList.remove('detected')
-        dot.classList.remove('active')
-      })
+      updateDots(currentAngle)
     }
 
     let ticking = false
@@ -176,19 +227,32 @@ export default function OpportunityOrbitSection() {
     }
 
     window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', applyPinLayoutSizing)
+    applyPinLayoutSizing()
     updateRadar()
 
     return () => {
       window.removeEventListener('scroll', onScroll)
-      isAutoRotating = false
-      if (animationFrameId !== null) window.cancelAnimationFrame(animationFrameId)
+      window.removeEventListener('resize', applyPinLayoutSizing)
+      stopAutoRotation()
     }
   }, [])
 
   return (
-    <div ref={scrollTrackRef} className="relative h-[260vh] bg-[#f2f2f0] md:h-[300vh]">
-      <section ref={sectionRef} className="sticky top-0 h-[170vh] w-full overflow-hidden bg-[#f2f2f0] px-6 py-14 md:h-[180vh] md:px-[5%] md:py-24">
-      <div className="mx-auto flex min-h-[170vh] w-full max-w-7xl items-center md:min-h-[180vh]">
+    <div ref={scrollTrackRef} className="relative bg-[#f2f2f0]">
+      <div ref={sectionSlotRef} aria-hidden />
+      <div ref={pinSpacerRef} aria-hidden />
+      <section ref={sectionRef} className="h-[130vh] w-full overflow-hidden bg-[#f2f2f0] px-6 py-8 md:h-[140vh] md:px-[5%] md:py-12">
+      <div ref={progressIndicatorRef} className="pointer-events-none absolute left-1/2 top-6 z-30 w-[220px] -translate-x-1/2 rounded-full bg-black/10 px-3 py-2 opacity-0 transition-opacity duration-200">
+        <div className="mb-1 flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.12em] text-black/55">
+          <span>Radar progress</span>
+          <span ref={progressLabelRef}>0%</span>
+        </div>
+        <div className="h-1.5 overflow-hidden rounded-full bg-black/10">
+          <div ref={progressBarRef} className="h-full w-0 rounded-full bg-[#c8e664] transition-[width] duration-75" />
+        </div>
+      </div>
+      <div className="mx-auto flex min-h-[130vh] w-full max-w-7xl items-center md:min-h-[140vh]">
         <div className="absolute left-2 top-1/2 hidden -translate-y-1/2 flex-col items-center gap-3 md:flex">
           <span className="h-[5px] w-[5px] rounded-full bg-[#cfff3f]" />
           <span className="h-[5px] w-[5px] rounded-full border border-black/20" />
@@ -203,7 +267,7 @@ export default function OpportunityOrbitSection() {
           <div className="hidden max-w-[520px] md:pl-12">
           </div>
 
-          <div className="relative mx-auto h-[460px] w-full max-w-[680px] md:h-[620px] md:max-w-[760px]">
+          <div className="relative mx-auto -mt-16 h-[460px] w-full max-w-[680px] md:-mt-20 md:h-[620px] md:max-w-[760px]">
             <div ref={radarContainerRef} className="radar-container">
               <div className="radar-sticky">
                 <div ref={radarRef} className="radar">
