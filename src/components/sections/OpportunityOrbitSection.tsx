@@ -187,8 +187,8 @@ export default function OpportunityOrbitSection() {
 
   return (
     <div ref={scrollTrackRef} className="relative h-[260vh] bg-[#f2f2f0] md:h-[300vh]">
-      <section ref={sectionRef} className="sticky top-0 h-screen w-full overflow-hidden bg-[#f2f2f0] px-6 py-14 md:px-[5%] md:py-24">
-      <div className="mx-auto flex min-h-screen w-full max-w-7xl items-center">
+      <section ref={sectionRef} className="sticky top-0 h-[170vh] w-full overflow-hidden bg-[#f2f2f0] px-6 py-14 md:h-[180vh] md:px-[5%] md:py-24">
+      <div className="mx-auto flex min-h-[170vh] w-full max-w-7xl items-center md:min-h-[180vh]">
         <div className="absolute left-2 top-1/2 hidden -translate-y-1/2 flex-col items-center gap-3 md:flex">
           <span className="h-[5px] w-[5px] rounded-full bg-[#cfff3f]" />
           <span className="h-[5px] w-[5px] rounded-full border border-black/20" />
