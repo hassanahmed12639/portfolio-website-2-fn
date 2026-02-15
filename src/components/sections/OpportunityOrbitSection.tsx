@@ -28,12 +28,14 @@ export default function OpportunityOrbitSection() {
     let firstRotationComplete = false
     const scannedDots = new Set<string>()
 
+    const radarScale = radar.clientWidth / 390
+
     radarDots.forEach((dot, index) => {
       const angle = Number.parseFloat(dot.dataset.angle ?? '0')
       const distance = Number.parseFloat(dot.dataset.distance ?? '0')
       const radians = (angle - 90) * (Math.PI / 180)
-      const x = Math.cos(radians) * (distance * 1.68)
-      const y = Math.sin(radians) * (distance * 1.68)
+      const x = Math.cos(radians) * (distance * 1.68 * radarScale)
+      const y = Math.sin(radians) * (distance * 1.68 * radarScale)
       dot.style.left = `calc(50% + ${x}px)`
       dot.style.top = `calc(50% + ${y}px)`
       dot.dataset.index = String(index)
@@ -197,14 +199,11 @@ export default function OpportunityOrbitSection() {
           DISCOVER
         </p>
 
-        <div className="grid w-full items-center gap-12 md:grid-cols-[1fr_1.2fr] md:gap-6">
-          <div className="max-w-[520px] md:pl-12">
-            <h2 className="text-[30px] font-semibold leading-[1.1] text-[#202020] md:text-[42px]">
-              Investing in Opportunity
-            </h2>
+        <div className="grid w-full items-center justify-items-center gap-12 md:gap-6">
+          <div className="hidden max-w-[520px] md:pl-12">
           </div>
 
-          <div className="relative mx-auto h-[400px] w-full max-w-[560px] md:h-[500px]">
+          <div className="relative mx-auto h-[460px] w-full max-w-[680px] md:h-[620px] md:max-w-[760px]">
             <div ref={radarContainerRef} className="radar-container">
               <div className="radar-sticky">
                 <div ref={radarRef} className="radar">
@@ -259,8 +258,8 @@ export default function OpportunityOrbitSection() {
         }
 
         .radar {
-          width: 390px;
-          height: 390px;
+          width: 520px;
+          height: 520px;
           position: relative;
         }
 
