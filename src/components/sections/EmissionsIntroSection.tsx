@@ -45,6 +45,9 @@ const HEADLINE_LINES = [
   'a landscape of opportunity.',
 ]
 
+const FINAL_MESSAGE_LINE_1 = ['This', 'is', 'energy', 'innovation']
+const FINAL_MESSAGE_LINE_2 = ['on', 'a', 'global', 'scale']
+
 export default function EmissionsIntroSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
@@ -71,6 +74,8 @@ export default function EmissionsIntroSection() {
   const buildingsTitleRef = useRef<HTMLDivElement>(null)
   const buildingsImageRef = useRef<HTMLImageElement>(null)
   const buildingsCopyRef = useRef<HTMLDivElement>(null)
+  const messageStageRef = useRef<HTMLDivElement>(null)
+  const messageTextRef = useRef<HTMLDivElement>(null)
   const cardRefs = useRef<Array<HTMLDivElement | null>>([])
 
   useEffect(() => {
@@ -100,6 +105,8 @@ export default function EmissionsIntroSection() {
     const buildingsTitle = buildingsTitleRef.current
     const buildingsImage = buildingsImageRef.current
     const buildingsCopy = buildingsCopyRef.current
+    const messageStage = messageStageRef.current
+    const messageText = messageTextRef.current
     const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[]
     if (
       !section ||
@@ -126,6 +133,8 @@ export default function EmissionsIntroSection() {
       !buildingsTitle ||
       !buildingsImage ||
       !buildingsCopy ||
+      !messageStage ||
+      !messageText ||
       cards.length !== CARDS.length
     )
       return
@@ -160,6 +169,9 @@ export default function EmissionsIntroSection() {
     gsap.set(buildingsTitle, { y: 22, opacity: 0 })
     gsap.set(buildingsImage, { y: 180, scale: 0.9, transformOrigin: 'center center' })
     gsap.set(buildingsCopy, { y: 20, opacity: 0 })
+    gsap.set(messageStage, { autoAlpha: 0 })
+    const messageWords = Array.from(messageText.querySelectorAll<HTMLElement>('.message-word'))
+    gsap.set(messageWords, { autoAlpha: 0 })
     const [firstLine, ...otherLines] = lines
     gsap.set(firstLine, { x: 0, opacity: 1 })
     gsap.set(otherLines, { x: -48, opacity: 0 })
@@ -232,7 +244,7 @@ export default function EmissionsIntroSection() {
       scrollTrigger: {
         trigger: section,
         start: 'top top',
-        end: '+=4200',
+        end: '+=5200',
         scrub: 0.7,
         pin: true,
         anticipatePin: 2,
@@ -435,35 +447,36 @@ export default function EmissionsIntroSection() {
       nextTitle: HTMLDivElement,
       nextCopy: HTMLDivElement
     ) => {
-      // Hold the current stage briefly before changing cards.
+      // Hold current card for extra scroll distance (2-3 wheel steps feel).
       tl.to(
         {},
         {
-          duration: 0.75,
+          duration: 0.9,
         }
       )
 
+      // Line-up handoff: current goes up while next rises from below.
+      tl.set(nextStage, { autoAlpha: 1 })
       tl.to(
         currentStage,
         {
           y: -520,
           scale: 0.92,
-          duration: 0.9,
+          duration: 0.95,
           ease: 'none',
         }
       )
-      tl.set(currentStage, { autoAlpha: 0 })
-
-      tl.set(nextStage, { autoAlpha: 1 })
       tl.to(
         nextImage,
         {
           y: 0,
           scale: 1,
-          duration: 0.85,
+          duration: 0.95,
           ease: 'none',
-        }
+        },
+        '<+0.45'
       )
+      tl.set(currentStage, { autoAlpha: 0 }, '>')
       tl.to(
         nextTitle,
         {
@@ -472,7 +485,7 @@ export default function EmissionsIntroSection() {
           duration: 0.55,
           ease: 'power2.out',
         },
-        '<+0.1'
+        '<+0.12'
       )
       tl.to(
         nextCopy,
@@ -509,13 +522,35 @@ export default function EmissionsIntroSection() {
       buildingsCopy
     )
 
-    // Hold final stage briefly.
+    // Hold final card briefly before revealing the statement section.
+    tl.to({}, { duration: 0.7 })
+
+    tl.add('finalMessageStart')
+    tl.set(messageStage, { autoAlpha: 1 }, 'finalMessageStart')
     tl.to(
-      {},
+      buildingsStage,
       {
-        duration: 0.9,
-      }
+        y: -540,
+        scale: 0.94,
+        duration: 2.2,
+        ease: 'none',
+      },
+      'finalMessageStart'
     )
+
+    // Reveal words while the final card section is moving up.
+    messageWords.forEach((word, index) => {
+      tl.set(
+        word,
+        { autoAlpha: 1 },
+        `finalMessageStart+=${0.22 + index * 0.22}`
+      )
+    })
+
+    tl.set(buildingsStage, { autoAlpha: 0 }, 'finalMessageStart+=2.2')
+
+    // Hold the full sentence on screen before unpin.
+    tl.to({}, { duration: 0.7 })
 
     return () => {
       tl.scrollTrigger?.kill()
@@ -570,7 +605,7 @@ export default function EmissionsIntroSection() {
         </div>
       </div>
 
-      <div ref={revealWrapRef} className="pointer-events-none absolute inset-0">
+      <div ref={revealWrapRef} className="pointer-events-none absolute inset-0 z-20">
         <div className="mx-auto flex h-full w-full max-w-7xl items-center px-8 py-8 md:px-14 md:py-10">
           <div className="w-full md:-translate-y-20">
             <div
@@ -600,10 +635,10 @@ export default function EmissionsIntroSection() {
                 ref={revealCopyRef}
                 className="absolute inset-0 flex flex-col justify-end p-6 text-white md:p-10"
               >
-                <span className="mb-4 inline-flex rounded-full bg-white/20 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm">
+                <span className="mb-4 inline-flex w-fit self-start rounded-full border border-white/70 bg-black/35 px-3 py-1 text-sm font-semibold text-white backdrop-blur-sm">
                   30% emissions
                 </span>
-                <p className="max-w-[650px] text-xl font-semibold leading-[1.3] text-white md:text-[40px]">
+                <p className="max-w-[340px] text-[16px] font-semibold leading-[1.3] text-white md:max-w-[420px]">
                   The clean industrial revolution starts with transforming how we make everything in
                   the world from steel and cement to everyday materials.
                 </p>
@@ -615,7 +650,7 @@ export default function EmissionsIntroSection() {
         </div>
       </div>
 
-      <div ref={electricityStageRef} className="pointer-events-none absolute inset-0">
+      <div ref={electricityStageRef} className="pointer-events-none absolute inset-0 z-20">
         <div className="mx-auto flex h-full w-full max-w-7xl items-center px-8 py-8 md:px-14 md:py-10">
           <div className="w-full md:-translate-y-20">
             <div
@@ -645,10 +680,10 @@ export default function EmissionsIntroSection() {
                 ref={electricityCopyRef}
                 className="absolute inset-0 flex flex-col justify-end p-6 text-white md:p-10"
               >
-                <span className="mb-4 inline-flex rounded-full bg-white/20 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm">
+                <span className="mb-4 inline-flex w-fit self-start rounded-full border border-white/70 bg-black/35 px-3 py-1 text-sm font-semibold text-white backdrop-blur-sm">
                   28% emissions
                 </span>
-                <p className="max-w-[650px] text-xl font-semibold leading-[1.3] text-white md:text-[40px]">
+                <p className="max-w-[340px] text-[16px] font-semibold leading-[1.3] text-white md:max-w-[420px]">
                   The world must build 21st century grids while delivering energy abundance - clean,
                   affordable, and reliable power for everyone.
                 </p>
@@ -660,7 +695,7 @@ export default function EmissionsIntroSection() {
         </div>
       </div>
 
-      <div ref={agricultureStageRef} className="pointer-events-none absolute inset-0">
+      <div ref={agricultureStageRef} className="pointer-events-none absolute inset-0 z-20">
         <div className="mx-auto flex h-full w-full max-w-7xl items-center px-8 py-8 md:px-14 md:py-10">
           <div className="w-full md:-translate-y-20">
             <div
@@ -690,10 +725,10 @@ export default function EmissionsIntroSection() {
                 ref={agricultureCopyRef}
                 className="absolute inset-0 flex flex-col justify-end p-6 text-white md:p-10"
               >
-                <span className="mb-4 inline-flex rounded-full bg-white/20 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm">
+                <span className="mb-4 inline-flex w-fit self-start rounded-full border border-white/70 bg-black/35 px-3 py-1 text-sm font-semibold text-white backdrop-blur-sm">
                   19% emissions
                 </span>
-                <p className="max-w-[650px] text-xl font-semibold leading-[1.3] text-white md:text-[40px]">
+                <p className="max-w-[340px] text-[16px] font-semibold leading-[1.3] text-white md:max-w-[420px]">
                   From growing rice to raising cattle, innovating how we feed ourselves is a prime
                   opportunity. Meet the innovators who will feed the world for decades to come.
                 </p>
@@ -705,7 +740,7 @@ export default function EmissionsIntroSection() {
         </div>
       </div>
 
-      <div ref={transportationStageRef} className="pointer-events-none absolute inset-0">
+      <div ref={transportationStageRef} className="pointer-events-none absolute inset-0 z-20">
         <div className="mx-auto flex h-full w-full max-w-7xl items-center px-8 py-8 md:px-14 md:py-10">
           <div className="w-full md:-translate-y-20">
             <div
@@ -735,10 +770,10 @@ export default function EmissionsIntroSection() {
                 ref={transportationCopyRef}
                 className="absolute inset-0 flex flex-col justify-end p-6 text-white md:p-10"
               >
-                <span className="mb-4 inline-flex rounded-full bg-white/20 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm">
+                <span className="mb-4 inline-flex w-fit self-start rounded-full border border-white/70 bg-black/35 px-3 py-1 text-sm font-semibold text-white backdrop-blur-sm">
                   25% emissions
                 </span>
-                <p className="max-w-[650px] text-xl font-semibold leading-[1.3] text-white md:text-[40px]">
+                <p className="max-w-[340px] text-[16px] font-semibold leading-[1.3] text-white md:max-w-[420px]">
                   Revolutionizing how people and goods move around the world with clean, efficient
                   transportation solutions.
                 </p>
@@ -750,7 +785,7 @@ export default function EmissionsIntroSection() {
         </div>
       </div>
 
-      <div ref={buildingsStageRef} className="pointer-events-none absolute inset-0">
+      <div ref={buildingsStageRef} className="pointer-events-none absolute inset-0 z-20">
         <div className="mx-auto flex h-full w-full max-w-7xl items-center px-8 py-8 md:px-14 md:py-10">
           <div className="w-full md:-translate-y-20">
             <div
@@ -780,16 +815,48 @@ export default function EmissionsIntroSection() {
                 ref={buildingsCopyRef}
                 className="absolute inset-0 flex flex-col justify-end p-6 text-white md:p-10"
               >
-                <span className="mb-4 inline-flex rounded-full bg-white/20 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm">
+                <span className="mb-4 inline-flex w-fit self-start rounded-full border border-white/70 bg-black/35 px-3 py-1 text-sm font-semibold text-white backdrop-blur-sm">
                   22% emissions
                 </span>
-                <p className="max-w-[650px] text-xl font-semibold leading-[1.3] text-white md:text-[40px]">
+                <p className="max-w-[340px] text-[16px] font-semibold leading-[1.3] text-white md:max-w-[420px]">
                   Creating sustainable spaces where we live and work, reducing energy consumption
                   while improving comfort and efficiency.
                 </p>
               </div>
             </div>
             <div className="mt-6 flex justify-center md:mt-8">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        ref={messageStageRef}
+        className="pointer-events-none absolute inset-0 z-10 grid place-items-center"
+      >
+        <div className="w-full px-6 md:px-10">
+          <div
+            ref={messageTextRef}
+            className="mx-auto max-w-[780px] text-center text-[46px] font-semibold leading-[1.1] tracking-[-0.02em] text-white md:text-[64px]"
+          >
+            <div className="flex flex-wrap items-center justify-center gap-x-3 md:gap-x-4">
+              {FINAL_MESSAGE_LINE_1.map((word) => (
+                <span
+                  key={word}
+                  className={`message-word inline-block ${
+                    word === 'energy' || word === 'innovation' ? 'text-[#d7ff4c]' : 'text-white'
+                  }`}
+                >
+                  {word}
+                </span>
+              ))}
+            </div>
+            <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 md:mt-3 md:gap-x-4">
+              {FINAL_MESSAGE_LINE_2.map((word) => (
+                <span key={word} className="message-word inline-block text-white">
+                  {word}
+                </span>
+              ))}
             </div>
           </div>
         </div>
