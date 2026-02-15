@@ -758,23 +758,23 @@ export default function EmissionsIntroSection() {
 
       <div ref={revealWrapRef} className="pointer-events-none absolute inset-0">
         <div className="mx-auto flex h-full w-full max-w-7xl items-center px-8 py-8 md:px-14 md:py-10">
-          <div className="w-full">
+          <div className="w-full md:-translate-y-20">
             <div
               ref={revealTitleRef}
-              className="relative z-20 mx-auto -mb-8 w-full max-w-[920px] md:-mb-12"
+              className="relative z-20 mx-auto -mb-6 w-full max-w-[920px] -translate-y-2 text-center md:-mb-10 md:-translate-y-7"
             >
               <h2 className="text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-white md:text-[110px]">
                 Manufacturing
               </h2>
               <h2
                 aria-hidden="true"
-                className="pointer-events-none absolute left-0 top-[22%] text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-[#d7ff4c] md:text-[110px]"
+                className="pointer-events-none absolute left-1/2 top-[22%] -translate-x-1/2 text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-[#d7ff4c] md:text-[110px]"
               >
                 Manufacturing
               </h2>
             </div>
 
-            <div className="relative z-10 mx-auto w-full max-w-[980px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:-translate-y-10">
+            <div className="relative z-10 mx-auto w-full max-w-[980px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)]">
               <img
                 ref={revealImageRef}
                 src={CARDS[0].src}
@@ -810,23 +810,23 @@ export default function EmissionsIntroSection() {
 
       <div ref={electricityStageRef} className="pointer-events-none absolute inset-0">
         <div className="mx-auto flex h-full w-full max-w-7xl items-center px-8 py-8 md:px-14 md:py-10">
-          <div className="w-full">
+          <div className="w-full md:-translate-y-20">
             <div
               ref={electricityTitleRef}
-              className="relative z-20 mx-auto -mb-8 w-full max-w-[920px] md:-mb-12"
+              className="relative z-20 mx-auto -mb-6 w-full max-w-[920px] -translate-y-2 text-center md:-mb-10 md:-translate-y-7"
             >
               <h2 className="text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-white md:text-[110px]">
                 Electricity
               </h2>
               <h2
                 aria-hidden="true"
-                className="pointer-events-none absolute left-0 top-[22%] text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-[#d7ff4c] md:text-[110px]"
+                className="pointer-events-none absolute left-1/2 top-[22%] -translate-x-1/2 text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-[#d7ff4c] md:text-[110px]"
               >
                 Electricity
               </h2>
             </div>
 
-            <div className="relative z-10 mx-auto w-full max-w-[980px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:-translate-y-10">
+            <div className="relative z-10 mx-auto w-full max-w-[980px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)]">
               <img
                 ref={electricityImageRef}
                 src={CARDS[1].src}
@@ -862,23 +862,23 @@ export default function EmissionsIntroSection() {
 
       <div ref={agricultureStageRef} className="pointer-events-none absolute inset-0">
         <div className="mx-auto flex h-full w-full max-w-7xl items-center px-8 py-8 md:px-14 md:py-10">
-          <div className="w-full">
+          <div className="w-full md:-translate-y-20">
             <div
               ref={agricultureTitleRef}
-              className="relative z-20 mx-auto -mb-8 w-full max-w-[920px] md:-mb-12"
+              className="relative z-20 mx-auto -mb-6 w-full max-w-[920px] -translate-y-2 text-center md:-mb-10 md:-translate-y-7"
             >
               <h2 className="text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-white md:text-[110px]">
                 Agriculture
               </h2>
               <h2
                 aria-hidden="true"
-                className="pointer-events-none absolute left-0 top-[22%] text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-[#d7ff4c] md:text-[110px]"
+                className="pointer-events-none absolute left-1/2 top-[22%] -translate-x-1/2 text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-[#d7ff4c] md:text-[110px]"
               >
                 Agriculture
               </h2>
             </div>
 
-            <div className="relative z-10 mx-auto w-full max-w-[980px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:-translate-y-10">
+            <div className="relative z-10 mx-auto w-full max-w-[980px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)]">
               <img
                 ref={agricultureImageRef}
                 src={CARDS[2].src}
@@ -914,23 +914,23 @@ export default function EmissionsIntroSection() {
 
       <div ref={transportationStageRef} className="pointer-events-none absolute inset-0">
         <div className="mx-auto flex h-full w-full max-w-7xl items-center px-8 py-8 md:px-14 md:py-10">
-          <div className="w-full">
+          <div className="w-full md:-translate-y-20">
             <div
               ref={transportationTitleRef}
-              className="relative z-20 mx-auto -mb-8 w-full max-w-[920px] md:-mb-12"
+              className="relative z-20 mx-auto -mb-6 w-full max-w-[920px] -translate-y-2 text-center md:-mb-10 md:-translate-y-7"
             >
               <h2 className="text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-white md:text-[110px]">
                 Transportation
               </h2>
               <h2
                 aria-hidden="true"
-                className="pointer-events-none absolute left-0 top-[22%] text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-[#d7ff4c] md:text-[110px]"
+                className="pointer-events-none absolute left-1/2 top-[22%] -translate-x-1/2 text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-[#d7ff4c] md:text-[110px]"
               >
                 Transportation
               </h2>
             </div>
 
-            <div className="relative z-10 mx-auto w-full max-w-[980px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:-translate-y-10">
+            <div className="relative z-10 mx-auto w-full max-w-[980px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)]">
               <img
                 ref={transportationImageRef}
                 src={CARDS[3].src}
@@ -966,23 +966,23 @@ export default function EmissionsIntroSection() {
 
       <div ref={buildingsStageRef} className="pointer-events-none absolute inset-0">
         <div className="mx-auto flex h-full w-full max-w-7xl items-center px-8 py-8 md:px-14 md:py-10">
-          <div className="w-full">
+          <div className="w-full md:-translate-y-20">
             <div
               ref={buildingsTitleRef}
-              className="relative z-20 mx-auto -mb-8 w-full max-w-[920px] md:-mb-12"
+              className="relative z-20 mx-auto -mb-6 w-full max-w-[920px] -translate-y-2 text-center md:-mb-10 md:-translate-y-7"
             >
               <h2 className="text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-white md:text-[110px]">
                 Buildings
               </h2>
               <h2
                 aria-hidden="true"
-                className="pointer-events-none absolute left-0 top-[22%] text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-[#d7ff4c] md:text-[110px]"
+                className="pointer-events-none absolute left-1/2 top-[22%] -translate-x-1/2 text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-[#d7ff4c] md:text-[110px]"
               >
                 Buildings
               </h2>
             </div>
 
-            <div className="relative z-10 mx-auto w-full max-w-[980px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:-translate-y-10">
+            <div className="relative z-10 mx-auto w-full max-w-[980px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)]">
               <img
                 ref={buildingsImageRef}
                 src={CARDS[4].src}
