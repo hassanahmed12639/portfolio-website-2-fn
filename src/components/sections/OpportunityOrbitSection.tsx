@@ -1,102 +1,192 @@
  'use client'
 
 import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import { registerGsapPlugins } from '../../lib/gsap'
 
 export default function OpportunityOrbitSection() {
+  const scrollTrackRef = useRef<HTMLDivElement>(null)
   const sectionRef = useRef<HTMLElement>(null)
-  const bodyTextRef = useRef<HTMLParagraphElement>(null)
-  const orbitWrapRef = useRef<HTMLDivElement>(null)
-  const orbitGlowRef = useRef<HTMLDivElement>(null)
-  const limeTopDotRef = useRef<HTMLDivElement>(null)
-  const limeRightDotRef = useRef<HTMLDivElement>(null)
-  const limeBottomDotRef = useRef<HTMLDivElement>(null)
-  const limeCenterDotRef = useRef<HTMLDivElement>(null)
-  const whiteDotRef = useRef<HTMLDivElement>(null)
+  const radarContainerRef = useRef<HTMLDivElement>(null)
+  const radarRef = useRef<HTMLDivElement>(null)
+  const sweepGradientRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    registerGsapPlugins()
-
+    const scrollTrack = scrollTrackRef.current
     const section = sectionRef.current
-    const bodyText = bodyTextRef.current
-    const orbitWrap = orbitWrapRef.current
-    const orbitGlow = orbitGlowRef.current
-    const limeTopDot = limeTopDotRef.current
-    const limeRightDot = limeRightDotRef.current
-    const limeBottomDot = limeBottomDotRef.current
-    const limeCenterDot = limeCenterDotRef.current
-    const whiteDot = whiteDotRef.current
+    const radarContainer = radarContainerRef.current
+    const radar = radarRef.current
+    const sweepGradient = sweepGradientRef.current
 
-    if (
-      !section ||
-      !bodyText ||
-      !orbitWrap ||
-      !orbitGlow ||
-      !limeTopDot ||
-      !limeRightDot ||
-      !limeBottomDot ||
-      !limeCenterDot ||
-      !whiteDot
-    ) {
-      return
-    }
+    if (!scrollTrack || !section || !radarContainer || !radar || !sweepGradient) return
 
-    gsap.set(orbitWrap, { transformOrigin: '50% 50%' })
-    gsap.set(orbitGlow, { autoAlpha: 0.16, rotate: -20, transformOrigin: '50% 50%' })
+    const radarCircles = Array.from(radar.querySelectorAll<HTMLDivElement>('.radar-circle'))
+    const radarDots = Array.from(radar.querySelectorAll<HTMLDivElement>('.radar-dot'))
+    const circleFills = Array.from(radar.querySelectorAll<HTMLDivElement>('.circle-fill'))
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: section,
-        start: 'top 78%',
-        end: 'bottom top',
-        scrub: 1,
-        invalidateOnRefresh: true,
-      },
+    let isAutoRotating = false
+    let autoRotationAngle = 0
+    let animationFrameId: number | null = null
+    let firstRotationComplete = false
+    const scannedDots = new Set<string>()
+
+    radarDots.forEach((dot, index) => {
+      const angle = Number.parseFloat(dot.dataset.angle ?? '0')
+      const distance = Number.parseFloat(dot.dataset.distance ?? '0')
+      const radians = (angle - 90) * (Math.PI / 180)
+      const x = Math.cos(radians) * (distance * 1.68)
+      const y = Math.sin(radians) * (distance * 1.68)
+      dot.style.left = `calc(50% + ${x}px)`
+      dot.style.top = `calc(50% + ${y}px)`
+      dot.dataset.index = String(index)
     })
 
-    // Text rises while orbit graphic stays in place.
-    tl.to(bodyText, { y: -250, ease: 'none', duration: 1 }, 0)
+    radarCircles.forEach((circle) => {
+      circle.style.opacity = '0'
+      circle.style.transform = 'translate(-50%, -50%) scale(0.96)'
+    })
 
-    const orbitState = { progress: 0 }
-    const positionDot = (el: HTMLDivElement, radius: number, angleDeg: number) => {
-      const angle = (angleDeg * Math.PI) / 180
-      gsap.set(el, {
-        x: Math.cos(angle) * radius,
-        y: Math.sin(angle) * radius,
+    const updateDots = (currentAngle: number) => {
+      const sweepWidth = 30
+      radarDots.forEach((dot) => {
+        const dotAngle = Number.parseFloat(dot.dataset.angle ?? '0')
+        const dotIndex = dot.dataset.index ?? ''
+        const angleDiff = (dotAngle - currentAngle + 360) % 360
+        const isSweepOver = angleDiff <= sweepWidth
+
+        if (isSweepOver) {
+          scannedDots.add(dotIndex)
+          dot.classList.add('detected')
+          dot.classList.add('active')
+          return
+        }
+
+        if (scannedDots.has(dotIndex)) {
+          dot.classList.add('detected')
+          dot.classList.remove('active')
+          return
+        }
+
+        dot.classList.remove('detected')
+        dot.classList.remove('active')
       })
     }
 
-    const renderOrbit = (p: number) => {
-      positionDot(limeTopDot, 132, -100 + p * 300)
-      positionDot(limeRightDot, 170, -30 + p * 235)
-      positionDot(limeBottomDot, 178, 60 + p * 325)
-      positionDot(limeCenterDot, 26, 42 + p * 260)
-      positionDot(whiteDot, 148, 112 + p * 210)
-      gsap.set(orbitGlow, { rotate: -18 + p * 72, autoAlpha: 0.12 + p * 0.2 })
+    const startAutoRotation = () => {
+      if (isAutoRotating) return
+      isAutoRotating = true
+
+      const animate = () => {
+        if (!isAutoRotating) return
+        autoRotationAngle += 2
+        if (autoRotationAngle >= 360) autoRotationAngle = 0
+
+        sweepGradient.style.transform = `rotate(${autoRotationAngle}deg)`
+        circleFills.forEach((fill) => {
+          fill.style.background = `conic-gradient(from 0deg at 50% 50%, rgba(200, 230, 100, 0.10) 0deg, rgba(200, 230, 100, 0.10) ${autoRotationAngle}deg, transparent ${autoRotationAngle}deg, transparent 360deg)`
+        })
+        updateDots(autoRotationAngle)
+        animationFrameId = window.requestAnimationFrame(animate)
+      }
+
+      animate()
     }
 
-    renderOrbit(0)
-    tl.to(
-      orbitState,
-      {
-        progress: 1,
-        duration: 1,
-        ease: 'none',
-        onUpdate: () => renderOrbit(orbitState.progress),
-      },
-      0
-    )
+    const updateRadar = () => {
+      const trackRect = scrollTrack.getBoundingClientRect()
+      const viewportHeight = window.innerHeight
+      const totalTravel = scrollTrack.offsetHeight + viewportHeight
+      const traveled = viewportHeight - trackRect.top
+      const scrollProgress = Math.max(0, Math.min(1, traveled / totalTravel))
+      const revealPortion = 0.28
+      const sweepPortion = 0.52
+      const autoTriggerPortion = 0.9
+      const revealProgress = Math.max(0, Math.min(1, scrollProgress / revealPortion))
+      const radarProgress = Math.max(0, Math.min(1, (scrollProgress - revealPortion) / sweepPortion))
+      const rotation = radarProgress * 360
+
+      radarCircles.forEach((circle, index) => {
+        const layerProgress = Math.max(0, Math.min(1, revealProgress * radarCircles.length - index))
+        circle.style.opacity = String(layerProgress)
+        circle.style.transform = `translate(-50%, -50%) scale(${0.96 + layerProgress * 0.04})`
+      })
+
+      if (radarProgress >= 1 && !firstRotationComplete) {
+        firstRotationComplete = true
+      }
+
+      if (firstRotationComplete && scrollProgress >= autoTriggerPortion && !isAutoRotating) {
+        autoRotationAngle = 0
+        startAutoRotation()
+        return
+      }
+      if (isAutoRotating) return
+
+      sweepGradient.style.transform = `rotate(${rotation}deg)`
+      circleFills.forEach((fill) => {
+        if (radarProgress > 0) {
+          fill.style.background = `conic-gradient(from 0deg at 50% 50%, rgba(200, 230, 100, 0.10) 0deg, rgba(200, 230, 100, 0.10) ${rotation}deg, transparent ${rotation}deg, transparent 360deg)`
+        } else {
+          fill.style.background = 'transparent'
+        }
+      })
+
+      const currentAngle = rotation % 360
+      const sweepWidth = 30
+      radarDots.forEach((dot) => {
+        const dotAngle = Number.parseFloat(dot.dataset.angle ?? '0')
+        const dotIndex = dot.dataset.index ?? ''
+
+        if (radarProgress <= 0) {
+          dot.classList.remove('detected')
+          dot.classList.remove('active')
+          scannedDots.delete(dotIndex)
+          return
+        }
+
+        const angleDiff = (dotAngle - currentAngle + 360) % 360
+        const isSweepOver = angleDiff <= sweepWidth
+
+        if (isSweepOver) {
+          scannedDots.add(dotIndex)
+          dot.classList.add('detected')
+          dot.classList.add('active')
+          return
+        }
+
+        if (scannedDots.has(dotIndex)) {
+          dot.classList.add('detected')
+          dot.classList.remove('active')
+          return
+        }
+
+        dot.classList.remove('detected')
+        dot.classList.remove('active')
+      })
+    }
+
+    let ticking = false
+    const onScroll = () => {
+      if (ticking) return
+      window.requestAnimationFrame(() => {
+        updateRadar()
+        ticking = false
+      })
+      ticking = true
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+    updateRadar()
 
     return () => {
-      tl.scrollTrigger?.kill()
-      tl.kill()
+      window.removeEventListener('scroll', onScroll)
+      isAutoRotating = false
+      if (animationFrameId !== null) window.cancelAnimationFrame(animationFrameId)
     }
   }, [])
 
   return (
-    <section ref={sectionRef} className="relative w-full overflow-hidden bg-[#f2f2f0] px-6 py-14 md:px-[5%] md:py-24">
-      <div className="mx-auto flex min-h-[560px] w-full max-w-7xl items-center">
+    <div ref={scrollTrackRef} className="relative h-[260vh] bg-[#f2f2f0] md:h-[300vh]">
+      <section ref={sectionRef} className="sticky top-0 h-screen w-full overflow-hidden bg-[#f2f2f0] px-6 py-14 md:px-[5%] md:py-24">
+      <div className="mx-auto flex min-h-screen w-full max-w-7xl items-center">
         <div className="absolute left-2 top-1/2 hidden -translate-y-1/2 flex-col items-center gap-3 md:flex">
           <span className="h-[5px] w-[5px] rounded-full bg-[#cfff3f]" />
           <span className="h-[5px] w-[5px] rounded-full border border-black/20" />
@@ -112,62 +202,227 @@ export default function OpportunityOrbitSection() {
             <h2 className="text-[30px] font-semibold leading-[1.1] text-[#202020] md:text-[42px]">
               Investing in Opportunity
             </h2>
-            <p
-              ref={bodyTextRef}
-              className="mt-6 text-[28px] font-semibold leading-[1.08] tracking-[-0.02em] text-[#6d6d6d] md:text-[46px]"
-            >
-              We survey the landscape for white space where we can drive technology discovery and
-              leverage our unique talents to build great companies from the ground up.
-            </p>
           </div>
 
-          <div ref={orbitWrapRef} className="relative mx-auto h-[400px] w-full max-w-[560px] md:h-[500px]">
-            <div className="absolute left-1/2 top-[6%] -translate-x-1/2 text-xl text-black/60">✿</div>
+          <div className="relative mx-auto h-[400px] w-full max-w-[560px] md:h-[500px]">
+            <div ref={radarContainerRef} className="radar-container">
+              <div className="radar-sticky">
+                <div ref={radarRef} className="radar">
+                  <div className="radar-circle circle-1">
+                    <div className="circle-fill" data-circle="1" />
+                  </div>
+                  <div className="radar-circle circle-2">
+                    <div className="circle-fill" data-circle="2" />
+                  </div>
+                  <div className="radar-circle circle-3">
+                    <div className="circle-fill" data-circle="3" />
+                  </div>
+                  <div className="radar-circle circle-4">
+                    <div className="circle-fill" data-circle="4" />
+                  </div>
+                  <div className="radar-circle circle-5">
+                    <div className="circle-fill" data-circle="5" />
+                  </div>
 
-            <div
-              ref={orbitGlowRef}
-              className="pointer-events-none absolute left-1/2 top-1/2 h-[390px] w-[390px] -translate-x-1/2 -translate-y-1/2 rounded-full"
-              style={{
-                background:
-                  'conic-gradient(from 0deg, transparent 0deg, transparent 296deg, rgba(207,255,63,0.28) 320deg, rgba(207,255,63,0.12) 360deg)',
-                WebkitMask:
-                  'radial-gradient(circle, transparent 52%, rgba(0,0,0,1) 52%, rgba(0,0,0,1) 80%, transparent 80%)',
-                mask: 'radial-gradient(circle, transparent 52%, rgba(0,0,0,1) 52%, rgba(0,0,0,1) 80%, transparent 80%)',
-              }}
-            />
+                  <div className="center-dot" />
 
-            <div className="absolute left-1/2 top-1/2 h-[110px] w-[110px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-black/8" />
-            <div className="absolute left-1/2 top-1/2 h-[180px] w-[180px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-black/10" />
-            <div className="absolute left-1/2 top-1/2 h-[250px] w-[250px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-black/10" />
-            <div className="absolute left-1/2 top-1/2 h-[320px] w-[320px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-black/10" />
-            <div className="absolute left-1/2 top-1/2 h-[390px] w-[390px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-black/10" />
+                  <div className="radar-sweep">
+                    <div ref={sweepGradientRef} className="sweep-gradient" />
+                  </div>
 
-            <div
-              ref={limeCenterDotRef}
-              className="absolute left-1/2 top-1/2 h-[10px] w-[10px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#cfff3f]"
-            />
-            <div className="absolute left-[33%] top-[42%] h-[9px] w-[9px] rounded-full border border-black/18 bg-[#f2f2f0]" />
-            <div className="absolute left-[73%] top-[53%] h-[18px] w-[18px] rounded-full border border-black/12 bg-[#f2f2f0]" />
-            <div
-              ref={limeRightDotRef}
-              className="absolute left-1/2 top-1/2 h-[22px] w-[22px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#cfff3f]"
-            />
-            <div
-              ref={limeBottomDotRef}
-              className="absolute left-1/2 top-1/2 h-[42px] w-[42px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#cfff3f]"
-            />
-            <div
-              ref={whiteDotRef}
-              className="absolute left-1/2 top-1/2 h-[20px] w-[20px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-black/12 bg-[#f2f2f0]"
-            />
-            <div className="absolute left-[22%] top-[16%] h-[9px] w-[9px] rounded-full border border-black/16 bg-[#f2f2f0]" />
-            <div
-              ref={limeTopDotRef}
-              className="absolute left-1/2 top-1/2 h-[30px] w-[30px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#cfff3f]"
-            />
+                  <div className="radar-dot small" data-angle="180" data-distance="20" />
+                  <div className="radar-dot medium" data-angle="65" data-distance="50" />
+                  <div className="radar-dot large" data-angle="0" data-distance="50" />
+                  <div className="radar-dot small" data-angle="30" data-distance="70" />
+                  <div className="radar-dot large" data-angle="150" data-distance="95" />
+                  <div className="radar-dot large" data-angle="240" data-distance="95" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </section>
+      <style jsx>{`
+        .radar-container {
+          height: 100%;
+          position: relative;
+        }
+
+        .radar-sticky {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          pointer-events: none;
+        }
+
+        .radar {
+          width: 390px;
+          height: 390px;
+          position: relative;
+        }
+
+        .radar-circle {
+          position: absolute;
+          border: 1.5px solid #e8e8dc;
+          border-radius: 50%;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          overflow: hidden;
+          transition: opacity 0.18s linear, transform 0.18s linear;
+        }
+
+        .circle-1 {
+          width: 100%;
+          height: 100%;
+        }
+
+        .circle-2 {
+          width: 82%;
+          height: 82%;
+        }
+
+        .circle-3 {
+          width: 64%;
+          height: 64%;
+        }
+
+        .circle-4 {
+          width: 46%;
+          height: 46%;
+        }
+
+        .circle-5 {
+          width: 28%;
+          height: 28%;
+        }
+
+        .circle-fill {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          background: transparent;
+          opacity: 1;
+        }
+
+        .center-dot {
+          position: absolute;
+          width: 8px;
+          height: 8px;
+          background: #d4d4c0;
+          border-radius: 50%;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          z-index: 10;
+        }
+
+        .radar-sweep {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          left: 0;
+          overflow: hidden;
+          border-radius: 50%;
+          pointer-events: none;
+        }
+
+        .sweep-gradient {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          background: conic-gradient(
+            from 0deg at 50% 50%,
+            transparent 0deg,
+            rgba(200, 230, 100, 0.08) 15deg,
+            rgba(200, 230, 100, 0.05) 40deg,
+            rgba(200, 230, 100, 0.02) 70deg,
+            transparent 90deg
+          );
+          transform: rotate(0deg);
+        }
+
+        .radar-dot {
+          position: absolute;
+          border-radius: 50%;
+          background: transparent !important;
+          border: 2px solid #e8e8dc !important;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          z-index: 5;
+          box-shadow: none !important;
+          transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .radar-dot.small {
+          width: 18px;
+          height: 18px;
+        }
+
+        .radar-dot.medium {
+          width: 30px;
+          height: 30px;
+        }
+
+        .radar-dot.large {
+          width: 50px;
+          height: 50px;
+        }
+
+        .radar-dot.detected {
+          background: #c8e664 !important;
+          border-color: #c8e664 !important;
+          box-shadow: 0 0 20px rgba(200, 230, 100, 0.6), 0 0 40px rgba(200, 230, 100, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.5) !important;
+        }
+
+        .radar-dot.active {
+          animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+          0%,
+          100% {
+            transform: translate(-50%, -50%) scale(1);
+          }
+          50% {
+            transform: translate(-50%, -50%) scale(1.2);
+          }
+        }
+
+        .radar-dot.active::before {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 150%;
+          height: 150%;
+          border-radius: 50%;
+          border: 2px solid rgba(200, 230, 100, 0.4);
+          animation: ringPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes ringPulse {
+          0%,
+          100% {
+            width: 150%;
+            height: 150%;
+            opacity: 0.4;
+          }
+          50% {
+            width: 200%;
+            height: 200%;
+            opacity: 0.1;
+          }
+        }
+      `}</style>
+      </section>
+    </div>
   )
 }
