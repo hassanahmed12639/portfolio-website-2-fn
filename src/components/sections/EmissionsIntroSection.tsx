@@ -58,6 +58,7 @@ export default function EmissionsIntroSection() {
   const manufacturingImageRef = useRef<HTMLImageElement>(null)
   const revealWrapRef = useRef<HTMLDivElement>(null)
   const revealTitleRef = useRef<HTMLDivElement>(null)
+  const revealFrameRef = useRef<HTMLDivElement>(null)
   const revealImageRef = useRef<HTMLImageElement>(null)
   const revealCopyRef = useRef<HTMLDivElement>(null)
   const electricityStageRef = useRef<HTMLDivElement>(null)
@@ -89,6 +90,7 @@ export default function EmissionsIntroSection() {
     const contentWrap = contentWrapRef.current
     const revealWrap = revealWrapRef.current
     const revealTitle = revealTitleRef.current
+    const revealFrame = revealFrameRef.current
     const revealImage = revealImageRef.current
     const revealCopy = revealCopyRef.current
     const electricityStage = electricityStageRef.current
@@ -117,6 +119,7 @@ export default function EmissionsIntroSection() {
       !contentWrap ||
       !revealWrap ||
       !revealTitle ||
+      !revealFrame ||
       !revealImage ||
       !revealCopy ||
       !electricityStage ||
@@ -148,6 +151,12 @@ export default function EmissionsIntroSection() {
     gsap.set(revealWrap, { autoAlpha: 0 })
     gsap.set(revealTitle, { y: 28, opacity: 0 })
     gsap.set(revealImage, {
+      x: 0,
+      y: 0,
+      scale: 1,
+      transformOrigin: 'center center',
+    })
+    gsap.set(revealFrame, {
       x: 0,
       y: 0,
       scaleX: 1,
@@ -244,13 +253,13 @@ export default function EmissionsIntroSection() {
       }
     }
 
-    const getRevealImageMatchTransform = () => {
+    const getRevealFrameMatchTransform = () => {
       const sourceImage = manufacturingImageRef.current
-      const targetImage = revealImageRef.current
-      if (!sourceImage || !targetImage) return { x: 0, y: 0, scaleX: 1, scaleY: 1 }
+      const targetFrame = revealFrameRef.current
+      if (!sourceImage || !targetFrame) return { x: 0, y: 0, scaleX: 1, scaleY: 1 }
 
       const sourceRect = sourceImage.getBoundingClientRect()
-      const targetRect = targetImage.getBoundingClientRect()
+      const targetRect = targetFrame.getBoundingClientRect()
       if (!sourceRect.width || !sourceRect.height || !targetRect.width || !targetRect.height) {
         return { x: 0, y: 0, scaleX: 1, scaleY: 1 }
       }
@@ -269,7 +278,7 @@ export default function EmissionsIntroSection() {
     }
 
     let manufacturingZoomTarget = { x: 0, y: 0, scale: 1 }
-    let revealImageMatch = { x: 0, y: 0, scaleX: 1, scaleY: 1 }
+    let revealFrameMatch = { x: 0, y: 0, scaleX: 1, scaleY: 1 }
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -421,17 +430,29 @@ export default function EmissionsIntroSection() {
 
     // Hard cut handoff: keep reveal image exactly same size as final card frame.
     tl.add(() => {
-      revealImageMatch = getRevealImageMatchTransform()
+      revealFrameMatch = getRevealFrameMatchTransform()
     })
-    tl.set(revealImage, {
-      x: () => revealImageMatch.x,
-      y: () => revealImageMatch.y,
-      scaleX: () => revealImageMatch.scaleX,
-      scaleY: () => revealImageMatch.scaleY,
-      opacity: 1,
+    tl.set(revealFrame, {
+      x: () => revealFrameMatch.x,
+      y: () => revealFrameMatch.y,
+      scaleX: () => revealFrameMatch.scaleX,
+      scaleY: () => revealFrameMatch.scaleY,
     })
+    tl.set(revealImage, { x: 0, y: 0, scale: 1, opacity: 1 })
     tl.set(revealWrap, { autoAlpha: 1 }, '>')
-    tl.set(manufacturingCard, { autoAlpha: 0 }, '>')
+    tl.to(
+      revealFrame,
+      {
+        x: 0,
+        y: 0,
+        scaleX: 1,
+        scaleY: 1,
+        duration: 0.36,
+        ease: 'none',
+      },
+      '>'
+    )
+    tl.set(manufacturingCard, { autoAlpha: 0 }, '<')
 
     // Text appears after the image expansion is established.
     tl.to(
@@ -641,7 +662,10 @@ export default function EmissionsIntroSection() {
               </h2>
             </div>
 
-            <div className="relative z-10 mx-auto w-full max-w-[980px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)]">
+            <div
+              ref={revealFrameRef}
+              className="relative z-10 mx-auto w-full max-w-[980px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)]"
+            >
               <img
                 ref={revealImageRef}
                 src={CARDS[0].src}
