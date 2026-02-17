@@ -42,7 +42,9 @@ export default function OpportunityOrbitSection() {
     const premiumCore = radar.querySelector<HTMLDivElement>('.premium-core')
     const premiumLabel = radar.querySelector<HTMLDivElement>('.premium-label')
     const premiumLabelLine = radar.querySelector<HTMLSpanElement>('.premium-label-line')
+    const premiumLabelDot = radar.querySelector<HTMLSpanElement>('.premium-label-dot')
     const premiumLabelText = radar.querySelector<HTMLSpanElement>('.premium-label-text')
+    const premiumAxis = radar.querySelector<HTMLDivElement>('.premium-axis')
     const premiumSeed = radar.querySelector<HTMLDivElement>('.premium-seed')
 
     if (
@@ -53,7 +55,9 @@ export default function OpportunityOrbitSection() {
       !premiumCore ||
       !premiumLabel ||
       !premiumLabelLine ||
+      !premiumLabelDot ||
       !premiumLabelText ||
+      !premiumAxis ||
       !premiumSeed
     ) {
       return
@@ -103,11 +107,14 @@ export default function OpportunityOrbitSection() {
       { x: 220, y: 90, scale: 2.8, size: 140 },
       { x: -20, y: 120, scale: 0.3, size: 15 },
     ]
-    const PIN_SCROLL_MULTIPLIER = 2
+    const PIN_SCROLL_MULTIPLIER = 2.6
     let pinDistance = window.innerHeight * PIN_SCROLL_MULTIPLIER
     let isAutoRotating = false
     let autoRotationAngle = 0
     let animationFrameId: number | null = null
+    let smoothingFrameId: number | null = null
+    let targetPinProgress = 0
+    let renderedPinProgress = 0
 
     radarDots.forEach((dot, index) => {
       const angle = Number.parseFloat(dot.dataset.angle ?? '0')
@@ -215,7 +222,24 @@ export default function OpportunityOrbitSection() {
       premiumLabel.style.opacity = '0'
       premiumLabel.style.top = 'calc(50% - 310px)'
       premiumLabelLine.style.width = '0px'
-      premiumLabelText.textContent = 'Layer 1'
+      premiumLabelLine.style.height = '1px'
+      premiumLabelLine.style.background = 'rgba(0, 0, 0, 0.55)'
+      premiumLabel.style.marginLeft = '-24px'
+      premiumLabel.style.removeProperty('font-size')
+      premiumLabel.style.removeProperty('font-weight')
+      premiumLabel.style.removeProperty('letter-spacing')
+      premiumLabel.style.removeProperty('color')
+      premiumLabelLine.style.removeProperty('margin-right')
+      premiumLabelDot.style.width = '6px'
+      premiumLabelDot.style.height = '6px'
+      premiumLabelDot.style.marginRight = '8px'
+      premiumLabelText.style.removeProperty('font-size')
+      premiumLabelText.style.removeProperty('font-weight')
+      premiumLabelText.style.removeProperty('letter-spacing')
+      premiumLabelText.style.removeProperty('color')
+      premiumLabelText.style.removeProperty('white-space')
+      premiumAxis.style.opacity = '0'
+      premiumLabelText.textContent = ''
       premiumSeed.style.opacity = '0'
       premiumSeed.style.width = '20px'
       premiumSeed.style.height = '20px'
@@ -229,23 +253,30 @@ export default function OpportunityOrbitSection() {
       middleSize: number,
       innerSize: number
     ) => {
-      let layerText = 'Layer 1'
-      let trackedSize = outerSize
+      const journeyProgress = easeInOutCubic(clamp(spreadProgress))
+      const offsetY = lerp(outerSize / 2, 0, journeyProgress)
+      const lineWidthPhase1 = lerp(36, 150, easeInOutCubic(clamp(spreadProgress / 0.28)))
+      const lineWidthPhase2 = lerp(150, 320, easeInOutCubic(clamp((spreadProgress - 0.28) / 0.72)))
+      const lineWidth = spreadProgress < 0.28 ? lineWidthPhase1 : lineWidthPhase2
+      const textProgress = easeInOutCubic(clamp((spreadProgress - 0.34) / 0.36))
+      const axisProgress = easeInOutCubic(clamp((spreadProgress - 0.2) / 0.5))
 
-      if (spreadProgress < 0.34) {
-        layerText = 'Layer 1'
-      } else if (spreadProgress < 0.67) {
-        layerText = 'Layer 2'
-        trackedSize = middleSize
-      } else {
-        layerText = 'Layer 3'
-        trackedSize = innerSize
-      }
-
-      premiumLabelText.textContent = layerText
-      premiumLabel.style.top = `calc(50% - ${trackedSize / 2}px)`
-      const lineWidth = Math.max(210, Math.min(340, trackedSize * 0.52))
+      premiumLabelText.textContent = textProgress > 0.02 ? 'Green Premiums' : ''
+      premiumLabel.style.top = `calc(50% - ${offsetY}px)`
       premiumLabelLine.style.width = `${lineWidth}px`
+      premiumLabelLine.style.height = `${lerp(1, 2, textProgress)}px`
+      premiumLabelLine.style.background = `rgba(0, 0, 0, ${lerp(0.55, 0.62, textProgress)})`
+      premiumLabel.style.marginLeft = `${lerp(-24, 0, textProgress)}px`
+      premiumLabelLine.style.marginRight = `${lerp(8, 12, textProgress)}px`
+      premiumLabelDot.style.width = `${lerp(6, 8, textProgress)}px`
+      premiumLabelDot.style.height = `${lerp(6, 8, textProgress)}px`
+      premiumLabelDot.style.marginRight = `${lerp(8, 12, textProgress)}px`
+      premiumLabelText.style.fontSize = `${lerp(14, 34, textProgress)}px`
+      premiumLabelText.style.fontWeight = `${Math.round(lerp(400, 500, textProgress))}`
+      premiumLabelText.style.letterSpacing = `${lerp(0, -0.01, textProgress)}em`
+      premiumLabelText.style.color = `rgba(0, 0, 0, ${lerp(0.72, 0.86, textProgress)})`
+      premiumLabelText.style.whiteSpace = 'nowrap'
+      premiumAxis.style.opacity = String(axisProgress)
     }
 
     const updatePremiumAnimation = (progress: number) => {
@@ -298,7 +329,8 @@ export default function OpportunityOrbitSection() {
         premiumLabel.style.opacity = '0'
         premiumLabel.style.top = 'calc(50% - 310px)'
         premiumLabelLine.style.width = '0px'
-        premiumLabelText.textContent = 'Layer 1'
+        premiumLabelText.textContent = ''
+        premiumAxis.style.opacity = '0'
         return
       }
 
@@ -325,15 +357,7 @@ export default function OpportunityOrbitSection() {
       premiumInner.style.opacity = '1'
       premiumCore.style.opacity = String(clamp((spreadProgress - 0.25) * 2.5))
       premiumLabel.style.opacity = String(clamp((spreadProgress - 0.08) * 2.2))
-      if (spreadProgress >= FINAL_LABEL_START) {
-        const finalProgress = clamp((spreadProgress - FINAL_LABEL_START) / (1 - FINAL_LABEL_START))
-        premiumLabelText.textContent = 'Green Premiums'
-        premiumLabel.style.top = `calc(50% - ${coreSize / 2}px)`
-        const targetLineWidth = Math.max(240, Math.min(500, PREMIUM_BASE_SIZE * 0.78))
-        premiumLabelLine.style.width = `${lerp(0, targetLineWidth, easeInOutCubic(finalProgress))}px`
-      } else {
-        updateLayerLabel(spreadProgress, PREMIUM_BASE_SIZE, middleSize, innerSize)
-      }
+      updateLayerLabel(spreadProgress, PREMIUM_BASE_SIZE, middleSize, innerSize)
     }
 
     const updateDotsExpansion = (progress: number) => {
@@ -378,19 +402,23 @@ export default function OpportunityOrbitSection() {
           const start = phase4Positions[index]
           const currentX = start.x * (1 - phaseProgress)
           const currentY = start.y * (1 - phaseProgress)
+          const currentScale = start.scale + (1 - start.scale) * phaseProgress
 
           dot.style.left = `calc(50% + ${currentX}px)`
           dot.style.top = `calc(50% + ${currentY}px)`
-          dot.style.transform = 'translate(-50%, -50%) scale(1)'
+          dot.style.transform = `translate(-50%, -50%) scale(${currentScale})`
 
-          if (index !== 4) {
-            dot.style.opacity = String(Math.max(0, 1 - phaseProgress * 1.2))
-          } else {
-            dot.style.opacity = '1'
-            const finalSize = 50 + phaseProgress * 30
-            dot.style.width = `${finalSize}px`
-            dot.style.height = `${finalSize}px`
-          }
+          // Keep continuity with the previous branch at progress=0.7,
+          // then smoothly converge to the terminal dot state.
+          const startOpacity = start.scale < 0.5 ? 0.3 : Math.min(1, 0.4 + start.scale * 0.4)
+          const endOpacity = index === 4 ? 1 : 0
+          const currentOpacity = startOpacity + (endOpacity - startOpacity) * phaseProgress
+          dot.style.opacity = String(Math.max(0, Math.min(1, currentOpacity)))
+
+          const endSize = index === 4 ? 80 : baseDotSizes[index]
+          const currentSize = start.size + (endSize - start.size) * phaseProgress
+          dot.style.width = `${currentSize}px`
+          dot.style.height = `${currentSize}px`
         })
       }
     }
@@ -467,9 +495,7 @@ export default function OpportunityOrbitSection() {
       section.style.zIndex = '20'
     }
 
-    const updateRadar = () => {
-      const trackRect = scrollTrack.getBoundingClientRect()
-      const pinProgress = Math.max(0, Math.min(1, -trackRect.top / pinDistance))
+    const updateRadar = (pinProgress: number) => {
       const radarProgress = Math.max(0, Math.min(1, pinProgress / RADAR_PHASE_PORTION))
       const revealPortion = 0.3
       const revealProgress = Math.max(0, Math.min(1, radarProgress / revealPortion))
@@ -535,25 +561,65 @@ export default function OpportunityOrbitSection() {
       updateDots(currentAngle)
     }
 
+    const readPinProgress = () => {
+      const trackRect = scrollTrack.getBoundingClientRect()
+      return Math.max(0, Math.min(1, -trackRect.top / pinDistance))
+    }
+
+    const startSmoothingLoop = () => {
+      if (smoothingFrameId !== null) return
+
+      const tick = () => {
+        const delta = targetPinProgress - renderedPinProgress
+        renderedPinProgress += delta * 0.12
+
+        if (Math.abs(delta) < 0.0004) {
+          renderedPinProgress = targetPinProgress
+        }
+
+        updateRadar(renderedPinProgress)
+
+        if (Math.abs(targetPinProgress - renderedPinProgress) >= 0.0004) {
+          smoothingFrameId = window.requestAnimationFrame(tick)
+        } else {
+          smoothingFrameId = null
+        }
+      }
+
+      smoothingFrameId = window.requestAnimationFrame(tick)
+    }
+
     let ticking = false
     const onScroll = () => {
       if (ticking) return
       window.requestAnimationFrame(() => {
-        updateRadar()
+        targetPinProgress = readPinProgress()
+        startSmoothingLoop()
         ticking = false
       })
       ticking = true
     }
 
+    const onResize = () => {
+      applyPinLayoutSizing()
+      targetPinProgress = readPinProgress()
+      startSmoothingLoop()
+    }
+
     window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', applyPinLayoutSizing)
+    window.addEventListener('resize', onResize)
     applyPinLayoutSizing()
-    updateRadar()
+    targetPinProgress = readPinProgress()
+    renderedPinProgress = targetPinProgress
+    updateRadar(renderedPinProgress)
 
     return () => {
       window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', applyPinLayoutSizing)
+      window.removeEventListener('resize', onResize)
       stopAutoRotation()
+      if (smoothingFrameId !== null) {
+        window.cancelAnimationFrame(smoothingFrameId)
+      }
     }
   }, [])
 
@@ -620,7 +686,15 @@ export default function OpportunityOrbitSection() {
                     <div className="premium-label">
                       <span className="premium-label-line" />
                       <span className="premium-label-dot" />
-                      <span className="premium-label-text">Layer 1</span>
+                      <span className="premium-label-text"></span>
+                    </div>
+
+                    <div className="premium-axis" aria-hidden="true">
+                      <span className="axis-tick axis-tick-top" />
+                      <span className="axis-tick axis-tick-mid" />
+                      <span className="axis-tick axis-tick-bot" />
+                      <span className="axis-label axis-label-top">+$</span>
+                      <span className="axis-label axis-label-bot">-$</span>
                     </div>
                   </div>
                 </div>
@@ -805,7 +879,7 @@ export default function OpportunityOrbitSection() {
           transform: translateY(-50%);
           margin-left: -24px;
           opacity: 0;
-          transition: top 0.24s ease-out, opacity 0.24s ease-out;
+          transition: none;
         }
 
         .premium-label-line {
@@ -813,7 +887,7 @@ export default function OpportunityOrbitSection() {
           height: 1px;
           background: rgba(0, 0, 0, 0.55);
           margin-right: 8px;
-          transition: width 0.24s ease-out;
+          transition: none;
         }
 
         .premium-label-dot {
@@ -828,6 +902,55 @@ export default function OpportunityOrbitSection() {
           font-size: 14px;
           color: #000;
         }
+
+        .premium-axis {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          right: -170px;
+          width: 92px;
+          opacity: 0;
+          transition: none;
+          color: rgba(0, 0, 0, 0.7);
+        }
+
+        .axis-tick {
+          position: absolute;
+          right: 0;
+          width: 14px;
+          height: 1px;
+          background: rgba(0, 0, 0, 0.45);
+        }
+
+        .axis-tick-top {
+          top: 6%;
+        }
+
+        .axis-tick-mid {
+          top: 50%;
+        }
+
+        .axis-tick-bot {
+          bottom: 6%;
+        }
+
+        .axis-label {
+          position: absolute;
+          right: 0;
+          font-size: 28px;
+          line-height: 1;
+          color: rgba(0, 0, 0, 0.72);
+        }
+
+        .axis-label-top {
+          top: 2%;
+        }
+
+        .axis-label-bot {
+          bottom: 2%;
+        }
+
+        /* Final label styles are interpolated by scroll progress in JS. */
 
         .radar-dot {
           position: absolute;
@@ -867,7 +990,7 @@ export default function OpportunityOrbitSection() {
           background: #c8e664 !important;
           border: none !important;
           box-shadow: 0 0 20px rgba(200, 230, 100, 0.6), 0 0 40px rgba(200, 230, 100, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.5) !important;
-          transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+          transition: none;
           transform-style: preserve-3d;
           will-change: transform, opacity, left, top, width, height;
         }

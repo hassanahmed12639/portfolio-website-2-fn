@@ -48,7 +48,7 @@ const HEADLINE_LINES = [
 
 const FINAL_MESSAGE_LINE_1 = ['This', 'is', 'energy', 'innovation']
 const FINAL_MESSAGE_LINE_2 = ['on', 'a', 'global', 'scale']
-const MANUFACTURING_ZOOM_SCALE_FACTOR = 0.86
+const MANUFACTURING_ZOOM_SCALE_FACTOR = 0.98
 
 export default function EmissionsIntroSection() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -452,6 +452,7 @@ export default function EmissionsIntroSection() {
       },
       '>'
     )
+    tl.set(revealFrame, { clearProps: 'x,y,scaleX,scaleY' })
     tl.set(manufacturingCard, { autoAlpha: 0 }, '<')
 
     // Text appears after the image expansion is established.
@@ -658,17 +659,11 @@ export default function EmissionsIntroSection() {
               <h2 className="text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-white md:text-[110px]">
                 Manufacturing
               </h2>
-              <h2
-                aria-hidden="true"
-                className="pointer-events-none absolute left-1/2 top-[22%] -translate-x-1/2 text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-[#d7ff4c] md:text-[110px]"
-              >
-                Manufacturing
-              </h2>
             </div>
 
             <div
               ref={revealFrameRef}
-              className="relative z-10 mx-auto w-full max-w-[980px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)]"
+              className="relative z-10 mx-auto w-full max-w-[1120px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)]"
             >
               <img
                 ref={revealImageRef}
@@ -706,15 +701,9 @@ export default function EmissionsIntroSection() {
               <h2 className="text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-white md:text-[110px]">
                 Electricity
               </h2>
-              <h2
-                aria-hidden="true"
-                className="pointer-events-none absolute left-1/2 top-[22%] -translate-x-1/2 text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-[#d7ff4c] md:text-[110px]"
-              >
-                Electricity
-              </h2>
             </div>
 
-            <div className="relative z-10 mx-auto w-full max-w-[980px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)]">
+            <div className="relative z-10 mx-auto w-full max-w-[1120px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)]">
               <img
                 ref={electricityImageRef}
                 src={CARDS[1].src}
@@ -751,15 +740,9 @@ export default function EmissionsIntroSection() {
               <h2 className="text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-white md:text-[110px]">
                 Agriculture
               </h2>
-              <h2
-                aria-hidden="true"
-                className="pointer-events-none absolute left-1/2 top-[22%] -translate-x-1/2 text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-[#d7ff4c] md:text-[110px]"
-              >
-                Agriculture
-              </h2>
             </div>
 
-            <div className="relative z-10 mx-auto w-full max-w-[980px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)]">
+            <div className="relative z-10 mx-auto w-full max-w-[1120px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)]">
               <img
                 ref={agricultureImageRef}
                 src={CARDS[2].src}
@@ -796,15 +779,9 @@ export default function EmissionsIntroSection() {
               <h2 className="text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-white md:text-[110px]">
                 Transportation
               </h2>
-              <h2
-                aria-hidden="true"
-                className="pointer-events-none absolute left-1/2 top-[22%] -translate-x-1/2 text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-[#d7ff4c] md:text-[110px]"
-              >
-                Transportation
-              </h2>
             </div>
 
-            <div className="relative z-10 mx-auto w-full max-w-[980px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)]">
+            <div className="relative z-10 mx-auto w-full max-w-[1120px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)]">
               <img
                 ref={transportationImageRef}
                 src={CARDS[3].src}
@@ -841,15 +818,9 @@ export default function EmissionsIntroSection() {
               <h2 className="text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-white md:text-[110px]">
                 Buildings
               </h2>
-              <h2
-                aria-hidden="true"
-                className="pointer-events-none absolute left-1/2 top-[22%] -translate-x-1/2 text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-[#d7ff4c] md:text-[110px]"
-              >
-                Buildings
-              </h2>
             </div>
 
-            <div className="relative z-10 mx-auto w-full max-w-[980px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)]">
+            <div className="relative z-10 mx-auto w-full max-w-[1120px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)]">
               <img
                 ref={buildingsImageRef}
                 src={CARDS[4].src}
