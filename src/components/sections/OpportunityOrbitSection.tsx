@@ -2,6 +2,21 @@
 
 import { useEffect, useRef } from 'react'
 
+const TEXT_BLOCKS = [
+  {
+    title: 'Investing in Opportunity',
+    body: 'We survey the landscape for white space where we can drive technology discovery and leverage our unique talents to build great companies from the ground up.',
+  },
+  {
+    title: 'Building for the Future',
+    body: 'We partner with founders and teams to turn bold ideas into lasting companies, combining capital with hands-on expertise.',
+  },
+  {
+    title: 'Where We Land',
+    body: 'The final layer stays in view. Scroll further to continue to the next section.',
+  },
+]
+
 export default function OpportunityOrbitSection() {
   const scrollTrackRef = useRef<HTMLDivElement>(null)
   const sectionSlotRef = useRef<HTMLDivElement>(null)
@@ -10,6 +25,7 @@ export default function OpportunityOrbitSection() {
   const radarContainerRef = useRef<HTMLDivElement>(null)
   const radarRef = useRef<HTMLDivElement>(null)
   const sweepGradientRef = useRef<HTMLDivElement>(null)
+  const leftTextRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const scrollTrack = scrollTrackRef.current
@@ -19,6 +35,7 @@ export default function OpportunityOrbitSection() {
     const radarContainer = radarContainerRef.current
     const radar = radarRef.current
     const sweepGradient = sweepGradientRef.current
+    const leftText = leftTextRef.current
 
     if (
       !scrollTrack ||
@@ -27,7 +44,8 @@ export default function OpportunityOrbitSection() {
       !section ||
       !radarContainer ||
       !radar ||
-      !sweepGradient
+      !sweepGradient ||
+      !leftText
     ) {
       return
     }
@@ -71,6 +89,12 @@ export default function OpportunityOrbitSection() {
     const PREMIUM_INTRO_END = 0.28
     const PREMIUM_FILL_END = 0.55
     const FINAL_LABEL_START = 0.86
+    const TEXT_ENTER_DURATION = 0.16
+    const TEXT_EXIT_DURATION = 0.18
+    const TEXT_GAP_AFTER_EXIT = 0.06
+    const TEXT_BLOCK_SPAN = TEXT_ENTER_DURATION + TEXT_EXIT_DURATION + TEXT_GAP_AFTER_EXIT
+    const TEXT_ENTRY_OFFSET_PX = 72
+    const TEXT_EXIT_OFFSET_PX = -500
 
     const expansionInitialPositions = [
       { x: -140, y: 120, scale: 0.9, size: 50 },
@@ -107,7 +131,7 @@ export default function OpportunityOrbitSection() {
       { x: 220, y: 90, scale: 2.8, size: 140 },
       { x: -20, y: 120, scale: 0.3, size: 15 },
     ]
-    const PIN_SCROLL_MULTIPLIER = 2.6
+    const PIN_SCROLL_MULTIPLIER = 3.2
     let pinDistance = window.innerHeight * PIN_SCROLL_MULTIPLIER
     let isAutoRotating = false
     let autoRotationAngle = 0
@@ -132,6 +156,53 @@ export default function OpportunityOrbitSection() {
       circle.style.opacity = '0'
       circle.style.transform = 'translate(-50%, -50%) scale(0.96)'
     })
+
+    const textBlocks = Array.from(leftText.querySelectorAll<HTMLDivElement>('.left-text-block'))
+    textBlocks.forEach((block) => {
+      block.style.transform = `translateY(${TEXT_ENTRY_OFFSET_PX}px)`
+      block.style.opacity = '0'
+      block.style.visibility = 'hidden'
+    })
+
+    const isLastBlock = (i: number) => i === textBlocks.length - 1
+
+    const updateLeftText = (pinProgress: number) => {
+      const p = clamp(pinProgress)
+      textBlocks.forEach((block, i) => {
+        const blockStart = i * TEXT_BLOCK_SPAN
+        const enterEnd = blockStart + TEXT_ENTER_DURATION
+        const exitEnd = blockStart + TEXT_ENTER_DURATION + TEXT_EXIT_DURATION
+
+        if (p <= blockStart) {
+          block.style.transform = `translateY(${TEXT_ENTRY_OFFSET_PX}px)`
+          block.style.opacity = '0'
+          block.style.visibility = 'hidden'
+          return
+        }
+        if (!isLastBlock(i) && p >= exitEnd) {
+          block.style.transform = `translateY(${TEXT_EXIT_OFFSET_PX}px)`
+          block.style.opacity = '0'
+          block.style.visibility = 'hidden'
+          return
+        }
+        if (isLastBlock(i) && p >= enterEnd) {
+          block.style.visibility = 'visible'
+          block.style.transform = 'translateY(0px)'
+          block.style.opacity = '1'
+          return
+        }
+        block.style.visibility = 'visible'
+        if (p <= enterEnd) {
+          const t = easeInOutCubic(clamp((p - blockStart) / TEXT_ENTER_DURATION))
+          block.style.transform = `translateY(${TEXT_ENTRY_OFFSET_PX * (1 - t)}px)`
+          block.style.opacity = String(t)
+          return
+        }
+        const exitT = easeInOutCubic(clamp((p - enterEnd) / TEXT_EXIT_DURATION))
+        block.style.transform = `translateY(${TEXT_EXIT_OFFSET_PX * exitT}px)`
+        block.style.opacity = String(1 - exitT)
+      })
+    }
 
     const updateDots = (currentAngle: number) => {
       const sweepWidth = 30
@@ -578,6 +649,7 @@ export default function OpportunityOrbitSection() {
         }
 
         updateRadar(renderedPinProgress)
+        updateLeftText(renderedPinProgress)
 
         if (Math.abs(targetPinProgress - renderedPinProgress) >= 0.0004) {
           smoothingFrameId = window.requestAnimationFrame(tick)
@@ -612,6 +684,7 @@ export default function OpportunityOrbitSection() {
     targetPinProgress = readPinProgress()
     renderedPinProgress = targetPinProgress
     updateRadar(renderedPinProgress)
+    updateLeftText(renderedPinProgress)
 
     return () => {
       window.removeEventListener('scroll', onScroll)
@@ -628,7 +701,7 @@ export default function OpportunityOrbitSection() {
       <div ref={sectionSlotRef} aria-hidden />
       <div ref={pinSpacerRef} aria-hidden />
       <section ref={sectionRef} className="h-[130vh] w-full overflow-hidden bg-[#f2f2f0] px-6 py-8 md:h-[140vh] md:px-[5%] md:py-12">
-      <div className="mx-auto flex h-full w-full max-w-7xl items-center">
+      <div className="relative mx-auto flex h-full w-full max-w-7xl items-center">
         <div className="absolute left-2 top-1/2 hidden -translate-y-1/2 flex-col items-center gap-3 md:flex">
           <span className="h-[5px] w-[5px] rounded-full bg-[#cfff3f]" />
           <span className="h-[5px] w-[5px] rounded-full border border-black/20" />
@@ -639,9 +712,27 @@ export default function OpportunityOrbitSection() {
           DISCOVER
         </p>
 
-        <div className="grid w-full items-center justify-items-center gap-12 md:gap-6">
-          <div className="hidden max-w-[520px] md:pl-12">
+        <div className="absolute left-6 top-1/2 w-full max-w-[520px] md:left-[5%] md:pl-12" style={{ transform: 'translateY(-50%)' }}>
+          <div ref={leftTextRef} className="relative w-full" style={{ minHeight: 124 }}>
+            {TEXT_BLOCKS.map((block, i) => (
+              <div
+                key={i}
+                className="left-text-block absolute left-0 top-0 w-full flex flex-col justify-center"
+                style={{ willChange: 'transform, opacity' }}
+              >
+                <h2 className="text-2xl font-semibold tracking-tight text-[#393E41] md:text-3xl">
+                  {block.title}
+                </h2>
+                <p className="mt-4 text-[15px] leading-relaxed text-[#393E41]/75 md:text-base">
+                  {block.body}
+                </p>
+              </div>
+            ))}
           </div>
+        </div>
+
+        <div className="grid w-full grid-cols-1 items-center justify-items-center gap-12 md:grid-cols-[1fr,1.2fr] md:gap-6">
+          <div className="hidden md:block" aria-hidden />
 
           <div className="relative mx-auto h-[520px] w-full max-w-[720px] md:h-[700px] md:max-w-[840px]">
             <div ref={radarContainerRef} className="radar-container">

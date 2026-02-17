@@ -27,7 +27,7 @@ const FloatingIconsHero = React.forwardRef<
       )}
       {...props}
     >
-      <div className="relative z-10 text-center px-4">
+      <div className="relative z-10 mx-auto w-full max-w-4xl text-center px-4 md:max-w-5xl">
         <h1 className="text-5xl md:text-7xl font-bold tracking-tight bg-gradient-to-b from-foreground to-foreground/70 text-transparent bg-clip-text flex flex-col items-center justify-center">
           <LayoutGroup>
             <motion.span className="flex flex-col items-center gap-3 leading-[75px]" layout>
@@ -61,7 +61,7 @@ const FloatingIconsHero = React.forwardRef<
             </motion.span>
           </LayoutGroup>
         </h1>
-        <MagicText text={subtitle} className="mt-6 max-w-xl mx-auto text-lg text-muted-foreground" />
+        <MagicText text={subtitle} className="mt-6 w-full max-w-4xl mx-auto text-lg text-muted-foreground md:max-w-5xl" />
         <div className="mt-10">
           <Button asChild size="lg" className="px-8 py-6 text-base font-semibold">
             <a href={ctaHref}>{ctaText}</a>
