@@ -637,7 +637,11 @@ export default function EmissionsIntroSection() {
                 ref={card.id === 'manufacturing' ? manufacturingImageRef : null}
                 src={card.src}
                 alt={card.alt}
-                className="h-[78px] w-full rounded-[2px] object-cover shadow-[0_10px_30px_rgba(0,0,0,0.5)] md:h-[96px]"
+                className={
+                  card.id === 'manufacturing'
+                    ? 'aspect-[22/9] w-full rounded-[2px] object-cover shadow-[0_10px_30px_rgba(0,0,0,0.5)]'
+                    : 'h-[78px] w-full rounded-[2px] object-cover shadow-[0_10px_30px_rgba(0,0,0,0.5)] md:h-[96px]'
+                }
               />
             </div>
           ))}
