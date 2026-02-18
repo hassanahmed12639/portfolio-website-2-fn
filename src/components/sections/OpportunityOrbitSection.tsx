@@ -291,7 +291,7 @@ export default function OpportunityOrbitSection() {
       premiumContainer.style.opacity = '0'
       premiumContainer.style.transform = 'translate(-50%, -50%) scale(0.96)'
       premiumLabel.style.opacity = '0'
-      premiumLabel.style.top = 'calc(50% - 310px)'
+      premiumLabel.style.top = '0'
       premiumLabelLine.style.width = '0px'
       premiumLabelLine.style.height = '1px'
       premiumLabelLine.style.background = 'rgba(0, 0, 0, 0.55)'
@@ -398,7 +398,7 @@ export default function OpportunityOrbitSection() {
         premiumInner.style.opacity = '0'
         premiumCore.style.opacity = '0'
         premiumLabel.style.opacity = '0'
-        premiumLabel.style.top = 'calc(50% - 310px)'
+        premiumLabel.style.top = '0'
         premiumLabelLine.style.width = '0px'
         premiumLabelText.textContent = ''
         premiumAxis.style.opacity = '0'
@@ -712,7 +712,7 @@ export default function OpportunityOrbitSection() {
           DISCOVER
         </p>
 
-        <div className="absolute left-6 top-1/2 w-full max-w-[520px] md:left-[5%] md:pl-12" style={{ transform: 'translateY(-50%)' }}>
+        <div className="absolute left-2 top-1/2 z-20 w-full max-w-[min(45vw,520px)] md:left-[2%] md:max-w-[min(38vw,520px)] md:pl-8 lg:max-w-[520px]" style={{ transform: 'translateY(-50%)' }}>
           <div ref={leftTextRef} className="relative w-full" style={{ minHeight: 124 }}>
             {TEXT_BLOCKS.map((block, i) => (
               <div
@@ -731,10 +731,10 @@ export default function OpportunityOrbitSection() {
           </div>
         </div>
 
-        <div className="grid w-full grid-cols-1 items-center justify-items-center gap-12 md:grid-cols-[1fr,1.2fr] md:gap-6">
-          <div className="hidden md:block" aria-hidden />
+        <div className="grid min-w-0 w-full grid-cols-1 items-center justify-items-center gap-12 md:grid-cols-[1fr_minmax(260px,720px)_1fr] md:gap-6">
+          <div className="hidden md:block min-w-0" aria-hidden />
 
-          <div className="relative mx-auto h-[520px] w-full max-w-[720px] md:h-[700px] md:max-w-[840px]">
+          <div className="relative mx-auto h-[480px] w-full min-w-[260px] max-w-[720px] md:h-[600px] md:max-w-[840px] lg:h-[700px]">
             <div ref={radarContainerRef} className="radar-container">
               <div className="radar-sticky">
                 <div ref={radarRef} className="radar">
@@ -796,6 +796,8 @@ export default function OpportunityOrbitSection() {
       </div>
       <style jsx>{`
         .radar-container {
+          container-type: size;
+          container-name: radar;
           height: 100%;
           position: relative;
         }
@@ -804,16 +806,17 @@ export default function OpportunityOrbitSection() {
           position: absolute;
           inset: 0;
           display: flex;
-          flex-direction: column;
           align-items: center;
           justify-content: center;
           pointer-events: none;
         }
 
         .radar {
-          width: 620px;
-          height: 620px;
+          --radar-size: min(100cqw, 100cqh, 620px);
+          width: var(--radar-size);
+          height: var(--radar-size);
           position: relative;
+          flex-shrink: 0;
         }
 
         .radar-circle {
@@ -903,8 +906,8 @@ export default function OpportunityOrbitSection() {
           position: absolute;
           top: 50%;
           left: 50%;
-          width: 620px;
-          height: 620px;
+          width: 100%;
+          height: 100%;
           transform: translate(-50%, -50%) scale(0.98);
           opacity: 0;
           pointer-events: none;
@@ -921,8 +924,8 @@ export default function OpportunityOrbitSection() {
         }
 
         .premium-outer {
-          width: 620px;
-          height: 620px;
+          width: 100%;
+          height: 100%;
           background: #d7ff47;
           top: 50%;
           bottom: auto;
@@ -941,29 +944,29 @@ export default function OpportunityOrbitSection() {
         }
 
         .premium-middle {
-          width: 620px;
-          height: 620px;
+          width: 100%;
+          height: 100%;
           background: #d9ef7d;
           opacity: 0;
         }
 
         .premium-inner {
-          width: 620px;
-          height: 620px;
+          width: 100%;
+          height: 100%;
           background: #e1e6a6;
           opacity: 0;
         }
 
         .premium-core {
-          width: 620px;
-          height: 620px;
+          width: 100%;
+          height: 100%;
           background: #e6e2dd;
           opacity: 0;
         }
 
         .premium-label {
           position: absolute;
-          top: calc(50% - 310px);
+          top: 0;
           left: 50%;
           display: flex;
           align-items: center;

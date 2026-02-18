@@ -9,12 +9,15 @@ const LOGOS = [
   { name: 'Zoom' },
 ];
 
+const MARQUEE_COPIES = 4
+
 export default function LogoMarquee() {
+  const marqueeContent = Array.from({ length: MARQUEE_COPIES }, () => LOGOS).flat()
   return (
     <section className="w-full m-0 overflow-hidden py-6 md:py-8 bg-[#F6F7ED]">
       <div className="relative">
         <div className="flex w-max animate-marquee items-center gap-12 md:gap-16 lg:gap-20">
-          {[...LOGOS, ...LOGOS].map((logo, i) => (
+          {marqueeContent.map((logo, i) => (
             <span
               key={i}
               className="shrink-0 text-xl font-semibold tracking-tight text-textPrimary md:text-2xl"
