@@ -19,29 +19,6 @@ module.exports = {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
-  			linen: {
-  				DEFAULT: '#FAF7F0',
-  				deep: '#F0EAD8',
-  				border: '#EBE2CC',
-  			},
-  			forest: {
-  				DEFAULT: '#14532D',
-  				hover: '#15803D',
-  				mint: '#DCFCE7',
-  			},
-  			ink: {
-  				DEFAULT: '#14120A',
-  				soft: '#4A3F2F',
-  				muted: '#8A7A60',
-  			},
-  			dark: {
-  				bg: '#14120A',
-  				surface: '#1E1A10',
-  				border: '#2C2618',
-  				text: '#FAF7F0',
-  				body: '#C4B99A',
-  				muted: '#6B5E48',
-  			},
   			designBg: '#F6F7ED',
   			textPrimary: '#393E41',
   			accent: '#E94F37',
