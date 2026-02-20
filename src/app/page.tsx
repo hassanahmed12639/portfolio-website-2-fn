@@ -8,10 +8,12 @@ import ParallaxSection from '../components/sections/ParallaxSection'
 import EmissionsIntroSection from '../components/sections/EmissionsIntroSection'
 import IntegrationsArcSection from '../components/sections/IntegrationsArcSection'
 import CTASection from '../components/sections/CTASection'
+import ScrambleIntro from '../components/ScrambleIntro'
 
 export default function Home() {
   return (
     <main className="w-full min-h-screen m-0 p-0 bg-designBg">
+      <ScrambleIntro />
       <Header />
       <FloatingIconsHero
         title="Welcome to the innovation oasis"
