@@ -120,10 +120,7 @@ export default function ScrambleIntro() {
       updateLine(spans2Ref.current, TARGET_L2, line2Progress)
 
       if (subRef.current) {
-        const subProgress = norm(progress, 0, SPLIT_START)
-        if (subProgress < 0.3) subRef.current.textContent = 'decoding identity...'
-        else if (subProgress < 0.82) subRef.current.textContent = 'access granted_'
-        else subRef.current.textContent = ''
+        subRef.current.textContent = ''
       }
 
       const splitProgress = norm(progress, SPLIT_START, SPLIT_END)
@@ -198,7 +195,7 @@ export default function ScrambleIntro() {
         </div>
 
         <div className={styles.sub} ref={subRef}>
-          decoding identity...
+          
         </div>
       </div>
 
