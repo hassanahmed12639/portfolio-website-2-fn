@@ -7,8 +7,9 @@ const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*!?'
 const TARGET_L1 = 'HASSAN'
 const TARGET_L2 = 'AHMED'
 const TRACK_HEIGHT_VH = 500
-const SEEN_KEY = 'scramble_intro_seen'
 const FADE_MS = 450
+const SPLIT_START = 0.72
+const SPLIT_END = 0.98
 
 function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value))
@@ -26,6 +27,8 @@ export default function ScrambleIntro() {
   const line1Ref = useRef<HTMLDivElement | null>(null)
   const line2Ref = useRef<HTMLDivElement | null>(null)
   const subRef = useRef<HTMLDivElement | null>(null)
+  const splitTopRef = useRef<HTMLDivElement | null>(null)
+  const splitBottomRef = useRef<HTMLDivElement | null>(null)
   const scanlineRef = useRef<HTMLDivElement | null>(null)
   const progressRef = useRef<HTMLDivElement | null>(null)
   const cueRef = useRef<HTMLDivElement | null>(null)
@@ -37,10 +40,6 @@ export default function ScrambleIntro() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return
-
-    const alreadySeen = window.sessionStorage.getItem(SEEN_KEY) === '1'
-    if (alreadySeen) return
-
     setIsVisible(true)
   }, [])
 
@@ -90,7 +89,6 @@ export default function ScrambleIntro() {
       if (doneRef.current) return
       doneRef.current = true
       setIsFading(true)
-      window.sessionStorage.setItem(SEEN_KEY, '1')
       fadeTimerRef.current = window.setTimeout(() => setIsVisible(false), FADE_MS)
     }
 
@@ -116,17 +114,27 @@ export default function ScrambleIntro() {
         scanlineRef.current.style.opacity = decodeProgress < 0.95 ? '0.8' : '0'
       }
 
-      updateLine(spans1Ref.current, TARGET_L1, norm(progress, 0.05, 0.4))
-      updateLine(spans2Ref.current, TARGET_L2, norm(progress, 0.2, 0.55))
+      const line1Progress = progress >= SPLIT_START ? 1 : norm(progress, 0.05, 0.4)
+      const line2Progress = progress >= SPLIT_START ? 1 : norm(progress, 0.2, 0.55)
+      updateLine(spans1Ref.current, TARGET_L1, line1Progress)
+      updateLine(spans2Ref.current, TARGET_L2, line2Progress)
 
       if (subRef.current) {
-        const subProgress = norm(progress, 0, 0.55)
+        const subProgress = norm(progress, 0, SPLIT_START)
         if (subProgress < 0.3) subRef.current.textContent = 'decoding identity...'
-        else if (subProgress < 0.7) subRef.current.textContent = 'access granted_'
+        else if (subProgress < 0.82) subRef.current.textContent = 'access granted_'
         else subRef.current.textContent = ''
       }
 
-      if (progress >= 0.985 || maxScroll - scrollTop <= 2) finishIntro()
+      const splitProgress = norm(progress, SPLIT_START, SPLIT_END)
+      if (splitTopRef.current) {
+        splitTopRef.current.style.transform = `translateY(${-58 * splitProgress}vh)`
+      }
+      if (splitBottomRef.current) {
+        splitBottomRef.current.style.transform = `translateY(${58 * splitProgress}vh)`
+      }
+
+      if (progress >= 0.995 || maxScroll - scrollTop <= 2) finishIntro()
     }
 
     const onScroll = () => {
@@ -176,9 +184,19 @@ export default function ScrambleIntro() {
         <div className={styles.track} style={{ height: `${TRACK_HEIGHT_VH}vh` }} />
       </div>
 
-      <div className={styles.scrambleStage}>
-        <div className={styles.line} ref={line1Ref} />
-        <div className={styles.line} ref={line2Ref} />
+      <div className={styles.splitStage}>
+        <div className={styles.splitTop} ref={splitTopRef}>
+          <div className={styles.lineWrapTop}>
+            <div className={styles.line} ref={line1Ref} />
+          </div>
+        </div>
+
+        <div className={styles.splitBottom} ref={splitBottomRef}>
+          <div className={styles.lineWrapBottom}>
+            <div className={styles.line} ref={line2Ref} />
+          </div>
+        </div>
+
         <div className={styles.sub} ref={subRef}>
           decoding identity...
         </div>
