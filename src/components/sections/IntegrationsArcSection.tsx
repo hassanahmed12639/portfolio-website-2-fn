@@ -18,6 +18,8 @@ export default function IntegrationsArcSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const iconRefs = useRef<(HTMLDivElement | null)[]>([])
+  const cardSize = 120
+  const gap = 24
 
   // 17 icons for the carousel
   const icons = [
@@ -49,59 +51,77 @@ export default function IntegrationsArcSection() {
 
       const iconElements = iconRefs.current.filter(Boolean) as HTMLDivElement[]
       const totalIcons = iconElements.length
-      const iconWidth = 144 // icon width + gap (120px box + 24px gap)
+      const iconWidth = cardSize + gap // distance between icon starts
       const arcHeight = 55 // Height of the arc curve
-      const containerWidth = containerRef.current.offsetWidth
       
       // Total width of all icons (for wrapping calculation)
       const totalTrackWidth = totalIcons * iconWidth
 
       // Function to calculate Y position on arc based on X
-      const getArcY = (x: number) => {
-        const normalizedX = (x - containerWidth / 2) / (containerWidth / 2)
-        return -arcHeight * (1 - Math.min(1, normalizedX * normalizedX))
+      const getArcY = (x: number, containerWidth: number) => {
+        const cardCenterX = x + cardSize / 2
+        const normalizedX = (cardCenterX - containerWidth / 2) / (containerWidth / 2)
+        const mobileArcHeight = containerWidth < 768 ? 42 : arcHeight
+        return -mobileArcHeight * (1 - Math.min(1, normalizedX * normalizedX))
       }
 
       // Function to calculate opacity based on X position
       // Symmetric fade on both left and right edges
-      const getOpacity = (x: number) => {
-        const normalizedX = (x - containerWidth / 2) / (containerWidth / 2)
+      const getOpacity = (x: number, containerWidth: number) => {
+        const cardCenterX = x + cardSize / 2
+        const normalizedX = (cardCenterX - containerWidth / 2) / (containerWidth / 2)
         const distFromCenter = Math.abs(normalizedX)
-        // Fade out earlier (at 0.55) and faster (3.5x) for smoother edge transitions
-        if (distFromCenter > 0.55) {
-          return Math.max(0, 1 - (distFromCenter - 0.55) * 3.5)
+        // On small screens keep edge cards visible longer so layout stays visually centered.
+        const fadeStart = containerWidth < 768 ? 0.82 : 0.55
+        const fadeStrength = containerWidth < 768 ? 1.6 : 3.5
+        if (distFromCenter > fadeStart) {
+          return Math.max(0.35, 1 - (distFromCenter - fadeStart) * fadeStrength)
         }
         return 1
       }
 
       // Function to calculate scale based on X position
-      const getScale = (x: number) => {
-        const normalizedX = (x - containerWidth / 2) / (containerWidth / 2)
+      const getScale = (x: number, containerWidth: number) => {
+        const cardCenterX = x + cardSize / 2
+        const normalizedX = (cardCenterX - containerWidth / 2) / (containerWidth / 2)
         const distFromCenter = Math.abs(normalizedX)
-        return 1 - Math.min(0.25, distFromCenter * 0.18)
+        const centerScale = containerWidth < 768 ? 1.08 : 1.05
+        const shrinkAmount = containerWidth < 768 ? 0.22 : 0.16
+        return centerScale - Math.min(shrinkAmount, distFromCenter * 0.22)
       }
 
       const loops = 1.1
       const totalMovement = totalTrackWidth * loops
 
       const applyProgress = (progress: number) => {
+        if (!containerRef.current) return
+
+        const containerWidth = containerRef.current.offsetWidth
+        if (!containerWidth) return
+
+        // Keep a stable center anchor so mobile never drifts to the right.
+        const centerX = containerWidth / 2 - cardSize / 2
+        const centerAnchorIndex = containerWidth < 768 ? 1 : 2
+        const initialXOffset = centerX - centerAnchorIndex * iconWidth
+
         const p = Math.max(0, Math.min(1, progress))
         const currentOffset = p * totalMovement
         iconElements.forEach((icon, i) => {
-          const baseX = i * iconWidth - iconWidth * 2
+          const baseX = i * iconWidth + initialXOffset
           let x = baseX - currentOffset
           const wrapBoundary = iconWidth * 2
           while (x < -wrapBoundary) x += totalTrackWidth
           while (x > containerWidth + wrapBoundary) x -= totalTrackWidth
-          const y = getArcY(x)
-          const opacity = getOpacity(x)
-          const scale = getScale(x)
+          const y = getArcY(x, containerWidth)
+          const opacity = getOpacity(x, containerWidth)
+          const scale = getScale(x, containerWidth)
           const shadowOpacity = opacity < 0.3 ? 0 : 0.08
           gsap.set(icon, {
             x: Math.round(x * 100) / 100,
             y: Math.round(y * 100) / 100,
             opacity,
             scale,
+            zIndex: Math.round(scale * 100),
             force3D: true,
             boxShadow: `0 4px 24px rgba(0,0,0,${shadowOpacity})`,
           })
@@ -126,6 +146,9 @@ export default function IntegrationsArcSection() {
           applyProgress(1)
           requestAnimationFrame(() => applyProgress(1))
         },
+        onRefresh: (self) => {
+          applyProgress(self.progress)
+        },
       })
 
     }, sectionRef)
@@ -138,10 +161,10 @@ export default function IntegrationsArcSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative h-[120vh] overflow-hidden rounded-3xl bg-designBg"
+      className="relative w-full h-[120vh] overflow-hidden rounded-3xl bg-designBg"
       style={{ transform: 'translateZ(0)' }}
     >
-      <div className="sticky top-0 h-screen flex flex-col items-center justify-center">
+      <div className="sticky top-0 w-full h-screen flex flex-col items-center justify-center">
         <h2 className="text-3xl md:text-4xl font-semibold mb-12 md:mb-16 text-textPrimary text-center px-4">
           Integrate with your existing tools
         </h2>
@@ -163,10 +186,11 @@ export default function IntegrationsArcSection() {
               }}
               className="absolute flex items-center justify-center bg-white rounded-2xl"
               style={{
-                width: '120px',
-                height: '120px',
+                width: `${cardSize}px`,
+                height: `${cardSize}px`,
+                left: 0,
                 top: '50%',
-                marginTop: '-60px',
+                marginTop: `-${cardSize / 2}px`,
                 willChange: 'transform, opacity',
                 backfaceVisibility: 'hidden',
                 WebkitBackfaceVisibility: 'hidden',
