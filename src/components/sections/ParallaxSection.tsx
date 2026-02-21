@@ -84,7 +84,7 @@ export default function ParallaxSection() {
             {LINES.map((text, i) => (
               <div
                 key={i}
-                className="parallax-line text-xl leading-snug md:text-2xl font-medium"
+                className="parallax-line text-2xl leading-snug md:text-3xl font-medium"
               >
                 {i === 1 ? (
                   <span className="text-[#AAFF00]">{text}</span>

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger, registerGsapPlugins } from "../../lib/gsap";
-import { Globe, TrendingUp, ArrowLeftRight, Calendar, Lock } from "lucide-react";
+import { Globe, TrendingUp, ArrowLeftRight } from "lucide-react";
 
 type CardSize = "largest" | "medium" | "smallMedium" | "small";
 
@@ -208,7 +208,7 @@ export default function UnifyFinancesScroll() {
               {i === 0 ? (
                 <div className="h-full w-full">
                   <img
-                    src="/man-phone.jpeg"
+                    src="/image-2.png"
                     alt="Person with phone at desk"
                     className="w-full h-full object-cover rounded-2xl sm:rounded-3xl"
                   />
@@ -265,16 +265,12 @@ export default function UnifyFinancesScroll() {
                   </div>
                 </div>
               ) : i === 3 ? (
-                <div className="h-full w-full relative">
+                <div className="h-full w-full">
                   <img
-                    src="/coffee.jpeg"
-                    alt="People enjoying coffee"
+                    src="/image-1.png"
+                    alt=""
                     className="w-full h-full object-cover rounded-2xl sm:rounded-3xl"
                   />
-                  <div className="absolute top-2 left-2 sm:top-3 sm:left-3 flex items-center gap-1.5 px-2 py-1.5 sm:px-3 sm:py-2 bg-white/95 rounded-lg shadow-sm">
-                    <Calendar className="w-3 h-3 sm:w-4 sm:h-4 text-[#0F0F0F] flex-shrink-0" />
-                    <span className="text-xs sm:text-sm font-medium text-[#0F0F0F]">Enjoy the coffee!</span>
-                  </div>
                 </div>
               ) : i === 4 ? (
                 <div className="h-full flex flex-col p-2 sm:p-3 md:p-4 items-center text-center overflow-visible">

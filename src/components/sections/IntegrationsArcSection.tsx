@@ -137,7 +137,7 @@ export default function IntegrationsArcSection() {
       ScrollTrigger.create({
         trigger: sectionRef.current,
         start: 'top top',
-        end: '+=150vh',
+        end: '+=700vh',
         pin: true,
         anticipatePin: 1,
         scrub: 2.5,

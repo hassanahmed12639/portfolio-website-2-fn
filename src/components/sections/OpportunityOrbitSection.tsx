@@ -722,13 +722,13 @@ export default function OpportunityOrbitSection() {
             {TEXT_BLOCKS.map((block, i) => (
               <div
                 key={i}
-                className="left-text-block absolute left-0 top-0 w-full flex flex-col justify-center"
+                className="left-text-block absolute left-0 top-0 w-full flex flex-col justify-center text-black"
                 style={{ willChange: 'transform, opacity' }}
               >
-                <h2 className="text-2xl font-semibold tracking-tight text-white md:text-3xl">
+                <h2 className="text-2xl font-semibold tracking-tight text-black md:text-3xl">
                   {block.title}
                 </h2>
-                <p className="mt-4 text-[15px] leading-relaxed text-white/75 md:text-base">
+                <p className="mt-4 text-[15px] leading-relaxed text-black/80 md:text-base">
                   {block.body}
                 </p>
               </div>
