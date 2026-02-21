@@ -7,6 +7,7 @@ import WhoIAmSection from '../components/sections/WhoIAmSection'
 import ParallaxSection from '../components/sections/ParallaxSection'
 import EmissionsIntroSection from '../components/sections/EmissionsIntroSection'
 import IntegrationsArcSection from '../components/sections/IntegrationsArcSection'
+import TestimonialSplitSection from '../components/sections/TestimonialSplitSection'
 import CTASection from '../components/sections/CTASection'
 import ScrambleIntro from '../components/ScrambleIntro'
 
@@ -27,6 +28,7 @@ export default function Home() {
       <ParallaxSection />
       <EmissionsIntroSection />
       <IntegrationsArcSection />
+      <TestimonialSplitSection />
       <section className="w-full m-0 py-12 md:py-16 lg:py-20 px-6 md:px-[5%] bg-designBg">
         <div className="max-w-7xl mx-auto">
           <CTASection />

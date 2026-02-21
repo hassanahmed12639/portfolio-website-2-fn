@@ -229,6 +229,35 @@ header {
   opacity: 0.8;
 }
 
+/* Testimonial stack (swipe cards) */
+.testimonials-stack {
+  position: relative;
+  min-height: 340px;
+  padding-bottom: 2.5rem;
+}
+.testimonial-card {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  width: 100%;
+  min-height: 300px;
+  border-radius: 1rem;
+  transition: box-shadow 0.2s ease;
+  cursor: grab;
+}
+.testimonial-card:active {
+  cursor: grabbing;
+}
+.testimonial-card.glass-effect {
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid hsl(var(--border) / 0.6);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+}
+.testimonial-card.is-dragging {
+  cursor: grabbing;
+}
+
 /* Sector scroll section (below IntegrationsArcSection) */
 .sector-scroll-section .sector-scroll-container {
   min-height: 700vh;
