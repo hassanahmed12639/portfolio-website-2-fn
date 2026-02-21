@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
-import { registerGsapPlugins } from '../../lib/gsap'
+import { registerGsapPlugins, ScrollTrigger } from '../../lib/gsap'
 import OrbitalScrollAnimationSection from './OrbitalScrollAnimationSection'
 
 const CARDS = [
@@ -10,7 +10,7 @@ const CARDS = [
     id: 'manufacturing',
     src: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=900&q=80',
     alt: 'Industrial facility',
-    className: 'top-4 left-[8%] w-32 md:top-[2%] md:left-[-22%] md:w-40',
+    className: 'top-4 left-[8%] w-36 md:top-[2%] md:left-[-22%] md:w-44',
   },
   {
     id: 'electricity',
@@ -58,23 +58,32 @@ export default function EmissionsIntroSection() {
   const manufacturingImageRef = useRef<HTMLImageElement>(null)
   const revealWrapRef = useRef<HTMLDivElement>(null)
   const revealTitleRef = useRef<HTMLDivElement>(null)
+  const revealTitleTextRef = useRef<HTMLHeadingElement>(null)
   const revealFrameRef = useRef<HTMLDivElement>(null)
   const revealImageRef = useRef<HTMLImageElement>(null)
   const revealCopyRef = useRef<HTMLDivElement>(null)
   const electricityStageRef = useRef<HTMLDivElement>(null)
   const electricityTitleRef = useRef<HTMLDivElement>(null)
+  const electricityTitleTextRef = useRef<HTMLHeadingElement>(null)
+  const electricityFrameRef = useRef<HTMLDivElement>(null)
   const electricityImageRef = useRef<HTMLImageElement>(null)
   const electricityCopyRef = useRef<HTMLDivElement>(null)
   const agricultureStageRef = useRef<HTMLDivElement>(null)
   const agricultureTitleRef = useRef<HTMLDivElement>(null)
+  const agricultureTitleTextRef = useRef<HTMLHeadingElement>(null)
+  const agricultureFrameRef = useRef<HTMLDivElement>(null)
   const agricultureImageRef = useRef<HTMLImageElement>(null)
   const agricultureCopyRef = useRef<HTMLDivElement>(null)
   const transportationStageRef = useRef<HTMLDivElement>(null)
   const transportationTitleRef = useRef<HTMLDivElement>(null)
+  const transportationTitleTextRef = useRef<HTMLHeadingElement>(null)
+  const transportationFrameRef = useRef<HTMLDivElement>(null)
   const transportationImageRef = useRef<HTMLImageElement>(null)
   const transportationCopyRef = useRef<HTMLDivElement>(null)
   const buildingsStageRef = useRef<HTMLDivElement>(null)
   const buildingsTitleRef = useRef<HTMLDivElement>(null)
+  const buildingsTitleTextRef = useRef<HTMLHeadingElement>(null)
+  const buildingsFrameRef = useRef<HTMLDivElement>(null)
   const buildingsImageRef = useRef<HTMLImageElement>(null)
   const buildingsCopyRef = useRef<HTMLDivElement>(null)
   const messageStageRef = useRef<HTMLDivElement>(null)
@@ -90,23 +99,28 @@ export default function EmissionsIntroSection() {
     const contentWrap = contentWrapRef.current
     const revealWrap = revealWrapRef.current
     const revealTitle = revealTitleRef.current
+    const revealTitleText = revealTitleTextRef.current
     const revealFrame = revealFrameRef.current
     const revealImage = revealImageRef.current
     const revealCopy = revealCopyRef.current
     const electricityStage = electricityStageRef.current
     const electricityTitle = electricityTitleRef.current
+    const electricityTitleText = electricityTitleTextRef.current
     const electricityImage = electricityImageRef.current
     const electricityCopy = electricityCopyRef.current
     const agricultureStage = agricultureStageRef.current
     const agricultureTitle = agricultureTitleRef.current
+    const agricultureTitleText = agricultureTitleTextRef.current
     const agricultureImage = agricultureImageRef.current
     const agricultureCopy = agricultureCopyRef.current
     const transportationStage = transportationStageRef.current
     const transportationTitle = transportationTitleRef.current
+    const transportationTitleText = transportationTitleTextRef.current
     const transportationImage = transportationImageRef.current
     const transportationCopy = transportationCopyRef.current
     const buildingsStage = buildingsStageRef.current
     const buildingsTitle = buildingsTitleRef.current
+    const buildingsTitleText = buildingsTitleTextRef.current
     const buildingsImage = buildingsImageRef.current
     const buildingsCopy = buildingsCopyRef.current
     const messageStage = messageStageRef.current
@@ -119,23 +133,28 @@ export default function EmissionsIntroSection() {
       !contentWrap ||
       !revealWrap ||
       !revealTitle ||
+      !revealTitleText ||
       !revealFrame ||
       !revealImage ||
       !revealCopy ||
       !electricityStage ||
       !electricityTitle ||
+      !electricityTitleText ||
       !electricityImage ||
       !electricityCopy ||
       !agricultureStage ||
       !agricultureTitle ||
+      !agricultureTitleText ||
       !agricultureImage ||
       !agricultureCopy ||
       !transportationStage ||
       !transportationTitle ||
+      !transportationTitleText ||
       !transportationImage ||
       !transportationCopy ||
       !buildingsStage ||
       !buildingsTitle ||
+      !buildingsTitleText ||
       !buildingsImage ||
       !buildingsCopy ||
       !messageStage ||
@@ -147,7 +166,7 @@ export default function EmissionsIntroSection() {
     const lines = Array.from(heading.querySelectorAll<HTMLElement>('.intro-line'))
     if (!lines.length) return
 
-    gsap.set(contentWrap, { y: 50, opacity: 0.35 })
+    gsap.set(contentWrap, { y: 0, opacity: 0 })
     gsap.set(revealWrap, { autoAlpha: 0 })
     gsap.set(revealTitle, { y: 28, opacity: 0 })
     gsap.set(revealImage, {
@@ -280,6 +299,66 @@ export default function EmissionsIntroSection() {
     let manufacturingZoomTarget = { x: 0, y: 0, scale: 1 }
     let revealFrameMatch = { x: 0, y: 0, scaleX: 1, scaleY: 1 }
 
+    function setAdaptiveTitleSplit(titleEl: HTMLElement | null, cardEl: HTMLElement | null) {
+      if (!titleEl || !cardEl) return
+      const tr = titleEl.getBoundingClientRect()
+      const cr = cardEl.getBoundingClientRect()
+      const overlapLeft = Math.max(tr.left, cr.left)
+      const overlapRight = Math.min(tr.right, cr.right)
+      const overlapTop = Math.max(tr.top, cr.top)
+      const overlapBottom = Math.min(tr.bottom, cr.bottom)
+      const overlapWidth = overlapRight - overlapLeft
+      const overlapHeight = overlapBottom - overlapTop
+      const minVerticalOverlap = tr.height * 0.2
+      const minHorizontalOverlap = tr.width * 0.02
+      const cardReachedTitleFromBottom = cr.top <= tr.bottom - tr.height * 0.05
+
+      const setAllGreen = () => {
+        gsap.to(titleEl, {
+          ['--title-clip-left' as string]: '100%',
+          ['--title-clip-right' as string]: '0%',
+          ['--title-clip-top' as string]: '0%',
+          ['--title-clip-bottom' as string]: '0%',
+          duration: 0.18,
+          ease: 'power2.out',
+          overwrite: 'auto',
+        })
+      }
+      if (
+        !cardReachedTitleFromBottom ||
+        overlapWidth <= 0 ||
+        overlapHeight <= 0 ||
+        overlapHeight < minVerticalOverlap ||
+        overlapWidth < minHorizontalOverlap ||
+        tr.width <= 0 ||
+        tr.height <= 0
+      ) {
+        setAllGreen()
+        return
+      }
+      const leftPct = ((overlapLeft - tr.left) / tr.width) * 100
+      const rightPct = ((tr.right - overlapRight) / tr.width) * 100
+      const topPct = ((overlapTop - tr.top) / tr.height) * 100
+      const bottomPct = ((tr.bottom - overlapBottom) / tr.height) * 100
+      gsap.to(titleEl, {
+        ['--title-clip-left' as string]: `${Math.max(0, Math.min(100, leftPct))}%`,
+        ['--title-clip-right' as string]: `${Math.max(0, Math.min(100, rightPct))}%`,
+        ['--title-clip-top' as string]: `${Math.max(0, Math.min(100, topPct))}%`,
+        ['--title-clip-bottom' as string]: `${Math.max(0, Math.min(100, bottomPct))}%`,
+        duration: 0.18,
+        ease: 'power2.out',
+        overwrite: 'auto',
+      })
+    }
+
+    function updateAllTitleSplits() {
+      setAdaptiveTitleSplit(revealTitleText, revealFrame)
+      setAdaptiveTitleSplit(electricityTitleText, electricityFrameRef.current)
+      setAdaptiveTitleSplit(agricultureTitleText, agricultureFrameRef.current)
+      setAdaptiveTitleSplit(transportationTitleText, transportationFrameRef.current)
+      setAdaptiveTitleSplit(buildingsTitleText, buildingsFrameRef.current)
+    }
+
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: section,
@@ -292,9 +371,9 @@ export default function EmissionsIntroSection() {
       },
     })
 
-    // First: visibly reveal the whole section right after parallax handoff.
+    // First: reveal the whole section without vertical motion so it feels like
+    // it appears from behind the previous pinned parallax panel.
     tl.to(contentWrap, {
-      y: 0,
       opacity: 1,
       duration: 0.9,
       ease: 'power1.out',
@@ -309,6 +388,9 @@ export default function EmissionsIntroSection() {
       ease: 'none',
     })
 
+    // Slight hold before cards begin moving.
+    tl.to({}, { duration: 0.2 })
+
     // First drop order with continuous staggered flow.
     tl.to(firstDropOrder, {
       y: 170,
@@ -319,6 +401,16 @@ export default function EmissionsIntroSection() {
       },
       ease: 'none',
     })
+    tl.to(
+      textBlock,
+      {
+        autoAlpha: 0,
+        x: -48,
+        duration: 0.56,
+        ease: 'none',
+      },
+      '<'
+    )
 
     // Buildings exits first (down, out of frame).
     tl.to(buildingsCard, {
@@ -380,17 +472,6 @@ export default function EmissionsIntroSection() {
       duration: 0.62,
       ease: 'none',
     })
-
-    tl.to(
-      textBlock,
-      {
-        opacity: 0,
-        x: -48,
-        duration: 0.74,
-        ease: 'none',
-      },
-      '<+0.08'
-    )
 
     // Electricity exits while manufacturing advances.
     tl.to(electricityCard, {
@@ -534,9 +615,12 @@ export default function EmissionsIntroSection() {
           duration: 0.55,
           ease: 'power2.out',
         },
-        '<+0.08'
+      '<+0.08'
       )
     }
+
+    // Slight pause after Manufacturing reveal before handoff to Electricity.
+    tl.to({}, { duration: 0.25 })
 
     handoffToNextStage(revealWrap, electricityStage, electricityImage, electricityTitle, electricityCopy)
     handoffToNextStage(
@@ -591,7 +675,16 @@ export default function EmissionsIntroSection() {
     // Hold the full sentence on screen before unpin.
     tl.to({}, { duration: 0.7 })
 
+    const adaptiveSt = ScrollTrigger.create({
+      trigger: section,
+      start: 'top top',
+      end: '+=5200',
+      onUpdate: updateAllTitleSplits,
+    })
+    updateAllTitleSplits()
+
     return () => {
+      adaptiveSt.kill()
       tl.scrollTrigger?.kill()
       tl.kill()
     }
@@ -655,9 +748,29 @@ export default function EmissionsIntroSection() {
             <div
               ref={revealTitleRef}
               className="relative z-20 mx-auto -mb-6 w-full max-w-[920px] -translate-y-2 text-center md:-mb-10 md:-translate-y-7"
+              style={{ ['--title-split' as string]: 0 }}
             >
-              <h2 className="text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-white md:text-[110px]">
-                Manufacturing
+              <h2
+                ref={revealTitleTextRef}
+                className="relative inline-block text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] md:text-[110px]"
+                style={{
+                  ['--title-clip-left' as string]: '100%',
+                  ['--title-clip-right' as string]: '0%',
+                  ['--title-clip-top' as string]: '0%',
+                  ['--title-clip-bottom' as string]: '0%',
+                }}
+              >
+                <span className="block text-[#AAFF00]" aria-hidden>Manufacturing</span>
+                <span
+                  className="absolute inset-0 block overflow-hidden text-white"
+                  style={{
+                    clipPath:
+                      'inset(var(--title-clip-top, 0%) var(--title-clip-right, 0%) var(--title-clip-bottom, 0%) var(--title-clip-left, 100%))',
+                  }}
+                  aria-hidden
+                >
+                  Manufacturing
+                </span>
               </h2>
             </div>
 
@@ -697,13 +810,36 @@ export default function EmissionsIntroSection() {
             <div
               ref={electricityTitleRef}
               className="relative z-20 mx-auto -mb-6 w-full max-w-[920px] -translate-y-2 text-center md:-mb-10 md:-translate-y-7"
+              style={{ ['--title-split' as string]: 0 }}
             >
-              <h2 className="text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-white md:text-[110px]">
-                Electricity
+              <h2
+                ref={electricityTitleTextRef}
+                className="relative inline-block text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] md:text-[110px]"
+                style={{
+                  ['--title-clip-left' as string]: '100%',
+                  ['--title-clip-right' as string]: '0%',
+                  ['--title-clip-top' as string]: '0%',
+                  ['--title-clip-bottom' as string]: '0%',
+                }}
+              >
+                <span className="block text-[#AAFF00]" aria-hidden>Electricity</span>
+                <span
+                  className="absolute inset-0 block overflow-hidden text-white"
+                  style={{
+                    clipPath:
+                      'inset(var(--title-clip-top, 0%) var(--title-clip-right, 0%) var(--title-clip-bottom, 0%) var(--title-clip-left, 100%))',
+                  }}
+                  aria-hidden
+                >
+                  Electricity
+                </span>
               </h2>
             </div>
 
-            <div className="relative z-10 mx-auto w-full max-w-[1120px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)]">
+            <div
+              ref={electricityFrameRef}
+              className="relative z-10 mx-auto w-full max-w-[1120px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)]"
+            >
               <img
                 ref={electricityImageRef}
                 src={CARDS[1].src}
@@ -736,13 +872,36 @@ export default function EmissionsIntroSection() {
             <div
               ref={agricultureTitleRef}
               className="relative z-20 mx-auto -mb-6 w-full max-w-[920px] -translate-y-2 text-center md:-mb-10 md:-translate-y-7"
+              style={{ ['--title-split' as string]: 0 }}
             >
-              <h2 className="text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-white md:text-[110px]">
-                Agriculture
+              <h2
+                ref={agricultureTitleTextRef}
+                className="relative inline-block text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] md:text-[110px]"
+                style={{
+                  ['--title-clip-left' as string]: '100%',
+                  ['--title-clip-right' as string]: '0%',
+                  ['--title-clip-top' as string]: '0%',
+                  ['--title-clip-bottom' as string]: '0%',
+                }}
+              >
+                <span className="block text-[#AAFF00]" aria-hidden>Agriculture</span>
+                <span
+                  className="absolute inset-0 block overflow-hidden text-white"
+                  style={{
+                    clipPath:
+                      'inset(var(--title-clip-top, 0%) var(--title-clip-right, 0%) var(--title-clip-bottom, 0%) var(--title-clip-left, 100%))',
+                  }}
+                  aria-hidden
+                >
+                  Agriculture
+                </span>
               </h2>
             </div>
 
-            <div className="relative z-10 mx-auto w-full max-w-[1120px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)]">
+            <div
+              ref={agricultureFrameRef}
+              className="relative z-10 mx-auto w-full max-w-[1120px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)]"
+            >
               <img
                 ref={agricultureImageRef}
                 src={CARDS[2].src}
@@ -775,13 +934,36 @@ export default function EmissionsIntroSection() {
             <div
               ref={transportationTitleRef}
               className="relative z-20 mx-auto -mb-6 w-full max-w-[920px] -translate-y-2 text-center md:-mb-10 md:-translate-y-7"
+              style={{ ['--title-split' as string]: 0 }}
             >
-              <h2 className="text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-white md:text-[110px]">
-                Transportation
+              <h2
+                ref={transportationTitleTextRef}
+                className="relative inline-block text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] md:text-[110px]"
+                style={{
+                  ['--title-clip-left' as string]: '100%',
+                  ['--title-clip-right' as string]: '0%',
+                  ['--title-clip-top' as string]: '0%',
+                  ['--title-clip-bottom' as string]: '0%',
+                }}
+              >
+                <span className="block text-[#AAFF00]" aria-hidden>Transportation</span>
+                <span
+                  className="absolute inset-0 block overflow-hidden text-white"
+                  style={{
+                    clipPath:
+                      'inset(var(--title-clip-top, 0%) var(--title-clip-right, 0%) var(--title-clip-bottom, 0%) var(--title-clip-left, 100%))',
+                  }}
+                  aria-hidden
+                >
+                  Transportation
+                </span>
               </h2>
             </div>
 
-            <div className="relative z-10 mx-auto w-full max-w-[1120px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)]">
+            <div
+              ref={transportationFrameRef}
+              className="relative z-10 mx-auto w-full max-w-[1120px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)]"
+            >
               <img
                 ref={transportationImageRef}
                 src={CARDS[3].src}
@@ -814,13 +996,36 @@ export default function EmissionsIntroSection() {
             <div
               ref={buildingsTitleRef}
               className="relative z-20 mx-auto -mb-6 w-full max-w-[920px] -translate-y-2 text-center md:-mb-10 md:-translate-y-7"
+              style={{ ['--title-split' as string]: 0 }}
             >
-              <h2 className="text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] text-white md:text-[110px]">
-                Buildings
+              <h2
+                ref={buildingsTitleTextRef}
+                className="relative inline-block text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] md:text-[110px]"
+                style={{
+                  ['--title-clip-left' as string]: '100%',
+                  ['--title-clip-right' as string]: '0%',
+                  ['--title-clip-top' as string]: '0%',
+                  ['--title-clip-bottom' as string]: '0%',
+                }}
+              >
+                <span className="block text-[#AAFF00]" aria-hidden>Buildings</span>
+                <span
+                  className="absolute inset-0 block overflow-hidden text-white"
+                  style={{
+                    clipPath:
+                      'inset(var(--title-clip-top, 0%) var(--title-clip-right, 0%) var(--title-clip-bottom, 0%) var(--title-clip-left, 100%))',
+                  }}
+                  aria-hidden
+                >
+                  Buildings
+                </span>
               </h2>
             </div>
 
-            <div className="relative z-10 mx-auto w-full max-w-[1120px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)]">
+            <div
+              ref={buildingsFrameRef}
+              className="relative z-10 mx-auto w-full max-w-[1120px] overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)]"
+            >
               <img
                 ref={buildingsImageRef}
                 src={CARDS[4].src}

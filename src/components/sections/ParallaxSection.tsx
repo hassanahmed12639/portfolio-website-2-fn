@@ -74,7 +74,7 @@ export default function ParallaxSection() {
     >
       <div
         ref={pinRef}
-        className="parallax min-h-screen w-full flex items-center justify-end px-6 pt-24 md:px-[10%] md:pt-32 relative z-10"
+        className="parallax min-h-screen w-full flex items-start justify-end px-6 pt-8 md:px-[10%] md:pt-10 relative z-10"
       >
         <div
           ref={contentRef}
