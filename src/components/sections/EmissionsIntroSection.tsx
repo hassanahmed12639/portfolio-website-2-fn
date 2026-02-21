@@ -651,7 +651,7 @@ export default function EmissionsIntroSection() {
 
       <div ref={revealWrapRef} className="pointer-events-none absolute inset-0 z-20">
         <div className="mx-auto flex h-full w-full max-w-7xl items-center px-8 py-8 md:px-14 md:py-10">
-          <div className="relative w-full md:-translate-y-20">
+          <div className="relative w-full md:-translate-y-10">
             <div
               ref={revealTitleRef}
               className="relative z-20 mx-auto -mb-6 w-full max-w-[920px] -translate-y-2 text-center md:-mb-10 md:-translate-y-7"
@@ -674,7 +674,7 @@ export default function EmissionsIntroSection() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
               <div
                 ref={revealCopyRef}
-                className="absolute inset-0 flex flex-col justify-end p-6 text-white md:p-10"
+                className="absolute inset-0 flex flex-col justify-center pt-32 p-6 text-white md:pt-40 md:p-10"
               >
                 <span className="mb-4 inline-flex w-fit self-start rounded-full border border-white/70 bg-black/35 px-3 py-1 text-sm font-semibold text-white backdrop-blur-sm">
                   30% emissions
@@ -693,7 +693,7 @@ export default function EmissionsIntroSection() {
 
       <div ref={electricityStageRef} className="pointer-events-none absolute inset-0 z-20">
         <div className="mx-auto flex h-full w-full max-w-7xl items-center px-8 py-8 md:px-14 md:py-10">
-          <div className="w-full md:-translate-y-20">
+          <div className="w-full md:-translate-y-10">
             <div
               ref={electricityTitleRef}
               className="relative z-20 mx-auto -mb-6 w-full max-w-[920px] -translate-y-2 text-center md:-mb-10 md:-translate-y-7"
@@ -713,7 +713,7 @@ export default function EmissionsIntroSection() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
               <div
                 ref={electricityCopyRef}
-                className="absolute inset-0 flex flex-col justify-end p-6 text-white md:p-10"
+                className="absolute inset-0 flex flex-col justify-center pt-32 p-6 text-white md:pt-40 md:p-10"
               >
                 <span className="mb-4 inline-flex w-fit self-start rounded-full border border-white/70 bg-black/35 px-3 py-1 text-sm font-semibold text-white backdrop-blur-sm">
                   28% emissions
@@ -732,7 +732,7 @@ export default function EmissionsIntroSection() {
 
       <div ref={agricultureStageRef} className="pointer-events-none absolute inset-0 z-20">
         <div className="mx-auto flex h-full w-full max-w-7xl items-center px-8 py-8 md:px-14 md:py-10">
-          <div className="w-full md:-translate-y-20">
+          <div className="w-full md:-translate-y-10">
             <div
               ref={agricultureTitleRef}
               className="relative z-20 mx-auto -mb-6 w-full max-w-[920px] -translate-y-2 text-center md:-mb-10 md:-translate-y-7"
@@ -752,7 +752,7 @@ export default function EmissionsIntroSection() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
               <div
                 ref={agricultureCopyRef}
-                className="absolute inset-0 flex flex-col justify-end p-6 text-white md:p-10"
+                className="absolute inset-0 flex flex-col justify-center pt-32 p-6 text-white md:pt-40 md:p-10"
               >
                 <span className="mb-4 inline-flex w-fit self-start rounded-full border border-white/70 bg-black/35 px-3 py-1 text-sm font-semibold text-white backdrop-blur-sm">
                   19% emissions
@@ -771,7 +771,7 @@ export default function EmissionsIntroSection() {
 
       <div ref={transportationStageRef} className="pointer-events-none absolute inset-0 z-20">
         <div className="mx-auto flex h-full w-full max-w-7xl items-center px-8 py-8 md:px-14 md:py-10">
-          <div className="w-full md:-translate-y-20">
+          <div className="w-full md:-translate-y-10">
             <div
               ref={transportationTitleRef}
               className="relative z-20 mx-auto -mb-6 w-full max-w-[920px] -translate-y-2 text-center md:-mb-10 md:-translate-y-7"
@@ -791,7 +791,7 @@ export default function EmissionsIntroSection() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
               <div
                 ref={transportationCopyRef}
-                className="absolute inset-0 flex flex-col justify-end p-6 text-white md:p-10"
+                className="absolute inset-0 flex flex-col justify-center pt-32 p-6 text-white md:pt-40 md:p-10"
               >
                 <span className="mb-4 inline-flex w-fit self-start rounded-full border border-white/70 bg-black/35 px-3 py-1 text-sm font-semibold text-white backdrop-blur-sm">
                   25% emissions
@@ -810,7 +810,7 @@ export default function EmissionsIntroSection() {
 
       <div ref={buildingsStageRef} className="pointer-events-none absolute inset-0 z-20">
         <div className="mx-auto flex h-full w-full max-w-7xl items-center px-8 py-8 md:px-14 md:py-10">
-          <div className="w-full md:-translate-y-20">
+          <div className="w-full md:-translate-y-10">
             <div
               ref={buildingsTitleRef}
               className="relative z-20 mx-auto -mb-6 w-full max-w-[920px] -translate-y-2 text-center md:-mb-10 md:-translate-y-7"
@@ -830,7 +830,7 @@ export default function EmissionsIntroSection() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
               <div
                 ref={buildingsCopyRef}
-                className="absolute inset-0 flex flex-col justify-end p-6 text-white md:p-10"
+                className="absolute inset-0 flex flex-col justify-center pt-32 p-6 text-white md:pt-40 md:p-10"
               >
                 <span className="mb-4 inline-flex w-fit self-start rounded-full border border-white/70 bg-black/35 px-3 py-1 text-sm font-semibold text-white backdrop-blur-sm">
                   22% emissions
