@@ -480,37 +480,65 @@ export default function EmissionsIntroSection() {
       '<'
     )
 
-    // Final manufacturing zoom into reveal.
-    tl.add(() => {
-      manufacturingZoomTarget = getManufacturingZoomTarget()
-    })
-    tl.to(
-      manufacturingCard,
-      {
-        x: () => manufacturingZoomTarget.x,
-        y: () => manufacturingZoomTarget.y,
-        scale: () => manufacturingZoomTarget.scale,
-        transformOrigin: 'center center',
-        duration: 2.1,
-        ease: 'none',
-      },
-      '>'
-    )
-
+    // Final manufacturing transition into reveal.
     if (isMobile) {
-      // Mobile-only: avoid long morph stretch on the first card handoff.
-      tl.set(revealFrame, { clearProps: 'x,y,scaleX,scaleY' })
-      tl.set(revealImage, { x: 0, y: 0, scale: 1, opacity: 1 })
-      tl.set(revealWrap, { autoAlpha: 1 }, '>')
+      // Mobile-only: avoid aggressive morphing to prevent visual jerk.
       tl.to(
         manufacturingCard,
         {
-          autoAlpha: 0,
-          duration: 0.22,
+          y: '+=90',
+          scale: 1.18,
+          duration: 0.82,
+          ease: 'power1.out',
+        },
+        '>'
+      )
+    } else {
+      tl.add(() => {
+        manufacturingZoomTarget = getManufacturingZoomTarget()
+      })
+      tl.to(
+        manufacturingCard,
+        {
+          x: () => manufacturingZoomTarget.x,
+          y: () => manufacturingZoomTarget.y,
+          scale: () => manufacturingZoomTarget.scale,
+          transformOrigin: 'center center',
+          duration: 2.1,
           ease: 'none',
         },
+        '>'
+      )
+    }
+
+    if (isMobile) {
+      // Mobile-only: sequential handoff (no overlap) for smoother transition.
+      tl.set(revealFrame, { clearProps: 'x,y,scaleX,scaleY' })
+      tl.set(revealImage, { x: 0, y: 0, opacity: 1 })
+      tl.fromTo(
+        manufacturingCard,
+        { autoAlpha: 1 },
+        { autoAlpha: 0, duration: 0.24, ease: 'power1.out' },
+        '>'
+      )
+      tl.set(
+        revealWrap,
+        { autoAlpha: 1 },
+        '>'
+      )
+      tl.fromTo(
+        revealFrame,
+        { y: 0, scale: 0.3, transformOrigin: 'center center' },
+        { y: 0, scale: 1, duration: 1.05, ease: 'power2.out' },
+        '>'
+      )
+      tl.fromTo(
+        revealImage,
+        { scale: 1.18, transformOrigin: 'center center' },
+        { scale: 1, duration: 1.05, ease: 'power2.out' },
         '<'
       )
+      tl.set(revealFrame, { clearProps: 'y,scale,transformOrigin' })
     } else {
       // Hard cut handoff: keep reveal image exactly same size as final card frame.
       tl.add(() => {
@@ -540,28 +568,51 @@ export default function EmissionsIntroSection() {
       tl.set(manufacturingCard, { autoAlpha: 0 }, '<')
     }
 
-    // Text appears after the image expansion is established.
-    tl.to(
-      revealTitle,
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.85,
-        ease: 'power2.out',
-      },
-      '+=0.14'
-    )
+    // Text timing: mobile reveals title first, then copy; desktop keeps prior timing.
+    if (isMobile) {
+      tl.to(
+        revealTitle,
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.6,
+          ease: 'power2.out',
+        },
+        '<+0.32'
+      )
+      tl.to(
+        revealCopy,
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.65,
+          ease: 'power2.out',
+        },
+        '<+0.24'
+      )
+    } else {
+      tl.to(
+        revealTitle,
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.85,
+          ease: 'power2.out',
+        },
+        '+=0.14'
+      )
 
-    tl.to(
-      revealCopy,
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.85,
-        ease: 'power2.out',
-      },
-      '<+0.1'
-    )
+      tl.to(
+        revealCopy,
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.85,
+          ease: 'power2.out',
+        },
+        '<+0.1'
+      )
+    }
 
     // Scroll-by-scroll handoff: hold, current exits up, then next enters (no overlap).
     const handoffToNextStage = (
