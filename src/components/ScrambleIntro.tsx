@@ -8,8 +8,6 @@ const TARGET_L1 = 'HASSAN'
 const TARGET_L2 = 'AHMED'
 const TRACK_HEIGHT_VH = 500
 const FADE_MS = 450
-const SPLIT_START = 0.72
-const SPLIT_END = 0.98
 
 function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value))
@@ -27,8 +25,8 @@ export default function ScrambleIntro() {
   const line1Ref = useRef<HTMLDivElement | null>(null)
   const line2Ref = useRef<HTMLDivElement | null>(null)
   const subRef = useRef<HTMLDivElement | null>(null)
-  const splitTopRef = useRef<HTMLDivElement | null>(null)
-  const splitBottomRef = useRef<HTMLDivElement | null>(null)
+  const heroSlotRef = useRef<HTMLDivElement | null>(null)
+  const bgoverlayRef = useRef<HTMLDivElement | null>(null)
   const scanlineRef = useRef<HTMLDivElement | null>(null)
   const progressRef = useRef<HTMLDivElement | null>(null)
   const cueRef = useRef<HTMLDivElement | null>(null)
@@ -50,7 +48,6 @@ export default function ScrambleIntro() {
     const buildLine = (el: HTMLDivElement, target: string) => {
       el.innerHTML = ''
       const spans: HTMLSpanElement[] = []
-
       for (const _char of target) {
         const span = document.createElement('span')
         span.className = `${styles.char} ${styles.noise}`
@@ -58,7 +55,6 @@ export default function ScrambleIntro() {
         el.appendChild(span)
         spans.push(span)
       }
-
       return spans
     }
 
@@ -73,7 +69,6 @@ export default function ScrambleIntro() {
 
     const updateLine = (spans: HTMLSpanElement[], target: string, lineProgress: number) => {
       const resolved = Math.floor(lineProgress * target.length)
-
       spans.forEach((span, index) => {
         if (index < resolved) {
           span.textContent = target[index]
@@ -97,10 +92,10 @@ export default function ScrambleIntro() {
 
       const maxScroll = scrollerRef.current.scrollHeight - scrollerRef.current.clientHeight
       const scrollTop = scrollerRef.current.scrollTop
-      const progress = clamp(scrollTop / Math.max(maxScroll, 1), 0, 1)
+      const p = clamp(scrollTop / Math.max(maxScroll, 1), 0, 1)
 
       if (progressRef.current) {
-        progressRef.current.style.width = `${progress * 100}%`
+        progressRef.current.style.width = `${p * 100}%`
       }
 
       if (cueRef.current) {
@@ -108,30 +103,38 @@ export default function ScrambleIntro() {
         else cueRef.current.classList.remove(styles.hidden)
       }
 
-      const decodeProgress = norm(progress, 0, 0.55)
+      const decodeP = norm(p, 0, 0.55)
       if (scanlineRef.current) {
-        scanlineRef.current.style.top = `${decodeProgress * 100}vh`
-        scanlineRef.current.style.opacity = decodeProgress < 0.95 ? '0.8' : '0'
+        scanlineRef.current.style.top = `${decodeP * 100}vh`
+        scanlineRef.current.style.opacity = decodeP < 0.95 ? '0.8' : '0'
       }
 
-      const line1Progress = progress >= SPLIT_START ? 1 : norm(progress, 0.05, 0.4)
-      const line2Progress = progress >= SPLIT_START ? 1 : norm(progress, 0.2, 0.55)
-      updateLine(spans1Ref.current, TARGET_L1, line1Progress)
-      updateLine(spans2Ref.current, TARGET_L2, line2Progress)
+      updateLine(spans1Ref.current, TARGET_L1, norm(p, 0.05, 0.4))
+      updateLine(spans2Ref.current, TARGET_L2, norm(p, 0.2, 0.55))
 
       if (subRef.current) {
-        subRef.current.textContent = ''
+        const subP = norm(p, 0, 0.55)
+        if (subP < 0.3) subRef.current.textContent = 'decoding identity...'
+        else if (subP < 0.7) subRef.current.textContent = 'access granted_'
+        else subRef.current.textContent = ''
       }
 
-      const splitProgress = norm(progress, SPLIT_START, SPLIT_END)
-      if (splitTopRef.current) {
-        splitTopRef.current.style.transform = `translateY(${-58 * splitProgress}vh)`
-      }
-      if (splitBottomRef.current) {
-        splitBottomRef.current.style.transform = `translateY(${58 * splitProgress}vh)`
+      if (bgoverlayRef.current) {
+        const overlayOpacity = Math.max(0, 1 - norm(p, 0.55, 0.75))
+        bgoverlayRef.current.style.opacity = String(overlayOpacity)
       }
 
-      if (progress >= 0.995 || maxScroll - scrollTop <= 2) finishIntro()
+      const heroP = norm(p, 0.6, 0.82)
+      if (heroSlotRef.current) {
+        heroSlotRef.current.style.opacity = String(heroP)
+        heroSlotRef.current.classList.toggle(styles.heroVisible, heroP > 0.1)
+      }
+
+      if (p >= 0.85 || maxScroll - scrollTop <= 2) finishIntro()
+
+      if (p < 0.85 && !doneRef.current) {
+        rafRef.current = window.requestAnimationFrame(update)
+      }
     }
 
     const onScroll = () => {
@@ -181,25 +184,19 @@ export default function ScrambleIntro() {
         <div className={styles.track} style={{ height: `${TRACK_HEIGHT_VH}vh` }} />
       </div>
 
-      <div className={styles.splitStage}>
-        <div className={styles.splitTop} ref={splitTopRef}>
-          <div className={styles.lineWrapTop}>
-            <div className={styles.line} ref={line1Ref} />
+      <div className={styles.sticky}>
+        <div ref={heroSlotRef} className={styles.heroSlot} id="heroSlot" />
+        <div ref={bgoverlayRef} className={styles.bgoverlay} />
+        <div className={styles.scrambleStage}>
+          <div className={styles.sLine} ref={line1Ref} />
+          <div className={styles.sLine} ref={line2Ref} />
+          <div className={styles.sSub} ref={subRef}>
+            decoding identity...
           </div>
         </div>
-
-        <div className={styles.splitBottom} ref={splitBottomRef}>
-          <div className={styles.lineWrapBottom}>
-            <div className={styles.line} ref={line2Ref} />
-          </div>
-        </div>
-
-        <div className={styles.sub} ref={subRef}>
-          
-        </div>
+        <div className={styles.scanline} ref={scanlineRef} />
       </div>
 
-      <div className={styles.scanline} ref={scanlineRef} />
       <div className={styles.progress} ref={progressRef} />
       <div className={styles.cue} ref={cueRef}>
         <span>scroll_to_decode()</span>
