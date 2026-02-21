@@ -105,7 +105,9 @@ export default function IntegrationsArcSection() {
         const initialXOffset = centerX - centerAnchorIndex * iconWidth
 
         const p = Math.max(0, Math.min(1, progress))
-        const currentOffset = p * totalMovement
+        const rawOffset = p * totalMovement
+        // Snap movement to exact card steps so one card lands in center each time.
+        const currentOffset = Math.round(rawOffset / iconWidth) * iconWidth
         iconElements.forEach((icon, i) => {
           const baseX = i * iconWidth + initialXOffset
           let x = baseX - currentOffset
