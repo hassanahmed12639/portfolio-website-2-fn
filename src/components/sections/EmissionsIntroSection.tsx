@@ -10,31 +10,31 @@ const CARDS = [
     id: 'manufacturing',
     src: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=900&q=80',
     alt: 'Industrial facility',
-    className: 'top-4 left-[8%] w-32 md:top-0 md:left-[4.5%] md:w-40',
+    className: 'top-4 left-[8%] w-32 md:top-[2%] md:left-[-22%] md:w-40',
   },
   {
     id: 'electricity',
     src: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=900&q=80',
     alt: 'Electricity grid',
-    className: 'top-6 right-[4%] w-36 md:top-2 md:right-[2%] md:w-48',
+    className: 'top-6 right-[4%] w-36 md:top-[4%] md:right-[8%] md:w-48',
   },
   {
     id: 'agriculture',
     src: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=900&q=80',
     alt: 'Green agriculture field',
-    className: 'top-[32%] left-[42%] w-36 -translate-x-1/2 md:top-[26%] md:left-[45%] md:w-52',
+    className: 'top-[32%] left-[42%] w-36 -translate-x-1/2 md:top-[28%] md:left-[24%] md:w-52',
   },
   {
     id: 'transportation',
     src: 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=900&q=80',
     alt: 'Road transportation',
-    className: 'bottom-[20%] right-[6%] w-36 md:bottom-[22%] md:right-[4%] md:w-48',
+    className: 'bottom-[20%] right-[6%] w-36 md:bottom-[34%] md:right-[8%] md:w-48',
   },
   {
     id: 'buildings',
     src: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=900&q=80',
     alt: 'Buildings and city',
-    className: 'bottom-4 left-[46%] w-36 -translate-x-1/2 md:bottom-[10%] md:left-[50%] md:w-44',
+    className: 'bottom-4 left-[46%] w-36 -translate-x-1/2 md:bottom-[13%] md:left-[24%] md:w-44',
   },
 ]
 
@@ -651,7 +651,7 @@ export default function EmissionsIntroSection() {
 
       <div ref={revealWrapRef} className="pointer-events-none absolute inset-0 z-20">
         <div className="mx-auto flex h-full w-full max-w-7xl items-center px-8 py-8 md:px-14 md:py-10">
-          <div className="relative w-full md:-translate-y-10">
+          <div className="relative w-full md:-translate-y-6">
             <div
               ref={revealTitleRef}
               className="relative z-20 mx-auto -mb-6 w-full max-w-[920px] -translate-y-2 text-center md:-mb-10 md:-translate-y-7"
@@ -674,12 +674,12 @@ export default function EmissionsIntroSection() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
               <div
                 ref={revealCopyRef}
-                className="absolute inset-0 flex flex-col justify-center pt-32 p-6 text-white md:pt-40 md:p-10"
+                className="absolute inset-0 flex flex-col justify-end px-6 pb-4 text-white md:px-10 md:pb-8"
               >
                 <span className="mb-4 inline-flex w-fit self-start rounded-full border border-white/70 bg-black/35 px-3 py-1 text-sm font-semibold text-white backdrop-blur-sm">
                   30% emissions
                 </span>
-                <p className="max-w-[340px] text-[16px] font-semibold leading-[1.3] text-white md:max-w-[420px]">
+                <p className="max-w-[340px] text-[16px] font-semibold leading-[1.3] text-white sm:text-[17px] md:max-w-[420px] md:text-[20px]">
                   The clean industrial revolution starts with transforming how we make everything in
                   the world from steel and cement to everyday materials.
                 </p>
@@ -693,7 +693,7 @@ export default function EmissionsIntroSection() {
 
       <div ref={electricityStageRef} className="pointer-events-none absolute inset-0 z-20">
         <div className="mx-auto flex h-full w-full max-w-7xl items-center px-8 py-8 md:px-14 md:py-10">
-          <div className="w-full md:-translate-y-10">
+          <div className="w-full md:-translate-y-6">
             <div
               ref={electricityTitleRef}
               className="relative z-20 mx-auto -mb-6 w-full max-w-[920px] -translate-y-2 text-center md:-mb-10 md:-translate-y-7"
@@ -713,12 +713,12 @@ export default function EmissionsIntroSection() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
               <div
                 ref={electricityCopyRef}
-                className="absolute inset-0 flex flex-col justify-center pt-32 p-6 text-white md:pt-40 md:p-10"
+                className="absolute inset-0 flex flex-col justify-end px-6 pb-4 text-white md:px-10 md:pb-8"
               >
                 <span className="mb-4 inline-flex w-fit self-start rounded-full border border-white/70 bg-black/35 px-3 py-1 text-sm font-semibold text-white backdrop-blur-sm">
                   28% emissions
                 </span>
-                <p className="max-w-[340px] text-[16px] font-semibold leading-[1.3] text-white md:max-w-[420px]">
+                <p className="max-w-[340px] text-[16px] font-semibold leading-[1.3] text-white sm:text-[17px] md:max-w-[420px] md:text-[20px]">
                   The world must build 21st century grids while delivering energy abundance - clean,
                   affordable, and reliable power for everyone.
                 </p>
@@ -732,7 +732,7 @@ export default function EmissionsIntroSection() {
 
       <div ref={agricultureStageRef} className="pointer-events-none absolute inset-0 z-20">
         <div className="mx-auto flex h-full w-full max-w-7xl items-center px-8 py-8 md:px-14 md:py-10">
-          <div className="w-full md:-translate-y-10">
+          <div className="w-full md:-translate-y-6">
             <div
               ref={agricultureTitleRef}
               className="relative z-20 mx-auto -mb-6 w-full max-w-[920px] -translate-y-2 text-center md:-mb-10 md:-translate-y-7"
@@ -752,12 +752,12 @@ export default function EmissionsIntroSection() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
               <div
                 ref={agricultureCopyRef}
-                className="absolute inset-0 flex flex-col justify-center pt-32 p-6 text-white md:pt-40 md:p-10"
+                className="absolute inset-0 flex flex-col justify-end px-6 pb-4 text-white md:px-10 md:pb-8"
               >
                 <span className="mb-4 inline-flex w-fit self-start rounded-full border border-white/70 bg-black/35 px-3 py-1 text-sm font-semibold text-white backdrop-blur-sm">
                   19% emissions
                 </span>
-                <p className="max-w-[340px] text-[16px] font-semibold leading-[1.3] text-white md:max-w-[420px]">
+                <p className="max-w-[340px] text-[16px] font-semibold leading-[1.3] text-white sm:text-[17px] md:max-w-[420px] md:text-[20px]">
                   From growing rice to raising cattle, innovating how we feed ourselves is a prime
                   opportunity. Meet the innovators who will feed the world for decades to come.
                 </p>
@@ -771,7 +771,7 @@ export default function EmissionsIntroSection() {
 
       <div ref={transportationStageRef} className="pointer-events-none absolute inset-0 z-20">
         <div className="mx-auto flex h-full w-full max-w-7xl items-center px-8 py-8 md:px-14 md:py-10">
-          <div className="w-full md:-translate-y-10">
+          <div className="w-full md:-translate-y-6">
             <div
               ref={transportationTitleRef}
               className="relative z-20 mx-auto -mb-6 w-full max-w-[920px] -translate-y-2 text-center md:-mb-10 md:-translate-y-7"
@@ -791,12 +791,12 @@ export default function EmissionsIntroSection() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
               <div
                 ref={transportationCopyRef}
-                className="absolute inset-0 flex flex-col justify-center pt-32 p-6 text-white md:pt-40 md:p-10"
+                className="absolute inset-0 flex flex-col justify-end px-6 pb-4 text-white md:px-10 md:pb-8"
               >
                 <span className="mb-4 inline-flex w-fit self-start rounded-full border border-white/70 bg-black/35 px-3 py-1 text-sm font-semibold text-white backdrop-blur-sm">
                   25% emissions
                 </span>
-                <p className="max-w-[340px] text-[16px] font-semibold leading-[1.3] text-white md:max-w-[420px]">
+                <p className="max-w-[340px] text-[16px] font-semibold leading-[1.3] text-white sm:text-[17px] md:max-w-[420px] md:text-[20px]">
                   Revolutionizing how people and goods move around the world with clean, efficient
                   transportation solutions.
                 </p>
@@ -810,7 +810,7 @@ export default function EmissionsIntroSection() {
 
       <div ref={buildingsStageRef} className="pointer-events-none absolute inset-0 z-20">
         <div className="mx-auto flex h-full w-full max-w-7xl items-center px-8 py-8 md:px-14 md:py-10">
-          <div className="w-full md:-translate-y-10">
+          <div className="w-full md:-translate-y-6">
             <div
               ref={buildingsTitleRef}
               className="relative z-20 mx-auto -mb-6 w-full max-w-[920px] -translate-y-2 text-center md:-mb-10 md:-translate-y-7"
@@ -830,12 +830,12 @@ export default function EmissionsIntroSection() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
               <div
                 ref={buildingsCopyRef}
-                className="absolute inset-0 flex flex-col justify-center pt-32 p-6 text-white md:pt-40 md:p-10"
+                className="absolute inset-0 flex flex-col justify-end px-6 pb-4 text-white md:px-10 md:pb-8"
               >
                 <span className="mb-4 inline-flex w-fit self-start rounded-full border border-white/70 bg-black/35 px-3 py-1 text-sm font-semibold text-white backdrop-blur-sm">
                   22% emissions
                 </span>
-                <p className="max-w-[340px] text-[16px] font-semibold leading-[1.3] text-white md:max-w-[420px]">
+                <p className="max-w-[340px] text-[16px] font-semibold leading-[1.3] text-white sm:text-[17px] md:max-w-[420px] md:text-[20px]">
                   Creating sustainable spaces where we live and work, reducing energy consumption
                   while improving comfort and efficiency.
                 </p>
