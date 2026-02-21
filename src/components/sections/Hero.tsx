@@ -22,13 +22,13 @@ const FloatingIconsHero = React.forwardRef<
     <section
       ref={ref}
       className={cn(
-        'relative w-full flex items-center justify-center overflow-hidden bg-background pt-12 pb-20 md:pt-16 md:pb-24 lg:pt-20 lg:pb-28',
+        'relative w-full flex items-center justify-center overflow-hidden bg-[#0F0F0F] pt-12 pb-20 md:pt-16 md:pb-24 lg:pt-20 lg:pb-28',
         className
       )}
       {...props}
     >
       <div className="relative z-10 mx-auto w-full max-w-4xl text-center px-4 md:max-w-5xl">
-        <h1 className="text-5xl md:text-7xl font-bold tracking-tight bg-gradient-to-b from-foreground to-foreground/70 text-transparent bg-clip-text flex flex-col items-center justify-center">
+        <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-[#FFFFFF] flex flex-col items-center justify-center">
           <LayoutGroup>
             <motion.span className="flex flex-col items-center gap-3 leading-[75px]" layout>
               <motion.span
@@ -48,7 +48,7 @@ const FloatingIconsHero = React.forwardRef<
                   'Win!',
                   'Deliver!',
                 ]}
-                mainClassName="text-white text-[38px] md:text-5xl px-1.5 sm:px-2 md:px-2.5 bg-[#ff5941] overflow-hidden py-0.5 sm:py-0.5 md:py-1 justify-center rounded-lg leading-tight"
+                mainClassName="text-[#0F0F0F] text-[38px] md:text-5xl font-extrabold px-1.5 sm:px-2 md:px-2.5 bg-[#AAFF00] overflow-hidden py-0.5 sm:py-0.5 md:py-1 justify-center rounded-lg leading-tight shadow-[0_0_25px_rgba(170,255,0,0.5),0_0_60px_rgba(170,255,0,0.2)]"
                 staggerFrom="last"
                 initial={{ y: '100%' }}
                 animate={{ y: 0 }}
@@ -61,7 +61,7 @@ const FloatingIconsHero = React.forwardRef<
             </motion.span>
           </LayoutGroup>
         </h1>
-        <MagicText text={subtitle} className="mt-6 w-full max-w-4xl mx-auto text-lg text-muted-foreground md:max-w-5xl" />
+        <MagicText text={subtitle} className="mt-6 w-full max-w-4xl mx-auto text-lg text-[#888888] md:max-w-5xl" />
         <div className="mt-10">
           <Button asChild size="lg" className="px-8 py-6 text-base font-semibold">
             <a href={ctaHref}>{ctaText}</a>

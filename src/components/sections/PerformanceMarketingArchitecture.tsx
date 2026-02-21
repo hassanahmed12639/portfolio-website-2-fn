@@ -227,10 +227,10 @@ const PerformanceMarketingArchitecture = () => {
     // Determine stroke color based on columns
     const getStrokeColor = () => {
       if (fromColumn === 'left' && toColumn === 'center') return '#10b981'; // emerald
-      if (fromColumn === 'center' && toColumn === 'center') return '#3b82f6'; // blue
-      if (fromColumn === 'center' && toColumn === 'right') return '#3b82f6'; // blue
+      if (fromColumn === 'center' && toColumn === 'center') return '#AAFF00';
+      if (fromColumn === 'center' && toColumn === 'right') return '#AAFF00';
       if (fromColumn === 'left' && toColumn === 'right') return '#10b981'; // emerald
-      return '#3b82f6'; // default blue
+      return '#AAFF00';
     };
     
     const strokeColor = getStrokeColor();
@@ -410,7 +410,7 @@ const PerformanceMarketingArchitecture = () => {
             <div className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg shadow-sm border border-emerald-200">
               <div className="flex items-center gap-2">
                 <Globe className="w-4 h-4 text-emerald-600" />
-                <h3 className="text-xs font-bold text-emerald-700 uppercase tracking-wider">Client / Browser</h3>
+                <h3 className="text-xs font-bold text-[#AAFF00] uppercase tracking-wider">Client / Browser</h3>
               </div>
               <p className="text-[10px] text-gray-500 mt-0.5">User Actions & Events</p>
             </div>
@@ -420,7 +420,7 @@ const PerformanceMarketingArchitecture = () => {
             <div className="bg-white/90 backdrop-blur-sm px-5 py-2.5 rounded-lg shadow-md border-2 border-blue-300">
               <div className="flex items-center gap-2 justify-center">
                 <Layers className="w-4 h-4 text-blue-600" />
-                <h3 className="text-xs font-bold text-blue-700 uppercase tracking-wider">Tracking & Data Infrastructure</h3>
+                <h3 className="text-xs font-bold text-[#AAFF00] uppercase tracking-wider">Tracking & Data Infrastructure</h3>
               </div>
               <p className="text-[10px] text-gray-600 mt-0.5 text-center font-medium">Core System</p>
             </div>
@@ -430,7 +430,7 @@ const PerformanceMarketingArchitecture = () => {
             <div className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg shadow-sm border border-blue-200">
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4 text-blue-600" />
-                <h3 className="text-xs font-bold text-blue-700 uppercase tracking-wider">Ad Platforms & Optimization</h3>
+                <h3 className="text-xs font-bold text-[#AAFF00] uppercase tracking-wider">Ad Platforms & Optimization</h3>
               </div>
               <p className="text-[10px] text-gray-500 mt-0.5">Outputs & ML</p>
             </div>
@@ -484,7 +484,7 @@ const PerformanceMarketingArchitecture = () => {
             <div className="bg-white rounded-xl shadow-md p-6 border border-emerald-200 hover:shadow-lg transition-shadow">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-lg flex items-center justify-center">
-                  <Users className="w-5 h-5 text-emerald-700" />
+                  <Users className="w-5 h-5 text-[#AAFF00]" />
                 </div>
                 <h3 className="text-base font-bold text-gray-900">1. User Entry</h3>
               </div>
@@ -496,7 +496,7 @@ const PerformanceMarketingArchitecture = () => {
             <div className="bg-white rounded-xl shadow-md p-6 border border-blue-200 hover:shadow-lg transition-shadow">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg flex items-center justify-center">
-                  <GitBranch className="w-5 h-5 text-blue-700" />
+                  <GitBranch className="w-5 h-5 text-[#AAFF00]" />
                 </div>
                 <h3 className="text-base font-bold text-gray-900">2. Data Collection</h3>
               </div>
@@ -520,7 +520,7 @@ const PerformanceMarketingArchitecture = () => {
             <div className="bg-white rounded-xl shadow-md p-6 border border-blue-200 hover:shadow-lg transition-shadow">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg flex items-center justify-center">
-                  <Target className="w-5 h-5 text-blue-700" />
+                  <Target className="w-5 h-5 text-[#AAFF00]" />
                 </div>
                 <h3 className="text-base font-bold text-gray-900">4. Optimization</h3>
               </div>

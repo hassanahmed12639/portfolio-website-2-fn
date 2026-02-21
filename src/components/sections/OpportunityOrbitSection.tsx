@@ -725,10 +725,10 @@ export default function OpportunityOrbitSection() {
                 className="left-text-block absolute left-0 top-0 w-full flex flex-col justify-center"
                 style={{ willChange: 'transform, opacity' }}
               >
-                <h2 className="text-2xl font-semibold tracking-tight text-[#393E41] md:text-3xl">
+                <h2 className="text-2xl font-semibold tracking-tight text-white md:text-3xl">
                   {block.title}
                 </h2>
-                <p className="mt-4 text-[15px] leading-relaxed text-[#393E41]/75 md:text-base">
+                <p className="mt-4 text-[15px] leading-relaxed text-white/75 md:text-base">
                   {block.body}
                 </p>
               </div>

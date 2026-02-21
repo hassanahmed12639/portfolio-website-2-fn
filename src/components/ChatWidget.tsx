@@ -63,7 +63,7 @@ export default function ChatWidget() {
         onClick={() => setOpen((o) => !o)}
         className={cn(
           'fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-all',
-          'bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2'
+          'bg-[#AAFF00] text-[#0F0F0F] hover:bg-[#AAFF00] focus:outline-none focus:ring-2 focus:ring-[#AAFF00] focus:ring-offset-2'
         )}
         aria-label={open ? 'Close chat' : 'Open chat'}
       >
@@ -108,7 +108,7 @@ export default function ChatWidget() {
                   className={cn(
                     'rounded-lg px-3 py-2 text-sm',
                     m.role === 'user'
-                      ? 'ml-8 bg-red-600 text-white'
+                      ? 'ml-8 bg-[#AAFF00] text-[#0F0F0F]'
                       : 'mr-8 bg-gray-100 text-gray-900'
                   )}
                 >
@@ -121,7 +121,7 @@ export default function ChatWidget() {
                 </div>
               )}
               {error && (
-                <p className="text-xs text-amber-600">{error}</p>
+                <p className="text-xs text-[#AAFF00]">{error}</p>
               )}
               <div ref={messagesEndRef} />
             </div>
@@ -143,7 +143,7 @@ export default function ChatWidget() {
                   disabled={loading}
                   className={cn(
                     'flex-1 resize-none rounded-lg border border-gray-300 px-3 py-2 text-sm',
-                    'focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500',
+                    'focus:border-[#AAFF00] focus:outline-none focus:ring-1 focus:ring-[#AAFF00]',
                     'disabled:bg-gray-100 disabled:text-gray-500'
                   )}
                 />
@@ -151,8 +151,8 @@ export default function ChatWidget() {
                   type="submit"
                   disabled={loading || !input.trim()}
                   className={cn(
-                    'rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white',
-                    'hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2',
+'rounded-lg bg-[#AAFF00] px-4 py-2 text-sm font-medium text-[#0F0F0F]',
+    'hover:shadow-[0_0_20px_rgba(170,255,0,0.5)] focus:outline-none focus:ring-2 focus:ring-[#AAFF00] focus:ring-offset-2',
                     'disabled:opacity-50 disabled:pointer-events-none'
                   )}
                 >

@@ -14,7 +14,7 @@ const TESTIMONIALS: Testimonial[] = [
       "The user interface is not just beautiful, it's intuitive. Our design team was able to adopt it instantly, streamlining our entire workflow and improving creative output.",
     tags: [{ text: 'Design', type: 'featured' }],
     stats: [{ icon: Award, text: 'Top UI/UX' }],
-    avatarGradient: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+    avatarGradient: 'linear-gradient(135deg, #1a1a1a 0%, rgba(170,255,0,0.5) 100%)',
   },
   {
     id: '2',
@@ -25,7 +25,7 @@ const TESTIMONIALS: Testimonial[] = [
       'Integration was seamless. We connected our existing tools in under a day and saw measurable improvements in team velocity from week one.',
     tags: [{ text: 'Product', type: 'default' }, { text: 'Integration', type: 'featured' }],
     stats: [{ icon: Award, text: 'Best in class' }],
-    avatarGradient: 'linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)',
+    avatarGradient: 'linear-gradient(135deg, #1a1a1a 0%, rgba(170,255,0,0.5) 100%)',
   },
   {
     id: '3',
@@ -36,7 +36,7 @@ const TESTIMONIALS: Testimonial[] = [
       'Finally a platform that plays nicely with everything we use. The API is clean, documentation is solid, and support actually responds.',
     tags: [{ text: 'Engineering', type: 'default' }],
     stats: [{ icon: Award, text: 'Developer choice' }],
-    avatarGradient: 'linear-gradient(135deg, #e94f37 0%, #f97316 100%)',
+    avatarGradient: 'linear-gradient(135deg, #1a1a1a 0%, rgba(170,255,0,0.5) 100%)',
   },
   {
     id: '4',
@@ -47,7 +47,7 @@ const TESTIMONIALS: Testimonial[] = [
       'We cut our campaign setup time in half. The analytics are clear, the workflows are logical, and our team actually enjoys using it.',
     tags: [{ text: 'Marketing', type: 'featured' }],
     stats: [{ icon: Award, text: 'Top pick' }],
-    avatarGradient: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
+    avatarGradient: 'linear-gradient(135deg, #1a1a1a 0%, rgba(170,255,0,0.5) 100%)',
   },
   {
     id: '5',
@@ -58,7 +58,7 @@ const TESTIMONIALS: Testimonial[] = [
       'From day one we had better visibility into our pipeline. Reporting that used to take days now takes minutes.',
     tags: [{ text: 'Operations', type: 'default' }, { text: 'Reporting', type: 'featured' }],
     stats: [{ icon: Award, text: 'Efficiency' }],
-    avatarGradient: 'linear-gradient(135deg, #db2777 0%, #ec4899 100%)',
+    avatarGradient: 'linear-gradient(135deg, #1a1a1a 0%, rgba(170,255,0,0.5) 100%)',
   },
   {
     id: '6',
@@ -69,7 +69,7 @@ const TESTIMONIALS: Testimonial[] = [
       'As a small team we needed something that scaled with us. This was the right choice—simple to start, powerful when we grew.',
     tags: [{ text: 'Startup', type: 'featured' }],
     stats: [{ icon: Award, text: 'Scalable' }],
-    avatarGradient: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)',
+    avatarGradient: 'linear-gradient(135deg, #1a1a1a 0%, rgba(170,255,0,0.5) 100%)',
   },
   {
     id: '7',
@@ -80,7 +80,7 @@ const TESTIMONIALS: Testimonial[] = [
       'Clean code, sensible defaults, and docs that don’t lie. We shipped our integration in a weekend. Would recommend.',
     tags: [{ text: 'Dev', type: 'default' }],
     stats: [{ icon: Award, text: 'Dev favorite' }],
-    avatarGradient: 'linear-gradient(135deg, #0f766e 0%, #14b8a6 100%)',
+    avatarGradient: 'linear-gradient(135deg, #1a1a1a 0%, rgba(170,255,0,0.5) 100%)',
   },
   {
     id: '8',
@@ -91,7 +91,7 @@ const TESTIMONIALS: Testimonial[] = [
       'Our designers love the component library and design tokens. Consistency across products improved overnight.',
     tags: [{ text: 'UX', type: 'featured' }],
     stats: [{ icon: Award, text: 'Design system' }],
-    avatarGradient: 'linear-gradient(135deg, #be185d 0%, #e11d48 100%)',
+    avatarGradient: 'linear-gradient(135deg, #1a1a1a 0%, rgba(170,255,0,0.5) 100%)',
   },
   {
     id: '9',
@@ -102,7 +102,7 @@ const TESTIMONIALS: Testimonial[] = [
       'The CRM sync and pipeline views saved us countless hours. Our reps stay in the flow instead of updating spreadsheets.',
     tags: [{ text: 'Sales', type: 'default' }, { text: 'CRM', type: 'featured' }],
     stats: [{ icon: Award, text: 'Sales tool' }],
-    avatarGradient: 'linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%)',
+    avatarGradient: 'linear-gradient(135deg, #1a1a1a 0%, rgba(170,255,0,0.5) 100%)',
   },
   {
     id: '10',
@@ -113,18 +113,18 @@ const TESTIMONIALS: Testimonial[] = [
       'Onboarding new customers got so much easier. We have one source of truth and fewer support tickets.',
     tags: [{ text: 'CS', type: 'default' }],
     stats: [{ icon: Award, text: 'Onboarding' }],
-    avatarGradient: 'linear-gradient(135deg, #b45309 0%, #f59e0b 100%)',
+    avatarGradient: 'linear-gradient(135deg, #1a1a1a 0%, rgba(170,255,0,0.5) 100%)',
   },
 ]
 
 export default function TestimonialSplitSection() {
   return (
-    <section className="w-full flex flex-col md:flex-row items-stretch bg-designBg py-12 md:py-16 lg:py-20 px-6 md:px-[5%]">
+    <section className="section-testimonials-light w-full flex flex-col md:flex-row items-stretch bg-[#F5F5F5] py-12 md:py-16 lg:py-20 px-6 md:px-[5%]">
       <div className="w-full md:w-1/2 flex flex-col justify-center pr-0 md:pr-8 lg:pr-12 mb-10 md:mb-0">
-        <h2 className="text-3xl md:text-4xl font-semibold text-textPrimary mb-4 md:mb-6">
+        <h2 className="text-3xl md:text-4xl font-semibold text-[#0F0F0F] mb-4 md:mb-6">
           What people are saying
         </h2>
-        <p className="text-textPrimary/80 text-lg md:text-xl leading-relaxed max-w-lg">
+        <p className="text-[#555555] text-lg md:text-xl leading-relaxed max-w-lg">
           Teams and leaders trust the approach. Read how they use it to ship faster and collaborate better.
         </p>
       </div>

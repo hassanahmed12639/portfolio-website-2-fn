@@ -19,7 +19,7 @@ export default function WhoWeAreBento() {
       <div className="mx-auto max-w-6xl">
         <div className="mb-8 flex flex-col gap-4 md:mb-10 md:flex-row md:items-start md:justify-between md:gap-10">
           <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
-            <span className="text-orange-400">*</span>
+            <span className="text-[#AAFF00]">*</span>
             <span>Who We Are</span>
           </div>
           <p className="max-w-3xl text-lg leading-relaxed text-slate-600 md:text-xl">
@@ -45,7 +45,7 @@ export default function WhoWeAreBento() {
 
           {/* Card 2: CTA - dark */}
           <div className="relative overflow-hidden rounded-[18px] border border-white/10 bg-[#0B1D24] p-5 shadow-[0_18px_45px_rgba(0,0,0,0.35)] transition-transform duration-300 hover:-translate-y-0.5 md:p-6 lg:row-span-1">
-            <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-gradient-to-br from-blue-500/20 via-purple-500/10 to-orange-400/0 blur-2xl" />
+            <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-gradient-to-br from-[#AAFF00]/20 via-[#AAFF00]/10 to-transparent blur-2xl" />
             <h3 className="mb-3 text-xl font-bold text-white md:text-2xl">
               Looking to Boost Your Digital Impact?
             </h3>
@@ -59,7 +59,7 @@ export default function WhoWeAreBento() {
           <div className="flex flex-col justify-between lg:row-span-1">
             <a
               href="#contact"
-              className="mb-4 inline-flex w-fit self-start items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-orange-400 px-6 py-3 text-sm font-semibold text-white transition-all duration-200 hover:opacity-90 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 md:self-end"
+              className="mb-4 inline-flex w-fit self-start items-center justify-center rounded-full bg-[#AAFF00] px-6 py-3 text-sm font-semibold text-white transition-all duration-200 hover:opacity-90 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 md:self-end"
             >
               Get a Free Consultation
             </a>
@@ -89,8 +89,8 @@ export default function WhoWeAreBento() {
             <ul className="space-y-2">
               {SERVICES.map((item) => (
                 <li key={item} className="flex items-center gap-2.5 text-sm text-slate-200 md:text-base">
-                  <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md bg-orange-400/15">
-                    <Check className="h-3 w-3 text-orange-400" strokeWidth={2.5} />
+                  <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md bg-[#AAFF00]/15">
+                    <Check className="h-3 w-3 text-[#AAFF00]" strokeWidth={2.5} />
                   </span>
                   {item}
                 </li>

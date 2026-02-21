@@ -15,11 +15,12 @@ const LINES = [
 const PIN_SCROLL_DISTANCE = 900;
 
 const PARALLAX_BG_STYLE: React.CSSProperties = {
-  backgroundImage: "url('https://picsum.photos/1600/900')",
+  backgroundImage: "linear-gradient(rgba(15,15,15,0.88), rgba(15,15,15,0.88)), url('https://picsum.photos/1600/900')",
   backgroundAttachment: 'fixed',
   backgroundPosition: 'center',
   backgroundRepeat: 'no-repeat',
   backgroundSize: 'cover',
+  backgroundColor: '#0F0F0F',
 };
 
 export default function ParallaxSection() {
@@ -77,7 +78,7 @@ export default function ParallaxSection() {
       >
         <div
           ref={contentRef}
-          className="parallax-quote max-w-xl text-left md:max-w-2xl text-white"
+          className="parallax-quote max-w-xl text-left md:max-w-2xl text-[#FFFFFF]"
         >
           <div className="space-y-1" style={{ textShadow: '2px 2px 10px rgba(0,0,0,0.7)' }}>
             {LINES.map((text, i) => (
@@ -86,7 +87,7 @@ export default function ParallaxSection() {
                 className="parallax-line text-xl leading-snug md:text-2xl font-medium"
               >
                 {i === 1 ? (
-                  <span className="text-[#b8e986]">{text}</span>
+                  <span className="text-[#AAFF00]">{text}</span>
                 ) : (
                   text
                 )}
@@ -94,7 +95,7 @@ export default function ParallaxSection() {
             ))}
           </div>
           <div
-            className="parallax-line mt-6 text-base text-[#b8e986]"
+            className="parallax-line mt-6 text-base text-[#AAFF00]"
             style={{ textShadow: '2px 2px 10px rgba(0,0,0,0.7)' }}
           >
             Hassan Ahmed

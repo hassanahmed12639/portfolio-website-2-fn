@@ -83,7 +83,7 @@ body {
 }
 
 .hero-title .highlight {
-  color: #d4ff00; /* Yellow-green accent */
+  color: #AAFF00; /* Yellow-green accent */
   font-weight: 700;
 }
 
@@ -317,12 +317,12 @@ body {
 }
 
 .section-title .letter-green {
-  color: #d4ff00;
+  color: #AAFF00;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .section-title.title-all-green {
-  color: #d4ff00;
+  color: #AAFF00;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
 }
 
@@ -358,8 +358,8 @@ body {
 }
 
 .action-button {
-  background: #d4ff00;
-  color: #000000;
+  background: #AAFF00;
+  color: #0F0F0F;
   border: none;
   padding: 16px 32px;
   border-radius: 8px;
@@ -367,13 +367,12 @@ body {
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 16px rgba(212, 255, 0, 0.3);
+  box-shadow: 0 0 20px rgba(170, 255, 0, 0.45);
   font-family: inherit;
 }
 
 .action-button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 24px rgba(212, 255, 0, 0.5);
+  box-shadow: 0 0 35px rgba(170, 255, 0, 0.7);
 }
 
 .action-button:active {
@@ -411,7 +410,7 @@ body {
 }
 
 .nav-dot.active {
-  background: #d4ff00;
+  background: #AAFF00;
   height: 32px;
   border-radius: 5px;
 }
@@ -484,11 +483,11 @@ body {
 
 /* Selection color */
 ::selection {
-  background: #d4ff00;
+  background: #AAFF00;
   color: #000000;
 }
 
 ::-moz-selection {
-  background: #d4ff00;
+  background: #AAFF00;
   color: #000000;
 }

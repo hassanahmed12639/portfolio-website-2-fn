@@ -601,7 +601,7 @@ export default function EmissionsIntroSection() {
     <>
       <section
         ref={sectionRef}
-        className="relative min-h-screen w-full overflow-hidden bg-black px-6 py-8 md:px-[5%] md:py-12"
+        className="relative min-h-screen w-full overflow-hidden bg-[#0F0F0F] px-6 py-8 md:px-[5%] md:py-12"
       >
       <div
         ref={contentWrapRef}
@@ -616,7 +616,7 @@ export default function EmissionsIntroSection() {
               <span
                 key={line}
                 className={`intro-line block ${i > 0 ? 'mt-1.5' : ''} ${
-                  i === HEADLINE_LINES.length - 1 ? 'text-[#b8e986]' : ''
+                  i === HEADLINE_LINES.length - 1 ? 'text-[#AAFF00]' : ''
                 } will-change-transform`}
               >
                 {line}
@@ -861,7 +861,7 @@ export default function EmissionsIntroSection() {
                 <span
                   key={word}
                   className={`message-word inline-block ${
-                    word === 'energy' || word === 'innovation' ? 'text-[#d7ff4c]' : 'text-white'
+                    word === 'energy' || word === 'innovation' ? 'text-[#AAFF00]' : 'text-white'
                   }`}
                 >
                   {word}

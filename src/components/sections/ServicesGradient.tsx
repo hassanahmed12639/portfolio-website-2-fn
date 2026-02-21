@@ -17,8 +17,8 @@ const services: ServiceCard[] = [
         <path d="M12 2v2" stroke="url(#grad1)" strokeWidth="2" strokeLinecap="round"/>
         <defs>
           <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#3B82F6"/>
-            <stop offset="100%" stopColor="#F97316"/>
+            <stop offset="0%" stopColor="#AAFF00"/>
+            <stop offset="100%" stopColor="rgba(170,255,0,0.6)"/>
           </linearGradient>
         </defs>
       </svg>
@@ -36,8 +36,8 @@ const services: ServiceCard[] = [
         <circle cx="6" cy="12" r="2" stroke="url(#grad2)" strokeWidth="2"/>
         <defs>
           <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#3B82F6"/>
-            <stop offset="100%" stopColor="#F97316"/>
+            <stop offset="0%" stopColor="#AAFF00"/>
+            <stop offset="100%" stopColor="rgba(170,255,0,0.6)"/>
           </linearGradient>
         </defs>
       </svg>
@@ -52,8 +52,8 @@ const services: ServiceCard[] = [
         <polyline points="22,6 12,13 2,6" stroke="url(#grad3)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         <defs>
           <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#3B82F6"/>
-            <stop offset="100%" stopColor="#F97316"/>
+            <stop offset="0%" stopColor="#AAFF00"/>
+            <stop offset="100%" stopColor="rgba(170,255,0,0.6)"/>
           </linearGradient>
         </defs>
       </svg>
@@ -70,8 +70,8 @@ const services: ServiceCard[] = [
         <circle cx="11" cy="11" r="2" stroke="url(#grad4)" strokeWidth="2"/>
         <defs>
           <linearGradient id="grad4" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#3B82F6"/>
-            <stop offset="100%" stopColor="#F97316"/>
+            <stop offset="0%" stopColor="#AAFF00"/>
+            <stop offset="100%" stopColor="rgba(170,255,0,0.6)"/>
           </linearGradient>
         </defs>
       </svg>
@@ -88,8 +88,8 @@ const services: ServiceCard[] = [
         <path d="M8 8L6 6" stroke="url(#grad5)" strokeWidth="2" strokeLinecap="round"/>
         <defs>
           <linearGradient id="grad5" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#3B82F6"/>
-            <stop offset="100%" stopColor="#F97316"/>
+            <stop offset="0%" stopColor="#AAFF00"/>
+            <stop offset="100%" stopColor="rgba(170,255,0,0.6)"/>
           </linearGradient>
         </defs>
       </svg>
@@ -104,8 +104,8 @@ const services: ServiceCard[] = [
         <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="url(#grad6)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         <defs>
           <linearGradient id="grad6" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#3B82F6"/>
-            <stop offset="100%" stopColor="#F97316"/>
+            <stop offset="0%" stopColor="#AAFF00"/>
+            <stop offset="100%" stopColor="rgba(170,255,0,0.6)"/>
           </linearGradient>
         </defs>
       </svg>
@@ -149,7 +149,7 @@ function ServiceCardComponent({ service }: { service: ServiceCard }) {
       <div 
         className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none overflow-hidden"
         style={{
-          background: `conic-gradient(from var(--gradient-angle), #3B82F6 0%, #8B5CF6 25%, #EC4899 50%, #F97316 75%, #3B82F6 100%)`,
+          background: `conic-gradient(from var(--gradient-angle), #AAFF00 0%, rgba(170,255,0,0.8) 25%, #AAFF00 50%, rgba(170,255,0,0.8) 75%, #AAFF00 100%)`,
         }}
       />
 
@@ -171,7 +171,7 @@ function ServiceCardComponent({ service }: { service: ServiceCard }) {
         </p>
 
         {/* Learn More Button */}
-        <button className="mt-6 w-full py-3 px-6 rounded-xl text-white font-medium bg-gradient-to-r from-blue-500 to-orange-500 hover:brightness-110 transition-all duration-300">
+        <button className="mt-6 w-full py-3 px-6 rounded-xl text-[#0F0F0F] font-bold bg-[#AAFF00] shadow-[0_0_20px_rgba(170,255,0,0.45)] hover:shadow-[0_0_35px_rgba(170,255,0,0.7)] transition-all duration-300">
           Learn More
         </button>
       </div>
@@ -187,7 +187,7 @@ export default function ServicesGradient() {
         <div className="text-center mb-12 md:mb-16">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 border border-slate-200 mb-6">
-            <svg className="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+            <svg className="w-4 h-4 text-[#AAFF00]" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
             </svg>
             <span className="text-sm font-medium text-slate-600">Our Core Services</span>
@@ -212,7 +212,7 @@ export default function ServicesGradient() {
             Looking for a tailored approach? Let&apos;s design a strategy that fits your goals.{' '}
             <a 
               href="#contact" 
-              className="font-semibold bg-gradient-to-r from-blue-400 to-orange-400 bg-clip-text text-transparent hover:from-blue-300 hover:to-orange-300 transition-all duration-300"
+              className="font-semibold text-[#AAFF00] hover:text-[#AAFF00] transition-all duration-300"
             >
               Book Your Free Consultation Today!
             </a>

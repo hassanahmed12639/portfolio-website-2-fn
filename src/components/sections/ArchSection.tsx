@@ -12,10 +12,10 @@ const LINK_SVG = (
 );
 
 const archItems = [
-  { id: 'green-arch', title: 'Green Cityscape', desc: 'Vibrant streets with vertical gardens and solar buildings. This oasis thrives on renewable energy, smart transport, and green spaces for biodiversity.', linkBg: '#D5FF37' },
-  { id: 'blue-arch', title: 'Blue Urban Oasis', desc: 'Avenues with azure facades and eco-structures. This hub uses clean energy, smart transit, and parks for urban wildlife.', linkBg: '#7DD6FF' },
-  { id: 'pink-arch', title: 'Fluid Architecture', desc: 'Desert refuge with fluid architecture and glowing interiors. This sanctuary harnesses solar power, sustainable design, and natural harmony for resilient living.', linkBg: '#FFA0B0' },
-  { id: 'orange-arch', title: 'Martian Arches', desc: 'Ethereal structures arc over tranquil waters, bathed in the glow of a setting Martian sun. This desolate beauty showcases the stark, captivating landscape of the red planet.', linkBg: '#FFA17B' },
+  { id: 'green-arch', title: 'Green Cityscape', desc: 'Vibrant streets with vertical gardens and solar buildings. This oasis thrives on renewable energy, smart transport, and green spaces for biodiversity.', linkBg: '#AAFF00' },
+  { id: 'blue-arch', title: 'Blue Urban Oasis', desc: 'Avenues with azure facades and eco-structures. This hub uses clean energy, smart transit, and parks for urban wildlife.', linkBg: '#AAFF00' },
+  { id: 'pink-arch', title: 'Fluid Architecture', desc: 'Desert refuge with fluid architecture and glowing interiors. This sanctuary harnesses solar power, sustainable design, and natural harmony for resilient living.', linkBg: '#AAFF00' },
+  { id: 'orange-arch', title: 'Martian Arches', desc: 'Ethereal structures arc over tranquil waters, bathed in the glow of a setting Martian sun. This desolate beauty showcases the stark, captivating landscape of the red planet.', linkBg: '#AAFF00' },
 ];
 
 const images = [

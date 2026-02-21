@@ -72,7 +72,7 @@ export default function WhoIAmSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="who-i-am-section w-full bg-white">
+    <section ref={sectionRef} className="who-i-am-section w-full bg-[#FFFFFF]">
       <div className="who-i-am-container">
         <div className="who-i-am-inner">
           <div className="who-i-am-content">

@@ -27,12 +27,12 @@ export function HomePage() {
         <div className="relative">
           <div
             className={`w-[600px] h-[600px] rounded-full flex items-center justify-center transition-all duration-500 ${
-              scrollY > 300 ? "border-2 border-[#393E41]/20" : ""
+              scrollY > 300 ? "border-2 border-white/20" : ""
             }`}
           >
             <div
               className={`w-[500px] h-[500px] rounded-full flex items-center justify-center relative transition-all duration-500 ${
-                scrollY > 100 ? "border-2 border-[#393E41]/15" : ""
+                scrollY > 100 ? "border-2 border-white/15" : ""
               }`}
             >
               <div className="w-[400px] h-[400px] rounded-full bg-gradient-to-r from-accent via-accent to-accentHover p-0.5 flex items-center justify-center relative">

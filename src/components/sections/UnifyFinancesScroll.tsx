@@ -11,11 +11,11 @@ const CARDS_LAYOUT: {
   size: CardSize;
   zIndex: number;
 }[] = [
-  { color: "#F6F7ED", size: "largest", zIndex: 1 },   // Top-left: Man with phone (image)
-  { color: "#F6F7ED", size: "medium", zIndex: 3 },   // Top-right: Conversion Rate
-  { color: "#E94F37", size: "largest", zIndex: 2 },   // Bottom-left: Exchange (accent)
-  { color: "#F6F7ED", size: "small", zIndex: 5 },     // Bottom-right: Coffee (image)
-  { color: "#ffffff", size: "medium", zIndex: 4 },   // Right-center: Cross-Platform Scaling (white, accent border)
+  { color: "#FFFFFF", size: "largest", zIndex: 1 },   // Top-left: Man with phone (image) - light section card
+  { color: "#FFFFFF", size: "medium", zIndex: 3 },   // Top-right: Conversion Rate - light section card
+  { color: "#AAFF00", size: "largest", zIndex: 2 },   // Bottom-left: Exchange (accent)
+  { color: "#FFFFFF", size: "small", zIndex: 5 },     // Bottom-right: Coffee (image) - light section card
+  { color: "#FFFFFF", size: "medium", zIndex: 4 },   // Right-center: Cross-Platform Scaling - light section card
 ];
 
 export default function UnifyFinancesScroll() {
@@ -148,16 +148,15 @@ export default function UnifyFinancesScroll() {
     <>
       <section
         ref={sectionRef}
-        className="relative h-screen overflow-hidden flex items-center justify-center bg-designBg"
+        className="relative h-screen overflow-hidden flex items-center justify-center bg-[#FFFFFF]"
         aria-label="Winning Your Audience section"
       >
         {/* CENTER TEXT - Behind cards */}
         <h1
           ref={textRef}
-          className="absolute text-center text-[clamp(3.5rem,9vw,7rem)] md:text-[clamp(4.5rem,10.5vw,8.5rem)] lg:text-[clamp(5.5rem,12.5vw,10.5rem)] xl:text-[clamp(6rem,14vw,12rem)] 2xl:text-[clamp(7rem,16vw,14rem)] font-bold tracking-tight z-0 px-4 leading-[1.1]"
+          className="absolute text-center text-[clamp(3.5rem,9vw,7rem)] md:text-[clamp(4.5rem,10.5vw,8.5rem)] lg:text-[clamp(5.5rem,12.5vw,10.5rem)] xl:text-[clamp(6rem,14vw,12rem)] 2xl:text-[clamp(7rem,16vw,14rem)] font-bold tracking-tight z-0 px-4 leading-[1.1] text-[#0F0F0F]"
           style={{ 
             willChange: "transform, opacity", 
-            color: "#E94F37",
             backfaceVisibility: "hidden",
             WebkitBackfaceVisibility: "hidden",
             transform: "translateZ(0)",
@@ -198,7 +197,7 @@ export default function UnifyFinancesScroll() {
                 WebkitBackfaceVisibility: "hidden",
                 WebkitTransform: "translate(-50%, -50%) translateZ(0)",
                 outline: "none",
-                ...(i === 4 ? { border: "none", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.08)", overflow: "visible" as const } : { border: "0", borderWidth: "0", borderStyle: "none", boxShadow: "none", overflow: "hidden" as const }),
+                ...(i === 4 ? { border: "1px solid #E5E5E5", boxShadow: "0 2px 20px rgba(0,0,0,0.06)", overflow: "visible" as const } : i !== 2 ? { border: "1px solid #E5E5E5", boxShadow: "0 2px 20px rgba(0,0,0,0.06)", overflow: "hidden" as const } : { border: "0", borderWidth: "0", borderStyle: "none", boxShadow: "none", overflow: "hidden" as const }),
                 isolation: "isolate",
                 contain: i === 4 ? "none" : "layout style paint",
                 WebkitFontSmoothing: "antialiased",
@@ -217,22 +216,22 @@ export default function UnifyFinancesScroll() {
               ) : i === 1 ? (
                 <div className="h-full flex flex-col p-3 sm:p-4 md:p-5 lg:p-6">
                   <div className="flex items-center gap-1.5 sm:gap-2 mb-3 sm:mb-4">
-                    <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full bg-accent flex items-center justify-center flex-shrink-0">
-                      <Globe className="w-3 h-3 sm:w-4 sm:h-4 text-designBg" />
+                    <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full bg-[#AAFF00] flex items-center justify-center flex-shrink-0">
+                      <Globe className="w-3 h-3 sm:w-4 sm:h-4 text-[#0F0F0F]" />
                     </div>
-                    <span className="text-xs sm:text-sm md:text-base font-semibold text-textPrimary">Conversion Rate</span>
+                    <span className="text-xs sm:text-sm md:text-base font-semibold text-[#0F0F0F]">Conversion Rate</span>
                   </div>
                   <div className="flex-1 flex flex-col justify-center">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-textPrimary">15.7%</span>
-                      <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-accent flex-shrink-0" />
+                      <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[#0F0F0F]">15.7%</span>
+                      <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-[#AAFF00] flex-shrink-0" />
                     </div>
-                    <div className="text-xs sm:text-sm text-textPrimary/70 mt-2">
+                    <div className="text-xs sm:text-sm text-[#555555] mt-2">
                       impressions: 8.9M / Clicks: 670K
                     </div>
                   </div>
                   <div className="mt-auto">
-                    <button className="w-full bg-accent hover:bg-accentHover text-designBg text-xs sm:text-sm md:text-base font-medium py-2.5 sm:py-3 rounded-full transition-colors border border-accent/20">
+                    <button className="w-full bg-[#AAFF00] hover:bg-[#AAFF00] text-[#0F0F0F] text-xs sm:text-sm md:text-base font-medium py-2.5 sm:py-3 rounded-full transition-colors border border-[#AAFF00]/20">
                       Analyze Funnel
                     </button>
                   </div>
@@ -273,40 +272,40 @@ export default function UnifyFinancesScroll() {
                     className="w-full h-full object-cover rounded-2xl sm:rounded-3xl"
                   />
                   <div className="absolute top-2 left-2 sm:top-3 sm:left-3 flex items-center gap-1.5 px-2 py-1.5 sm:px-3 sm:py-2 bg-white/95 rounded-lg shadow-sm">
-                    <Calendar className="w-3 h-3 sm:w-4 sm:h-4 text-textPrimary flex-shrink-0" />
-                    <span className="text-xs sm:text-sm font-medium text-textPrimary">Enjoy the coffee!</span>
+                    <Calendar className="w-3 h-3 sm:w-4 sm:h-4 text-[#0F0F0F] flex-shrink-0" />
+                    <span className="text-xs sm:text-sm font-medium text-[#0F0F0F]">Enjoy the coffee!</span>
                   </div>
                 </div>
               ) : i === 4 ? (
                 <div className="h-full flex flex-col p-2 sm:p-3 md:p-4 items-center text-center overflow-visible">
-                  <h3 className="text-xs sm:text-sm font-medium text-textPrimary mb-1.5 sm:mb-2 flex-shrink-0">
+                  <h3 className="text-xs sm:text-sm font-medium text-[#0F0F0F] mb-1.5 sm:mb-2 flex-shrink-0">
                     Cross-Platform Scaling
                   </h3>
                   <div className="flex-1 min-h-0 w-full flex items-center justify-center py-1">
                     <svg viewBox="0 0 120 100" className="w-full h-full max-h-[72px] sm:max-h-[88px] md:max-h-[100px]" preserveAspectRatio="xMidYMid meet">
                       <defs>
                         <linearGradient id="funnelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                          <stop offset="0%" stopColor="#a5f3fc" />
-                          <stop offset="100%" stopColor="#67e8f9" />
+                          <stop offset="0%" stopColor="#AAFF00" />
+                          <stop offset="100%" stopColor="rgba(170,255,0,0.5)" />
                         </linearGradient>
                         <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-                          <path d="M0,0 L6,3 L0,6 Z" fill="#94a3b8" />
+                          <path d="M0,0 L6,3 L0,6 Z" fill="#888888" />
                         </marker>
                       </defs>
-                      <path d="M35 12 L85 12 L70 55 L50 55 Z" fill="url(#funnelGrad)" stroke="#a5f3fc" strokeWidth="0.5" />
-                      <line x1="20" y1="25" x2="38" y2="35" stroke="#cbd5e1" strokeWidth="0.8" strokeDasharray="3 2" markerEnd="url(#arrow)" />
-                      <line x1="20" y1="55" x2="45" y2="48" stroke="#cbd5e1" strokeWidth="0.8" strokeDasharray="3 2" markerEnd="url(#arrow)" />
-                      <line x1="82" y1="35" x2="100" y2="25" stroke="#cbd5e1" strokeWidth="0.8" strokeDasharray="3 2" markerEnd="url(#arrow)" />
-                      <line x1="75" y1="48" x2="100" y2="55" stroke="#cbd5e1" strokeWidth="0.8" strokeDasharray="3 2" markerEnd="url(#arrow)" />
-                      <circle cx="18" cy="25" r="10" fill="white" stroke="#a5f3fc" strokeWidth="1" />
-                      <circle cx="18" cy="55" r="10" fill="white" stroke="#a5f3fc" strokeWidth="1" />
-                      <circle cx="102" cy="25" r="10" fill="white" stroke="#a5f3fc" strokeWidth="1" />
-                      <circle cx="102" cy="55" r="10" fill="white" stroke="#a5f3fc" strokeWidth="1" />
-                      <g transform="translate(13.5, 20.5) scale(0.5)" fill="none" stroke="#22d3ee" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M35 12 L85 12 L70 55 L50 55 Z" fill="url(#funnelGrad)" stroke="#AAFF00" strokeWidth="0.5" />
+                      <line x1="20" y1="25" x2="38" y2="35" stroke="#888888" strokeWidth="0.8" strokeDasharray="3 2" markerEnd="url(#arrow)" />
+                      <line x1="20" y1="55" x2="45" y2="48" stroke="#888888" strokeWidth="0.8" strokeDasharray="3 2" markerEnd="url(#arrow)" />
+                      <line x1="82" y1="35" x2="100" y2="25" stroke="#888888" strokeWidth="0.8" strokeDasharray="3 2" markerEnd="url(#arrow)" />
+                      <line x1="75" y1="48" x2="100" y2="55" stroke="#888888" strokeWidth="0.8" strokeDasharray="3 2" markerEnd="url(#arrow)" />
+                      <circle cx="18" cy="25" r="10" fill="white" stroke="#AAFF00" strokeWidth="1" />
+                      <circle cx="18" cy="55" r="10" fill="white" stroke="#AAFF00" strokeWidth="1" />
+                      <circle cx="102" cy="25" r="10" fill="white" stroke="#AAFF00" strokeWidth="1" />
+                      <circle cx="102" cy="55" r="10" fill="white" stroke="#AAFF00" strokeWidth="1" />
+                      <g transform="translate(13.5, 20.5) scale(0.5)" fill="none" stroke="#AAFF00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
                         <path d="M3 3v5h5" />
                       </g>
-                      <g transform="translate(13, 50) scale(0.5)" fill="none" stroke="#22d3ee" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <g transform="translate(13, 50) scale(0.5)" fill="none" stroke="#AAFF00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <rect x="2" y="4" width="14" height="12" rx="2" />
                         <path d="m2 7 7 5 7-5" />
                       </g>
@@ -314,10 +313,10 @@ export default function UnifyFinancesScroll() {
                       <text x="102" y="58" textAnchor="middle" style={{ fontSize: "8px", fontWeight: 600, fill: "#1f2937" }}>50%</text>
                     </svg>
                   </div>
-                  <div className="rounded-full bg-accent px-3 py-1.5 flex-shrink-0">
-                    <span className="text-xs sm:text-sm font-medium text-designBg">Customer Journey</span>
+                  <div className="rounded-full bg-[#AAFF00] px-3 py-1.5 flex-shrink-0">
+                    <span className="text-xs sm:text-sm font-medium text-[#0F0F0F]">Customer Journey</span>
                   </div>
-                  <div className="flex items-center justify-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-textPrimary/60 mt-1 flex-shrink-0">
+                  <div className="flex items-center justify-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-[#555555] mt-1 flex-shrink-0">
                     <span>0</span>
                     <span className="w-3 h-3 rounded-full bg-gray-300/80" aria-hidden />
                     <span>2</span>

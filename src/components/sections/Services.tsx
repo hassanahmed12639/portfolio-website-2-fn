@@ -49,7 +49,7 @@ export default function Services() {
       <div className="max-w-7xl mx-auto">
         {/* Heading Section */}
         <div className="text-center mb-12 md:mb-16">
-          <p className="text-sm md:text-base uppercase tracking-wider text-gray-500 mb-4">
+          <p className="text-sm md:text-base uppercase tracking-[0.1em] text-[#AAFF00] mb-4">
             WHAT WE DO?
           </p>
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-gray-800 mb-6 max-w-3xl mx-auto">
@@ -63,7 +63,7 @@ export default function Services() {
           {services.map((service, index) => (
             <div
               key={index}
-              className="bg-white rounded-lg border border-blue-200 p-6 md:p-8 flex flex-col items-center text-center hover:shadow-lg transition-shadow"
+              className="bg-white rounded-lg border border-[#E5E5E5] p-6 md:p-8 flex flex-col items-center text-center hover:shadow-lg transition-shadow"
             >
               {/* Icon */}
               <div className="text-blue-600 mb-6">
@@ -83,7 +83,7 @@ export default function Services() {
               {/* Learn More Link */}
               <a
                 href="#"
-                className="text-blue-600 font-medium hover:text-blue-700 transition-colors inline-flex items-center gap-1"
+                className="text-[#AAFF00] font-medium hover:text-[#AAFF00] transition-colors inline-flex items-center gap-1"
               >
                 Learn More
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -53,19 +53,19 @@ function Footer() {
           <div>
             <h3 className="mb-4 text-lg font-semibold">Quick Links</h3>
             <nav className="space-y-2 text-sm">
-              <a href="#" className="block transition-colors hover:text-primary">
+              <a href="#" className="block transition-colors hover:text-[#AAFF00]">
                 Home
               </a>
-              <a href="#" className="block transition-colors hover:text-primary">
+              <a href="#" className="block transition-colors hover:text-[#AAFF00]">
                 About Us
               </a>
-              <a href="#" className="block transition-colors hover:text-primary">
+              <a href="#" className="block transition-colors hover:text-[#AAFF00]">
                 Services
               </a>
-              <a href="#" className="block transition-colors hover:text-primary">
+              <a href="#" className="block transition-colors hover:text-[#AAFF00]">
                 Products
               </a>
-              <a href="#" className="block transition-colors hover:text-primary">
+              <a href="#" className="block transition-colors hover:text-[#AAFF00]">
                 Contact
               </a>
             </nav>
@@ -154,13 +154,13 @@ function Footer() {
             © 2024 Your Company. All rights reserved.
           </p>
           <nav className="flex gap-4 text-sm">
-            <a href="#" className="transition-colors hover:text-primary">
+            <a href="#" className="transition-colors hover:text-[#AAFF00]">
               Privacy Policy
             </a>
-            <a href="#" className="transition-colors hover:text-primary">
+            <a href="#" className="transition-colors hover:text-[#AAFF00]">
               Terms of Service
             </a>
-            <a href="#" className="transition-colors hover:text-primary">
+            <a href="#" className="transition-colors hover:text-[#AAFF00]">
               Cookie Settings
             </a>
           </nav>
