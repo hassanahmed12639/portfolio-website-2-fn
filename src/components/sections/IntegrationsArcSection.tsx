@@ -167,15 +167,15 @@ export default function IntegrationsArcSection() {
       className="relative w-full min-h-screen overflow-hidden rounded-3xl bg-designBg"
       style={{ transform: 'translateZ(0)' }}
     >
-      <div className="sticky top-0 w-full h-screen flex flex-col items-center justify-center">
-        <h2 className="text-3xl md:text-4xl font-semibold mb-12 md:mb-16 text-textPrimary text-center px-4">
+      <div className="sticky top-0 w-full min-h-screen flex flex-col items-center justify-center">
+        <h2 className="text-3xl md:text-4xl font-semibold mb-6 md:mb-8 text-textPrimary text-center px-4">
           Integrate with your existing tools
         </h2>
 
         {/* Icons container with overflow hidden */}
         <div
           ref={containerRef}
-          className="relative w-full max-w-[950px] h-[280px] overflow-hidden mx-auto"
+          className="relative w-full max-w-[950px] h-[280px] overflow-hidden mx-auto shrink-0"
           style={{
             clipPath: 'inset(0 0 0 0)',
             WebkitClipPath: 'inset(0 0 0 0)',
