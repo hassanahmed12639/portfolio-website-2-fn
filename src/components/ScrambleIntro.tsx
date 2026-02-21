@@ -8,6 +8,7 @@ const TARGET_L1 = 'HASSAN'
 const TARGET_L2 = 'AHMED'
 const TRACK_HEIGHT_VH = 500
 const FADE_MS = 450
+const SPLIT_DURATION_MS = 900
 
 function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value))
@@ -19,7 +20,7 @@ function norm(value: number, min: number, max: number) {
 
 export default function ScrambleIntro() {
   const [isVisible, setIsVisible] = useState(false)
-  const [isFading, setIsFading] = useState(false)
+  const [isSplitting, setIsSplitting] = useState(false)
 
   const scrollerRef = useRef<HTMLDivElement | null>(null)
   const line1Ref = useRef<HTMLDivElement | null>(null)
@@ -80,11 +81,11 @@ export default function ScrambleIntro() {
       })
     }
 
-    const finishIntro = () => {
+    const startSplitReveal = () => {
       if (doneRef.current) return
       doneRef.current = true
-      setIsFading(true)
-      fadeTimerRef.current = window.setTimeout(() => setIsVisible(false), FADE_MS)
+      setIsSplitting(true)
+      fadeTimerRef.current = window.setTimeout(() => setIsVisible(false), SPLIT_DURATION_MS)
     }
 
     const update = () => {
@@ -130,7 +131,7 @@ export default function ScrambleIntro() {
         heroSlotRef.current.classList.toggle(styles.heroVisible, heroP > 0.1)
       }
 
-      if (p >= 0.85 || maxScroll - scrollTop <= 2) finishIntro()
+      if (p >= 0.85 || maxScroll - scrollTop <= 2) startSplitReveal()
 
       if (p < 0.85 && !doneRef.current) {
         rafRef.current = window.requestAnimationFrame(update)
@@ -179,12 +180,15 @@ export default function ScrambleIntro() {
   if (!isVisible) return null
 
   return (
-    <div className={`${styles.overlay} ${isFading ? styles.fading : ''}`} aria-hidden="true">
+    <div className={styles.overlay} aria-hidden="true">
       <div ref={scrollerRef} className={styles.scrollCapture}>
         <div className={styles.track} style={{ height: `${TRACK_HEIGHT_VH}vh` }} />
       </div>
 
-      <div className={styles.sticky}>
+      <div className={`${styles.splitTop} ${isSplitting ? styles.splitTopOpen : ''}`} />
+      <div className={`${styles.splitBottom} ${isSplitting ? styles.splitBottomOpen : ''}`} />
+
+      <div className={`${styles.sticky} ${isSplitting ? styles.stickyFadeOut : ''}`}>
         <div ref={heroSlotRef} className={styles.heroSlot} id="heroSlot" />
         <div ref={bgoverlayRef} className={styles.bgoverlay} />
         <div className={styles.scrambleStage}>
@@ -197,8 +201,8 @@ export default function ScrambleIntro() {
         <div className={styles.scanline} ref={scanlineRef} />
       </div>
 
-      <div className={styles.progress} ref={progressRef} />
-      <div className={styles.cue} ref={cueRef}>
+      <div className={`${styles.progress} ${isSplitting ? styles.stickyFadeOut : ''}`} ref={progressRef} />
+      <div className={`${styles.cue} ${isSplitting ? styles.stickyFadeOut : ''}`} ref={cueRef}>
         <span>scroll_to_decode()</span>
         <div className={styles.mouse}>
           <div className={styles.mouseDot} />

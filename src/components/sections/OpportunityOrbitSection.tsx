@@ -599,9 +599,14 @@ export default function OpportunityOrbitSection() {
       }
 
       if (pinProgress > RADAR_PHASE_PORTION) {
-        stopAutoRotation()
-        const expansionProgress = (pinProgress - RADAR_PHASE_PORTION) / (DOTS_PHASE_END - RADAR_PHASE_PORTION)
-        updateDotsExpansion(Math.max(0, Math.min(1, expansionProgress)))
+        if (!isAutoRotating) {
+          autoRotationAngle = 270
+          resetDots()
+          startAutoRotation()
+        }
+        const rawExpansion = (pinProgress - RADAR_PHASE_PORTION) / (DOTS_PHASE_END - RADAR_PHASE_PORTION)
+        const expansionProgress = easeInOutCubic(Math.max(0, Math.min(1, rawExpansion)))
+        updateDotsExpansion(expansionProgress)
         return
       }
 
@@ -614,9 +619,9 @@ export default function OpportunityOrbitSection() {
         circle.style.transform = `translate(-50%, -50%) scale(${0.96 + layerProgress * 0.04})`
       })
 
-      if (radarProgress >= 1) {
+      if (rotation >= 270) {
         if (!isAutoRotating) {
-          autoRotationAngle = 0
+          autoRotationAngle = rotation
           resetDots()
           startAutoRotation()
         }
@@ -642,7 +647,7 @@ export default function OpportunityOrbitSection() {
 
       const tick = () => {
         const delta = targetPinProgress - renderedPinProgress
-        renderedPinProgress += delta * 0.12
+        renderedPinProgress += delta * 0.065
 
         if (Math.abs(delta) < 0.0004) {
           renderedPinProgress = targetPinProgress
