@@ -700,7 +700,7 @@ export default function OpportunityOrbitSection() {
     <div ref={scrollTrackRef} className="relative bg-[#f2f2f0]">
       <div ref={sectionSlotRef} aria-hidden />
       <div ref={pinSpacerRef} aria-hidden />
-      <section ref={sectionRef} className="h-[130vh] w-full overflow-hidden bg-[#f2f2f0] px-6 py-8 md:h-[140vh] md:px-[5%] md:py-12">
+      <section ref={sectionRef} className="min-h-screen w-full overflow-hidden bg-[#f2f2f0] px-6 py-8 md:px-[5%] md:py-12">
       <div className="relative mx-auto flex h-full w-full max-w-7xl items-center">
         <div className="absolute left-2 top-1/2 hidden -translate-y-1/2 flex-col items-center gap-3 md:flex">
           <span className="h-[5px] w-[5px] rounded-full bg-[#cfff3f]" />

@@ -12,7 +12,7 @@ const LINES = [
   'data and testing to bear on the toughest challenges.',
 ];
 
-const PIN_SCROLL_DISTANCE = 1400;
+const PIN_SCROLL_DISTANCE = 900;
 
 const PARALLAX_BG_STYLE: React.CSSProperties = {
   backgroundImage: "url('https://picsum.photos/1600/900')",

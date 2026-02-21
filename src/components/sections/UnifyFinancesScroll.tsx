@@ -80,7 +80,7 @@ export default function UnifyFinancesScroll() {
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top top",
-          end: "+=300%",
+          end: "+=200%",
           scrub: 3,
           pin: true,
         },

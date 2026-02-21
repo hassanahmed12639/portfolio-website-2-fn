@@ -137,7 +137,7 @@ export default function IntegrationsArcSection() {
       ScrollTrigger.create({
         trigger: sectionRef.current,
         start: 'top top',
-        end: '+=250vh',
+        end: '+=150vh',
         pin: true,
         anticipatePin: 1,
         scrub: 2.5,
@@ -164,7 +164,7 @@ export default function IntegrationsArcSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full h-[120vh] overflow-hidden rounded-3xl bg-designBg"
+      className="relative w-full min-h-screen overflow-hidden rounded-3xl bg-designBg"
       style={{ transform: 'translateZ(0)' }}
     >
       <div className="sticky top-0 w-full h-screen flex flex-col items-center justify-center">

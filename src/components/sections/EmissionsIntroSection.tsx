@@ -601,7 +601,7 @@ export default function EmissionsIntroSection() {
     <>
       <section
         ref={sectionRef}
-        className="relative h-[130vh] w-full overflow-hidden bg-black px-6 py-8 md:h-[140vh] md:px-[5%] md:py-12"
+        className="relative min-h-screen w-full overflow-hidden bg-black px-6 py-8 md:px-[5%] md:py-12"
       >
       <div
         ref={contentWrapRef}

@@ -84,8 +84,8 @@ export default function ManufacturingSection() {
   }, [])
 
   return (
-    <div ref={sectionRef} className="relative w-full min-h-screen bg-white overflow-hidden">
-      <div className="container mx-auto px-8 py-20 h-screen flex items-center">
+    <div ref={sectionRef} className="relative w-full bg-white overflow-hidden">
+      <div className="container mx-auto px-8 py-16 md:py-20 flex items-center">
         <div ref={initialTextRef} className="w-1/2 pr-12">
           <h2 className="text-5xl font-bold leading-tight">
             We work to accelerate progress across every source of emissions, transforming the five

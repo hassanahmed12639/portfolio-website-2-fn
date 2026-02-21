@@ -22,7 +22,7 @@ export function HomePage() {
   const expandRadius = animationProgress * 300
 
   return (
-    <div ref={sectionRef} className="min-h-[140vh] bg-designBg">
+    <div ref={sectionRef} className="min-h-screen bg-designBg">
       <div className="h-screen flex items-center justify-center p-8 sticky top-0">
         <div className="relative">
           <div
