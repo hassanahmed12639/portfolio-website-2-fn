@@ -17,6 +17,7 @@ import { SwipeCards } from '../ui/swipe-cards'
  */
 export default function IntegrationsArcSection() {
   const sectionRef = useRef<HTMLElement>(null)
+  const stickyContentRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const iconRefs = useRef<(HTMLDivElement | null)[]>([])
   const cardSize = 120
@@ -48,7 +49,7 @@ export default function IntegrationsArcSection() {
     gsap.registerPlugin(ScrollTrigger)
 
     const ctx = gsap.context(() => {
-      if (!sectionRef.current || !containerRef.current) return
+      if (!sectionRef.current || !stickyContentRef.current || !containerRef.current) return
 
       const iconElements = iconRefs.current.filter(Boolean) as HTMLDivElement[]
       const totalIcons = iconElements.length
@@ -133,14 +134,14 @@ export default function IntegrationsArcSection() {
 
       applyProgress(0)
 
-      // Pin until all icons revealed. Section height = pin distance so unpin has no layout jump.
+      // Start only when sticky content div is fully in view; pin the section.
       ScrollTrigger.create({
-        trigger: sectionRef.current,
-        start: 'top top',
-        end: '+=700vh',
-        pin: true,
+        trigger: stickyContentRef.current,
+        start: 'bottom bottom',
+        end: '+=1000vh',
+        pin: sectionRef.current,
         anticipatePin: 1,
-        scrub: 2.5,
+        scrub: 3.5,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           applyProgress(self.progress)
@@ -167,7 +168,10 @@ export default function IntegrationsArcSection() {
       className="relative w-full min-h-screen overflow-hidden rounded-3xl bg-[#0F0F0F]"
       style={{ transform: 'translateZ(0)' }}
     >
-      <div className="sticky top-0 w-full min-h-screen flex flex-col items-center justify-center">
+      <div
+        ref={stickyContentRef}
+        className="sticky top-0 w-full min-h-screen flex flex-col items-center justify-center"
+      >
         <h2 className="text-3xl md:text-4xl font-semibold mb-6 md:mb-8 text-[#FFFFFF] text-center px-4">
           Integrate with your existing tools
         </h2>
