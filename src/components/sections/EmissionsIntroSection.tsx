@@ -309,54 +309,34 @@ export default function EmissionsIntroSection() {
       const overlapBottom = Math.min(tr.bottom, cr.bottom)
       const overlapWidth = overlapRight - overlapLeft
       const overlapHeight = overlapBottom - overlapTop
-      const minVerticalOverlap = tr.height * 0.2
-      const minHorizontalOverlap = tr.width * 0.02
-      const cardReachedTitleFromBottom = cr.top <= tr.bottom - tr.height * 0.05
-
-      const setAllGreen = () => {
-        gsap.to(titleEl, {
-          ['--title-clip-left' as string]: '100%',
-          ['--title-clip-right' as string]: '0%',
-          ['--title-clip-top' as string]: '0%',
-          ['--title-clip-bottom' as string]: '0%',
-          duration: 0.18,
-          ease: 'power2.out',
-          overwrite: 'auto',
-        })
-      }
       if (
-        !cardReachedTitleFromBottom ||
         overlapWidth <= 0 ||
         overlapHeight <= 0 ||
-        overlapHeight < minVerticalOverlap ||
-        overlapWidth < minHorizontalOverlap ||
         tr.width <= 0 ||
         tr.height <= 0
       ) {
-        setAllGreen()
+        titleEl.style.setProperty('--title-clip-left', '100%')
+        titleEl.style.setProperty('--title-clip-right', '0%')
+        titleEl.style.setProperty('--title-clip-top', '0%')
+        titleEl.style.setProperty('--title-clip-bottom', '0%')
         return
       }
       const leftPct = ((overlapLeft - tr.left) / tr.width) * 100
       const rightPct = ((tr.right - overlapRight) / tr.width) * 100
       const topPct = ((overlapTop - tr.top) / tr.height) * 100
       const bottomPct = ((tr.bottom - overlapBottom) / tr.height) * 100
-      gsap.to(titleEl, {
-        ['--title-clip-left' as string]: `${Math.max(0, Math.min(100, leftPct))}%`,
-        ['--title-clip-right' as string]: `${Math.max(0, Math.min(100, rightPct))}%`,
-        ['--title-clip-top' as string]: `${Math.max(0, Math.min(100, topPct))}%`,
-        ['--title-clip-bottom' as string]: `${Math.max(0, Math.min(100, bottomPct))}%`,
-        duration: 0.18,
-        ease: 'power2.out',
-        overwrite: 'auto',
-      })
+      titleEl.style.setProperty('--title-clip-left', `${Math.max(0, Math.min(100, leftPct))}%`)
+      titleEl.style.setProperty('--title-clip-right', `${Math.max(0, Math.min(100, rightPct))}%`)
+      titleEl.style.setProperty('--title-clip-top', `${Math.max(0, Math.min(100, topPct))}%`)
+      titleEl.style.setProperty('--title-clip-bottom', `${Math.max(0, Math.min(100, bottomPct))}%`)
     }
 
     function updateAllTitleSplits() {
-      setAdaptiveTitleSplit(revealTitleText, revealFrame)
-      setAdaptiveTitleSplit(electricityTitleText, electricityFrameRef.current)
-      setAdaptiveTitleSplit(agricultureTitleText, agricultureFrameRef.current)
-      setAdaptiveTitleSplit(transportationTitleText, transportationFrameRef.current)
-      setAdaptiveTitleSplit(buildingsTitleText, buildingsFrameRef.current)
+      setAdaptiveTitleSplit(revealTitleText, revealImage)
+      setAdaptiveTitleSplit(electricityTitleText, electricityImage)
+      setAdaptiveTitleSplit(agricultureTitleText, agricultureImage)
+      setAdaptiveTitleSplit(transportationTitleText, transportationImage)
+      setAdaptiveTitleSplit(buildingsTitleText, buildingsImage)
     }
 
     const tl = gsap.timeline({
