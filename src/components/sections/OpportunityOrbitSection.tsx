@@ -85,7 +85,8 @@ export default function OpportunityOrbitSection() {
     const baseDotSizes = [18, 30, 50, 18, 50, 50]
     const RADAR_PHASE_PORTION = 0.4
     const DOTS_PHASE_END = 0.8
-    const PREMIUM_BASE_SIZE = 620
+    const PREMIUM_BASE_SIZE = 500
+    const PREMIUM_SCALE = 0.76
     const PREMIUM_INTRO_END = 0.28
     const PREMIUM_FILL_END = 0.55
     const FINAL_LABEL_START = 0.86
@@ -289,7 +290,7 @@ export default function OpportunityOrbitSection() {
 
     const hidePremium = () => {
       premiumContainer.style.opacity = '0'
-      premiumContainer.style.transform = 'translate(-50%, -50%) scale(0.96)'
+      premiumContainer.style.transform = `translate(-50%, -50%) scale(${PREMIUM_SCALE * 0.96})`
       premiumLabel.style.opacity = '0'
       premiumLabel.style.top = '0'
       premiumLabelLine.style.width = '0px'
@@ -342,7 +343,7 @@ export default function OpportunityOrbitSection() {
       premiumLabelDot.style.width = `${lerp(6, 8, textProgress)}px`
       premiumLabelDot.style.height = `${lerp(6, 8, textProgress)}px`
       premiumLabelDot.style.marginRight = `${lerp(8, 12, textProgress)}px`
-      premiumLabelText.style.fontSize = `${lerp(14, 34, textProgress)}px`
+      premiumLabelText.style.fontSize = `${lerp(11, 20, textProgress)}px`
       premiumLabelText.style.fontWeight = `${Math.round(lerp(400, 500, textProgress))}`
       premiumLabelText.style.letterSpacing = `${lerp(0, -0.01, textProgress)}em`
       premiumLabelText.style.color = `rgba(0, 0, 0, ${lerp(0.72, 0.86, textProgress)})`
@@ -372,7 +373,7 @@ export default function OpportunityOrbitSection() {
       })
 
       premiumContainer.style.opacity = String(clamp(t * 3))
-      premiumContainer.style.transform = `translate(-50%, -50%) scale(${lerp(0.96, 1, t)})`
+      premiumContainer.style.transform = `translate(-50%, -50%) scale(${PREMIUM_SCALE * lerp(0.96, 1, t)})`
 
       if (t <= PREMIUM_FILL_END) {
         const outlineSize = lerp(120, PREMIUM_BASE_SIZE, introProgress)
@@ -411,9 +412,9 @@ export default function OpportunityOrbitSection() {
       premiumOuter.style.background = '#d7ff47'
       premiumSeed.style.opacity = '0'
 
-      const middleSize = lerp(PREMIUM_BASE_SIZE, 520, spreadProgress)
-      const innerSize = lerp(PREMIUM_BASE_SIZE, 420, spreadProgress)
-      const coreSize = lerp(PREMIUM_BASE_SIZE, 300, spreadProgress)
+      const middleSize = lerp(PREMIUM_BASE_SIZE, 420, spreadProgress)
+      const innerSize = lerp(PREMIUM_BASE_SIZE, 340, spreadProgress)
+      const coreSize = lerp(PREMIUM_BASE_SIZE, 242, spreadProgress)
 
       premiumMiddle.style.width = `${middleSize}px`
       premiumMiddle.style.height = `${middleSize}px`
@@ -717,7 +718,7 @@ export default function OpportunityOrbitSection() {
           DISCOVER
         </p>
 
-        <div className="absolute left-2 top-1/2 z-20 w-full max-w-[min(45vw,520px)] md:left-[2%] md:max-w-[min(38vw,520px)] md:pl-8 lg:max-w-[520px]" style={{ transform: 'translateY(-50%)' }}>
+        <div className="absolute left-2 top-1/2 z-20 w-full max-w-[min(45vw,340px)] md:left-[2%] md:max-w-[min(38vw,340px)] md:pl-8 lg:max-w-[340px]" style={{ transform: 'translateY(-50%)' }}>
           <div ref={leftTextRef} className="relative w-full" style={{ minHeight: 124 }}>
             {TEXT_BLOCKS.map((block, i) => (
               <div
@@ -736,10 +737,10 @@ export default function OpportunityOrbitSection() {
           </div>
         </div>
 
-        <div className="grid min-w-0 w-full grid-cols-1 items-center justify-items-center gap-12 md:grid-cols-[1fr_minmax(260px,720px)_1fr] md:gap-6">
+        <div className="grid min-w-0 w-full grid-cols-1 items-center justify-items-center gap-12 md:grid-cols-[1fr_minmax(260px,600px)_1fr] md:gap-6">
           <div className="hidden md:block min-w-0" aria-hidden />
 
-          <div className="relative mx-auto h-[480px] w-full min-w-[260px] max-w-[720px] md:h-[600px] md:max-w-[840px] lg:h-[700px]">
+          <div className="relative mx-auto h-[420px] w-full min-w-[260px] max-w-[600px] md:h-[520px] md:max-w-[700px] lg:h-[620px]">
             <div ref={radarContainerRef} className="radar-container">
               <div className="radar-sticky">
                 <div ref={radarRef} className="radar">
@@ -788,9 +789,6 @@ export default function OpportunityOrbitSection() {
                     <div className="premium-axis" aria-hidden="true">
                       <span className="axis-tick axis-tick-top" />
                       <span className="axis-tick axis-tick-mid" />
-                      <span className="axis-tick axis-tick-bot" />
-                      <span className="axis-label axis-label-top">+$</span>
-                      <span className="axis-label axis-label-bot">-$</span>
                     </div>
                   </div>
                 </div>
@@ -817,7 +815,7 @@ export default function OpportunityOrbitSection() {
         }
 
         .radar {
-          --radar-size: min(100cqw, 100cqh, 620px);
+          --radar-size: min(100cqw, 100cqh, 500px);
           width: var(--radar-size);
           height: var(--radar-size);
           position: relative;
@@ -998,7 +996,7 @@ export default function OpportunityOrbitSection() {
         }
 
         .premium-label-text {
-          font-size: 14px;
+          font-size: 11px;
           color: #000;
         }
 

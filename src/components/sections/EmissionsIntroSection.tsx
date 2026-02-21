@@ -303,10 +303,11 @@ export default function EmissionsIntroSection() {
       if (!titleEl || !cardEl) return
       const tr = titleEl.getBoundingClientRect()
       const cr = cardEl.getBoundingClientRect()
-      const overlapLeft = Math.max(tr.left, cr.left)
-      const overlapRight = Math.min(tr.right, cr.right)
+      const overlapLeft = Math.max(tr.left, cr.left) - 1.5
+      const overlapRight = Math.min(tr.right, cr.right) + 1.5
       const overlapTop = Math.max(tr.top, cr.top)
-      const overlapBottom = Math.min(tr.bottom, cr.bottom)
+      // Slight descender compensation so glyph bottoms don't leave green slivers.
+      const overlapBottom = Math.min(tr.bottom, cr.bottom) + 8
       const overlapWidth = overlapRight - overlapLeft
       const overlapHeight = overlapBottom - overlapTop
       if (
@@ -325,10 +326,16 @@ export default function EmissionsIntroSection() {
       const rightPct = ((tr.right - overlapRight) / tr.width) * 100
       const topPct = ((overlapTop - tr.top) / tr.height) * 100
       const bottomPct = ((tr.bottom - overlapBottom) / tr.height) * 100
-      titleEl.style.setProperty('--title-clip-left', `${Math.max(0, Math.min(100, leftPct))}%`)
-      titleEl.style.setProperty('--title-clip-right', `${Math.max(0, Math.min(100, rightPct))}%`)
-      titleEl.style.setProperty('--title-clip-top', `${Math.max(0, Math.min(100, topPct))}%`)
-      titleEl.style.setProperty('--title-clip-bottom', `${Math.max(0, Math.min(100, bottomPct))}%`)
+      const xCompPct = (3 / tr.width) * 100
+      const yCompPct = (2 / tr.height) * 100
+      const clipLeft = Math.max(0, Math.min(100, leftPct - xCompPct))
+      const clipRight = Math.max(0, Math.min(100, rightPct - xCompPct))
+      const clipTop = Math.max(0, Math.min(100, topPct - yCompPct))
+      const clipBottom = Math.max(0, Math.min(100, bottomPct - yCompPct))
+      titleEl.style.setProperty('--title-clip-left', `${clipLeft}%`)
+      titleEl.style.setProperty('--title-clip-right', `${clipRight}%`)
+      titleEl.style.setProperty('--title-clip-top', `${clipTop}%`)
+      titleEl.style.setProperty('--title-clip-bottom', `${clipBottom}%`)
     }
 
     function updateAllTitleSplits() {
@@ -742,10 +749,11 @@ export default function EmissionsIntroSection() {
               >
                 <span className="block text-[#AAFF00]" aria-hidden>Manufacturing</span>
                 <span
-                  className="absolute inset-0 block overflow-hidden text-white"
+                  className="absolute inset-0 block text-white"
                   style={{
                     clipPath:
                       'inset(var(--title-clip-top, 0%) var(--title-clip-right, 0%) var(--title-clip-bottom, 0%) var(--title-clip-left, 100%))',
+                    WebkitTextStroke: '0.4px #fff',
                   }}
                   aria-hidden
                 >
@@ -804,10 +812,11 @@ export default function EmissionsIntroSection() {
               >
                 <span className="block text-[#AAFF00]" aria-hidden>Electricity</span>
                 <span
-                  className="absolute inset-0 block overflow-hidden text-white"
+                  className="absolute inset-0 block text-white"
                   style={{
                     clipPath:
                       'inset(var(--title-clip-top, 0%) var(--title-clip-right, 0%) var(--title-clip-bottom, 0%) var(--title-clip-left, 100%))',
+                    WebkitTextStroke: '0.4px #fff',
                   }}
                   aria-hidden
                 >
@@ -866,10 +875,11 @@ export default function EmissionsIntroSection() {
               >
                 <span className="block text-[#AAFF00]" aria-hidden>Agriculture</span>
                 <span
-                  className="absolute inset-0 block overflow-hidden text-white"
+                  className="absolute inset-0 block text-white"
                   style={{
                     clipPath:
                       'inset(var(--title-clip-top, 0%) var(--title-clip-right, 0%) var(--title-clip-bottom, 0%) var(--title-clip-left, 100%))',
+                    WebkitTextStroke: '0.4px #fff',
                   }}
                   aria-hidden
                 >
@@ -928,10 +938,11 @@ export default function EmissionsIntroSection() {
               >
                 <span className="block text-[#AAFF00]" aria-hidden>Transportation</span>
                 <span
-                  className="absolute inset-0 block overflow-hidden text-white"
+                  className="absolute inset-0 block text-white"
                   style={{
                     clipPath:
                       'inset(var(--title-clip-top, 0%) var(--title-clip-right, 0%) var(--title-clip-bottom, 0%) var(--title-clip-left, 100%))',
+                    WebkitTextStroke: '0.4px #fff',
                   }}
                   aria-hidden
                 >
@@ -990,10 +1001,11 @@ export default function EmissionsIntroSection() {
               >
                 <span className="block text-[#AAFF00]" aria-hidden>Buildings</span>
                 <span
-                  className="absolute inset-0 block overflow-hidden text-white"
+                  className="absolute inset-0 block text-white"
                   style={{
                     clipPath:
                       'inset(var(--title-clip-top, 0%) var(--title-clip-right, 0%) var(--title-clip-bottom, 0%) var(--title-clip-left, 100%))',
+                    WebkitTextStroke: '0.4px #fff',
                   }}
                   aria-hidden
                 >
