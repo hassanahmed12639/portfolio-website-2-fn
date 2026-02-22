@@ -10,31 +10,31 @@ const CARDS = [
     id: 'manufacturing',
     src: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=900&q=80',
     alt: 'Industrial facility',
-    className: 'top-4 left-[8%] w-36 md:top-[2%] md:left-[-22%] md:w-44',
+    className: 'top-[8%] right-[22%] w-[84px] md:top-[2%] md:left-[-22%] md:right-auto md:w-44',
   },
   {
     id: 'electricity',
     src: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=900&q=80',
     alt: 'Electricity grid',
-    className: 'top-6 right-[4%] w-36 md:top-[4%] md:right-[8%] md:w-48',
+    className: 'top-[18%] left-[8%] w-[82px] md:top-[4%] md:right-[8%] md:left-auto md:w-48',
   },
   {
     id: 'agriculture',
     src: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=900&q=80',
     alt: 'Green agriculture field',
-    className: 'top-[32%] left-[42%] w-36 -translate-x-1/2 md:top-[28%] md:left-[24%] md:w-52',
+    className: 'top-[33%] right-[2%] w-[84px] md:top-[28%] md:left-[24%] md:right-auto md:w-52',
   },
   {
     id: 'transportation',
     src: 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=900&q=80',
     alt: 'Road transportation',
-    className: 'bottom-[20%] right-[6%] w-36 md:bottom-[34%] md:right-[8%] md:w-48',
+    className: 'top-[67%] left-[8%] w-[82px] md:bottom-[34%] md:right-[8%] md:left-auto md:top-auto md:w-48',
   },
   {
     id: 'buildings',
     src: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=900&q=80',
     alt: 'Buildings and city',
-    className: 'bottom-4 left-[46%] w-36 -translate-x-1/2 md:bottom-[13%] md:left-[24%] md:w-44',
+    className: 'top-[79%] right-[8%] w-[88px] md:bottom-[13%] md:left-[24%] md:right-auto md:top-auto md:w-44',
   },
 ]
 
@@ -352,7 +352,7 @@ export default function EmissionsIntroSection() {
         trigger: section,
         start: 'top top',
         end: '+=5200',
-        scrub: 1.1,
+        scrub: 1.6,
         pin: true,
         anticipatePin: 2,
         invalidateOnRefresh: true,
@@ -373,7 +373,7 @@ export default function EmissionsIntroSection() {
       opacity: 1,
       duration: 1,
       stagger: 0.7,
-      ease: 'none',
+      ease: 'power1.out',
     })
 
     // Slight hold before cards begin moving.
@@ -387,7 +387,7 @@ export default function EmissionsIntroSection() {
         each: 0.14,
         from: 'start',
       },
-      ease: 'none',
+      ease: 'power1.inOut',
     })
     tl.to(
       textBlock,
@@ -395,7 +395,7 @@ export default function EmissionsIntroSection() {
         autoAlpha: 0,
         x: -48,
         duration: 0.56,
-        ease: 'none',
+        ease: 'power1.inOut',
       },
       '<'
     )
@@ -406,7 +406,7 @@ export default function EmissionsIntroSection() {
       opacity: 0,
       scale: 0.92,
       duration: 0.52,
-      ease: 'none',
+      ease: 'power1.in',
     })
 
     // Transportation exits second (down, out of frame).
@@ -417,7 +417,7 @@ export default function EmissionsIntroSection() {
         opacity: 0,
         scale: 0.92,
         duration: 0.52,
-        ease: 'none',
+        ease: 'power1.in',
       },
       '<+0.1'
     )
@@ -430,7 +430,7 @@ export default function EmissionsIntroSection() {
         y: () => getBottomCenterTarget(agricultureCard, 26, -72).y,
         scale: 1.08,
         duration: 0.62,
-        ease: 'none',
+        ease: 'power1.inOut',
       },
       '<+0.08'
     )
@@ -441,7 +441,7 @@ export default function EmissionsIntroSection() {
         y: '+=64',
         x: -14,
         duration: 0.62,
-        ease: 'none',
+        ease: 'power1.inOut',
       },
       '<'
     )
@@ -449,7 +449,7 @@ export default function EmissionsIntroSection() {
       opacity: 0,
       y: '+=120',
       duration: 0.34,
-      ease: 'none',
+      ease: 'power1.in',
     })
 
     // Electricity moves to bottom-center with a slight size increase.
@@ -458,7 +458,7 @@ export default function EmissionsIntroSection() {
       y: () => getBottomCenterTarget(electricityCard, 26, 72).y,
       scale: 1.1,
       duration: 0.62,
-      ease: 'none',
+      ease: 'power1.inOut',
     })
 
     // Electricity exits while manufacturing advances.
@@ -467,7 +467,7 @@ export default function EmissionsIntroSection() {
       opacity: 0,
       scale: 0.94,
       duration: 0.54,
-      ease: 'none',
+      ease: 'power1.in',
     })
     tl.to(
       manufacturingCard,
@@ -475,7 +475,7 @@ export default function EmissionsIntroSection() {
         y: '+=240',
         x: -46,
         duration: 0.9,
-        ease: 'none',
+        ease: 'power1.inOut',
       },
       '<'
     )
@@ -505,7 +505,7 @@ export default function EmissionsIntroSection() {
           scale: () => manufacturingZoomTarget.scale,
           transformOrigin: 'center center',
           duration: 2.1,
-          ease: 'none',
+          ease: 'power2.inOut',
         },
         '>'
       )
@@ -560,7 +560,7 @@ export default function EmissionsIntroSection() {
           scaleX: 1,
           scaleY: 1,
           duration: 0.36,
-          ease: 'none',
+          ease: 'power2.out',
         },
         '>'
       )
@@ -637,7 +637,7 @@ export default function EmissionsIntroSection() {
           y: -520,
           scale: 0.92,
           duration: 0.95,
-          ease: 'none',
+          ease: 'power1.in',
         }
       )
       tl.set(currentStage, { autoAlpha: 0 }, '>')
@@ -648,7 +648,7 @@ export default function EmissionsIntroSection() {
           y: 0,
           scale: 1,
           duration: 0.95,
-          ease: 'none',
+          ease: 'power2.out',
         },
         '>'
       )
@@ -711,7 +711,7 @@ export default function EmissionsIntroSection() {
         y: -540,
         scale: 0.94,
         duration: 2.2,
-        ease: 'none',
+        ease: 'power1.inOut',
       },
       'finalMessageStart'
     )
@@ -753,17 +753,17 @@ export default function EmissionsIntroSection() {
       >
       <div
         ref={contentWrapRef}
-        className="mx-auto flex h-full w-full max-w-7xl flex-col items-center justify-center gap-12 md:flex-row md:gap-8"
+        className="relative mx-auto h-full w-full max-w-7xl md:flex md:items-center md:justify-center md:gap-8"
       >
-        <div ref={textBlockRef} className="max-w-xl md:w-[48%]">
+        <div ref={textBlockRef} className="absolute left-3 right-3 top-[46%] z-20 max-w-[94%] md:static md:max-w-xl md:w-[48%]">
           <h2
             ref={headingRef}
-            className="text-2xl font-semibold leading-[1.25] text-white md:-translate-y-2 md:text-[34px]"
+            className="text-[16px] font-semibold leading-[1.08] tracking-[-0.02em] text-white md:-translate-y-2 md:text-[34px] md:leading-[1.25] md:tracking-normal"
           >
             {HEADLINE_LINES.map((line, i) => (
               <span
                 key={line}
-                className={`intro-line block ${i > 0 ? 'mt-1.5' : ''} ${
+                className={`intro-line block ${i > 0 ? 'mt-0.5 md:mt-1.5' : ''} ${
                   i === HEADLINE_LINES.length - 1 ? 'text-[#AAFF00]' : ''
                 } will-change-transform`}
               >
@@ -773,7 +773,7 @@ export default function EmissionsIntroSection() {
           </h2>
         </div>
 
-        <div className="relative h-[360px] w-full md:h-[560px] md:w-[52%]">
+        <div className="absolute inset-0 z-10 h-full w-full md:relative md:h-[560px] md:w-[52%]">
           {CARDS.map((card, index) => (
             <div
               key={card.id}

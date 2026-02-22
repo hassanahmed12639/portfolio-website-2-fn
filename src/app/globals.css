@@ -430,6 +430,43 @@ a.bg-primary:hover,
   backdrop-filter: blur(8px);
 }
 
+/* Mobile: card positions to match hero layout (text left, cards around it) */
+@media (max-width: 767px) {
+  .sector-scroll-section .sector-cards-container .sector-card {
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+  }
+  .sector-scroll-section .sector-cards-container .sector-card:nth-child(1) {
+    top: 18% !important;
+    left: 9% !important;
+  }
+  .sector-scroll-section .sector-cards-container .sector-card:nth-child(2) {
+    top: 8% !important;
+    right: 10% !important;
+    left: auto !important;
+  }
+  .sector-scroll-section .sector-cards-container .sector-card:nth-child(3) {
+    top: 28% !important;
+    right: 1% !important;
+    left: auto !important;
+  }
+  .sector-scroll-section .sector-cards-container .sector-card:nth-child(4) {
+    top: 68% !important;
+    left: 16% !important;
+    right: auto !important;
+    bottom: auto !important;
+  }
+  .sector-scroll-section .sector-cards-container .sector-card:nth-child(5) {
+    top: 77% !important;
+    right: 4% !important;
+    left: auto !important;
+    bottom: auto !important;
+  }
+}
+
 .sector-scroll-section .sector-scroll-hint {
   position: absolute;
   bottom: 50px;

@@ -32,14 +32,18 @@ export default function UnifyFinancesScroll() {
       const sectionWidth = section.offsetWidth;
       const sectionHeight = section.offsetHeight;
 
-      const offScreenOffset = 600;
       const stackOffset = 6; // offset for final stacking
+      const BASE_W = 1062;
+      const BASE_H = 602;
+      const sx = sectionWidth / BASE_W;
+      const sy = sectionHeight / BASE_H;
       const startPositions = [
-        { x: -(sectionWidth / 2 + offScreenOffset), y: -(sectionHeight / 2 + offScreenOffset) }, // top-left - card 0
-        { x: sectionWidth / 2 + offScreenOffset + stackOffset, y: -(sectionHeight / 2 + offScreenOffset) }, // top-right - card 1
-        { x: -(sectionWidth / 2 + offScreenOffset), y: sectionHeight / 2 + offScreenOffset }, // bottom-left - card 2
-        { x: sectionWidth / 2 + offScreenOffset + stackOffset, y: sectionHeight / 2 + offScreenOffset }, // bottom-right - card 3
-        { x: sectionWidth / 2 + offScreenOffset, y: 0 }, // right-center - card 4
+        // Pixel-tuned against 1062x602 reference; starts out of frame and enters on scroll.
+        { x: -730 * sx, y: -390 * sy }, // top-left - card 0
+        { x: 730 * sx + stackOffset, y: -380 * sy }, // top-right - card 1
+        { x: -760 * sx, y: -40 * sy }, // left-middle - card 2
+        { x: 770 * sx + stackOffset, y: 140 * sy }, // right-middle - card 3
+        { x: -180 * sx, y: 430 * sy }, // bottom center-left - card 4
       ];
 
       cardsRef.current.forEach((card, i) => {
@@ -80,9 +84,13 @@ export default function UnifyFinancesScroll() {
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top top",
-          end: "+=200%",
-          scrub: 3,
+          end: "+=165%",
+          scrub: 1.7,
           pin: true,
+          pinSpacing: true,
+          anticipatePin: 4,
+          fastScrollEnd: true,
+          invalidateOnRefresh: true,
         },
       });
 
@@ -124,7 +132,7 @@ export default function UnifyFinancesScroll() {
           scale: 0.45,
           opacity: 0,
           duration: 3.5,
-          ease: "none",
+          ease: "power1.inOut",
           force3D: true,
           smoothOrigin: true,
         },
@@ -133,10 +141,7 @@ export default function UnifyFinancesScroll() {
 
       // Cards are already in final stacked position, no additional animation needed
 
-      // Add empty timeline space after all animations finish (for 2 scroll events)
-      // This creates scrollable space where nothing animates, just static final state
-      // All animations finish around position 3.0, so delay starts after that
-      tl.to({}, { duration: 0.5 }, ">");
+      // No extra hold here: once stacked, next scroll continues to next section.
     }, sectionRef);
 
     return () => {
@@ -172,13 +177,13 @@ export default function UnifyFinancesScroll() {
           {(() => {
             const sizeClasses: Record<CardSize, string> = {
               largest:
-                "w-[96px] h-[110px] xs:w-[120px] xs:h-[138px] sm:w-[144px] sm:h-[166px] md:w-[160px] md:h-[184px] lg:w-[192px] lg:h-[220px] xl:w-[224px] xl:h-[256px] 2xl:w-[256px] 2xl:h-[294px]",
+                "w-[116px] h-[130px] xs:w-[142px] xs:h-[160px] sm:w-[158px] sm:h-[176px] md:w-[154px] md:h-[172px] lg:w-[166px] lg:h-[186px] xl:w-[178px] xl:h-[200px] 2xl:w-[190px] 2xl:h-[214px]",
               medium:
-                "w-[94px] h-[112px] xs:w-[118px] xs:h-[140px] sm:w-[142px] sm:h-[168px] md:w-[156px] md:h-[188px] lg:w-[188px] lg:h-[224px] xl:w-[220px] xl:h-[262px] 2xl:w-[250px] 2xl:h-[300px]",
+                "w-[114px] h-[132px] xs:w-[140px] xs:h-[162px] sm:w-[154px] sm:h-[178px] md:w-[150px] md:h-[168px] lg:w-[162px] lg:h-[182px] xl:w-[174px] xl:h-[194px] 2xl:w-[186px] 2xl:h-[208px]",
               smallMedium:
-                "w-[86px] h-[84px] xs:w-[108px] xs:h-[102px] sm:w-[130px] sm:h-[124px] md:w-[144px] md:h-[138px] lg:w-[172px] lg:h-[166px] xl:w-[200px] xl:h-[192px] 2xl:w-[230px] 2xl:h-[220px]",
+                "w-[104px] h-[102px] xs:w-[126px] xs:h-[120px] sm:w-[136px] sm:h-[130px] md:w-[134px] md:h-[130px] lg:w-[144px] lg:h-[140px] xl:w-[154px] xl:h-[150px] 2xl:w-[164px] 2xl:h-[160px]",
               small:
-                "w-[82px] h-[86px] xs:w-[100px] xs:h-[108px] sm:w-[122px] sm:h-[130px] md:w-[136px] md:h-[144px] lg:w-[162px] lg:h-[172px] xl:w-[190px] xl:h-[200px] 2xl:w-[216px] 2xl:h-[230px]",
+                "w-[100px] h-[104px] xs:w-[118px] xs:h-[126px] sm:w-[132px] sm:h-[136px] md:w-[142px] md:h-[144px] lg:w-[154px] lg:h-[156px] xl:w-[164px] xl:h-[166px] 2xl:w-[176px] 2xl:h-[178px]",
             };
             return CARDS_LAYOUT.map((card, i) => (
             <div

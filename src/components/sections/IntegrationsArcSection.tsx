@@ -134,14 +134,14 @@ export default function IntegrationsArcSection() {
 
       applyProgress(0)
 
-      // Start only when sticky content div is fully in view; pin the section.
+      // Start when sticky content is nearly full in view so handoff from previous section is smooth.
       ScrollTrigger.create({
         trigger: stickyContentRef.current,
-        start: 'bottom bottom',
+        start: 'bottom 98%',
         end: '+=1000vh',
         pin: sectionRef.current,
-        anticipatePin: 1,
-        scrub: 3.5,
+        anticipatePin: 2,
+        scrub: 4,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           applyProgress(self.progress)

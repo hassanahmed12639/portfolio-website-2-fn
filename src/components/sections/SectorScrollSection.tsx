@@ -5,7 +5,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { registerGsapPlugins } from '../../lib/gsap'
 
-const SMOOTHNESS = 1.2
+const SMOOTHNESS = 1.6
 const EXIT_DURATION = 1.8
 const READY_DURATION = 1.2
 const SMOOTH_EASE = [0.25, 0.46, 0.45, 0.94] as const

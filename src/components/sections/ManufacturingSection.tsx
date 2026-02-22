@@ -45,8 +45,9 @@ export default function ManufacturingSection() {
           trigger: section,
           start: 'top top',
           end: '+=150%',
-          scrub: 1,
+          scrub: 1.5,
           pin: true,
+          anticipatePin: 1,
         },
       })
 
@@ -54,6 +55,7 @@ export default function ManufacturingSection() {
         opacity: 0,
         y: -50,
         duration: 0.3,
+        ease: 'power1.out',
       })
 
       tl.to(
@@ -65,6 +67,7 @@ export default function ManufacturingSection() {
           rotation: 0,
           stagger: 0.1,
           duration: 0.5,
+          ease: 'power2.out',
         },
         '-=0.1'
       )

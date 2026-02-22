@@ -45,10 +45,10 @@ export default function ParallaxSection() {
         trigger: section,
         start: 'top top',
         end: `+=${PIN_SCROLL_DISTANCE}`,
-        scrub: 1.2,
+        scrub: 1.6,
         pin: pinEl,
         pinSpacing: true,
-        anticipatePin: 1,
+        anticipatePin: 1.2,
       },
     });
 

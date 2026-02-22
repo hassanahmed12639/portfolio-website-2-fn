@@ -79,7 +79,8 @@ export default function ArchSection() {
               start: 'top top',
               end: 'bottom bottom',
               pin: root.querySelector('.arch__right'),
-              scrub: true,
+              scrub: 1.4,
+              anticipatePin: 1,
             },
           });
 
@@ -104,12 +105,12 @@ export default function ArchSection() {
                   clipPath: 'inset(0px 0px 100%)',
                   objectPosition: '0px 60%',
                   duration: 1.5,
-                  ease: 'none',
+                  ease: 'power1.inOut',
                 }, 0)
                 .to(nextImage, {
                   objectPosition: '0px 40%',
                   duration: 1.5,
-                  ease: 'none',
+                  ease: 'power1.inOut',
                 }, 0);
             }
             mainTimeline.add(sectionTimeline);
@@ -123,14 +124,14 @@ export default function ArchSection() {
                 trigger: image,
                 start: 'top-=70% top+=50%',
                 end: 'bottom+=200% bottom',
-                scrub: true,
+                scrub: 1.2,
               },
             });
             innerTimeline
               .to(image, {
                 objectPosition: '0px 30%',
                 duration: 5,
-                ease: 'none',
+                ease: 'power1.inOut',
               })
               .to('body', {
                 backgroundColor: BG_COLORS[index],
