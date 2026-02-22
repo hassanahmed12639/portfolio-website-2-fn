@@ -10,31 +10,31 @@ const CARDS = [
     id: 'manufacturing',
     src: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=900&q=80',
     alt: 'Industrial facility',
-    className: 'top-[8%] right-[22%] w-[84px] md:top-[2%] md:left-[-22%] md:right-auto md:w-44',
+    className: 'top-[8%] right-[22%] w-[82px] md:top-[2%] md:left-[-20%] md:right-auto md:w-44',
   },
   {
     id: 'electricity',
     src: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=900&q=80',
     alt: 'Electricity grid',
-    className: 'top-[18%] left-[8%] w-[82px] md:top-[4%] md:right-[8%] md:left-auto md:w-48',
+    className: 'top-[18%] left-[8%] w-[82px] md:top-[5%] md:right-[6%] md:left-auto md:w-44',
   },
   {
     id: 'agriculture',
     src: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=900&q=80',
     alt: 'Green agriculture field',
-    className: 'top-[33%] right-[2%] w-[84px] md:top-[28%] md:left-[24%] md:right-auto md:w-52',
+    className: 'top-[35%] right-[2%] w-[82px] md:top-[32%] md:left-[16%] md:right-auto md:w-44',
   },
   {
     id: 'transportation',
     src: 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=900&q=80',
     alt: 'Road transportation',
-    className: 'top-[67%] left-[8%] w-[82px] md:bottom-[34%] md:right-[8%] md:left-auto md:top-auto md:w-48',
+    className: 'top-[72%] left-[8%] w-[82px] md:bottom-[24%] md:right-[8%] md:left-auto md:top-auto md:w-44',
   },
   {
     id: 'buildings',
     src: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=900&q=80',
     alt: 'Buildings and city',
-    className: 'top-[79%] right-[8%] w-[88px] md:bottom-[13%] md:left-[24%] md:right-auto md:top-auto md:w-44',
+    className: 'top-[84%] right-[8%] w-[82px] md:bottom-[2%] md:left-[22%] md:right-auto md:top-auto md:w-44',
   },
 ]
 
@@ -299,6 +299,7 @@ export default function EmissionsIntroSection() {
 
     let manufacturingZoomTarget = { x: 0, y: 0, scale: 1 }
     let revealFrameMatch = { x: 0, y: 0, scaleX: 1, scaleY: 1 }
+    let revealFrameUniformScale = 1
 
     function setAdaptiveTitleSplit(titleEl: HTMLElement | null, cardEl: HTMLElement | null) {
       if (!titleEl || !cardEl) return
@@ -379,168 +380,227 @@ export default function EmissionsIntroSection() {
     // Slight hold before cards begin moving.
     tl.to({}, { duration: 0.2 })
 
-    // First drop order with continuous staggered flow.
-    tl.to(firstDropOrder, {
-      y: 170,
-      duration: 0.56,
-      stagger: {
-        each: 0.14,
-        from: 'start',
-      },
-      ease: 'power1.inOut',
-    })
-    tl.to(
-      textBlock,
-      {
-        autoAlpha: 0,
-        x: -48,
+    if (isMobile) {
+      // Mobile choreography matching requested sequence:
+      // 1) bottom cards move down first while text fades
+      // 2) remaining cards move down and slightly scale up one-by-one
+      // 3) then manufacturing prepares for expansion
+      tl.to(
+        [buildingsCard, transportationCard],
+        {
+          y: '+=230',
+          opacity: 0.95,
+          duration: 0.5,
+          stagger: 0.12,
+          ease: 'power1.inOut',
+        },
+        '>'
+      )
+      tl.to(
+        textBlock,
+        {
+          autoAlpha: 0,
+          x: -28,
+          duration: 0.45,
+          ease: 'power1.out',
+        },
+        '<+0.02'
+      )
+
+      tl.to(
+        agricultureCard,
+        {
+          y: '+=120',
+          scale: 1.06,
+          duration: 0.58,
+          ease: 'power1.inOut',
+        },
+        '>'
+      )
+      tl.to(
+        electricityCard,
+        {
+          y: '+=145',
+          scale: 1.07,
+          duration: 0.62,
+          ease: 'power1.inOut',
+        },
+        '<+0.08'
+      )
+      tl.to(
+        manufacturingCard,
+        {
+          y: '+=76',
+          scale: 1.05,
+          duration: 0.62,
+          ease: 'power1.inOut',
+        },
+        '<+0.08'
+      )
+
+      tl.to(
+        agricultureCard,
+        {
+          y: '+=210',
+          opacity: 0,
+          duration: 0.5,
+          ease: 'power1.in',
+        },
+        '>'
+      )
+      tl.to(
+        electricityCard,
+        {
+          y: '+=260',
+          opacity: 0,
+          duration: 0.55,
+          ease: 'power1.in',
+        },
+        '<+0.06'
+      )
+      tl.to(
+        manufacturingCard,
+        {
+          y: '+=190',
+          x: -18,
+          duration: 0.86,
+          ease: 'power1.inOut',
+        },
+        '<'
+      )
+    } else {
+      // Desktop behavior unchanged
+      tl.to(firstDropOrder, {
+        y: 170,
         duration: 0.56,
+        stagger: {
+          each: 0.14,
+          from: 'start',
+        },
         ease: 'power1.inOut',
-      },
-      '<'
-    )
+      })
+      tl.to(
+        textBlock,
+        {
+          autoAlpha: 0,
+          x: -48,
+          duration: 0.56,
+          ease: 'power1.inOut',
+        },
+        '<'
+      )
 
-    // Buildings exits first (down, out of frame).
-    tl.to(buildingsCard, {
-      y: '+=360',
-      opacity: 0,
-      scale: 0.92,
-      duration: 0.52,
-      ease: 'power1.in',
-    })
-
-    // Transportation exits second (down, out of frame).
-    tl.to(
-      transportationCard,
-      {
+      // Buildings exits first (down, out of frame).
+      tl.to(buildingsCard, {
         y: '+=360',
         opacity: 0,
         scale: 0.92,
         duration: 0.52,
         ease: 'power1.in',
-      },
-      '<+0.1'
-    )
+      })
 
-    // Agriculture moves to bottom-center with a slight size increase.
-    tl.to(
-      agricultureCard,
-      {
-        x: () => getBottomCenterTarget(agricultureCard, 26, -72).x,
-        y: () => getBottomCenterTarget(agricultureCard, 26, -72).y,
-        scale: 1.08,
-        duration: 0.62,
-        ease: 'power1.inOut',
-      },
-      '<+0.08'
-    )
-    // Keep manufacturing subtly moving so flow never feels paused.
-    tl.to(
-      manufacturingCard,
-      {
-        y: '+=64',
-        x: -14,
-        duration: 0.62,
-        ease: 'power1.inOut',
-      },
-      '<'
-    )
-    tl.to(agricultureCard, {
-      opacity: 0,
-      y: '+=120',
-      duration: 0.34,
-      ease: 'power1.in',
-    })
+      // Transportation exits second (down, out of frame).
+      tl.to(
+        transportationCard,
+        {
+          y: '+=360',
+          opacity: 0,
+          scale: 0.92,
+          duration: 0.52,
+          ease: 'power1.in',
+        },
+        '<+0.1'
+      )
 
-    // Electricity moves to bottom-center with a slight size increase.
-    tl.to(electricityCard, {
-      x: () => getBottomCenterTarget(electricityCard, 26, 72).x,
-      y: () => getBottomCenterTarget(electricityCard, 26, 72).y,
-      scale: 1.1,
-      duration: 0.62,
-      ease: 'power1.inOut',
-    })
-
-    // Electricity exits while manufacturing advances.
-    tl.to(electricityCard, {
-      y: '+=280',
-      opacity: 0,
-      scale: 0.94,
-      duration: 0.54,
-      ease: 'power1.in',
-    })
-    tl.to(
-      manufacturingCard,
-      {
-        y: '+=240',
-        x: -46,
-        duration: 0.9,
-        ease: 'power1.inOut',
-      },
-      '<'
-    )
-
-    // Final manufacturing transition into reveal.
-    if (isMobile) {
-      // Mobile-only: avoid aggressive morphing to prevent visual jerk.
+      // Agriculture moves to bottom-center with a slight size increase.
+      tl.to(
+        agricultureCard,
+        {
+          x: () => getBottomCenterTarget(agricultureCard, 26, -72).x,
+          y: () => getBottomCenterTarget(agricultureCard, 26, -72).y,
+          scale: 1.08,
+          duration: 0.62,
+          ease: 'power1.inOut',
+        },
+        '<+0.08'
+      )
+      // Keep manufacturing subtly moving so flow never feels paused.
       tl.to(
         manufacturingCard,
         {
-          y: '+=90',
-          scale: 1.18,
-          duration: 0.82,
-          ease: 'power1.out',
+          y: '+=64',
+          x: -14,
+          duration: 0.62,
+          ease: 'power1.inOut',
         },
-        '>'
+        '<'
       )
-    } else {
-      tl.add(() => {
-        manufacturingZoomTarget = getManufacturingZoomTarget()
+      tl.to(agricultureCard, {
+        opacity: 0,
+        y: '+=120',
+        duration: 0.34,
+        ease: 'power1.in',
+      })
+
+      // Electricity moves to bottom-center with a slight size increase.
+      tl.to(electricityCard, {
+        x: () => getBottomCenterTarget(electricityCard, 26, 72).x,
+        y: () => getBottomCenterTarget(electricityCard, 26, 72).y,
+        scale: 1.1,
+        duration: 0.62,
+        ease: 'power1.inOut',
+      })
+
+      // Electricity exits while manufacturing advances.
+      tl.to(electricityCard, {
+        y: '+=280',
+        opacity: 0,
+        scale: 0.94,
+        duration: 0.54,
+        ease: 'power1.in',
       })
       tl.to(
         manufacturingCard,
         {
-          x: () => manufacturingZoomTarget.x,
-          y: () => manufacturingZoomTarget.y,
-          scale: () => manufacturingZoomTarget.scale,
+          y: '+=240',
+          x: -46,
+          duration: 0.9,
+          ease: 'power1.inOut',
+        },
+        '<'
+      )
+    }
+
+    // Final manufacturing transition into reveal.
+    if (isMobile) {
+      // Mobile-only: small pre-expand before exact frame-match handoff.
+      tl.to(
+        manufacturingCard,
+        {
+          y: '+=20',
+          scale: 1.08,
+          duration: 0.86,
+          ease: 'power2.out',
+        },
+        '>'
+      )
+    } else {
+      // Desktop: avoid giant pre-zoom; frame morph handles the single expansion.
+      tl.to(
+        manufacturingCard,
+        {
+          y: '+=22',
+          scale: 1.04,
           transformOrigin: 'center center',
-          duration: 2.1,
-          ease: 'power2.inOut',
+          duration: 0.58,
+          ease: 'none',
         },
         '>'
       )
     }
 
     if (isMobile) {
-      // Mobile-only: sequential handoff (no overlap) for smoother transition.
-      tl.set(revealFrame, { clearProps: 'x,y,scaleX,scaleY' })
-      tl.set(revealImage, { x: 0, y: 0, opacity: 1 })
-      tl.fromTo(
-        manufacturingCard,
-        { autoAlpha: 1 },
-        { autoAlpha: 0, duration: 0.24, ease: 'power1.out' },
-        '>'
-      )
-      tl.set(
-        revealWrap,
-        { autoAlpha: 1 },
-        '>'
-      )
-      tl.fromTo(
-        revealFrame,
-        { y: 0, scale: 0.3, transformOrigin: 'center center' },
-        { y: 0, scale: 1, duration: 1.05, ease: 'power2.out' },
-        '>'
-      )
-      tl.fromTo(
-        revealImage,
-        { scale: 1.18, transformOrigin: 'center center' },
-        { scale: 1, duration: 1.05, ease: 'power2.out' },
-        '<'
-      )
-      tl.set(revealFrame, { clearProps: 'y,scale,transformOrigin' })
-    } else {
-      // Hard cut handoff: keep reveal image exactly same size as final card frame.
+      // Mobile-only: exact tiny-card -> full-frame geometry match.
       tl.add(() => {
         revealFrameMatch = getRevealFrameMatchTransform()
       })
@@ -549,9 +609,11 @@ export default function EmissionsIntroSection() {
         y: () => revealFrameMatch.y,
         scaleX: () => revealFrameMatch.scaleX,
         scaleY: () => revealFrameMatch.scaleY,
+        opacity: 0.95,
       })
       tl.set(revealImage, { x: 0, y: 0, scale: 1, opacity: 1 })
-      tl.set(revealWrap, { autoAlpha: 1 }, '>')
+      tl.set(revealWrap, { autoAlpha: 0 }, '>')
+      tl.to(revealWrap, { autoAlpha: 1, duration: 0.2, ease: 'power1.out' }, '>')
       tl.to(
         revealFrame,
         {
@@ -559,13 +621,64 @@ export default function EmissionsIntroSection() {
           y: 0,
           scaleX: 1,
           scaleY: 1,
-          duration: 0.36,
+          opacity: 1,
+          duration: 1.18,
+          ease: 'power2.inOut',
+        },
+        '<'
+      )
+      tl.to(
+        revealImage,
+        {
+          scale: 1.04,
+          duration: 1.18,
           ease: 'power2.out',
+        },
+        '<+0.02'
+      )
+      tl.to(
+        manufacturingCard,
+        { autoAlpha: 0, duration: 0.86, ease: 'power2.out' },
+        '<+0.05'
+      )
+      tl.set(revealFrame, { clearProps: 'x,y,scaleX,scaleY,opacity' })
+    } else {
+      // Desktop: continuous geometry match handoff (no hard switch bump).
+      tl.add(() => {
+        revealFrameMatch = getRevealFrameMatchTransform()
+        revealFrameUniformScale = Math.max(revealFrameMatch.scaleX, revealFrameMatch.scaleY)
+      })
+      tl.set(revealImage, { x: 0, y: 0, scale: 1, opacity: 1 })
+      tl.fromTo(
+        revealWrap,
+        { autoAlpha: 0 },
+        { autoAlpha: 1, duration: 0.12, ease: 'none', immediateRender: false },
+        '>'
+      )
+      tl.fromTo(
+        revealFrame,
+        {
+          x: () => revealFrameMatch.x,
+          y: () => revealFrameMatch.y,
+          scale: () => revealFrameUniformScale,
+          transformOrigin: 'center center',
+        },
+        {
+          x: 0,
+          y: 0,
+          scale: 1,
+          duration: 1.05,
+          ease: 'none',
+          immediateRender: false,
         },
         '>'
       )
-      tl.set(revealFrame, { clearProps: 'x,y,scaleX,scaleY' })
-      tl.set(manufacturingCard, { autoAlpha: 0 }, '<')
+      tl.fromTo(
+        manufacturingCard,
+        { autoAlpha: 1 },
+        { autoAlpha: 0, duration: 0.34, ease: 'none', immediateRender: false },
+        '>'
+      )
     }
 
     // Text timing: mobile reveals title first, then copy; desktop keeps prior timing.
@@ -575,20 +688,20 @@ export default function EmissionsIntroSection() {
         {
           y: 0,
           opacity: 1,
-          duration: 0.6,
+          duration: 0.52,
           ease: 'power2.out',
         },
-        '<+0.32'
+        '<+0.46'
       )
       tl.to(
         revealCopy,
         {
           y: 0,
           opacity: 1,
-          duration: 0.65,
+          duration: 0.62,
           ease: 'power2.out',
         },
-        '<+0.24'
+        '<+0.3'
       )
     } else {
       tl.to(
@@ -755,10 +868,10 @@ export default function EmissionsIntroSection() {
         ref={contentWrapRef}
         className="relative mx-auto h-full w-full max-w-7xl md:flex md:items-center md:justify-center md:gap-8"
       >
-        <div ref={textBlockRef} className="absolute left-3 right-3 top-[46%] z-20 max-w-[94%] md:static md:max-w-xl md:w-[48%]">
+        <div ref={textBlockRef} className="absolute left-3 right-3 top-[45%] z-20 max-w-[93%] md:static md:max-w-xl md:w-[48%]">
           <h2
             ref={headingRef}
-            className="text-[16px] font-semibold leading-[1.08] tracking-[-0.02em] text-white md:-translate-y-2 md:text-[34px] md:leading-[1.25] md:tracking-normal"
+            className="text-[13px] font-semibold leading-[1.06] tracking-[-0.015em] text-white md:-translate-y-2 md:text-[34px] md:leading-[1.25] md:tracking-normal"
           >
             {HEADLINE_LINES.map((line, i) => (
               <span
@@ -788,8 +901,8 @@ export default function EmissionsIntroSection() {
                 alt={card.alt}
                 className={
                   card.id === 'manufacturing'
-                    ? 'aspect-[22/9] w-full rounded-[2px] object-cover shadow-[0_10px_30px_rgba(0,0,0,0.5)]'
-                    : 'h-[78px] w-full rounded-[2px] object-cover shadow-[0_10px_30px_rgba(0,0,0,0.5)] md:h-[96px]'
+                    ? 'aspect-[1/1.06] w-full rounded-[2px] object-cover shadow-[0_10px_30px_rgba(0,0,0,0.5)] md:h-[96px]'
+                    : 'h-[82px] w-full rounded-[2px] object-cover shadow-[0_10px_30px_rgba(0,0,0,0.5)] md:h-[96px]'
                 }
               />
             </div>
@@ -798,7 +911,7 @@ export default function EmissionsIntroSection() {
       </div>
 
       <div ref={revealWrapRef} className="pointer-events-none absolute inset-0 z-20">
-        <div className="mx-auto flex h-full w-full max-w-7xl items-center px-3 py-4 md:px-14 md:py-10">
+        <div className="mx-auto flex h-full w-full max-w-7xl items-start px-3 pt-14 pb-3 md:items-center md:px-14 md:py-10">
           <div className="relative w-full md:-translate-y-6">
             <div
               ref={revealTitleRef}
@@ -832,13 +945,13 @@ export default function EmissionsIntroSection() {
 
             <div
               ref={revealFrameRef}
-              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[1120px]"
+              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[920px]"
             >
               <img
                 ref={revealImageRef}
                 src={CARDS[0].src}
                 alt="Industrial manufacturing detail"
-                className="aspect-[9/16] w-full object-cover md:aspect-[22/9]"
+                className="h-[72vh] w-full object-cover md:h-auto md:aspect-[22/9]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
               <div
@@ -861,7 +974,7 @@ export default function EmissionsIntroSection() {
       </div>
 
       <div ref={electricityStageRef} className="pointer-events-none absolute inset-0 z-20">
-        <div className="mx-auto flex h-full w-full max-w-7xl items-center px-3 py-4 md:px-14 md:py-10">
+        <div className="mx-auto flex h-full w-full max-w-7xl items-start px-3 pt-14 pb-3 md:items-center md:px-14 md:py-10">
           <div className="w-full md:-translate-y-6">
             <div
               ref={electricityTitleRef}
@@ -895,13 +1008,13 @@ export default function EmissionsIntroSection() {
 
             <div
               ref={electricityFrameRef}
-              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[1120px]"
+              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[920px]"
             >
               <img
                 ref={electricityImageRef}
                 src={CARDS[1].src}
                 alt="Electricity infrastructure"
-                className="aspect-[9/16] w-full object-cover md:aspect-[22/9]"
+                className="h-[72vh] w-full object-cover md:h-auto md:aspect-[22/9]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
               <div
@@ -924,7 +1037,7 @@ export default function EmissionsIntroSection() {
       </div>
 
       <div ref={agricultureStageRef} className="pointer-events-none absolute inset-0 z-20">
-        <div className="mx-auto flex h-full w-full max-w-7xl items-center px-3 py-4 md:px-14 md:py-10">
+        <div className="mx-auto flex h-full w-full max-w-7xl items-start px-3 pt-14 pb-3 md:items-center md:px-14 md:py-10">
           <div className="w-full md:-translate-y-6">
             <div
               ref={agricultureTitleRef}
@@ -958,13 +1071,13 @@ export default function EmissionsIntroSection() {
 
             <div
               ref={agricultureFrameRef}
-              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[1120px]"
+              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[920px]"
             >
               <img
                 ref={agricultureImageRef}
                 src={CARDS[2].src}
                 alt="Agriculture fields"
-                className="aspect-[9/16] w-full object-cover md:aspect-[22/9]"
+                className="h-[72vh] w-full object-cover md:h-auto md:aspect-[22/9]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
               <div
@@ -987,7 +1100,7 @@ export default function EmissionsIntroSection() {
       </div>
 
       <div ref={transportationStageRef} className="pointer-events-none absolute inset-0 z-20">
-        <div className="mx-auto flex h-full w-full max-w-7xl items-center px-3 py-4 md:px-14 md:py-10">
+        <div className="mx-auto flex h-full w-full max-w-7xl items-start px-3 pt-14 pb-3 md:items-center md:px-14 md:py-10">
           <div className="w-full md:-translate-y-6">
             <div
               ref={transportationTitleRef}
@@ -1021,13 +1134,13 @@ export default function EmissionsIntroSection() {
 
             <div
               ref={transportationFrameRef}
-              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[1120px]"
+              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[920px]"
             >
               <img
                 ref={transportationImageRef}
                 src={CARDS[3].src}
                 alt="Transportation networks"
-                className="aspect-[9/16] w-full object-cover md:aspect-[22/9]"
+                className="h-[72vh] w-full object-cover md:h-auto md:aspect-[22/9]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
               <div
@@ -1050,7 +1163,7 @@ export default function EmissionsIntroSection() {
       </div>
 
       <div ref={buildingsStageRef} className="pointer-events-none absolute inset-0 z-20">
-        <div className="mx-auto flex h-full w-full max-w-7xl items-center px-3 py-4 md:px-14 md:py-10">
+        <div className="mx-auto flex h-full w-full max-w-7xl items-start px-3 pt-14 pb-3 md:items-center md:px-14 md:py-10">
           <div className="w-full md:-translate-y-6">
             <div
               ref={buildingsTitleRef}
@@ -1084,13 +1197,13 @@ export default function EmissionsIntroSection() {
 
             <div
               ref={buildingsFrameRef}
-              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[1120px]"
+              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[920px]"
             >
               <img
                 ref={buildingsImageRef}
                 src={CARDS[4].src}
                 alt="Urban buildings"
-                className="aspect-[9/16] w-full object-cover md:aspect-[22/9]"
+                className="h-[72vh] w-full object-cover md:h-auto md:aspect-[22/9]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
               <div
