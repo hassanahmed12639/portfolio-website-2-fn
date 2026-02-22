@@ -185,7 +185,7 @@ export default function IntegrationsArcSection() {
         {/* Icons container with overflow hidden */}
         <div
           ref={containerRef}
-          className="relative w-full max-w-[950px] h-[280px] overflow-hidden mx-auto shrink-0"
+          className="relative w-full h-[280px] overflow-hidden shrink-0"
           style={{
             clipPath: 'inset(0 0 0 0)',
             WebkitClipPath: 'inset(0 0 0 0)',

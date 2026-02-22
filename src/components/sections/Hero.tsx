@@ -63,7 +63,7 @@ const FloatingIconsHero = React.forwardRef<
             </motion.span>
           </LayoutGroup>
         </h1>
-        <MagicText text={subtitle} className="mt-6 w-full max-w-4xl mx-auto text-lg text-[#888888] md:max-w-5xl" />
+        <MagicText text={subtitle} className="mt-6 w-full max-w-4xl mx-auto text-lg text-[#888888] md:max-w-5xl justify-center md:justify-start" />
         <div className="mt-10">
           <Button asChild size="lg" className="px-8 py-6 text-base font-semibold">
             <a href={ctaHref}>{ctaText}</a>

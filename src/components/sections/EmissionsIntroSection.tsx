@@ -1001,7 +1001,7 @@ export default function EmissionsIntroSection() {
                 </p>
               </div>
             </div>
-            <div className="mt-6 flex justify-center md:mt-8">
+            <div className="mt-20 flex justify-center md:mt-28">
             </div>
           </div>
         </div>
@@ -1068,7 +1068,7 @@ export default function EmissionsIntroSection() {
                 </p>
               </div>
             </div>
-            <div className="mt-6 flex justify-center md:mt-8">
+            <div className="mt-20 flex justify-center md:mt-28">
             </div>
           </div>
         </div>
@@ -1135,7 +1135,7 @@ export default function EmissionsIntroSection() {
                 </p>
               </div>
             </div>
-            <div className="mt-6 flex justify-center md:mt-8">
+            <div className="mt-20 flex justify-center md:mt-28">
             </div>
           </div>
         </div>
@@ -1202,7 +1202,7 @@ export default function EmissionsIntroSection() {
                 </p>
               </div>
             </div>
-            <div className="mt-6 flex justify-center md:mt-8">
+            <div className="mt-20 flex justify-center md:mt-28">
             </div>
           </div>
         </div>
@@ -1269,7 +1269,7 @@ export default function EmissionsIntroSection() {
                 </p>
               </div>
             </div>
-            <div className="mt-6 flex justify-center md:mt-8">
+            <div className="mt-20 flex justify-center md:mt-28">
             </div>
           </div>
         </div>

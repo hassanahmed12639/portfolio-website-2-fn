@@ -141,9 +141,19 @@ a {
   letter-spacing: 0.1em;
 }
 
-/* Smooth scrolling */
+/* Smooth scrolling and section flow */
 html {
-  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+}
+
+[id] {
+  scroll-margin-top: 5.5rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 /* Navbar: no borders or outlines */
