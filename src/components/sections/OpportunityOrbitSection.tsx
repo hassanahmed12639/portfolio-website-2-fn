@@ -389,12 +389,12 @@ export default function OpportunityOrbitSection() {
         premiumSeed.style.height = `${seedSize}px`
         premiumSeed.style.opacity = '1'
 
-        premiumMiddle.style.width = `${PREMIUM_BASE_SIZE}px`
-        premiumMiddle.style.height = `${PREMIUM_BASE_SIZE}px`
-        premiumInner.style.width = `${PREMIUM_BASE_SIZE}px`
-        premiumInner.style.height = `${PREMIUM_BASE_SIZE}px`
-        premiumCore.style.width = `${PREMIUM_BASE_SIZE}px`
-        premiumCore.style.height = `${PREMIUM_BASE_SIZE}px`
+      premiumMiddle.style.width = `${PREMIUM_BASE_SIZE}px`
+      premiumMiddle.style.height = `${PREMIUM_BASE_SIZE}px`
+      premiumInner.style.width = `${PREMIUM_BASE_SIZE}px`
+      premiumInner.style.height = `${PREMIUM_BASE_SIZE}px`
+      premiumCore.style.width = `${PREMIUM_BASE_SIZE}px`
+      premiumCore.style.height = `${PREMIUM_BASE_SIZE}px`
         premiumMiddle.style.opacity = '0'
         premiumInner.style.opacity = '0'
         premiumCore.style.opacity = '0'
@@ -820,12 +820,6 @@ export default function OpportunityOrbitSection() {
           height: var(--radar-size);
           position: relative;
           flex-shrink: 0;
-        }
-
-        @media (max-width: 767px) {
-          .radar {
-            --radar-size: min(86cqw, 86cqh, 500px);
-          }
         }
 
         .radar-circle {
