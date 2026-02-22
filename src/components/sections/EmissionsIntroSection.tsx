@@ -241,6 +241,29 @@ export default function EmissionsIntroSection() {
       }
     }
 
+    const getSectionCenterTarget = (card: HTMLDivElement, laneOffsetX = 0, laneOffsetY = 0) => {
+      const stage = section
+      const fallbackX = Number(gsap.getProperty(card, 'x')) || 0
+      const fallbackY = Number(gsap.getProperty(card, 'y')) || 0
+      if (!stage) return { x: fallbackX, y: fallbackY }
+
+      const stageRect = stage.getBoundingClientRect()
+      const cardRect = card.getBoundingClientRect()
+      if (!stageRect.width || !stageRect.height || !cardRect.width || !cardRect.height) {
+        return { x: fallbackX, y: fallbackY }
+      }
+
+      const cardCenterX = cardRect.left + cardRect.width / 2
+      const cardCenterY = cardRect.top + cardRect.height / 2
+      const targetCenterX = stageRect.left + stageRect.width / 2 + laneOffsetX
+      const targetCenterY = stageRect.top + stageRect.height / 2 + laneOffsetY
+
+      return {
+        x: fallbackX + (targetCenterX - cardCenterX),
+        y: fallbackY + (targetCenterY - cardCenterY),
+      }
+    }
+
     const getManufacturingZoomTarget = () => {
       const sourceImage = manufacturingImageRef.current
       const targetImage = revealImageRef.current
@@ -299,7 +322,6 @@ export default function EmissionsIntroSection() {
 
     let manufacturingZoomTarget = { x: 0, y: 0, scale: 1 }
     let revealFrameMatch = { x: 0, y: 0, scaleX: 1, scaleY: 1 }
-    let revealFrameUniformScale = 1
 
     function setAdaptiveTitleSplit(titleEl: HTMLElement | null, cardEl: HTMLElement | null) {
       if (!titleEl || !cardEl) return
@@ -562,9 +584,9 @@ export default function EmissionsIntroSection() {
       tl.to(
         manufacturingCard,
         {
-          // Keep it around mid-screen before reveal handoff (avoid dropping too low).
-          y: '+=96',
-          x: -34,
+          // Center the card before expansion so the morph starts from the middle.
+          x: () => getSectionCenterTarget(manufacturingCard).x,
+          y: () => getSectionCenterTarget(manufacturingCard).y,
           duration: 0.9,
           ease: 'power1.inOut',
         },
@@ -636,36 +658,32 @@ export default function EmissionsIntroSection() {
       // Desktop: continuous geometry match handoff (no hard switch bump).
       tl.add(() => {
         revealFrameMatch = getRevealFrameMatchTransform()
-        revealFrameUniformScale = Math.max(revealFrameMatch.scaleX, revealFrameMatch.scaleY)
-        // Hide source card before reveal starts so duplicate never appears.
-        gsap.set(manufacturingCard, { autoAlpha: 0 })
       })
       tl.set(revealImage, { x: 0, y: 0, scale: 1, opacity: 1 })
-      tl.fromTo(
-        revealWrap,
-        { autoAlpha: 0 },
-        { autoAlpha: 1, duration: 0.12, ease: 'none', immediateRender: false },
-        '>'
-      )
+      tl.set(revealWrap, { autoAlpha: 1 }, '>')
       tl.fromTo(
         revealFrame,
         {
           x: () => revealFrameMatch.x,
-          // Slightly lower/larger start to remove first-frame peeking artifact.
-          y: () => revealFrameMatch.y + 6,
-          scale: () => revealFrameUniformScale * 1.02,
+          y: () => revealFrameMatch.y,
+          scaleX: () => revealFrameMatch.scaleX,
+          scaleY: () => revealFrameMatch.scaleY,
+          borderRadius: 2,
           transformOrigin: 'center center',
         },
         {
           x: 0,
           y: 0,
-          scale: 1,
-          duration: 1.05,
-          ease: 'none',
-          immediateRender: false,
+          scaleX: 1,
+          scaleY: 1,
+          borderRadius: 16,
+          duration: 1.12,
+          ease: 'power2.inOut',
+          immediateRender: true,
         },
         '>'
       )
+      tl.to(manufacturingCard, { autoAlpha: 0, duration: 0.16, ease: 'none' }, '>')
     }
 
     // Text timing: mobile reveals title first, then copy; desktop keeps prior timing.
@@ -897,7 +915,11 @@ export default function EmissionsIntroSection() {
         </div>
       </div>
 
-      <div ref={revealWrapRef} className="pointer-events-none absolute inset-0 z-20">
+      <div
+        ref={revealWrapRef}
+        className="pointer-events-none invisible absolute inset-0 z-20 opacity-0"
+        style={{ visibility: 'hidden', opacity: 0 }}
+      >
         <div className="mx-auto flex h-full w-full max-w-7xl items-start px-3 pt-14 pb-3 md:items-center md:px-14 md:py-10">
           <div className="relative w-full md:-translate-y-6">
             <div
@@ -960,7 +982,11 @@ export default function EmissionsIntroSection() {
         </div>
       </div>
 
-      <div ref={electricityStageRef} className="pointer-events-none absolute inset-0 z-20">
+      <div
+        ref={electricityStageRef}
+        className="pointer-events-none invisible absolute inset-0 z-20 opacity-0"
+        style={{ visibility: 'hidden', opacity: 0 }}
+      >
         <div className="mx-auto flex h-full w-full max-w-7xl items-start px-3 pt-14 pb-3 md:items-center md:px-14 md:py-10">
           <div className="w-full md:-translate-y-6">
             <div
@@ -1023,7 +1049,11 @@ export default function EmissionsIntroSection() {
         </div>
       </div>
 
-      <div ref={agricultureStageRef} className="pointer-events-none absolute inset-0 z-20">
+      <div
+        ref={agricultureStageRef}
+        className="pointer-events-none invisible absolute inset-0 z-20 opacity-0"
+        style={{ visibility: 'hidden', opacity: 0 }}
+      >
         <div className="mx-auto flex h-full w-full max-w-7xl items-start px-3 pt-14 pb-3 md:items-center md:px-14 md:py-10">
           <div className="w-full md:-translate-y-6">
             <div
@@ -1086,7 +1116,11 @@ export default function EmissionsIntroSection() {
         </div>
       </div>
 
-      <div ref={transportationStageRef} className="pointer-events-none absolute inset-0 z-20">
+      <div
+        ref={transportationStageRef}
+        className="pointer-events-none invisible absolute inset-0 z-20 opacity-0"
+        style={{ visibility: 'hidden', opacity: 0 }}
+      >
         <div className="mx-auto flex h-full w-full max-w-7xl items-start px-3 pt-14 pb-3 md:items-center md:px-14 md:py-10">
           <div className="w-full md:-translate-y-6">
             <div
@@ -1149,7 +1183,11 @@ export default function EmissionsIntroSection() {
         </div>
       </div>
 
-      <div ref={buildingsStageRef} className="pointer-events-none absolute inset-0 z-20">
+      <div
+        ref={buildingsStageRef}
+        className="pointer-events-none invisible absolute inset-0 z-20 opacity-0"
+        style={{ visibility: 'hidden', opacity: 0 }}
+      >
         <div className="mx-auto flex h-full w-full max-w-7xl items-start px-3 pt-14 pb-3 md:items-center md:px-14 md:py-10">
           <div className="w-full md:-translate-y-6">
             <div
@@ -1214,7 +1252,8 @@ export default function EmissionsIntroSection() {
 
       <div
         ref={messageStageRef}
-        className="pointer-events-none absolute inset-0 z-10 grid place-items-center"
+        className="pointer-events-none invisible absolute inset-0 z-10 grid place-items-center opacity-0"
+        style={{ visibility: 'hidden', opacity: 0 }}
       >
         <div className="w-full px-6 md:px-10">
           <div

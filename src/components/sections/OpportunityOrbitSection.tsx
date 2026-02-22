@@ -740,7 +740,7 @@ export default function OpportunityOrbitSection() {
         <div className="grid min-w-0 w-full grid-cols-1 items-center justify-items-center gap-12 md:grid-cols-[1fr_minmax(260px,600px)_1fr] md:gap-6">
           <div className="hidden md:block min-w-0" aria-hidden />
 
-          <div className="relative mx-auto h-[420px] w-full min-w-[260px] max-w-[600px] md:h-[520px] md:max-w-[700px] lg:h-[620px]">
+          <div className="relative mx-auto mt-8 h-[500px] w-full min-w-[260px] max-w-[600px] md:mt-0 md:h-[520px] md:max-w-[700px] lg:h-[620px]">
             <div ref={radarContainerRef} className="radar-container">
               <div className="radar-sticky">
                 <div ref={radarRef} className="radar">
@@ -820,6 +820,12 @@ export default function OpportunityOrbitSection() {
           height: var(--radar-size);
           position: relative;
           flex-shrink: 0;
+        }
+
+        @media (max-width: 767px) {
+          .radar {
+            --radar-size: min(86cqw, 86cqh, 500px);
+          }
         }
 
         .radar-circle {
