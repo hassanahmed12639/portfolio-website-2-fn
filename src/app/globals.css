@@ -307,6 +307,16 @@ header {
   color: #AAFF00 !important;
   border-color: rgba(170, 255, 0, 0.3) !important;
 }
+
+@media (max-width: 767px) {
+  .section-testimonials-light .testimonials-stack {
+    min-height: 260px;
+  }
+  .section-testimonials-light .testimonial-card {
+    min-height: 240px;
+  }
+}
+
 .testimonial-card.is-dragging {
   cursor: grabbing;
 }

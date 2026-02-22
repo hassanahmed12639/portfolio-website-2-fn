@@ -101,32 +101,38 @@ export default function IntegrationsArcSection() {
         const containerWidth = containerRef.current.offsetWidth
         if (!containerWidth) return
 
-        // Keep a stable center anchor so mobile never drifts to the right.
         const centerX = containerWidth / 2 - cardSize / 2
         const centerAnchorIndex = containerWidth < 768 ? 1 : 2
         const initialXOffset = centerX - centerAnchorIndex * iconWidth
 
         const p = Math.max(0, Math.min(1, progress))
         const rawOffset = p * totalMovement
-        // Snap movement to exact card steps so one card lands in center each time.
         const currentOffset = Math.round(rawOffset / iconWidth) * iconWidth
+        const wrapBoundary = iconWidth * 2
+
         iconElements.forEach((icon, i) => {
           const baseX = i * iconWidth + initialXOffset
           let x = baseX - currentOffset
-          const wrapBoundary = iconWidth * 2
           while (x < -wrapBoundary) x += totalTrackWidth
           while (x > containerWidth + wrapBoundary) x -= totalTrackWidth
           const y = getArcY(x, containerWidth)
           const opacity = getOpacity(x, containerWidth)
           const scale = getScale(x, containerWidth)
           const shadowOpacity = opacity < 0.3 ? 0 : 0.08
-          gsap.set(icon, {
-            x: Math.round(x * 100) / 100,
-            y: Math.round(y * 100) / 100,
+          const roundedX = Math.round(x * 100) / 100
+          const roundedY = Math.round(y * 100) / 100
+          gsap.to(icon, {
+            x: roundedX,
+            y: roundedY,
             opacity,
             scale,
-            zIndex: Math.round(scale * 100),
+            duration: 0.14,
+            ease: 'power2.out',
+            overwrite: true,
             force3D: true,
+          })
+          gsap.set(icon, {
+            zIndex: Math.round(scale * 100),
             boxShadow: `0 4px 24px rgba(0,0,0,${shadowOpacity})`,
           })
         })
@@ -141,7 +147,7 @@ export default function IntegrationsArcSection() {
         end: '+=1000vh',
         pin: sectionRef.current,
         anticipatePin: 2,
-        scrub: 4,
+        scrub: 2.2,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           applyProgress(self.progress)
@@ -183,6 +189,8 @@ export default function IntegrationsArcSection() {
           style={{
             clipPath: 'inset(0 0 0 0)',
             WebkitClipPath: 'inset(0 0 0 0)',
+            contain: 'layout style paint',
+            transform: 'translateZ(0)',
           }}
         >
           {icons.map((icon, index) => (

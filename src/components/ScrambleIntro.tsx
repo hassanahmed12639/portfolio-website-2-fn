@@ -18,7 +18,11 @@ function norm(value: number, min: number, max: number) {
   return clamp((value - min) / (max - min), 0, 1)
 }
 
-export default function ScrambleIntro() {
+interface ScrambleIntroProps {
+  onComplete?: () => void
+}
+
+export default function ScrambleIntro({ onComplete }: ScrambleIntroProps) {
   const [isVisible, setIsVisible] = useState(false)
   const [isSplitting, setIsSplitting] = useState(false)
 
@@ -40,6 +44,19 @@ export default function ScrambleIntro() {
   useEffect(() => {
     if (typeof window === 'undefined') return
     setIsVisible(true)
+  }, [])
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return
+    const prevBody = document.body.style.overflow
+    const prevHtml = document.documentElement.style.overflow
+    document.body.style.overflow = 'hidden'
+    document.documentElement.style.overflow = 'hidden'
+    return () => {
+      if (doneRef.current) return
+      document.body.style.overflow = prevBody
+      document.documentElement.style.overflow = prevHtml
+    }
   }, [])
 
   useEffect(() => {
@@ -85,7 +102,10 @@ export default function ScrambleIntro() {
       if (doneRef.current) return
       doneRef.current = true
       setIsSplitting(true)
-      fadeTimerRef.current = window.setTimeout(() => setIsVisible(false), SPLIT_DURATION_MS)
+      fadeTimerRef.current = window.setTimeout(() => {
+        onComplete?.()
+        setIsVisible(false)
+      }, SPLIT_DURATION_MS)
     }
 
     const update = () => {
@@ -175,7 +195,7 @@ export default function ScrambleIntro() {
       if (rafRef.current) window.cancelAnimationFrame(rafRef.current)
       if (fadeTimerRef.current) window.clearTimeout(fadeTimerRef.current)
     }
-  }, [isVisible])
+  }, [isVisible, onComplete])
 
   if (!isVisible) return null
 

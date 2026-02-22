@@ -115,27 +115,27 @@ export function TestimonialStack({ testimonials, visibleBehind = 2 }: Testimonia
             onMouseDown={(e) => handleDragStart(e, index)}
             onTouchStart={(e) => handleDragStart(e, index)}
           >
-            <div className="p-6 md:p-8">
-              <div className="flex items-start justify-between mb-6">
-                <div className="flex items-center gap-4">
+            <div className="p-4 md:p-8">
+              <div className="flex items-start justify-between mb-4 md:mb-6">
+                <div className="flex items-center gap-3 md:gap-4">
                   <div
-                    className="flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center text-white font-semibold text-base"
+                    className="flex-shrink-0 w-9 h-9 md:w-11 md:h-11 rounded-xl flex items-center justify-center text-white font-semibold text-sm md:text-base"
                     style={{ background: testimonial.avatarGradient }}
                   >
                     {testimonial.initials}
                   </div>
                   <div>
-                    <h3 className="text-card-foreground font-medium text-lg">{testimonial.name}</h3>
-                    <p className="text-sm text-muted-foreground mt-1">{testimonial.role}</p>
+                    <h3 className="text-card-foreground font-medium text-base md:text-lg">{testimonial.name}</h3>
+                    <p className="text-xs md:text-sm text-muted-foreground mt-1">{testimonial.role}</p>
                   </div>
                 </div>
               </div>
 
-              <blockquote className="text-card-foreground/90 leading-relaxed text-lg mb-6">
+              <blockquote className="text-card-foreground/90 leading-relaxed text-sm md:text-lg mb-4 md:mb-6">
                 &quot;{testimonial.quote}&quot;
               </blockquote>
 
-              <div className="flex flex-col md:flex-row items-start md:items-center justify-between border-t border-border pt-4 gap-4">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between border-t border-border pt-3 md:pt-4 gap-3 md:gap-4">
                 <div className="flex flex-wrap gap-2">
                   {testimonial.tags.map((tag, i) => (
                     <span

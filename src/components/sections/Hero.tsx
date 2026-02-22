@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { TextRotate } from '@/components/ui/text-rotate';
 import { MagicText } from '@/components/ui/magic-text';
+import Header from '@/components/layout/Header';
 
 export interface FloatingIconsHeroProps {
   title: string;
@@ -22,12 +23,13 @@ const FloatingIconsHero = React.forwardRef<
     <section
       ref={ref}
       className={cn(
-        'relative w-full flex items-center justify-center overflow-hidden bg-[#0F0F0F] pt-12 pb-20 md:pt-16 md:pb-24 lg:pt-20 lg:pb-28',
+        'relative w-full flex flex-col items-center overflow-hidden bg-[#0F0F0F] pb-20 md:pb-24 lg:pb-28',
         className
       )}
       {...props}
     >
-      <div className="relative z-10 mx-auto w-full max-w-4xl text-center px-4 md:max-w-5xl">
+      <Header />
+      <div className="relative z-10 mx-auto w-full max-w-4xl text-center px-4 md:max-w-5xl pt-10 md:pt-16 lg:pt-20">
         <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-[#FFFFFF] flex flex-col items-center justify-center">
           <LayoutGroup>
             <motion.span className="flex flex-col items-center gap-3 leading-[75px]" layout>

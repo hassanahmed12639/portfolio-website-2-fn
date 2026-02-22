@@ -89,6 +89,7 @@ export default function EmissionsIntroSection() {
   const messageStageRef = useRef<HTMLDivElement>(null)
   const messageTextRef = useRef<HTMLDivElement>(null)
   const cardRefs = useRef<Array<HTMLDivElement | null>>([])
+  const parallaxLayerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     registerGsapPlugins()
@@ -186,19 +187,19 @@ export default function EmissionsIntroSection() {
     gsap.set(revealCopy, { y: 32, opacity: 0 })
     gsap.set(electricityStage, { autoAlpha: 0 })
     gsap.set(electricityTitle, { y: 22, opacity: 0 })
-    gsap.set(electricityImage, { y: 180, scale: 0.9, transformOrigin: 'center center' })
+    gsap.set(electricityImage, { y: 50, scale: 0.88, transformOrigin: 'center center' })
     gsap.set(electricityCopy, { y: 20, opacity: 0 })
     gsap.set(agricultureStage, { autoAlpha: 0 })
     gsap.set(agricultureTitle, { y: 22, opacity: 0 })
-    gsap.set(agricultureImage, { y: 180, scale: 0.9, transformOrigin: 'center center' })
+    gsap.set(agricultureImage, { y: 0, scale: 1, transformOrigin: 'center center' })
     gsap.set(agricultureCopy, { y: 20, opacity: 0 })
     gsap.set(transportationStage, { autoAlpha: 0 })
     gsap.set(transportationTitle, { y: 22, opacity: 0 })
-    gsap.set(transportationImage, { y: 180, scale: 0.9, transformOrigin: 'center center' })
+    gsap.set(transportationImage, { y: 50, scale: 0.88, transformOrigin: 'center center' })
     gsap.set(transportationCopy, { y: 20, opacity: 0 })
     gsap.set(buildingsStage, { autoAlpha: 0 })
     gsap.set(buildingsTitle, { y: 22, opacity: 0 })
-    gsap.set(buildingsImage, { y: 180, scale: 0.9, transformOrigin: 'center center' })
+    gsap.set(buildingsImage, { y: 0, scale: 1, transformOrigin: 'center center' })
     gsap.set(buildingsCopy, { y: 20, opacity: 0 })
     gsap.set(messageStage, { autoAlpha: 0 })
     const messageWords = Array.from(messageText.querySelectorAll<HTMLElement>('.message-word'))
@@ -732,90 +733,82 @@ export default function EmissionsIntroSection() {
       )
     }
 
-    // Scroll-by-scroll handoff: hold, current exits up, then next enters (no overlap).
+    // On scroll: both animations start at once — current exits up, next rises from below (no overlap: next starts below).
+    const CARD_ENTER_Y = () => Math.max(420, window.innerHeight * 0.5)
+    const CARD_ENTER_DURATION = 1.25
+    const FRAME_ENTER_SCALE = 0.88
+    const FRAME_ENTER_Y = 50
+    const EXIT_DURATION = 0.82
+    const CARD_GAP = 32 // slight distance between cards so they never overlap
+
     const handoffToNextStage = (
       currentStage: HTMLDivElement,
       nextStage: HTMLDivElement,
       nextImage: HTMLImageElement,
       nextTitle: HTMLDivElement,
-      nextCopy: HTMLDivElement
+      nextCopy: HTMLDivElement,
+      nextFrame?: HTMLDivElement | null
     ) => {
-      // Hold current card for extra scroll distance (2-3 wheel steps feel).
-      tl.to(
-        {},
-        {
-          duration: 0.9,
-        }
-      )
+      tl.to({}, { duration: 0.02 })
 
-      // Strict handoff: current exits first, then next enters (prevents overlap).
-      tl.to(
-        currentStage,
-        {
-          y: -520,
-          scale: 0.92,
-          duration: 0.95,
-          ease: 'power1.in',
-        }
-      )
-      tl.set(currentStage, { autoAlpha: 0 }, '>')
-      tl.set(nextStage, { autoAlpha: 1 }, '>')
-      tl.to(
-        nextImage,
-        {
-          y: 0,
-          scale: 1,
-          duration: 0.95,
-          ease: 'power2.out',
-        },
-        '>'
-      )
-      tl.to(
-        nextTitle,
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.55,
-          ease: 'power2.out',
-        },
-        '<+0.12'
-      )
-      tl.to(
-        nextCopy,
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.55,
-          ease: 'power2.out',
-        },
-      '<+0.08'
-      )
+      // Next card visible below (won’t overlap current); then both animations start together.
+      tl.set(nextStage, { autoAlpha: 1, y: CARD_ENTER_Y() }, '>')
+      tl.set(nextImage, { y: 0, scale: 1, transformOrigin: 'center center' }, '>')
+      if (nextFrame) {
+        tl.set(nextFrame, {
+          boxShadow: 'none',
+          y: FRAME_ENTER_Y,
+          scale: FRAME_ENTER_SCALE,
+          transformOrigin: 'center center',
+        }, '>')
+      }
+      const t = tl.duration()
+      tl.to(currentStage, { y: -520, scale: 0.92, duration: EXIT_DURATION, ease: 'power1.in' }, '>')
+      tl.to(nextStage, { y: CARD_GAP, duration: CARD_ENTER_DURATION, ease: [0.33, 1, 0.38, 1] }, '<')
+      if (nextFrame) {
+        tl.to(nextFrame, { y: 0, scale: 1, duration: CARD_ENTER_DURATION, ease: [0.33, 1, 0.38, 1] }, '<')
+        tl.to(nextFrame, { boxShadow: '0 30px 90px rgba(0,0,0,0.8)', duration: 0.35, ease: 'power2.out' }, '<+0.65')
+        tl.set(nextFrame, { clearProps: 'y,scale' }, '>+0.1')
+      }
+      // keep y: CARD_GAP so there's always a slight distance between cards (no overlap)
+      tl.set(currentStage, { autoAlpha: 0 }, t + EXIT_DURATION)
+
+      tl.to(nextTitle, { y: 0, opacity: 1, duration: 0.55, ease: 'power2.out' }, '<+0.2')
+      tl.to(nextCopy, { y: 0, opacity: 1, duration: 0.55, ease: 'power2.out' }, '<+0.12')
     }
 
     // Slight pause after Manufacturing reveal before handoff to Electricity.
     tl.to({}, { duration: 0.25 })
 
-    handoffToNextStage(revealWrap, electricityStage, electricityImage, electricityTitle, electricityCopy)
+    const electricityFrame = electricityFrameRef.current
+    const agricultureFrame = agricultureFrameRef.current
+    const transportationFrame = transportationFrameRef.current
+    const buildingsFrame = buildingsFrameRef.current
+
+    handoffToNextStage(revealWrap, electricityStage, electricityImage, electricityTitle, electricityCopy, electricityFrame)
     handoffToNextStage(
       electricityStage,
       agricultureStage,
       agricultureImage,
       agricultureTitle,
-      agricultureCopy
+      agricultureCopy,
+      agricultureFrame
     )
     handoffToNextStage(
       agricultureStage,
       transportationStage,
       transportationImage,
       transportationTitle,
-      transportationCopy
+      transportationCopy,
+      transportationFrame
     )
     handoffToNextStage(
       transportationStage,
       buildingsStage,
       buildingsImage,
       buildingsTitle,
-      buildingsCopy
+      buildingsCopy,
+      buildingsFrame
     )
 
     // Hold final card briefly before revealing the statement section.
@@ -856,6 +849,26 @@ export default function EmissionsIntroSection() {
     })
     updateAllTitleSplits()
 
+    const parallaxEl = parallaxLayerRef.current
+    if (parallaxEl) {
+      gsap.set(parallaxEl, { y: 0 })
+      const parallaxSt = ScrollTrigger.create({
+        trigger: section,
+        start: 'top top',
+        end: '+=5200',
+        scrub: 1.2,
+        onUpdate: (self) => {
+          gsap.set(parallaxEl, { y: self.progress * -80 })
+        },
+      })
+      return () => {
+        parallaxSt.kill()
+        adaptiveSt.kill()
+        tl.scrollTrigger?.kill()
+        tl.kill()
+      }
+    }
+
     return () => {
       adaptiveSt.kill()
       tl.scrollTrigger?.kill()
@@ -869,9 +882,21 @@ export default function EmissionsIntroSection() {
         ref={sectionRef}
         className="relative min-h-screen w-full overflow-hidden bg-[#0F0F0F] px-6 py-8 md:px-[5%] md:py-12"
       >
+        <div
+          ref={parallaxLayerRef}
+          className="pointer-events-none absolute inset-0 z-0"
+          aria-hidden
+        >
+          <div
+            className="absolute inset-0 opacity-[0.07]"
+            style={{
+              background: 'radial-gradient(ellipse 80% 60% at 50% 40%, rgba(170,255,0,0.25) 0%, transparent 55%)',
+            }}
+          />
+        </div>
       <div
         ref={contentWrapRef}
-        className="relative mx-auto h-full w-full max-w-7xl md:flex md:items-center md:justify-center md:gap-8"
+        className="relative z-10 mx-auto h-full w-full max-w-7xl md:flex md:items-center md:justify-center md:gap-8"
       >
         <div ref={textBlockRef} className="absolute left-3 right-3 top-[45%] z-20 max-w-[93%] md:static md:max-w-xl md:w-[48%]">
           <h2
@@ -1258,7 +1283,7 @@ export default function EmissionsIntroSection() {
         <div className="w-full px-6 md:px-10">
           <div
             ref={messageTextRef}
-            className="mx-auto max-w-[780px] text-center text-[46px] font-semibold leading-[1.1] tracking-[-0.02em] text-white md:text-[64px]"
+            className="mx-auto max-w-[780px] text-center text-[32px] font-semibold leading-[1.1] tracking-[-0.02em] text-white md:text-[44px]"
           >
             <div className="flex flex-wrap items-center justify-center gap-x-3 md:gap-x-4">
               {FINAL_MESSAGE_LINE_1.map((word) => (

@@ -1,4 +1,3 @@
-import Header from '../components/layout/Header'
 import Footer from '../components/layout/Footer'
 import { FloatingIconsHero } from '../components/sections/Hero'
 import LogoMarquee from '../components/sections/LogoMarquee'
@@ -9,14 +8,14 @@ import EmissionsIntroSection from '../components/sections/EmissionsIntroSection'
 import IntegrationsArcSection from '../components/sections/IntegrationsArcSection'
 import TestimonialSplitSection from '../components/sections/TestimonialSplitSection'
 import CTASection from '../components/sections/CTASection'
-import ScrambleIntro from '../components/ScrambleIntro'
+import ScrambleIntroWrapper from '../components/ScrambleIntroWrapper'
 
 export default function Home() {
   return (
-    <main className="w-full min-h-screen m-0 p-0 bg-transparent">
-      <ScrambleIntro />
-      <Header />
+    <main className="w-full min-h-screen m-0 p-0 pt-14 lg:pt-0 bg-transparent">
+      <ScrambleIntroWrapper />
       <FloatingIconsHero
+        id="hero"
         title="Welcome to the innovation oasis"
         subtitle="Hi, I'm Hassan Ahmed, a performance marketer with 5 years of experience. I design marketing systems that analyze, optimize, and amplify results, turning complex campaigns into predictable growth."
         ctaText="Get Started"
