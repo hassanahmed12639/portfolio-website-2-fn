@@ -562,8 +562,9 @@ export default function EmissionsIntroSection() {
       tl.to(
         manufacturingCard,
         {
-          y: '+=240',
-          x: -46,
+          // Keep it around mid-screen before reveal handoff (avoid dropping too low).
+          y: '+=96',
+          x: -34,
           duration: 0.9,
           ease: 'power1.inOut',
         },
@@ -585,18 +586,7 @@ export default function EmissionsIntroSection() {
         '>'
       )
     } else {
-      // Desktop: avoid giant pre-zoom; frame morph handles the single expansion.
-      tl.to(
-        manufacturingCard,
-        {
-          y: '+=22',
-          scale: 1.04,
-          transformOrigin: 'center center',
-          duration: 0.58,
-          ease: 'none',
-        },
-        '>'
-      )
+      // Desktop: no pre-step here; handoff is handled in one continuous frame morph.
     }
 
     if (isMobile) {
@@ -647,6 +637,8 @@ export default function EmissionsIntroSection() {
       tl.add(() => {
         revealFrameMatch = getRevealFrameMatchTransform()
         revealFrameUniformScale = Math.max(revealFrameMatch.scaleX, revealFrameMatch.scaleY)
+        // Hide source card before reveal starts so duplicate never appears.
+        gsap.set(manufacturingCard, { autoAlpha: 0 })
       })
       tl.set(revealImage, { x: 0, y: 0, scale: 1, opacity: 1 })
       tl.fromTo(
@@ -659,8 +651,9 @@ export default function EmissionsIntroSection() {
         revealFrame,
         {
           x: () => revealFrameMatch.x,
-          y: () => revealFrameMatch.y,
-          scale: () => revealFrameUniformScale,
+          // Slightly lower/larger start to remove first-frame peeking artifact.
+          y: () => revealFrameMatch.y + 6,
+          scale: () => revealFrameUniformScale * 1.02,
           transformOrigin: 'center center',
         },
         {
@@ -671,12 +664,6 @@ export default function EmissionsIntroSection() {
           ease: 'none',
           immediateRender: false,
         },
-        '>'
-      )
-      tl.fromTo(
-        manufacturingCard,
-        { autoAlpha: 1 },
-        { autoAlpha: 0, duration: 0.34, ease: 'none', immediateRender: false },
         '>'
       )
     }
