@@ -11,6 +11,7 @@ const navItems = [
   { name: "Home", url: "/" },
   { name: "About", url: "/about-me" },
   { name: "Projects", url: "/project" },
+  { name: "My Process", url: "/my-process" },
   { name: "Resume", url: "#" },
 ]
 
