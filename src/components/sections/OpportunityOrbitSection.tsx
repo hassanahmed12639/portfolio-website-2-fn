@@ -1,6 +1,7 @@
  'use client'
 
 import { useEffect, useRef } from 'react'
+import { cn } from '../../lib/utils'
 
 const TEXT_BLOCKS = [
   {
@@ -85,7 +86,8 @@ export default function OpportunityOrbitSection() {
     const baseDotSizes = [18, 30, 50, 18, 50, 50]
     const RADAR_PHASE_PORTION = 0.4
     const DOTS_PHASE_END = 0.8
-    const PREMIUM_BASE_SIZE = 500
+    const getPremiumBaseSize = () => Math.max(280, Math.min(radar.clientWidth, radar.clientHeight))
+    let premiumBaseSize = getPremiumBaseSize()
     const PREMIUM_SCALE = 0.76
     const PREMIUM_INTRO_END = 0.28
     const PREMIUM_FILL_END = 0.55
@@ -132,6 +134,12 @@ export default function OpportunityOrbitSection() {
       { x: 220, y: 90, scale: 2.8, size: 140 },
       { x: -20, y: 120, scale: 0.3, size: 15 },
     ]
+    const finalDotPositions = phase4Positions.map((_, index) => ({
+      x: 0,
+      y: 0,
+      scale: 1,
+      size: index === 4 ? 80 : baseDotSizes[index],
+    }))
     const PIN_SCROLL_MULTIPLIER = 3.2
     let pinDistance = window.innerHeight * PIN_SCROLL_MULTIPLIER
     let isAutoRotating = false
@@ -289,6 +297,7 @@ export default function OpportunityOrbitSection() {
     }
 
     const hidePremium = () => {
+      const seedStart = premiumBaseSize * 0.04
       premiumContainer.style.opacity = '0'
       premiumContainer.style.transform = `translate(-50%, -50%) scale(${PREMIUM_SCALE * 0.96})`
       premiumLabel.style.opacity = '0'
@@ -313,8 +322,8 @@ export default function OpportunityOrbitSection() {
       premiumAxis.style.opacity = '0'
       premiumLabelText.textContent = ''
       premiumSeed.style.opacity = '0'
-      premiumSeed.style.width = '20px'
-      premiumSeed.style.height = '20px'
+      premiumSeed.style.width = `${seedStart}px`
+      premiumSeed.style.height = `${seedStart}px`
       premiumOuter.style.border = '0'
       premiumOuter.style.background = '#d7ff47'
     }
@@ -356,6 +365,10 @@ export default function OpportunityOrbitSection() {
       const introProgress = clamp(t / PREMIUM_INTRO_END)
       const fillProgress = clamp((t - PREMIUM_INTRO_END) / (PREMIUM_FILL_END - PREMIUM_INTRO_END))
       const spreadProgress = clamp((t - PREMIUM_FILL_END) / (1 - PREMIUM_FILL_END))
+      const outlineStart = premiumBaseSize * 0.24
+      const seedStart = premiumBaseSize * 0.04
+      const seedMid = premiumBaseSize * 0.2
+      const seedEnd = premiumBaseSize * 0.976
 
       radarCircles.forEach((circle) => {
         circle.style.opacity = '0'
@@ -376,25 +389,25 @@ export default function OpportunityOrbitSection() {
       premiumContainer.style.transform = `translate(-50%, -50%) scale(${PREMIUM_SCALE * lerp(0.96, 1, t)})`
 
       if (t <= PREMIUM_FILL_END) {
-        const outlineSize = lerp(120, PREMIUM_BASE_SIZE, introProgress)
+        const outlineSize = lerp(outlineStart, premiumBaseSize, introProgress)
         premiumOuter.style.width = `${outlineSize}px`
         premiumOuter.style.height = `${outlineSize}px`
         premiumOuter.style.background = 'transparent'
         premiumOuter.style.border = '2px solid rgba(199, 231, 71, 0.9)'
 
         const seedSize = t <= PREMIUM_INTRO_END
-          ? lerp(20, 100, introProgress)
-          : lerp(100, PREMIUM_BASE_SIZE - 12, fillProgress)
+          ? lerp(seedStart, seedMid, introProgress)
+          : lerp(seedMid, seedEnd, fillProgress)
         premiumSeed.style.width = `${seedSize}px`
         premiumSeed.style.height = `${seedSize}px`
         premiumSeed.style.opacity = '1'
 
-      premiumMiddle.style.width = `${PREMIUM_BASE_SIZE}px`
-      premiumMiddle.style.height = `${PREMIUM_BASE_SIZE}px`
-      premiumInner.style.width = `${PREMIUM_BASE_SIZE}px`
-      premiumInner.style.height = `${PREMIUM_BASE_SIZE}px`
-      premiumCore.style.width = `${PREMIUM_BASE_SIZE}px`
-      premiumCore.style.height = `${PREMIUM_BASE_SIZE}px`
+        premiumMiddle.style.width = `${premiumBaseSize}px`
+        premiumMiddle.style.height = `${premiumBaseSize}px`
+        premiumInner.style.width = `${premiumBaseSize}px`
+        premiumInner.style.height = `${premiumBaseSize}px`
+        premiumCore.style.width = `${premiumBaseSize}px`
+        premiumCore.style.height = `${premiumBaseSize}px`
         premiumMiddle.style.opacity = '0'
         premiumInner.style.opacity = '0'
         premiumCore.style.opacity = '0'
@@ -406,15 +419,15 @@ export default function OpportunityOrbitSection() {
         return
       }
 
-      premiumOuter.style.width = `${PREMIUM_BASE_SIZE}px`
-      premiumOuter.style.height = `${PREMIUM_BASE_SIZE}px`
-      premiumOuter.style.border = '0'
+      premiumOuter.style.width = `${premiumBaseSize}px`
+      premiumOuter.style.height = `${premiumBaseSize}px`
+      premiumOuter.style.border = '1px solid rgba(0, 0, 0, 0.22)'
       premiumOuter.style.background = '#d7ff47'
       premiumSeed.style.opacity = '0'
 
-      const middleSize = lerp(PREMIUM_BASE_SIZE, 420, spreadProgress)
-      const innerSize = lerp(PREMIUM_BASE_SIZE, 340, spreadProgress)
-      const coreSize = lerp(PREMIUM_BASE_SIZE, 242, spreadProgress)
+      const middleSize = lerp(premiumBaseSize, premiumBaseSize * 0.84, spreadProgress)
+      const innerSize = lerp(premiumBaseSize, premiumBaseSize * 0.68, spreadProgress)
+      const coreSize = lerp(premiumBaseSize, premiumBaseSize * 0.48, spreadProgress)
 
       premiumMiddle.style.width = `${middleSize}px`
       premiumMiddle.style.height = `${middleSize}px`
@@ -429,7 +442,7 @@ export default function OpportunityOrbitSection() {
       premiumInner.style.opacity = '1'
       premiumCore.style.opacity = String(clamp((spreadProgress - 0.25) * 2.5))
       premiumLabel.style.opacity = String(clamp((spreadProgress - 0.08) * 2.2))
-      updateLayerLabel(spreadProgress, PREMIUM_BASE_SIZE, middleSize, innerSize)
+      updateLayerLabel(spreadProgress, premiumBaseSize, middleSize, innerSize)
     }
 
     const updateDotsExpansion = (progress: number) => {
@@ -443,56 +456,49 @@ export default function OpportunityOrbitSection() {
         fill.style.background = 'transparent'
       })
 
-      if (progress <= 0.25) {
-        const phaseProgress = easeInOutCubic(progress / 0.25)
-        radarDots.forEach((dot, index) => {
-          const position = interpolatePosition(
-            expansionInitialPositions[index],
-            phase2Positions[index],
-            phaseProgress
-          )
-          const depthOpacity = 0.5 + position.scale * 0.5
-          applyDotPosition(dot, position, depthOpacity)
-        })
-      } else if (progress <= 0.5) {
-        const phaseProgress = easeInOutCubic((progress - 0.25) / 0.25)
-        radarDots.forEach((dot, index) => {
-          const position = interpolatePosition(phase2Positions[index], phase3Positions[index], phaseProgress)
-          const depthOpacity = 0.4 + position.scale * 0.5
-          applyDotPosition(dot, position, depthOpacity)
-        })
-      } else if (progress <= 0.7) {
-        const phaseProgress = easeInOutCubic((progress - 0.5) / 0.2)
-        radarDots.forEach((dot, index) => {
-          const position = interpolatePosition(phase3Positions[index], phase4Positions[index], phaseProgress)
-          const depthOpacity = position.scale < 0.5 ? 0.3 : 0.4 + position.scale * 0.4
-          applyDotPosition(dot, position, depthOpacity)
-        })
-      } else {
-        const phaseProgress = easeInOutCubic((progress - 0.7) / 0.3)
-        radarDots.forEach((dot, index) => {
-          const start = phase4Positions[index]
-          const currentX = start.x * (1 - phaseProgress)
-          const currentY = start.y * (1 - phaseProgress)
-          const currentScale = start.scale + (1 - start.scale) * phaseProgress
+      const phaseStops = [
+        { start: 0, end: 0.25, from: expansionInitialPositions, to: phase2Positions },
+        { start: 0.25, end: 0.5, from: phase2Positions, to: phase3Positions },
+        { start: 0.5, end: 0.7, from: phase3Positions, to: phase4Positions },
+        { start: 0.7, end: 1, from: phase4Positions, to: finalDotPositions },
+      ]
 
-          dot.style.left = `calc(50% + ${currentX}px)`
-          dot.style.top = `calc(50% + ${currentY}px)`
-          dot.style.transform = `translate(-50%, -50%) scale(${currentScale})`
+      const activeIndex = Math.max(
+        0,
+        Math.min(
+          phaseStops.length - 1,
+          phaseStops.findIndex((phase) => progress >= phase.start && progress <= phase.end)
+        )
+      )
+      const activePhase = phaseStops[activeIndex] || phaseStops[phaseStops.length - 1]
+      const phaseProgress = clamp((progress - activePhase.start) / (activePhase.end - activePhase.start))
+      const endFadeProgress = easeInOutCubic(clamp((progress - 0.7) / 0.3))
+      const blendWindow = 0.06
+      const prevPhase = activeIndex > 0 ? phaseStops[activeIndex - 1] : null
+      const nextPhase = activeIndex < phaseStops.length - 1 ? phaseStops[activeIndex + 1] : null
+      const blendToNext = nextPhase && progress > activePhase.end - blendWindow
+      const blendToPrev = prevPhase && progress < activePhase.start + blendWindow
+      const blendNextT = blendToNext
+        ? easeInOutCubic(clamp((progress - (activePhase.end - blendWindow)) / blendWindow))
+        : 0
+      const blendPrevT = blendToPrev
+        ? easeInOutCubic(clamp((activePhase.start + blendWindow - progress) / blendWindow))
+        : 0
 
-          // Keep continuity with the previous branch at progress=0.7,
-          // then smoothly converge to the terminal dot state.
-          const startOpacity = start.scale < 0.5 ? 0.3 : Math.min(1, 0.4 + start.scale * 0.4)
-          const endOpacity = index === 4 ? 1 : 0
-          const currentOpacity = startOpacity + (endOpacity - startOpacity) * phaseProgress
-          dot.style.opacity = String(Math.max(0, Math.min(1, currentOpacity)))
-
-          const endSize = index === 4 ? 80 : baseDotSizes[index]
-          const currentSize = start.size + (endSize - start.size) * phaseProgress
-          dot.style.width = `${currentSize}px`
-          dot.style.height = `${currentSize}px`
-        })
-      }
+      radarDots.forEach((dot, index) => {
+        let position = interpolatePosition(activePhase.from[index], activePhase.to[index], phaseProgress)
+        if (blendToNext && nextPhase) {
+          const nextStart = interpolatePosition(nextPhase.from[index], nextPhase.to[index], 0)
+          position = interpolatePosition(position, nextStart, blendNextT)
+        } else if (blendToPrev && prevPhase) {
+          const prevEnd = interpolatePosition(prevPhase.from[index], prevPhase.to[index], 1)
+          position = interpolatePosition(prevEnd, position, 1 - blendPrevT)
+        }
+        const depthOpacity = Math.min(1, Math.max(0.25, 0.35 + position.scale * 0.5))
+        const targetOpacity = index === 4 ? 1 : 0
+        const opacity = lerp(depthOpacity, targetOpacity, endFadeProgress)
+        applyDotPosition(dot, position, opacity)
+      })
     }
 
     const resetDots = () => {
@@ -569,8 +575,9 @@ export default function OpportunityOrbitSection() {
 
     const updateRadar = (pinProgress: number) => {
       const radarProgress = Math.max(0, Math.min(1, pinProgress / RADAR_PHASE_PORTION))
-      const revealPortion = 0.3
+      const revealPortion = 0.55
       const revealProgress = Math.max(0, Math.min(1, radarProgress / revealPortion))
+      const fadeProgress = Math.max(0, Math.min(1, (radarProgress - revealPortion) / (1 - revealPortion)))
       const rotation = radarProgress * 360
 
       updatePinnedState(pinProgress)
@@ -616,8 +623,13 @@ export default function OpportunityOrbitSection() {
       sweepGradient.style.opacity = '1'
       radarCircles.forEach((circle, index) => {
         const layerProgress = Math.max(0, Math.min(1, revealProgress * radarCircles.length - index))
-        circle.style.opacity = String(layerProgress)
-        circle.style.transform = `translate(-50%, -50%) scale(${0.96 + layerProgress * 0.04})`
+        const ringPhase = Math.max(0, Math.min(1, (fadeProgress - index / radarCircles.length) * radarCircles.length))
+        const expandPhase = Math.min(1, ringPhase / 0.2)
+        const ringFade = ringPhase <= 0.2 ? 0 : Math.min(1, (ringPhase - 0.2) / 0.8)
+        const opacity = layerProgress * (1 - ringFade)
+        const scale = 0.96 + layerProgress * 0.04 + expandPhase * 0.15
+        circle.style.opacity = String(opacity)
+        circle.style.transform = `translate(-50%, -50%) scale(${scale})`
       })
 
       if (rotation >= 270) {
@@ -680,6 +692,7 @@ export default function OpportunityOrbitSection() {
 
     const onResize = () => {
       applyPinLayoutSizing()
+      premiumBaseSize = getPremiumBaseSize()
       targetPinProgress = readPinProgress()
       startSmoothingLoop()
     }
@@ -687,6 +700,7 @@ export default function OpportunityOrbitSection() {
     window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('resize', onResize)
     applyPinLayoutSizing()
+    premiumBaseSize = getPremiumBaseSize()
     targetPinProgress = readPinProgress()
     renderedPinProgress = targetPinProgress
     updateRadar(renderedPinProgress)
@@ -723,7 +737,10 @@ export default function OpportunityOrbitSection() {
             {TEXT_BLOCKS.map((block, i) => (
               <div
                 key={i}
-                className="left-text-block absolute left-0 top-0 w-full flex flex-col justify-center text-black"
+                className={cn(
+                  "left-text-block absolute left-0 top-0 w-full flex flex-col justify-center text-black",
+                  i === TEXT_BLOCKS.length - 1 && "md:hidden"
+                )}
                 style={{ willChange: 'transform, opacity' }}
               >
                 <h2 className="text-2xl font-semibold tracking-tight text-black md:text-3xl">
@@ -737,11 +754,11 @@ export default function OpportunityOrbitSection() {
           </div>
         </div>
 
-        <div className="grid min-w-0 w-full grid-cols-1 items-center justify-items-center gap-12 md:grid-cols-[1fr_minmax(260px,600px)_1fr] md:gap-6">
+        <div className="grid min-w-0 w-full grid-cols-1 items-center justify-items-center gap-12 md:grid-cols-[1fr_minmax(280px,680px)_1fr] lg:grid-cols-[1fr_minmax(320px,760px)_1fr] xl:grid-cols-[1fr_minmax(360px,840px)_1fr] md:gap-6">
           <div className="hidden md:block min-w-0" aria-hidden />
 
-          <div className="relative mx-auto mt-8 h-[500px] w-full min-w-[260px] max-w-[600px] md:mt-0 md:h-[520px] md:max-w-[700px] lg:h-[620px]">
-            <div ref={radarContainerRef} className="radar-container">
+          <div className="relative mx-auto mt-8 flex h-[480px] w-full min-w-[260px] max-w-[640px] items-center justify-center sm:h-[520px] sm:max-w-[680px] md:mt-0 md:h-[600px] md:max-w-[680px] lg:h-[680px] lg:max-w-[760px] xl:h-[720px] xl:max-w-[840px]">
+            <div ref={radarContainerRef} className="radar-container h-full w-full max-h-full flex items-center justify-center">
               <div className="radar-sticky">
                 <div ref={radarRef} className="radar">
                   <div className="radar-circle circle-1">
@@ -802,7 +819,11 @@ export default function OpportunityOrbitSection() {
           container-type: size;
           container-name: radar;
           height: 100%;
+          width: 100%;
           position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .radar-sticky {
@@ -815,7 +836,7 @@ export default function OpportunityOrbitSection() {
         }
 
         .radar {
-          --radar-size: min(100cqw, 100cqh, 500px);
+          --radar-size: min(100cqw, 100cqh, 680px);
           width: var(--radar-size);
           height: var(--radar-size);
           position: relative;

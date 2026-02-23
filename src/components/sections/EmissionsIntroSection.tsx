@@ -879,7 +879,7 @@ export default function EmissionsIntroSection() {
     <>
       <section
         ref={sectionRef}
-        className="relative min-h-screen w-full overflow-hidden bg-[#0F0F0F] px-6 py-8 md:px-[5%] md:py-12"
+        className="relative min-h-screen w-full overflow-hidden bg-[#0F0F0F] px-4 py-6 sm:px-6 sm:py-8 md:px-[4%] md:py-10 lg:px-[5%] lg:py-12"
       >
         <div
           ref={parallaxLayerRef}
@@ -895,12 +895,12 @@ export default function EmissionsIntroSection() {
         </div>
       <div
         ref={contentWrapRef}
-        className="relative z-10 mx-auto h-full w-full max-w-7xl md:flex md:items-center md:justify-center md:gap-8"
+        className="relative z-10 mx-auto h-full w-full md:flex md:items-center md:justify-between"
       >
-        <div ref={textBlockRef} className="absolute left-3 right-3 top-[45%] z-20 max-w-[93%] md:static md:max-w-xl md:w-[48%]">
+        <div ref={textBlockRef} className="absolute left-0 right-3 top-[45%] z-20 max-w-[93%] md:static md:max-w-xl md:w-auto md:flex-shrink-0 md:pr-4">
           <h2
             ref={headingRef}
-            className="text-[13px] font-semibold leading-[1.06] tracking-[-0.015em] text-white md:-translate-y-2 md:text-[34px] md:leading-[1.25] md:tracking-normal"
+            className="text-[13px] font-semibold leading-[1.06] tracking-[-0.015em] text-white md:-translate-y-2 md:text-[26px] md:leading-[1.25] md:tracking-normal lg:text-[30px] xl:text-[34px]"
           >
             {HEADLINE_LINES.map((line, i) => (
               <span
@@ -915,7 +915,7 @@ export default function EmissionsIntroSection() {
           </h2>
         </div>
 
-        <div className="absolute inset-0 z-10 h-full w-full md:relative md:h-[560px] md:w-[52%]">
+        <div className="absolute inset-0 z-10 h-full w-full md:relative md:ml-auto md:h-[420px] md:w-[52%] md:flex-shrink-0 lg:h-[500px] xl:h-[560px]">
           {CARDS.map((card, index) => (
             <div
               key={card.id}
@@ -944,16 +944,16 @@ export default function EmissionsIntroSection() {
         className="pointer-events-none invisible absolute inset-0 z-20 opacity-0"
         style={{ visibility: 'hidden', opacity: 0 }}
       >
-        <div className="mx-auto flex h-full w-full max-w-7xl items-start px-3 pt-14 pb-3 md:items-center md:px-14 md:py-10">
-          <div className="relative w-full md:-translate-y-6">
+        <div className="mx-auto flex h-full w-full max-w-7xl items-start px-3 pt-14 pb-3 md:items-center md:px-6 md:py-8 lg:px-10 lg:py-10 xl:px-14 xl:py-10">
+          <div className="relative w-full md:-translate-y-4 lg:-translate-y-6">
             <div
               ref={revealTitleRef}
-              className="relative z-20 mx-auto -mb-6 w-full max-w-[920px] -translate-y-2 text-center md:-mb-10 md:-translate-y-7"
+              className="relative z-20 mx-auto -mb-6 w-full max-w-[1020px] -translate-y-2 text-center md:-mb-8 md:-translate-y-5 lg:-mb-10 lg:-translate-y-7"
               style={{ ['--title-split' as string]: 0 }}
             >
               <h2
                 ref={revealTitleTextRef}
-                className="relative inline-block text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] md:text-[110px]"
+                className="relative inline-block text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] md:text-[72px] lg:text-[90px] xl:text-[110px]"
                 style={{
                   ['--title-clip-left' as string]: '100%',
                   ['--title-clip-right' as string]: '0%',
@@ -978,23 +978,23 @@ export default function EmissionsIntroSection() {
 
             <div
               ref={revealFrameRef}
-              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[920px]"
+              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[95%] lg:max-w-[1020px]"
             >
               <img
                 ref={revealImageRef}
                 src={CARDS[0].src}
                 alt="Industrial manufacturing detail"
-                className="h-[72vh] w-full object-cover md:h-auto md:aspect-[22/9]"
+                className="h-[72vh] w-full object-cover md:h-auto md:aspect-[20/9]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
               <div
                 ref={revealCopyRef}
-                className="absolute inset-0 flex flex-col justify-end items-center px-4 pb-5 text-center text-white md:items-start md:px-10 md:pb-8 md:text-left"
+                className="absolute inset-0 flex flex-col justify-end items-center px-4 pb-5 text-center text-white md:items-start md:px-6 md:pb-6 lg:px-10 lg:pb-8 md:text-left"
               >
-                <span className="mb-2 inline-flex w-fit self-center rounded-full border border-white/70 bg-black/35 px-2.5 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm md:mb-4 md:self-start md:px-3 md:py-1 md:text-sm">
+                <span className="mb-2 inline-flex w-fit self-center rounded-full border border-white/70 bg-black/35 px-2.5 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm md:mb-3 md:self-start md:px-3 md:py-1 lg:mb-4 md:text-sm">
                   30% emissions
                 </span>
-                <p className="max-w-[300px] text-[12px] font-semibold leading-[1.2] text-white md:max-w-[420px] md:text-[20px]">
+                <p className="max-w-[300px] text-[12px] font-semibold leading-[1.2] text-white md:max-w-[360px] md:text-[16px] lg:max-w-[420px] lg:text-[20px]">
                   The clean industrial revolution starts with transforming how we make everything in
                   the world from steel and cement to everyday materials.
                 </p>
@@ -1011,16 +1011,16 @@ export default function EmissionsIntroSection() {
         className="pointer-events-none invisible absolute inset-0 z-20 opacity-0"
         style={{ visibility: 'hidden', opacity: 0 }}
       >
-        <div className="mx-auto flex h-full w-full max-w-7xl items-start px-3 pt-14 pb-3 md:items-center md:px-14 md:py-10">
-          <div className="w-full md:-translate-y-6">
+        <div className="mx-auto flex h-full w-full max-w-7xl items-start px-3 pt-14 pb-3 md:items-center md:px-6 md:py-8 lg:px-10 lg:py-10 xl:px-14 xl:py-10">
+          <div className="w-full md:-translate-y-4 lg:-translate-y-6">
             <div
               ref={electricityTitleRef}
-              className="relative z-20 mx-auto -mb-6 w-full max-w-[920px] -translate-y-2 text-center md:-mb-10 md:-translate-y-7"
+              className="relative z-20 mx-auto -mb-6 w-full max-w-[1020px] -translate-y-2 text-center md:-mb-8 md:-translate-y-5 lg:-mb-10 lg:-translate-y-7"
               style={{ ['--title-split' as string]: 0 }}
             >
               <h2
                 ref={electricityTitleTextRef}
-                className="relative inline-block text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] md:text-[110px]"
+                className="relative inline-block text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] md:text-[72px] lg:text-[90px] xl:text-[110px]"
                 style={{
                   ['--title-clip-left' as string]: '100%',
                   ['--title-clip-right' as string]: '0%',
@@ -1045,23 +1045,23 @@ export default function EmissionsIntroSection() {
 
             <div
               ref={electricityFrameRef}
-              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[920px]"
+              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[95%] lg:max-w-[1020px]"
             >
               <img
                 ref={electricityImageRef}
                 src={CARDS[1].src}
                 alt="Electricity infrastructure"
-                className="h-[72vh] w-full object-cover md:h-auto md:aspect-[22/9]"
+                className="h-[72vh] w-full object-cover md:h-auto md:aspect-[20/9]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
               <div
                 ref={electricityCopyRef}
-                className="absolute inset-0 flex flex-col justify-end items-center px-4 pb-5 text-center text-white md:items-start md:px-10 md:pb-8 md:text-left"
+                className="absolute inset-0 flex flex-col justify-end items-center px-4 pb-5 text-center text-white md:items-start md:px-6 md:pb-6 lg:px-10 lg:pb-8 md:text-left"
               >
-                <span className="mb-2 inline-flex w-fit self-center rounded-full border border-white/70 bg-black/35 px-2.5 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm md:mb-4 md:self-start md:px-3 md:py-1 md:text-sm">
+                <span className="mb-2 inline-flex w-fit self-center rounded-full border border-white/70 bg-black/35 px-2.5 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm md:mb-3 md:self-start md:px-3 md:py-1 lg:mb-4 md:text-sm">
                   28% emissions
                 </span>
-                <p className="max-w-[300px] text-[12px] font-semibold leading-[1.2] text-white md:max-w-[420px] md:text-[20px]">
+                <p className="max-w-[300px] text-[12px] font-semibold leading-[1.2] text-white md:max-w-[360px] md:text-[16px] lg:max-w-[420px] lg:text-[20px]">
                   The world must build 21st century grids while delivering energy abundance - clean,
                   affordable, and reliable power for everyone.
                 </p>
@@ -1078,16 +1078,16 @@ export default function EmissionsIntroSection() {
         className="pointer-events-none invisible absolute inset-0 z-20 opacity-0"
         style={{ visibility: 'hidden', opacity: 0 }}
       >
-        <div className="mx-auto flex h-full w-full max-w-7xl items-start px-3 pt-14 pb-3 md:items-center md:px-14 md:py-10">
-          <div className="w-full md:-translate-y-6">
+        <div className="mx-auto flex h-full w-full max-w-7xl items-start px-3 pt-14 pb-3 md:items-center md:px-6 md:py-8 lg:px-10 lg:py-10 xl:px-14 xl:py-10">
+          <div className="w-full md:-translate-y-4 lg:-translate-y-6">
             <div
               ref={agricultureTitleRef}
-              className="relative z-20 mx-auto -mb-6 w-full max-w-[920px] -translate-y-2 text-center md:-mb-10 md:-translate-y-7"
+              className="relative z-20 mx-auto -mb-6 w-full max-w-[1020px] -translate-y-2 text-center md:-mb-8 md:-translate-y-5 lg:-mb-10 lg:-translate-y-7"
               style={{ ['--title-split' as string]: 0 }}
             >
               <h2
                 ref={agricultureTitleTextRef}
-                className="relative inline-block text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] md:text-[110px]"
+                className="relative inline-block text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] md:text-[72px] lg:text-[90px] xl:text-[110px]"
                 style={{
                   ['--title-clip-left' as string]: '100%',
                   ['--title-clip-right' as string]: '0%',
@@ -1112,23 +1112,23 @@ export default function EmissionsIntroSection() {
 
             <div
               ref={agricultureFrameRef}
-              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[920px]"
+              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[95%] lg:max-w-[1020px]"
             >
               <img
                 ref={agricultureImageRef}
                 src={CARDS[2].src}
                 alt="Agriculture fields"
-                className="h-[72vh] w-full object-cover md:h-auto md:aspect-[22/9]"
+                className="h-[72vh] w-full object-cover md:h-auto md:aspect-[20/9]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
               <div
                 ref={agricultureCopyRef}
-                className="absolute inset-0 flex flex-col justify-end items-center px-4 pb-5 text-center text-white md:items-start md:px-10 md:pb-8 md:text-left"
+                className="absolute inset-0 flex flex-col justify-end items-center px-4 pb-5 text-center text-white md:items-start md:px-6 md:pb-6 lg:px-10 lg:pb-8 md:text-left"
               >
-                <span className="mb-2 inline-flex w-fit self-center rounded-full border border-white/70 bg-black/35 px-2.5 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm md:mb-4 md:self-start md:px-3 md:py-1 md:text-sm">
+                <span className="mb-2 inline-flex w-fit self-center rounded-full border border-white/70 bg-black/35 px-2.5 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm md:mb-3 md:self-start md:px-3 md:py-1 lg:mb-4 md:text-sm">
                   19% emissions
                 </span>
-                <p className="max-w-[300px] text-[12px] font-semibold leading-[1.2] text-white md:max-w-[420px] md:text-[20px]">
+                <p className="max-w-[300px] text-[12px] font-semibold leading-[1.2] text-white md:max-w-[360px] md:text-[16px] lg:max-w-[420px] lg:text-[20px]">
                   From growing rice to raising cattle, innovating how we feed ourselves is a prime
                   opportunity. Meet the innovators who will feed the world for decades to come.
                 </p>
@@ -1145,16 +1145,16 @@ export default function EmissionsIntroSection() {
         className="pointer-events-none invisible absolute inset-0 z-20 opacity-0"
         style={{ visibility: 'hidden', opacity: 0 }}
       >
-        <div className="mx-auto flex h-full w-full max-w-7xl items-start px-3 pt-14 pb-3 md:items-center md:px-14 md:py-10">
-          <div className="w-full md:-translate-y-6">
+        <div className="mx-auto flex h-full w-full max-w-7xl items-start px-3 pt-14 pb-3 md:items-center md:px-6 md:py-8 lg:px-10 lg:py-10 xl:px-14 xl:py-10">
+          <div className="w-full md:-translate-y-4 lg:-translate-y-6">
             <div
               ref={transportationTitleRef}
-              className="relative z-20 mx-auto -mb-6 w-full max-w-[920px] -translate-y-2 text-center md:-mb-10 md:-translate-y-7"
+              className="relative z-20 mx-auto -mb-6 w-full max-w-[1020px] -translate-y-2 text-center md:-mb-8 md:-translate-y-5 lg:-mb-10 lg:-translate-y-7"
               style={{ ['--title-split' as string]: 0 }}
             >
               <h2
                 ref={transportationTitleTextRef}
-                className="relative inline-block text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] md:text-[110px]"
+                className="relative inline-block text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] md:text-[72px] lg:text-[90px] xl:text-[110px]"
                 style={{
                   ['--title-clip-left' as string]: '100%',
                   ['--title-clip-right' as string]: '0%',
@@ -1179,23 +1179,23 @@ export default function EmissionsIntroSection() {
 
             <div
               ref={transportationFrameRef}
-              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[920px]"
+              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[95%] lg:max-w-[1020px]"
             >
               <img
                 ref={transportationImageRef}
                 src={CARDS[3].src}
                 alt="Transportation networks"
-                className="h-[72vh] w-full object-cover md:h-auto md:aspect-[22/9]"
+                className="h-[72vh] w-full object-cover md:h-auto md:aspect-[20/9]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
               <div
                 ref={transportationCopyRef}
-                className="absolute inset-0 flex flex-col justify-end items-center px-4 pb-5 text-center text-white md:items-start md:px-10 md:pb-8 md:text-left"
+                className="absolute inset-0 flex flex-col justify-end items-center px-4 pb-5 text-center text-white md:items-start md:px-6 md:pb-6 lg:px-10 lg:pb-8 md:text-left"
               >
-                <span className="mb-2 inline-flex w-fit self-center rounded-full border border-white/70 bg-black/35 px-2.5 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm md:mb-4 md:self-start md:px-3 md:py-1 md:text-sm">
+                <span className="mb-2 inline-flex w-fit self-center rounded-full border border-white/70 bg-black/35 px-2.5 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm md:mb-3 md:self-start md:px-3 md:py-1 lg:mb-4 md:text-sm">
                   25% emissions
                 </span>
-                <p className="max-w-[300px] text-[12px] font-semibold leading-[1.2] text-white md:max-w-[420px] md:text-[20px]">
+                <p className="max-w-[300px] text-[12px] font-semibold leading-[1.2] text-white md:max-w-[360px] md:text-[16px] lg:max-w-[420px] lg:text-[20px]">
                   Revolutionizing how people and goods move around the world with clean, efficient
                   transportation solutions.
                 </p>
@@ -1212,16 +1212,16 @@ export default function EmissionsIntroSection() {
         className="pointer-events-none invisible absolute inset-0 z-20 opacity-0"
         style={{ visibility: 'hidden', opacity: 0 }}
       >
-        <div className="mx-auto flex h-full w-full max-w-7xl items-start px-3 pt-14 pb-3 md:items-center md:px-14 md:py-10">
-          <div className="w-full md:-translate-y-6">
+        <div className="mx-auto flex h-full w-full max-w-7xl items-start px-3 pt-14 pb-3 md:items-center md:px-6 md:py-8 lg:px-10 lg:py-10 xl:px-14 xl:py-10">
+          <div className="w-full md:-translate-y-4 lg:-translate-y-6">
             <div
               ref={buildingsTitleRef}
-              className="relative z-20 mx-auto -mb-6 w-full max-w-[920px] -translate-y-2 text-center md:-mb-10 md:-translate-y-7"
+              className="relative z-20 mx-auto -mb-6 w-full max-w-[1020px] -translate-y-2 text-center md:-mb-8 md:-translate-y-5 lg:-mb-10 lg:-translate-y-7"
               style={{ ['--title-split' as string]: 0 }}
             >
               <h2
                 ref={buildingsTitleTextRef}
-                className="relative inline-block text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] md:text-[110px]"
+                className="relative inline-block text-[54px] font-semibold leading-[0.9] tracking-[-0.03em] md:text-[72px] lg:text-[90px] xl:text-[110px]"
                 style={{
                   ['--title-clip-left' as string]: '100%',
                   ['--title-clip-right' as string]: '0%',
@@ -1246,23 +1246,23 @@ export default function EmissionsIntroSection() {
 
             <div
               ref={buildingsFrameRef}
-              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[920px]"
+              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[95%] lg:max-w-[1020px]"
             >
               <img
                 ref={buildingsImageRef}
                 src={CARDS[4].src}
                 alt="Urban buildings"
-                className="h-[72vh] w-full object-cover md:h-auto md:aspect-[22/9]"
+                className="h-[72vh] w-full object-cover md:h-auto md:aspect-[20/9]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
               <div
                 ref={buildingsCopyRef}
-                className="absolute inset-0 flex flex-col justify-end items-center px-4 pb-5 text-center text-white md:items-start md:px-10 md:pb-8 md:text-left"
+                className="absolute inset-0 flex flex-col justify-end items-center px-4 pb-5 text-center text-white md:items-start md:px-6 md:pb-6 lg:px-10 lg:pb-8 md:text-left"
               >
-                <span className="mb-2 inline-flex w-fit self-center rounded-full border border-white/70 bg-black/35 px-2.5 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm md:mb-4 md:self-start md:px-3 md:py-1 md:text-sm">
+                <span className="mb-2 inline-flex w-fit self-center rounded-full border border-white/70 bg-black/35 px-2.5 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm md:mb-3 md:self-start md:px-3 md:py-1 lg:mb-4 md:text-sm">
                   22% emissions
                 </span>
-                <p className="max-w-[300px] text-[12px] font-semibold leading-[1.2] text-white md:max-w-[420px] md:text-[20px]">
+                <p className="max-w-[300px] text-[12px] font-semibold leading-[1.2] text-white md:max-w-[360px] md:text-[16px] lg:max-w-[420px] lg:text-[20px]">
                   Creating sustainable spaces where we live and work, reducing energy consumption
                   while improving comfort and efficiency.
                 </p>
@@ -1279,10 +1279,10 @@ export default function EmissionsIntroSection() {
         className="pointer-events-none invisible absolute inset-0 z-10 grid place-items-center opacity-0"
         style={{ visibility: 'hidden', opacity: 0 }}
       >
-        <div className="w-full px-6 md:px-10">
+        <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10">
           <div
             ref={messageTextRef}
-            className="mx-auto max-w-[780px] text-center text-[32px] font-semibold leading-[1.1] tracking-[-0.02em] text-white md:text-[44px]"
+            className="mx-auto max-w-[780px] text-center text-[28px] font-semibold leading-[1.1] tracking-[-0.02em] text-white sm:text-[32px] md:text-[36px] lg:text-[44px]"
           >
             <div className="flex flex-wrap items-center justify-center gap-x-3 md:gap-x-4">
               {FINAL_MESSAGE_LINE_1.map((word) => (

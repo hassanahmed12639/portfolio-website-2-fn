@@ -38,7 +38,9 @@ function NavLinks({
             onClick={onLinkClick}
             className={cn(
               "relative cursor-pointer text-sm font-semibold px-6 py-2 rounded-full transition-colors",
-              "text-white/50 hover:text-[#AAFF00]",
+              isMobile
+                ? "text-white hover:text-[#AAFF00]"
+                : "text-white/50 hover:text-[#AAFF00]",
               isActive && "bg-muted text-[#AAFF00]",
             )}
           >
@@ -103,7 +105,7 @@ export function NavBar({ items, className }: NavBarProps) {
 
         {/* Mobile: dropdown when open */}
         {mobileOpen && (
-          <div className="absolute left-4 right-4 top-full mt-2 lg:hidden z-50 rounded-2xl bg-[#0F0F0F]/98 backdrop-blur-lg py-3 shadow-xl border border-white/10">
+          <div className="absolute left-4 right-4 top-full mt-2 lg:hidden z-50 rounded-2xl bg-[#0F0F0F] py-3 shadow-xl border border-white/10">
             <div className="flex flex-col gap-1 px-2">
               <NavLinks items={items} pathname={pathname} isMobile onLinkClick={() => setMobileOpen(false)} />
             </div>

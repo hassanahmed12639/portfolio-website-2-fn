@@ -177,13 +177,13 @@ export default function UnifyFinancesScroll() {
           {(() => {
             const sizeClasses: Record<CardSize, string> = {
               largest:
-                "w-[128px] h-[142px] xs:w-[142px] xs:h-[160px] sm:w-[158px] sm:h-[176px] md:w-[154px] md:h-[172px] lg:w-[166px] lg:h-[186px] xl:w-[178px] xl:h-[200px] 2xl:w-[190px] 2xl:h-[214px]",
+                "w-[136px] h-[150px] xs:w-[150px] xs:h-[168px] sm:w-[158px] sm:h-[176px] md:w-[154px] md:h-[172px] lg:w-[176px] lg:h-[196px] xl:w-[188px] xl:h-[210px] 2xl:w-[200px] 2xl:h-[224px]",
               medium:
-                "w-[126px] h-[144px] xs:w-[140px] xs:h-[162px] sm:w-[154px] sm:h-[178px] md:w-[150px] md:h-[168px] lg:w-[162px] lg:h-[182px] xl:w-[174px] xl:h-[194px] 2xl:w-[186px] 2xl:h-[208px]",
+                "w-[134px] h-[152px] xs:w-[148px] xs:h-[170px] sm:w-[154px] sm:h-[178px] md:w-[150px] md:h-[168px] lg:w-[172px] lg:h-[192px] xl:w-[184px] xl:h-[204px] 2xl:w-[196px] 2xl:h-[218px]",
               smallMedium:
-                "w-[114px] h-[112px] xs:w-[126px] xs:h-[120px] sm:w-[136px] sm:h-[130px] md:w-[134px] md:h-[130px] lg:w-[144px] lg:h-[140px] xl:w-[154px] xl:h-[150px] 2xl:w-[164px] 2xl:h-[160px]",
+                "w-[122px] h-[120px] xs:w-[134px] xs:h-[128px] sm:w-[136px] sm:h-[130px] md:w-[134px] md:h-[130px] lg:w-[154px] lg:h-[150px] xl:w-[164px] xl:h-[160px] 2xl:w-[174px] 2xl:h-[170px]",
               small:
-                "w-[110px] h-[114px] xs:w-[118px] xs:h-[126px] sm:w-[132px] sm:h-[136px] md:w-[142px] md:h-[144px] lg:w-[154px] lg:h-[156px] xl:w-[164px] xl:h-[166px] 2xl:w-[176px] 2xl:h-[178px]",
+                "w-[118px] h-[122px] xs:w-[126px] xs:h-[134px] sm:w-[132px] sm:h-[136px] md:w-[142px] md:h-[144px] lg:w-[164px] lg:h-[166px] xl:w-[174px] xl:h-[176px] 2xl:w-[186px] 2xl:h-[188px]",
             };
             return CARDS_LAYOUT.map((card, i) => (
             <div
@@ -219,53 +219,49 @@ export default function UnifyFinancesScroll() {
                   />
                 </div>
               ) : i === 1 ? (
-                <div className="h-full flex flex-col p-3 sm:p-4 md:p-5 lg:p-6">
-                  <div className="flex items-center gap-1.5 sm:gap-2 mb-3 sm:mb-4">
-                    <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full bg-[#AAFF00] flex items-center justify-center flex-shrink-0">
-                      <Globe className="w-3 h-3 sm:w-4 sm:h-4 text-[#0F0F0F]" />
+                <div className="h-full flex flex-col p-2 sm:p-3 md:p-4 items-center text-center">
+                  <h3 className="text-xs sm:text-sm font-semibold text-[#0F0F0F] mb-1.5 sm:mb-2 flex-shrink-0">
+                    Conversion Rate
+                  </h3>
+                  <div className="flex-1 min-h-0 w-full flex flex-col items-center justify-center gap-1 sm:gap-1.5 py-1">
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#AAFF00] flex items-center justify-center flex-shrink-0">
+                      <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-[#0F0F0F]" />
                     </div>
-                    <span className="text-xs sm:text-sm md:text-base font-semibold text-[#0F0F0F]">Conversion Rate</span>
-                  </div>
-                  <div className="flex-1 flex flex-col justify-center">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[#0F0F0F]">15.7%</span>
-                      <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-[#AAFF00] flex-shrink-0" />
+                    <div className="flex items-center justify-center gap-1.5">
+                      <span className="text-lg sm:text-xl md:text-2xl font-bold text-[#0F0F0F]">15.7%</span>
+                      <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-[#0F0F0F] flex-shrink-0" />
                     </div>
-                    <div className="text-xs sm:text-sm text-[#555555] mt-2">
+                    <p className="text-[10px] sm:text-xs text-[#757575]">
                       impressions: 8.9M / Clicks: 670K
-                    </div>
+                    </p>
                   </div>
-                  <div className="mt-auto">
-                    <button className="w-full bg-[#AAFF00] hover:bg-[#AAFF00] text-[#0F0F0F] text-xs sm:text-sm md:text-base font-medium py-2.5 sm:py-3 rounded-full transition-colors border border-[#AAFF00]/20">
-                      Analyze Funnel
-                    </button>
-                  </div>
+                  <button className="w-full max-w-[90%] mt-2 bg-[#AAFF00] hover:opacity-95 text-[#0F0F0F] text-[10px] sm:text-xs font-bold py-2 sm:py-2.5 rounded-full transition-opacity flex-shrink-0 shadow-sm">
+                    Analyze Funnel
+                  </button>
                 </div>
               ) : i === 2 ? (
-                <div className="h-full flex flex-col p-3 sm:p-4 md:p-5 lg:p-6">
-                  <div className="flex items-center gap-2 mb-3 sm:mb-4">
-                    <ArrowLeftRight className="w-4 h-4 sm:w-5 sm:h-5 text-designBg/90" />
-                    <span className="text-xs sm:text-sm md:text-base text-designBg/90 font-medium">
-                      Exchange
-                    </span>
-                  </div>
-                  <div className="flex-1 flex flex-col justify-center gap-1 sm:gap-1.5">
-                    <div className="text-xs sm:text-sm md:text-base font-semibold text-designBg">
-                      Campaign ROI
+                <div className="h-full flex flex-col p-3 sm:p-4 md:p-5 lg:p-6 text-left text-[#0F0F0F]">
+                  <div className="mb-2 sm:mb-3">
+                    <div className="text-[10px] sm:text-xs md:text-sm font-bold">
+                      Profitability
                     </div>
-                    <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-designBg leading-tight">
-                      +350%
-                    </div>
-                    <div className="text-xs sm:text-sm md:text-base font-semibold text-designBg">
-                      Budget Allocation
-                    </div>
-                    <div className="text-xs sm:text-sm md:text-base font-semibold text-designBg">
-                      Optimization +€12k
+                    <div className="text-[9px] sm:text-[10px] md:text-xs font-semibold">
+                      E-commerce Growth
                     </div>
                   </div>
-                  <div className="mt-auto">
-                    <div className="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 bg-designBg/20 rounded-full">
-                      <span className="text-xs sm:text-sm font-medium text-designBg">Approved</span>
+                  <div className="flex-1 flex flex-col justify-center">
+                    <div className="text-lg sm:text-xl md:text-2xl font-bold leading-tight">
+                      4.2x ROAS
+                    </div>
+                    <div className="text-[8px] sm:text-[9px] md:text-[10px] text-[#0F0F0F]/70 mt-1.5">
+                      Reduced CPA by 22% YoY
+                    </div>
+                  </div>
+                  <div className="mt-auto pt-2">
+                    <div className="inline-flex items-center px-4 sm:px-5 py-2 sm:py-2.5 bg-[#0F0F0F] rounded-full shadow-sm">
+                      <span className="text-[10px] sm:text-xs font-semibold text-white">
+                        Shopify + Meta
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -279,49 +275,47 @@ export default function UnifyFinancesScroll() {
                 </div>
               ) : i === 4 ? (
                 <div className="h-full flex flex-col p-2 sm:p-3 md:p-4 items-center text-center overflow-visible">
-                  <h3 className="text-xs sm:text-sm font-medium text-[#0F0F0F] mb-1.5 sm:mb-2 flex-shrink-0">
-                    Cross-Platform Scaling
+                  <h3 className="text-[11px] sm:text-xs font-bold text-[#0F0F0F] mb-2 sm:mb-3 flex-shrink-0 leading-tight">
+                    <span className="block">Technical</span>
+                    <span className="block">Tracking Accuracy</span>
                   </h3>
-                  <div className="flex-1 min-h-0 w-full flex items-center justify-center py-1">
-                    <svg viewBox="0 0 120 100" className="w-full h-full max-h-[72px] sm:max-h-[88px] md:max-h-[100px]" preserveAspectRatio="xMidYMid meet">
-                      <defs>
-                        <linearGradient id="funnelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                          <stop offset="0%" stopColor="#AAFF00" />
-                          <stop offset="100%" stopColor="rgba(170,255,0,0.5)" />
-                        </linearGradient>
-                        <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-                          <path d="M0,0 L6,3 L0,6 Z" fill="#888888" />
-                        </marker>
-                      </defs>
-                      <path d="M35 12 L85 12 L70 55 L50 55 Z" fill="url(#funnelGrad)" stroke="#AAFF00" strokeWidth="0.5" />
-                      <line x1="20" y1="25" x2="38" y2="35" stroke="#888888" strokeWidth="0.8" strokeDasharray="3 2" markerEnd="url(#arrow)" />
-                      <line x1="20" y1="55" x2="45" y2="48" stroke="#888888" strokeWidth="0.8" strokeDasharray="3 2" markerEnd="url(#arrow)" />
-                      <line x1="82" y1="35" x2="100" y2="25" stroke="#888888" strokeWidth="0.8" strokeDasharray="3 2" markerEnd="url(#arrow)" />
-                      <line x1="75" y1="48" x2="100" y2="55" stroke="#888888" strokeWidth="0.8" strokeDasharray="3 2" markerEnd="url(#arrow)" />
-                      <circle cx="18" cy="25" r="10" fill="white" stroke="#AAFF00" strokeWidth="1" />
-                      <circle cx="18" cy="55" r="10" fill="white" stroke="#AAFF00" strokeWidth="1" />
-                      <circle cx="102" cy="25" r="10" fill="white" stroke="#AAFF00" strokeWidth="1" />
-                      <circle cx="102" cy="55" r="10" fill="white" stroke="#AAFF00" strokeWidth="1" />
-                      <g transform="translate(13.5, 20.5) scale(0.5)" fill="none" stroke="#AAFF00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                        <path d="M3 3v5h5" />
-                      </g>
-                      <g transform="translate(13, 50) scale(0.5)" fill="none" stroke="#AAFF00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="2" y="4" width="14" height="12" rx="2" />
-                        <path d="m2 7 7 5 7-5" />
-                      </g>
-                      <text x="102" y="28" textAnchor="middle" style={{ fontSize: "8px", fontWeight: 600, fill: "#1f2937" }}>18%</text>
-                      <text x="102" y="58" textAnchor="middle" style={{ fontSize: "8px", fontWeight: 600, fill: "#1f2937" }}>50%</text>
-                    </svg>
+                  <div className="flex-1 min-h-0 w-full flex flex-col items-center justify-center py-1">
+                    <div className="relative w-[128px] h-[76px] sm:w-[140px] sm:h-[82px] flex items-center justify-center flex-shrink-0">
+                      <svg viewBox="0 0 162 96" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
+                        <defs>
+                          <path id="lensShape" d="M 81 54 A 25 25 0 0 1 81 29 A 25 25 0 0 1 81 54 Z" />
+                          <clipPath id="topClip">
+                            <rect x="0" y="0" width="162" height="44" />
+                          </clipPath>
+                          <clipPath id="bottomClip">
+                            <rect x="0" y="44" width="162" height="52" />
+                          </clipPath>
+                        </defs>
+                        <use href="#lensShape" fill="#AAFF00" clipPath="url(#topClip)" />
+                        <use href="#lensShape" fill="#1f6b2e" clipPath="url(#bottomClip)" />
+                        <circle cx="56" cy="44" r="25" fill="#FFFFFF" stroke="#AAFF00" strokeWidth="2" />
+                        <circle cx="94" cy="44" r="25" fill="#FFFFFF" stroke="#AAFF00" strokeWidth="2" />
+                        <text x="56" y="42" textAnchor="middle" style={{ fontSize: "9px", fontWeight: 600, fill: "#0F0F0F" }}>
+                          CAPI
+                        </text>
+                        <text x="56" y="52" textAnchor="middle" style={{ fontSize: "8px", fontWeight: 600, fill: "#0F0F0F" }}>
+                          (98%)
+                        </text>
+                        <text x="94" y="42" textAnchor="middle" style={{ fontSize: "9px", fontWeight: 600, fill: "#0F0F0F" }}>
+                          GTM
+                        </text>
+                        <text x="94" y="52" textAnchor="middle" style={{ fontSize: "8px", fontWeight: 600, fill: "#0F0F0F" }}>
+                          (98%)
+                        </text>
+                      </svg>
+                    </div>
+                    <p className="text-sm sm:text-base font-bold text-[#0F0F0F] text-center -mt-1.5">
+                      98% Match Rate
+                    </p>
                   </div>
-                  <div className="rounded-full bg-[#AAFF00] px-3 py-1.5 flex-shrink-0">
-                    <span className="text-xs sm:text-sm font-medium text-[#0F0F0F]">Customer Journey</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-[#555555] mt-1 flex-shrink-0">
-                    <span>0</span>
-                    <span className="w-3 h-3 rounded-full bg-gray-300/80" aria-hidden />
-                    <span>2</span>
-                  </div>
+                  <button className="w-full max-w-[88%] bg-[#AAFF00] hover:opacity-95 text-[#0F0F0F] text-[10px] sm:text-xs font-bold py-2 sm:py-2.5 rounded-full transition-opacity flex-shrink-0 shadow-sm">
+                    View Winning Assets
+                  </button>
                 </div>
               ) : null}
             </div>
