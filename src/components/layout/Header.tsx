@@ -12,7 +12,7 @@ const navItems = [
   { name: "About", url: "/about-me" },
   { name: "Projects", url: "/project" },
   { name: "My Process", url: "/my-process" },
-  { name: "Resume", url: "#" },
+  { name: "Resume", url: "/resume" },
 ]
 
 export default function Header() {
