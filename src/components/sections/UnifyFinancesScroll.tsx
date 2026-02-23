@@ -177,13 +177,13 @@ export default function UnifyFinancesScroll() {
           {(() => {
             const sizeClasses: Record<CardSize, string> = {
               largest:
-                "w-[116px] h-[130px] xs:w-[142px] xs:h-[160px] sm:w-[158px] sm:h-[176px] md:w-[154px] md:h-[172px] lg:w-[166px] lg:h-[186px] xl:w-[178px] xl:h-[200px] 2xl:w-[190px] 2xl:h-[214px]",
+                "w-[128px] h-[142px] xs:w-[142px] xs:h-[160px] sm:w-[158px] sm:h-[176px] md:w-[154px] md:h-[172px] lg:w-[166px] lg:h-[186px] xl:w-[178px] xl:h-[200px] 2xl:w-[190px] 2xl:h-[214px]",
               medium:
-                "w-[114px] h-[132px] xs:w-[140px] xs:h-[162px] sm:w-[154px] sm:h-[178px] md:w-[150px] md:h-[168px] lg:w-[162px] lg:h-[182px] xl:w-[174px] xl:h-[194px] 2xl:w-[186px] 2xl:h-[208px]",
+                "w-[126px] h-[144px] xs:w-[140px] xs:h-[162px] sm:w-[154px] sm:h-[178px] md:w-[150px] md:h-[168px] lg:w-[162px] lg:h-[182px] xl:w-[174px] xl:h-[194px] 2xl:w-[186px] 2xl:h-[208px]",
               smallMedium:
-                "w-[104px] h-[102px] xs:w-[126px] xs:h-[120px] sm:w-[136px] sm:h-[130px] md:w-[134px] md:h-[130px] lg:w-[144px] lg:h-[140px] xl:w-[154px] xl:h-[150px] 2xl:w-[164px] 2xl:h-[160px]",
+                "w-[114px] h-[112px] xs:w-[126px] xs:h-[120px] sm:w-[136px] sm:h-[130px] md:w-[134px] md:h-[130px] lg:w-[144px] lg:h-[140px] xl:w-[154px] xl:h-[150px] 2xl:w-[164px] 2xl:h-[160px]",
               small:
-                "w-[100px] h-[104px] xs:w-[118px] xs:h-[126px] sm:w-[132px] sm:h-[136px] md:w-[142px] md:h-[144px] lg:w-[154px] lg:h-[156px] xl:w-[164px] xl:h-[166px] 2xl:w-[176px] 2xl:h-[178px]",
+                "w-[110px] h-[114px] xs:w-[118px] xs:h-[126px] sm:w-[132px] sm:h-[136px] md:w-[142px] md:h-[144px] lg:w-[154px] lg:h-[156px] xl:w-[164px] xl:h-[166px] 2xl:w-[176px] 2xl:h-[178px]",
             };
             return CARDS_LAYOUT.map((card, i) => (
             <div

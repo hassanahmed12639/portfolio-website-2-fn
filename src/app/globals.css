@@ -163,6 +163,16 @@ header {
   outline: none !important;
 }
 
+/* Logo marquee: no black strokes/outlines in mobile view */
+@media (max-width: 767px) {
+  .logo-marquee-section,
+  .logo-marquee-section * {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 5.9%;

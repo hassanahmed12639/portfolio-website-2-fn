@@ -14,8 +14,8 @@ const MARQUEE_COPIES = 4
 export default function LogoMarquee() {
   const marqueeContent = Array.from({ length: MARQUEE_COPIES }, () => LOGOS).flat()
   return (
-    <section className="w-full m-0 overflow-hidden py-6 md:py-8 bg-[#FFFFFF]">
-      <div className="relative">
+    <section className="logo-marquee-section w-full m-0 overflow-hidden py-6 md:py-8 bg-[#FFFFFF] outline-none border-0 [-webkit-tap-highlight-color:transparent]">
+      <div className="relative border-0 outline-none">
         <div className="flex w-max animate-marquee items-center gap-12 md:gap-16 lg:gap-20">
           {marqueeContent.map((logo, i) => (
             <span
