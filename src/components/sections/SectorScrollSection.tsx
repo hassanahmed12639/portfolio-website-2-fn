@@ -11,11 +11,11 @@ const READY_DURATION = 1.2
 const SMOOTH_EASE = [0.25, 0.46, 0.45, 0.94] as const
 
 const SECTORS = [
-  { id: 'manufacturing', label: 'Manufacturing', letter: 'M', rest: 'anufacturing', emissions: '30%', description: 'The clean industrial revolution starts with transforming how we make everything in the world—from steel and cement to everyday materials.', cta: '29 Manufacturing Companies' },
-  { id: 'electricity', label: 'Electricity', letter: 'E', rest: 'lectricity', emissions: '28%', description: 'The world must build 21st century grids while delivering energy abundance—clean, affordable, and reliable power for everyone.', cta: '26 Electricity Companies' },
-  { id: 'agriculture', label: 'Agriculture', letter: null, rest: null, emissions: '19%', description: 'From growing rice to raising cattle, innovating how we feed ourselves is a prime opportunity. Meet the innovators who will feed the world for decades to come.', cta: '20 Agriculture Companies' },
-  { id: 'transportation', label: 'Transportation', letter: 'T', rest: 'ransportation', emissions: '25%', description: 'Revolutionizing how people and goods move around the world with clean, efficient transportation solutions.', cta: '18 Transportation Companies' },
-  { id: 'buildings', label: 'Buildings', letter: 'B', rest: 'uildings', emissions: '22%', description: 'Creating sustainable spaces where we live and work, reducing energy consumption while improving comfort and efficiency.', cta: '15 Building Companies' },
+  { id: 'manufacturing', label: 'Paid Media', letter: 'P', rest: 'aid Media', emissions: '30%', description: 'The clean industrial revolution starts with transforming how we make everything in the world—from steel and cement to everyday materials.', cta: '29 Manufacturing Companies' },
+  { id: 'electricity', label: 'CRO', letter: 'C', rest: 'RO', emissions: '28%', description: 'The world must build 21st century grids while delivering energy abundance—clean, affordable, and reliable power for everyone.', cta: '26 Electricity Companies' },
+  { id: 'agriculture', label: 'Creative Strategy', letter: 'C', rest: 'reative Strategy', emissions: '19%', description: 'From growing rice to raising cattle, innovating how we feed ourselves is a prime opportunity. Meet the innovators who will feed the world for decades to come.', cta: '20 Agriculture Companies' },
+  { id: 'transportation', label: 'Analytics & Reporting', letter: 'A', rest: 'nalytics & Reporting', emissions: '25%', description: 'Revolutionizing how people and goods move around the world with clean, efficient transportation solutions.', cta: '18 Transportation Companies' },
+  { id: 'buildings', label: 'Growth Strategy', letter: 'G', rest: 'rowth Strategy', emissions: '22%', description: 'Creating sustainable spaces where we live and work, reducing energy consumption while improving comfort and efficiency.', cta: '15 Building Companies' },
 ]
 
 export default function SectorScrollSection() {
@@ -207,19 +207,19 @@ export default function SectorScrollSection() {
             </div>
             <div className="sector-cards-container">
               <div ref={cardManufacturingRef} className="sector-card" style={{ top: '8%', left: '32%' }}>
-                <div className="sector-card-label">Manufacturing</div>
+                <div className="sector-card-label">Paid Media</div>
               </div>
               <div ref={cardElectricityRef} className="sector-card" style={{ top: '10%', right: '12%', left: 'auto' }}>
-                <div className="sector-card-label">Electricity</div>
+                <div className="sector-card-label">CRO</div>
               </div>
               <div ref={cardAgricultureRef} className="sector-card sector-card-center" style={{ top: '32%', left: '50%', transform: 'translateX(-50%)' }}>
-                <div className="sector-card-label">Agriculture</div>
+                <div className="sector-card-label">Creative Strategy</div>
               </div>
               <div ref={cardTransportationRef} className="sector-card" style={{ top: '52%', right: '18%', left: 'auto' }}>
-                <div className="sector-card-label">Transportation</div>
+                <div className="sector-card-label">Analytics & Reporting</div>
               </div>
               <div ref={cardBuildingsRef} className="sector-card sector-card-center" style={{ bottom: '12%', left: '46%', top: 'auto', transform: 'translateX(-50%)' }}>
-                <div className="sector-card-label">Buildings</div>
+                <div className="sector-card-label">Growth Strategy</div>
               </div>
             </div>
             <div ref={scrollHintRef} className="sector-scroll-hint">

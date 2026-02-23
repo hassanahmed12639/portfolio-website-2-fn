@@ -67,17 +67,17 @@ export default function IntegrationsArcSection() {
         return -mobileArcHeight * (1 - Math.min(1, normalizedX * normalizedX))
       }
 
-      // Function to calculate opacity based on X position
-      // Symmetric fade on both left and right edges
+      // Function to calculate opacity based on X position — symmetric fade on left and right
       const getOpacity = (x: number, containerWidth: number) => {
         const cardCenterX = x + cardSize / 2
         const normalizedX = (cardCenterX - containerWidth / 2) / (containerWidth / 2)
         const distFromCenter = Math.abs(normalizedX)
-        // On small screens keep edge cards visible longer so layout stays visually centered.
-        const fadeStart = containerWidth < 768 ? 0.82 : 0.55
-        const fadeStrength = containerWidth < 768 ? 1.6 : 3.5
+        const isDesktop = containerWidth >= 768
+        const fadeStart = isDesktop ? 0.48 : 0.82
+        const fadeStrength = isDesktop ? 2.4 : 1.6
+        const minOpacity = isDesktop ? 0 : 0.35
         if (distFromCenter > fadeStart) {
-          return Math.max(0.35, 1 - (distFromCenter - fadeStart) * fadeStrength)
+          return Math.max(minOpacity, 1 - (distFromCenter - fadeStart) * fadeStrength)
         }
         return 1
       }
@@ -121,13 +121,14 @@ export default function IntegrationsArcSection() {
           const shadowOpacity = opacity < 0.3 ? 0 : 0.08
           const roundedX = Math.round(x * 100) / 100
           const roundedY = Math.round(y * 100) / 100
+          const isDesktop = containerWidth >= 768
           gsap.to(icon, {
             x: roundedX,
             y: roundedY,
             opacity,
             scale,
-            duration: 0.14,
-            ease: 'power2.out',
+            duration: isDesktop ? 0.24 : 0.14,
+            ease: isDesktop ? 'power1.out' : 'power2.out',
             overwrite: true,
             force3D: true,
           })
@@ -140,14 +141,14 @@ export default function IntegrationsArcSection() {
 
       applyProgress(0)
 
-      // Start when sticky content is nearly full in view so handoff from previous section is smooth.
+      const scrubVal = containerRef.current.offsetWidth >= 768 ? 4 : 2.2
       ScrollTrigger.create({
         trigger: stickyContentRef.current,
         start: 'bottom 98%',
         end: '+=1000vh',
         pin: sectionRef.current,
         anticipatePin: 2,
-        scrub: 2.2,
+        scrub: scrubVal,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           applyProgress(self.progress)
@@ -182,13 +183,11 @@ export default function IntegrationsArcSection() {
           Integrate with your existing tools
         </h2>
 
-        {/* Icons container with overflow hidden */}
+        {/* Icons container — edge mask on desktop removes visible clip line */}
         <div
           ref={containerRef}
-          className="relative w-full h-[280px] overflow-hidden shrink-0"
+          className="integrations-arc-container relative w-full h-[280px] overflow-hidden shrink-0 lg:max-w-[720px] lg:mx-auto"
           style={{
-            clipPath: 'inset(0 0 0 0)',
-            WebkitClipPath: 'inset(0 0 0 0)',
             contain: 'layout style paint',
             transform: 'translateZ(0)',
           }}

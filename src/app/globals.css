@@ -750,6 +750,30 @@ a.bg-primary:hover,
   border-radius: 5px;
 }
 
+/* Integrations arc — soft edge mask on desktop to remove visible clip line */
+@media (min-width: 1024px) {
+  .integrations-arc-container {
+    mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      black 48px,
+      black calc(100% - 48px),
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      black 48px,
+      black calc(100% - 48px),
+      transparent 100%
+    );
+    mask-size: 100% 100%;
+    -webkit-mask-size: 100% 100%;
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+  }
+}
+
 /* Arch section (above IntegrationsArcSection) */
 .arch-section {
   color: #FFFFFF;

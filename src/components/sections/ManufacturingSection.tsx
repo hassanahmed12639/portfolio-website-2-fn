@@ -6,11 +6,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { registerGsapPlugins } from '../../lib/gsap'
 
 const cardData = [
-  { id: 1, label: 'Manufacturing', color: '#4A5568' },
-  { id: 2, label: 'Electricity', color: '#87CEEB' },
-  { id: 3, label: 'Agriculture', color: '#90EE90' },
-  { id: 4, label: 'Transportation', color: '#D2B48C' },
-  { id: 5, label: 'Buildings', color: '#708090' },
+  { id: 1, label: 'Paid Media', color: '#4A5568' },
+  { id: 2, label: 'CRO', color: '#87CEEB' },
+  { id: 3, label: 'Creative Strategy', color: '#90EE90' },
+  { id: 4, label: 'Analytics & Reporting', color: '#D2B48C' },
+  { id: 5, label: 'Growth Strategy', color: '#708090' },
 ]
 
 export default function ManufacturingSection() {
@@ -124,7 +124,7 @@ export default function ManufacturingSection() {
             <div className="max-w-4xl flex flex-col md:flex-row md:items-center md:justify-between gap-8">
               <div>
                 <h2 className="text-6xl md:text-8xl font-bold mb-6">
-                  <span className="text-lime-400">Manufacturing</span>
+                  <span className="text-lime-400">Paid Media</span>
                 </h2>
                 <div className="inline-block bg-gray-900 text-white px-6 py-3 rounded-full mb-6">
                   30% emissions

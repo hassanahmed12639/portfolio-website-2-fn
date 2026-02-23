@@ -53,7 +53,7 @@ export default function UnifyFinancesScroll() {
             yPercent: -50,
             x: startPositions[i].x,
             y: startPositions[i].y,
-            scale: 0.35,
+            scale: 1,
             opacity: 1,
             force3D: true,
             transformOrigin: "center center",
@@ -114,7 +114,6 @@ export default function UnifyFinancesScroll() {
               yPercent: -50,
               x: (i % 2) * 6, // slight offset for stacking (left/right)
               y: Math.floor(i / 2) * 6, // slight offset for stacking (top/bottom)
-              scale: 1,
               opacity: 1,
               ...animationConfig,
             },
@@ -208,7 +207,7 @@ export default function UnifyFinancesScroll() {
                 WebkitBackfaceVisibility: "hidden",
                 WebkitTransform: "translate(-50%, -50%) translateZ(0)",
                 outline: "none",
-                ...(i === 4 ? { border: "1px solid #E5E5E5", boxShadow: "0 2px 20px rgba(0,0,0,0.06)", overflow: "visible" as const } : i !== 2 ? { border: "1px solid #E5E5E5", boxShadow: "0 2px 20px rgba(0,0,0,0.06)", overflow: "hidden" as const } : { border: "0", borderWidth: "0", borderStyle: "none", boxShadow: "none", overflow: "hidden" as const }),
+                ...(i === 1 || i === 4 ? { border: "2px solid #AAFF00", boxShadow: "0 2px 20px rgba(0,0,0,0.06)", overflow: i === 4 ? ("visible" as const) : ("hidden" as const) } : i === 2 ? { border: "0", borderWidth: "0", borderStyle: "none", boxShadow: "none", overflow: "hidden" as const } : { border: "1px solid #E5E5E5", boxShadow: "0 2px 20px rgba(0,0,0,0.06)", overflow: "hidden" as const }),
                 isolation: "isolate",
                 contain: i === 4 ? "none" : "layout style paint",
                 WebkitFontSmoothing: "antialiased",

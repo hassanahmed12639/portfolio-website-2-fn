@@ -6,13 +6,13 @@ export default function ManufacturingFeatureSection() {
       <div className="mx-auto w-full max-w-7xl">
         <div className="relative mb-8 md:mb-12">
           <h2 className="text-[58px] font-semibold leading-[0.88] tracking-[-0.03em] text-white md:text-[140px]">
-            Manufacturing
+            Paid Media
           </h2>
           <h2
             aria-hidden="true"
             className="pointer-events-none absolute left-0 top-[22%] text-[58px] font-semibold leading-[0.88] tracking-[-0.03em] text-[#d7ff4c] md:text-[140px]"
           >
-            Manufacturing
+            Paid Media
           </h2>
         </div>
 

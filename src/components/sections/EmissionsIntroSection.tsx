@@ -516,7 +516,7 @@ export default function EmissionsIntroSection() {
       // Buildings exits first (down, out of frame).
       tl.to(buildingsCard, {
         y: '+=360',
-        opacity: 0,
+        autoAlpha: 0,
         scale: 0.92,
         duration: 0.52,
         ease: 'power1.in',
@@ -527,13 +527,14 @@ export default function EmissionsIntroSection() {
         transportationCard,
         {
           y: '+=360',
-          opacity: 0,
+          autoAlpha: 0,
           scale: 0.92,
           duration: 0.52,
           ease: 'power1.in',
         },
         '<+0.1'
       )
+      tl.set(transportationCard, { autoAlpha: 0 }, '>')
 
       // Agriculture moves to bottom-center with a slight size increase.
       tl.to(
@@ -961,7 +962,7 @@ export default function EmissionsIntroSection() {
                   ['--title-clip-bottom' as string]: '0%',
                 }}
               >
-                <span className="block text-[#AAFF00]" aria-hidden>Manufacturing</span>
+                <span className="block text-[#AAFF00]" aria-hidden>Paid Media</span>
                 <span
                   className="absolute inset-0 block text-white"
                   style={{
@@ -971,7 +972,7 @@ export default function EmissionsIntroSection() {
                   }}
                   aria-hidden
                 >
-                  Manufacturing
+                  Paid Media
                 </span>
               </h2>
             </div>
@@ -1028,7 +1029,7 @@ export default function EmissionsIntroSection() {
                   ['--title-clip-bottom' as string]: '0%',
                 }}
               >
-                <span className="block text-[#AAFF00]" aria-hidden>Electricity</span>
+                <span className="block text-[#AAFF00]" aria-hidden>CRO</span>
                 <span
                   className="absolute inset-0 block text-white"
                   style={{
@@ -1038,7 +1039,7 @@ export default function EmissionsIntroSection() {
                   }}
                   aria-hidden
                 >
-                  Electricity
+                  CRO
                 </span>
               </h2>
             </div>
@@ -1095,7 +1096,7 @@ export default function EmissionsIntroSection() {
                   ['--title-clip-bottom' as string]: '0%',
                 }}
               >
-                <span className="block text-[#AAFF00]" aria-hidden>Agriculture</span>
+                <span className="block text-[#AAFF00]" aria-hidden>Creative Strategy</span>
                 <span
                   className="absolute inset-0 block text-white"
                   style={{
@@ -1105,7 +1106,7 @@ export default function EmissionsIntroSection() {
                   }}
                   aria-hidden
                 >
-                  Agriculture
+                  Creative Strategy
                 </span>
               </h2>
             </div>
@@ -1162,7 +1163,7 @@ export default function EmissionsIntroSection() {
                   ['--title-clip-bottom' as string]: '0%',
                 }}
               >
-                <span className="block text-[#AAFF00]" aria-hidden>Transportation</span>
+                <span className="block text-[#AAFF00]" aria-hidden>Analytics & Reporting</span>
                 <span
                   className="absolute inset-0 block text-white"
                   style={{
@@ -1172,7 +1173,7 @@ export default function EmissionsIntroSection() {
                   }}
                   aria-hidden
                 >
-                  Transportation
+                  Analytics & Reporting
                 </span>
               </h2>
             </div>
@@ -1229,7 +1230,7 @@ export default function EmissionsIntroSection() {
                   ['--title-clip-bottom' as string]: '0%',
                 }}
               >
-                <span className="block text-[#AAFF00]" aria-hidden>Buildings</span>
+                <span className="block text-[#AAFF00]" aria-hidden>Growth Strategy</span>
                 <span
                   className="absolute inset-0 block text-white"
                   style={{
@@ -1239,7 +1240,7 @@ export default function EmissionsIntroSection() {
                   }}
                   aria-hidden
                 >
-                  Buildings
+                  Growth Strategy
                 </span>
               </h2>
             </div>
