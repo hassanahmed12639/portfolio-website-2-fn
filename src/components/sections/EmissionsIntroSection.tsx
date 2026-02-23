@@ -944,11 +944,11 @@ export default function EmissionsIntroSection() {
         className="pointer-events-none invisible absolute inset-0 z-20 opacity-0"
         style={{ visibility: 'hidden', opacity: 0 }}
       >
-        <div className="mx-auto flex h-full w-full max-w-7xl items-start px-3 pt-14 pb-3 md:items-center md:px-6 md:py-8 lg:px-10 lg:py-10 xl:px-14 xl:py-10">
-          <div className="relative w-full md:-translate-y-4 lg:-translate-y-6">
+        <div className="mx-auto flex h-full w-full max-w-7xl items-start px-3 pt-14 pb-3 md:items-center md:px-6 md:pt-16 md:pb-8 lg:px-10 lg:pt-20 lg:pb-10 xl:px-14 xl:pt-24 xl:pb-10">
+          <div className="relative w-full md:translate-y-0 lg:translate-y-0">
             <div
               ref={revealTitleRef}
-              className="relative z-20 mx-auto -mb-6 w-full max-w-[1020px] -translate-y-2 text-center md:-mb-8 md:-translate-y-5 lg:-mb-10 lg:-translate-y-7"
+              className="relative z-20 mx-auto -mb-6 w-full max-w-[1020px] lg:max-w-[2000px] xl:max-w-[2400px] 2xl:max-w-[92vw] -translate-y-2 text-center md:-mb-8 md:-translate-y-5 lg:-mb-10 lg:-translate-y-7"
               style={{ ['--title-split' as string]: 0 }}
             >
               <h2
@@ -978,7 +978,7 @@ export default function EmissionsIntroSection() {
 
             <div
               ref={revealFrameRef}
-              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[95%] lg:max-w-[1020px]"
+              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[95%] lg:max-w-[2000px] xl:max-w-[2400px] 2xl:max-w-[92vw]"
             >
               <img
                 ref={revealImageRef}
@@ -1015,7 +1015,7 @@ export default function EmissionsIntroSection() {
           <div className="w-full md:-translate-y-4 lg:-translate-y-6">
             <div
               ref={electricityTitleRef}
-              className="relative z-20 mx-auto -mb-6 w-full max-w-[1020px] -translate-y-2 text-center md:-mb-8 md:-translate-y-5 lg:-mb-10 lg:-translate-y-7"
+              className="relative z-20 mx-auto -mb-6 w-full max-w-[1020px] lg:max-w-[2000px] xl:max-w-[2400px] 2xl:max-w-[92vw] -translate-y-2 text-center md:-mb-8 md:-translate-y-5 lg:-mb-10 lg:-translate-y-7"
               style={{ ['--title-split' as string]: 0 }}
             >
               <h2
@@ -1045,7 +1045,7 @@ export default function EmissionsIntroSection() {
 
             <div
               ref={electricityFrameRef}
-              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[95%] lg:max-w-[1020px]"
+              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[95%] lg:max-w-[2000px] xl:max-w-[2400px] 2xl:max-w-[92vw]"
             >
               <img
                 ref={electricityImageRef}
@@ -1082,7 +1082,7 @@ export default function EmissionsIntroSection() {
           <div className="w-full md:-translate-y-4 lg:-translate-y-6">
             <div
               ref={agricultureTitleRef}
-              className="relative z-20 mx-auto -mb-6 w-full max-w-[1020px] -translate-y-2 text-center md:-mb-8 md:-translate-y-5 lg:-mb-10 lg:-translate-y-7"
+              className="relative z-20 mx-auto -mb-6 w-full max-w-[1020px] lg:max-w-[2000px] xl:max-w-[2400px] 2xl:max-w-[92vw] -translate-y-2 text-center md:-mb-8 md:-translate-y-5 lg:-mb-10 lg:-translate-y-7"
               style={{ ['--title-split' as string]: 0 }}
             >
               <h2
@@ -1112,7 +1112,7 @@ export default function EmissionsIntroSection() {
 
             <div
               ref={agricultureFrameRef}
-              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[95%] lg:max-w-[1020px]"
+              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[95%] lg:max-w-[2000px] xl:max-w-[2400px] 2xl:max-w-[92vw]"
             >
               <img
                 ref={agricultureImageRef}
@@ -1149,7 +1149,7 @@ export default function EmissionsIntroSection() {
           <div className="w-full md:-translate-y-4 lg:-translate-y-6">
             <div
               ref={transportationTitleRef}
-              className="relative z-20 mx-auto -mb-6 w-full max-w-[1020px] -translate-y-2 text-center md:-mb-8 md:-translate-y-5 lg:-mb-10 lg:-translate-y-7"
+              className="relative z-20 mx-auto -mb-6 w-full max-w-[1020px] lg:max-w-[2000px] xl:max-w-[2400px] 2xl:max-w-[92vw] -translate-y-2 text-center md:-mb-8 md:-translate-y-5 lg:-mb-10 lg:-translate-y-7"
               style={{ ['--title-split' as string]: 0 }}
             >
               <h2
@@ -1179,7 +1179,7 @@ export default function EmissionsIntroSection() {
 
             <div
               ref={transportationFrameRef}
-              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[95%] lg:max-w-[1020px]"
+              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[95%] lg:max-w-[2000px] xl:max-w-[2400px] 2xl:max-w-[92vw]"
             >
               <img
                 ref={transportationImageRef}
@@ -1216,7 +1216,7 @@ export default function EmissionsIntroSection() {
           <div className="w-full md:-translate-y-4 lg:-translate-y-6">
             <div
               ref={buildingsTitleRef}
-              className="relative z-20 mx-auto -mb-6 w-full max-w-[1020px] -translate-y-2 text-center md:-mb-8 md:-translate-y-5 lg:-mb-10 lg:-translate-y-7"
+              className="relative z-20 mx-auto -mb-6 w-full max-w-[1020px] lg:max-w-[2000px] xl:max-w-[2400px] 2xl:max-w-[92vw] -translate-y-2 text-center md:-mb-8 md:-translate-y-5 lg:-mb-10 lg:-translate-y-7"
               style={{ ['--title-split' as string]: 0 }}
             >
               <h2
@@ -1246,7 +1246,7 @@ export default function EmissionsIntroSection() {
 
             <div
               ref={buildingsFrameRef}
-              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[95%] lg:max-w-[1020px]"
+              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[95%] lg:max-w-[2000px] xl:max-w-[2400px] 2xl:max-w-[92vw]"
             >
               <img
                 ref={buildingsImageRef}
