@@ -49,8 +49,11 @@ export default function UnifyFinancesScroll() {
       cardsRef.current.forEach((card, i) => {
         if (card && startPositions[i]) {
           gsap.set(card, {
+            xPercent: -50,
+            yPercent: -50,
             x: startPositions[i].x,
             y: startPositions[i].y,
+            scale: 0.35,
             opacity: 1,
             force3D: true,
             transformOrigin: "center center",
@@ -85,7 +88,7 @@ export default function UnifyFinancesScroll() {
           trigger: sectionRef.current,
           start: "top top",
           end: "+=165%",
-          scrub: 1.7,
+          scrub: 2.5,
           pin: true,
           pinSpacing: true,
           anticipatePin: 4,
@@ -95,7 +98,7 @@ export default function UnifyFinancesScroll() {
       });
 
       const animationConfig = {
-        duration: 3,
+        duration: 3.2,
         ease: "sine.out" as const,
         force3D: true,
         immediateRender: false,
@@ -107,8 +110,11 @@ export default function UnifyFinancesScroll() {
           tl.to(
             card,
             {
+              xPercent: -50,
+              yPercent: -50,
               x: (i % 2) * 6, // slight offset for stacking (left/right)
               y: Math.floor(i / 2) * 6, // slight offset for stacking (top/bottom)
+              scale: 1,
               opacity: 1,
               ...animationConfig,
             },
@@ -220,22 +226,22 @@ export default function UnifyFinancesScroll() {
                 </div>
               ) : i === 1 ? (
                 <div className="h-full flex flex-col p-2 sm:p-3 md:p-4 items-center text-center">
-                  <h3 className="text-xs sm:text-sm font-semibold text-[#0F0F0F] mb-1.5 sm:mb-2 flex-shrink-0">
+                  <h3 className="text-[10px] sm:text-sm font-semibold text-[#0F0F0F] mb-1 sm:mb-2 flex-shrink-0">
                     Conversion Rate
                   </h3>
-                  <div className="flex-1 min-h-0 w-full flex flex-col items-center justify-center gap-1 sm:gap-1.5 py-1">
-                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#AAFF00] flex items-center justify-center flex-shrink-0">
-                      <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-[#0F0F0F]" />
+                  <div className="flex-1 min-h-0 w-full flex flex-col items-center justify-center gap-0.5 sm:gap-1.5 py-0.5 sm:py-1 mt-1 sm:mt-0">
+                    <div className="w-6 h-6 sm:w-9 sm:h-9 rounded-full bg-[#AAFF00] flex items-center justify-center flex-shrink-0 -mt-0.5 sm:mt-0">
+                      <Globe className="w-3 h-3 sm:w-5 sm:h-5 text-[#0F0F0F]" />
                     </div>
-                    <div className="flex items-center justify-center gap-1.5">
-                      <span className="text-lg sm:text-xl md:text-2xl font-bold text-[#0F0F0F]">15.7%</span>
-                      <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-[#0F0F0F] flex-shrink-0" />
+                    <div className="flex items-center justify-center gap-1 sm:gap-1.5">
+                      <span className="text-sm sm:text-xl md:text-2xl font-bold text-[#0F0F0F]">15.7%</span>
+                      <TrendingUp className="w-3 h-3 sm:w-5 sm:h-5 text-[#0F0F0F] flex-shrink-0" />
                     </div>
-                    <p className="text-[10px] sm:text-xs text-[#757575]">
+                    <p className="text-[9px] sm:text-xs text-[#757575] leading-tight">
                       impressions: 8.9M / Clicks: 670K
                     </p>
                   </div>
-                  <button className="w-full max-w-[90%] mt-2 bg-[#AAFF00] hover:opacity-95 text-[#0F0F0F] text-[10px] sm:text-xs font-bold py-2 sm:py-2.5 rounded-full transition-opacity flex-shrink-0 shadow-sm">
+                  <button className="w-full max-w-[90%] mt-1.5 sm:mt-2 bg-[#AAFF00] hover:opacity-95 text-[#0F0F0F] text-[9px] sm:text-xs font-bold py-1.5 sm:py-2.5 rounded-full transition-opacity flex-shrink-0 shadow-sm">
                     Analyze Funnel
                   </button>
                 </div>
@@ -309,13 +315,10 @@ export default function UnifyFinancesScroll() {
                         </text>
                       </svg>
                     </div>
-                    <p className="text-sm sm:text-base font-bold text-[#0F0F0F] text-center -mt-1.5">
+                    <p className="text-xs sm:text-base font-bold text-[#0F0F0F] text-center -mt-2.5 sm:-mt-1.5">
                       98% Match Rate
                     </p>
                   </div>
-                  <button className="w-full max-w-[88%] bg-[#AAFF00] hover:opacity-95 text-[#0F0F0F] text-[10px] sm:text-xs font-bold py-2 sm:py-2.5 rounded-full transition-opacity flex-shrink-0 shadow-sm">
-                    View Winning Assets
-                  </button>
                 </div>
               ) : null}
             </div>

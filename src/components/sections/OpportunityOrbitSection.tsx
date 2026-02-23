@@ -30,6 +30,7 @@ export default function OpportunityOrbitSection() {
   const radarRef = useRef<HTMLDivElement>(null)
   const sweepGradientRef = useRef<HTMLDivElement>(null)
   const leftTextRef = useRef<HTMLDivElement>(null)
+  const leftTextWrapperRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const scrollTrack = scrollTrackRef.current
@@ -736,7 +737,10 @@ export default function OpportunityOrbitSection() {
           DISCOVER
         </p>
 
-        <div className="fixed bottom-4 left-6 z-20 w-full max-w-[min(45vw,340px)] translate-y-0 md:absolute md:left-2 md:bottom-auto md:top-1/2 md:max-w-[min(38vw,340px)] md:-translate-y-1/2 md:pl-8 lg:max-w-[340px]">
+        <div
+          ref={leftTextWrapperRef}
+          className="absolute left-6 bottom-4 z-20 w-full max-w-[min(45vw,340px)] translate-y-0 md:left-2 md:bottom-auto md:top-1/2 md:max-w-[min(38vw,340px)] md:-translate-y-1/2 md:pl-8 lg:max-w-[340px]"
+        >
           <div ref={leftTextRef} className="relative w-full" style={{ minHeight: 124 }}>
             {TEXT_BLOCKS.map((block, i) => (
               <div
