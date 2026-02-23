@@ -91,7 +91,7 @@ export default function OpportunityOrbitSection() {
     const DOTS_PHASE_END = 0.8
     const getPremiumBaseSize = () => Math.max(280, Math.min(radar.clientWidth, radar.clientHeight))
     let premiumBaseSize = getPremiumBaseSize()
-    const PREMIUM_SCALE = 0.76
+    const PREMIUM_SCALE = 1
     const PREMIUM_INTRO_END = 0.28
     const PREMIUM_FILL_END = 0.55
     const FINAL_LABEL_START = 0.86
@@ -724,7 +724,7 @@ export default function OpportunityOrbitSection() {
     <div ref={scrollTrackRef} className="relative bg-[#f2f2f0]">
       <div ref={sectionSlotRef} aria-hidden />
       <div ref={pinSpacerRef} aria-hidden />
-      <section ref={sectionRef} className="min-h-screen w-full overflow-hidden bg-[#f2f2f0] px-6 py-8 md:px-[5%] md:py-12">
+      <section ref={sectionRef} className="min-h-screen w-full overflow-hidden bg-[#f2f2f0] px-6 py-8 pb-40 md:px-[5%] md:py-12 md:pb-12">
       <div className="relative mx-auto flex h-full w-full max-w-7xl items-center">
         <div className="absolute left-2 top-1/2 hidden -translate-y-1/2 flex-col items-center gap-3 md:flex">
           <span className="h-[5px] w-[5px] rounded-full bg-[#cfff3f]" />
@@ -736,7 +736,7 @@ export default function OpportunityOrbitSection() {
           DISCOVER
         </p>
 
-        <div className="absolute left-2 top-1/2 z-20 w-full max-w-[min(45vw,340px)] md:left-[2%] md:max-w-[min(38vw,340px)] md:pl-8 lg:max-w-[340px]" style={{ transform: 'translateY(-50%)' }}>
+        <div className="fixed bottom-4 left-6 z-20 w-full max-w-[min(45vw,340px)] translate-y-0 md:absolute md:left-2 md:bottom-auto md:top-1/2 md:max-w-[min(38vw,340px)] md:-translate-y-1/2 md:pl-8 lg:max-w-[340px]">
           <div ref={leftTextRef} className="relative w-full" style={{ minHeight: 124 }}>
             {TEXT_BLOCKS.map((block, i) => (
               <div
@@ -755,10 +755,10 @@ export default function OpportunityOrbitSection() {
           </div>
         </div>
 
-        <div className="grid min-w-0 w-full grid-cols-1 items-center justify-items-center gap-12 md:grid-cols-[1fr_minmax(280px,680px)_1fr] lg:grid-cols-[1fr_minmax(320px,760px)_1fr] xl:grid-cols-[1fr_minmax(360px,840px)_1fr] md:gap-6">
+        <div className="grid min-w-0 w-full grid-cols-1 items-center justify-items-center gap-12 min-h-[75vh] place-content-center md:min-h-0 md:place-content-stretch md:grid-cols-[1fr_minmax(280px,680px)_1fr] lg:grid-cols-[1fr_minmax(320px,760px)_1fr] xl:grid-cols-[1fr_minmax(360px,840px)_1fr] md:gap-6">
           <div className="hidden md:block min-w-0" aria-hidden />
 
-          <div className="relative mx-auto mt-8 flex h-[480px] w-full min-w-[260px] max-w-[640px] items-center justify-center sm:h-[520px] sm:max-w-[680px] md:mt-0 md:h-[600px] md:max-w-[680px] lg:h-[680px] lg:max-w-[760px] xl:h-[720px] xl:max-w-[840px]">
+          <div className="relative mx-auto mt-6 flex w-full min-w-[260px] max-w-[560px] items-center justify-center sm:max-w-[600px] sm:mt-8 md:mt-0 md:max-w-[600px] lg:max-w-[660px] xl:max-w-[720px] aspect-square max-h-[65vh] sm:max-h-[70vh] md:max-h-[520px] lg:max-h-[580px] xl:max-h-[620px]">
             <div ref={radarContainerRef} className="radar-container h-full w-full max-h-full flex items-center justify-center">
               <div className="radar-sticky">
                 <div ref={radarRef} className="radar">
@@ -837,7 +837,7 @@ export default function OpportunityOrbitSection() {
         }
 
         .radar {
-          --radar-size: min(100cqw, 100cqh, 680px);
+          --radar-size: min(100cqw, 100cqh, 520px);
           width: var(--radar-size);
           height: var(--radar-size);
           position: relative;

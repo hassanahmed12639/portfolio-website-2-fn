@@ -656,35 +656,35 @@ export default function EmissionsIntroSection() {
       )
       tl.set(revealFrame, { clearProps: 'x,y,scaleX,scaleY,opacity' })
     } else {
-      // Desktop: continuous geometry match handoff (no hard switch bump).
+      // Desktop: apply small state in callback (so it's correct when scrubbing), then animate to full.
       tl.add(() => {
         revealFrameMatch = getRevealFrameMatchTransform()
-      })
-      tl.set(revealImage, { x: 0, y: 0, scale: 1, opacity: 1 })
-      tl.set(revealWrap, { autoAlpha: 1 }, '>')
-      tl.fromTo(
-        revealFrame,
-        {
-          x: () => revealFrameMatch.x,
-          y: () => revealFrameMatch.y,
-          scaleX: () => revealFrameMatch.scaleX,
-          scaleY: () => revealFrameMatch.scaleY,
-          borderRadius: 2,
+        gsap.set(revealFrame, {
+          x: revealFrameMatch.x,
+          y: revealFrameMatch.y,
+          scaleX: revealFrameMatch.scaleX,
+          scaleY: revealFrameMatch.scaleY,
           transformOrigin: 'center center',
-        },
+          force3D: true,
+        })
+      })
+      tl.set(revealImage, { x: 0, y: 0, scale: 1, transformOrigin: 'center center', force3D: true })
+      tl.set(manufacturingCard, { autoAlpha: 0 }, '>')
+      tl.set(revealWrap, { autoAlpha: 1 }, '>')
+      tl.to(
+        revealFrame,
         {
           x: 0,
           y: 0,
           scaleX: 1,
           scaleY: 1,
-          borderRadius: 16,
-          duration: 1.12,
+          duration: 1.85,
           ease: 'power2.inOut',
-          immediateRender: true,
+          force3D: true,
         },
         '>'
       )
-      tl.to(manufacturingCard, { autoAlpha: 0, duration: 0.16, ease: 'none' }, '>')
+      tl.set(revealFrame, { clearProps: 'x,y,scaleX,scaleY,transform' }, '+=0')
     }
 
     // Text timing: mobile reveals title first, then copy; desktop keeps prior timing.
