@@ -16,31 +16,34 @@
   height: 50vh;
   background: #0d0d0d;
   z-index: 1;
-  transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  transition: transform 1s cubic-bezier(0.33, 1, 0.68, 1);
   pointer-events: none;
 }
 
 .splitTop {
   top: 0;
-  transform: translateY(0);
+  transform: translateZ(0) translateY(0);
 }
 
 .splitBottom {
   bottom: 0;
-  transform: translateY(0);
+  transform: translateZ(0) translateY(0);
 }
 
 .splitTopOpen {
-  transform: translateY(-100%);
+  transform: translateZ(0) translateY(-100%);
 }
 
 .splitBottomOpen {
-  transform: translateY(100%);
+  transform: translateZ(0) translateY(100%);
 }
 
 .stickyFadeOut {
   opacity: 0;
-  transition: opacity 0.35s ease-out;
+  transition: opacity 0.4s cubic-bezier(0.33, 1, 0.68, 1);
   pointer-events: none;
 }
 
@@ -79,7 +82,8 @@
   gap: 16px;
   pointer-events: none;
   z-index: 2;
-  transition: opacity 0.35s ease-out;
+  transition: opacity 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+  will-change: opacity;
 }
 
 .heroSlot {
@@ -165,6 +169,8 @@
   background: #AAFF00;
   z-index: 999;
   pointer-events: none;
+  transition: opacity 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+  will-change: opacity;
 }
 
 .cue {
@@ -178,7 +184,8 @@
   align-items: center;
   gap: 8px;
   pointer-events: none;
-  transition: opacity 0.4s;
+  transition: opacity 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+  will-change: opacity;
 }
 
 .cue.hidden {

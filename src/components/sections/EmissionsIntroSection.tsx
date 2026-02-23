@@ -28,7 +28,7 @@ const CARDS = [
     id: 'transportation',
     src: 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=900&q=80',
     alt: 'Road transportation',
-    className: 'top-[72%] left-[8%] w-[82px] md:bottom-[24%] md:right-[8%] md:left-auto md:top-auto md:w-44',
+    className: 'top-auto bottom-[8%] left-[8%] w-[82px] md:top-auto md:bottom-[24%] md:right-[8%] md:left-auto md:w-44',
   },
   {
     id: 'buildings',

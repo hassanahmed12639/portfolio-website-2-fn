@@ -1,7 +1,6 @@
  'use client'
 
 import { useEffect, useRef } from 'react'
-import { cn } from '../../lib/utils'
 
 const TEXT_BLOCKS = [
   {
@@ -15,6 +14,10 @@ const TEXT_BLOCKS = [
   {
     title: 'Where We Land',
     body: 'The final layer stays in view. Scroll further to continue to the next section.',
+  },
+  {
+    title: 'What Comes Next',
+    body: 'One more layer that rises from below and holds in place. You can replace this title and body with your own copy.',
   },
 ]
 
@@ -96,7 +99,7 @@ export default function OpportunityOrbitSection() {
     const TEXT_EXIT_DURATION = 0.18
     const TEXT_GAP_AFTER_EXIT = 0.06
     const TEXT_BLOCK_SPAN = TEXT_ENTER_DURATION + TEXT_EXIT_DURATION + TEXT_GAP_AFTER_EXIT
-    const TEXT_ENTRY_OFFSET_PX = 72
+    let textEntryOffsetPx = Math.round(window.innerHeight * 0.55)
     const TEXT_EXIT_OFFSET_PX = -500
 
     const expansionInitialPositions = [
@@ -168,7 +171,7 @@ export default function OpportunityOrbitSection() {
 
     const textBlocks = Array.from(leftText.querySelectorAll<HTMLDivElement>('.left-text-block'))
     textBlocks.forEach((block) => {
-      block.style.transform = `translateY(${TEXT_ENTRY_OFFSET_PX}px)`
+      block.style.transform = `translateY(${textEntryOffsetPx}px)`
       block.style.opacity = '0'
       block.style.visibility = 'hidden'
     })
@@ -183,7 +186,7 @@ export default function OpportunityOrbitSection() {
         const exitEnd = blockStart + TEXT_ENTER_DURATION + TEXT_EXIT_DURATION
 
         if (p <= blockStart) {
-          block.style.transform = `translateY(${TEXT_ENTRY_OFFSET_PX}px)`
+          block.style.transform = `translateY(${textEntryOffsetPx}px)`
           block.style.opacity = '0'
           block.style.visibility = 'hidden'
           return
@@ -203,8 +206,8 @@ export default function OpportunityOrbitSection() {
         block.style.visibility = 'visible'
         if (p <= enterEnd) {
           const t = easeInOutCubic(clamp((p - blockStart) / TEXT_ENTER_DURATION))
-          block.style.transform = `translateY(${TEXT_ENTRY_OFFSET_PX * (1 - t)}px)`
-          block.style.opacity = String(t)
+          block.style.transform = `translateY(${textEntryOffsetPx * (1 - t)}px)`
+          block.style.opacity = '1'
           return
         }
         const exitT = easeInOutCubic(clamp((p - enterEnd) / TEXT_EXIT_DURATION))
@@ -691,6 +694,7 @@ export default function OpportunityOrbitSection() {
     }
 
     const onResize = () => {
+      textEntryOffsetPx = Math.round(window.innerHeight * 0.55)
       applyPinLayoutSizing()
       premiumBaseSize = getPremiumBaseSize()
       targetPinProgress = readPinProgress()
@@ -737,10 +741,7 @@ export default function OpportunityOrbitSection() {
             {TEXT_BLOCKS.map((block, i) => (
               <div
                 key={i}
-                className={cn(
-                  "left-text-block absolute left-0 top-0 w-full flex flex-col justify-center text-black",
-                  i === TEXT_BLOCKS.length - 1 && "md:hidden"
-                )}
+                className="left-text-block absolute left-0 top-0 w-full flex flex-col justify-center text-black"
                 style={{ willChange: 'transform, opacity' }}
               >
                 <h2 className="text-2xl font-semibold tracking-tight text-black md:text-3xl">

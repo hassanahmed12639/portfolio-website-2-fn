@@ -6,9 +6,9 @@ import styles from './ScrambleIntro.module.css'
 const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*!?'
 const TARGET_L1 = 'HASSAN'
 const TARGET_L2 = 'AHMED'
-const TRACK_HEIGHT_VH = 500
+const TRACK_HEIGHT_VH = 250
 const FADE_MS = 450
-const SPLIT_DURATION_MS = 900
+const SPLIT_DURATION_MS = 1000
 
 function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value))
@@ -101,7 +101,11 @@ export default function ScrambleIntro({ onComplete }: ScrambleIntroProps) {
     const startSplitReveal = () => {
       if (doneRef.current) return
       doneRef.current = true
-      setIsSplitting(true)
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setIsSplitting(true)
+        })
+      })
       fadeTimerRef.current = window.setTimeout(() => {
         onComplete?.()
         setIsVisible(false)
@@ -151,9 +155,9 @@ export default function ScrambleIntro({ onComplete }: ScrambleIntroProps) {
         heroSlotRef.current.classList.toggle(styles.heroVisible, heroP > 0.1)
       }
 
-      if (p >= 0.85 || maxScroll - scrollTop <= 2) startSplitReveal()
+      if (p >= 0.56 || maxScroll - scrollTop <= 2) startSplitReveal()
 
-      if (p < 0.85 && !doneRef.current) {
+      if (p < 0.56 && !doneRef.current) {
         rafRef.current = window.requestAnimationFrame(update)
       }
     }

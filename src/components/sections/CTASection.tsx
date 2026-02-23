@@ -20,9 +20,9 @@ interface ComponentProps {
 }
 
 export default function CTASection({
-  name = "Berat Berkay",
-  role = "Developer",
-  email = "beratberkaygokdemir@gmail.com",
+  name = "Hassan Ahmed",
+  role = "performance marketer",
+  email = "hassanonclouds@gmail.com",
   avatarSrc = "https://img.clerk.com/eyJ0eXBlIjoicHJveHkiLCJzcmMiOiJodHRwczovL2ltYWdlcy5jbGVyay5kZXYvb2F1dGhfZ2l0aHViL2ltZ18yc2pLdFl5STR0MkZMcUNKaVNMQVJXRmNBSXIifQ",
   statusText = "Available for work",
   statusColor = "bg-accent",
