@@ -425,7 +425,7 @@ a.bg-primary:hover,
   background: #0F0F0F;
   border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: none;
   opacity: 0;
   cursor: pointer;
   pointer-events: auto;
@@ -433,7 +433,7 @@ a.bg-primary:hover,
 
 .sector-scroll-section .sector-card:hover {
   transform: scale(1.02);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.14), 0 6px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: none;
 }
 
 .sector-scroll-section .sector-card-center:hover {

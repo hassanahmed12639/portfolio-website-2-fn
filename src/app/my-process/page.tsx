@@ -148,44 +148,6 @@ function NodeIcon({ id, cx, cy, color, size = 13 }: { id: string; cx: number; cy
   }
 }
 
-// ── Mobile node card (pure HTML, no SVG) ─────────────────────
-function MobileNodeCard({ node, isActive, isDimmed }: { node: (typeof NODES)[0]; isActive: boolean; isDimmed: boolean }) {
-  return (
-    <div style={{
-      display:"flex", alignItems:"center", gap:10,
-      padding:"10px 12px",
-      background: isActive ? "#191919" : T.card,
-      border:`1px solid ${isActive ? T.green : T.border}`,
-      borderLeft:`3px solid ${isActive ? T.green : T.border}`,
-      borderRadius:8,
-      opacity: isDimmed ? 0.2 : 1,
-      transition:"all 0.2s",
-      boxShadow: isActive ? `0 0 12px rgba(170,255,0,0.12)` : "none",
-    }}>
-      <svg width={20} height={20} viewBox="0 0 20 20">
-        <NodeIcon id={node.id} cx={10} cy={10} color={T.green} size={16}/>
-      </svg>
-      <div style={{flex:1, minWidth:0}}>
-        <div style={{
-          fontSize:12, fontWeight:700, color: isActive ? T.white : "#888",
-          whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis",
-        }}>{node.label}</div>
-        <div style={{
-          fontSize:10, color: isActive ? T.greenDim : T.grey,
-          whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis",
-          opacity:0.9,
-        }}>{node.sub}</div>
-      </div>
-      {isActive && (
-        <div style={{
-          padding:"2px 7px", background:T.green, borderRadius:10,
-          fontSize:8, fontWeight:800, color:"#000", letterSpacing:"0.05em", flexShrink:0,
-        }}>ACTIVE</div>
-      )}
-    </div>
-  );
-}
-
 function MarketingArchitecture() {
   const svgRef = useRef<SVGSVGElement>(null);
   const drag   = useRef<{ id: string; ox: number; oy: number } | null>(null);
@@ -240,14 +202,6 @@ function MarketingArchitecture() {
     return activeSet.has(from) && activeSet.has(to);
   };
 
-  // Group nodes by column label for mobile
-  const colGroups: Record<string, (typeof NODES)[0][]> = {};
-  NODES.forEach(n => {
-    const lbl = COL_LABELS[n.col as keyof typeof COL_LABELS] || n.col;
-    if (!colGroups[lbl]) colGroups[lbl] = [];
-    colGroups[lbl].push(n);
-  });
-
   // ── SHARED: header + journey panel ──────────────────────────
   const header = (
     <div style={{
@@ -287,7 +241,9 @@ function MarketingArchitecture() {
         </svg>
         {showJourney ? "CLOSE" : "VIEW JOURNEY"}
       </button>
-      {!isMobile && (
+      {isMobile ? (
+        <span style={{fontSize:10,color:T.dim,letterSpacing:"0.1em",fontWeight:500}}>SWIPE →</span>
+      ) : (
         <span style={{fontSize:10,color:T.dim,letterSpacing:"0.1em",fontWeight:500}}>DRAG NODES</span>
       )}
     </div>
@@ -371,68 +327,55 @@ function MarketingArchitecture() {
     </div>
   );
 
-  // ── MOBILE LAYOUT: stacked node list ─────────────────────────
-  if (isMobile) {
-    return (
-      <div style={{
-        width:"100%",background:T.bg,borderRadius:12,overflow:"hidden",
-        border:`1px solid ${T.border}`,
-        boxShadow:"0 16px 60px rgba(0,0,0,0.7)",
-        fontFamily:"'DM Sans',sans-serif",
-      }}>
-        {header}
-        {journeyPanel}
-
-        <div style={{padding:"14px 14px",display:"flex",flexDirection:"column",gap:16}}>
-          {Object.entries(colGroups).map(([colLabel, nodes]) => (
-            <div key={colLabel}>
-              <div style={{
-                fontSize:8,fontWeight:700,color:T.green,
-                letterSpacing:"0.18em",marginBottom:8,opacity:0.5,
-              }}>{colLabel.toUpperCase()}</div>
-              <div style={{display:"flex",flexDirection:"column",gap:6}}>
-                {nodes.map(node => (
-                  <MobileNodeCard
-                    key={node.id}
-                    node={node}
-                    isActive={activeSet ? activeSet.has(node.id) : false}
-                    isDimmed={activeSet ? !activeSet.has(node.id) : false}
-                  />
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div style={{
-          padding:"10px 14px",borderTop:`1px solid ${T.border}`,
-          background:"#0f0f0f",
-          fontSize:9.5,color:T.grey,textAlign:"center",
-        }}>
-          Tap <span style={{color:T.green,fontWeight:700}}>VIEW JOURNEY</span> to highlight active nodes per step
-        </div>
-
-        <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');button:focus{outline:none;}`}</style>
-      </div>
-    );
-  }
-
-  // ── TABLET + DESKTOP: SVG diagram (horizontally scrollable on tablet) ──
+  // ── SVG diagram: same canvas for all; mobile = scroll wrapper + fixed width ──
   const svgCanvas = (
-    <div style={{
-      overflowX: isTablet ? "auto" : "visible",
-      overflowY: "hidden",
-      WebkitOverflowScrolling:"touch",
-    }}>
+    <div
+      className={isMobile ? "svg-scroll-wrap" : undefined}
+      style={{
+        overflowX: isMobile || isTablet ? "auto" : "visible",
+        overflowY: "hidden",
+        WebkitOverflowScrolling: "touch",
+        ...(isMobile && {
+          scrollbarWidth: "none",
+          position: "relative",
+        }),
+      }}
+    >
+      {isMobile && (
+        <div
+          style={{
+            position: "absolute",
+            bottom: 12,
+            left: "50%",
+            transform: "translateX(-50%)",
+            background: "rgba(13,13,13,0.88)",
+            border: "1px solid #252525",
+            borderRadius: 20,
+            padding: "3px 14px",
+            color: "#555",
+            fontSize: 9,
+            pointerEvents: "none",
+            zIndex: 10,
+            display: "flex",
+            alignItems: "center",
+            gap: 4,
+            whiteSpace: "nowrap",
+          }}
+        >
+          <span style={{ color: "#aaff00" }}>←</span>
+          <span>SWIPE TO EXPLORE</span>
+          <span style={{ color: "#aaff00" }}>→</span>
+        </div>
+      )}
       <svg
         ref={svgRef}
-        width={isTablet ? 1100 : "100%"}
+        width={isMobile ? 1100 : isTablet ? 1100 : "100%"}
         viewBox="0 0 1100 640"
         style={{
-          display:"block",
-          touchAction:"pan-y",
+          display: "block",
+          touchAction: isMobile ? "pan-x" : "pan-y",
           minHeight: isTablet ? 500 : 480,
-          minWidth: isTablet ? 1100 : undefined,
+          minWidth: isTablet || isMobile ? 1100 : undefined,
         }}
         onMouseMove={onMove}
         onMouseUp={onUp}
@@ -628,6 +571,7 @@ function MarketingArchitecture() {
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
         button:focus{outline:none;}
         div::-webkit-scrollbar{display:none;}
+        .svg-scroll-wrap::-webkit-scrollbar{display:none;}
       `}</style>
     </div>
   );

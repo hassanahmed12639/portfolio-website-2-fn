@@ -733,13 +733,14 @@ export default function EmissionsIntroSection() {
       )
     }
 
-    // On scroll: both animations start at once — current exits up, next rises from below (no overlap: next starts below).
+    // Sequential handoff: current exits fully then next enters (no overlap).
     const CARD_ENTER_Y = () => Math.max(420, window.innerHeight * 0.5)
     const CARD_ENTER_DURATION = 1.25
     const FRAME_ENTER_SCALE = 0.88
     const FRAME_ENTER_Y = 50
     const EXIT_DURATION = 0.82
-    const CARD_GAP = 32 // slight distance between cards so they never overlap
+    const CARD_GAP = 72
+    const EXIT_Y = -(window.innerHeight + 120)
 
     const handoffToNextStage = (
       currentStage: HTMLDivElement,
@@ -752,6 +753,9 @@ export default function EmissionsIntroSection() {
       tl.to({}, { duration: 0.02 })
 
       // Next card visible below (won’t overlap current); then both animations start together.
+      tl.to(currentStage, { y: EXIT_Y, scale: 0.92, duration: EXIT_DURATION, ease: 'power1.in' }, '>')
+      tl.set(currentStage, { autoAlpha: 0 }, '>')
+      tl.to({}, { duration: 0.28 })
       tl.set(nextStage, { autoAlpha: 1, y: CARD_ENTER_Y() }, '>')
       tl.set(nextImage, { y: 0, scale: 1, transformOrigin: 'center center' }, '>')
       if (nextFrame) {
@@ -762,17 +766,12 @@ export default function EmissionsIntroSection() {
           transformOrigin: 'center center',
         }, '>')
       }
-      const t = tl.duration()
-      tl.to(currentStage, { y: -520, scale: 0.92, duration: EXIT_DURATION, ease: 'power1.in' }, '>')
-      tl.to(nextStage, { y: CARD_GAP, duration: CARD_ENTER_DURATION, ease: [0.33, 1, 0.38, 1] }, '<')
+      tl.to(nextStage, { y: CARD_GAP, duration: CARD_ENTER_DURATION, ease: [0.33, 1, 0.38, 1] }, '>')
       if (nextFrame) {
         tl.to(nextFrame, { y: 0, scale: 1, duration: CARD_ENTER_DURATION, ease: [0.33, 1, 0.38, 1] }, '<')
         tl.to(nextFrame, { boxShadow: '0 30px 90px rgba(0,0,0,0.8)', duration: 0.35, ease: 'power2.out' }, '<+0.65')
         tl.set(nextFrame, { clearProps: 'y,scale' }, '>+0.1')
       }
-      // keep y: CARD_GAP so there's always a slight distance between cards (no overlap)
-      tl.set(currentStage, { autoAlpha: 0 }, t + EXIT_DURATION)
-
       tl.to(nextTitle, { y: 0, opacity: 1, duration: 0.55, ease: 'power2.out' }, '<+0.2')
       tl.to(nextCopy, { y: 0, opacity: 1, duration: 0.55, ease: 'power2.out' }, '<+0.12')
     }
