@@ -12,20 +12,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { Facebook, Instagram, Linkedin, Moon, Send, Sun, Twitter } from "lucide-react"
+import { useTheme } from "@/components/ThemeProvider"
 
 function Footer() {
-  const [isDarkMode, setIsDarkMode] = React.useState(false)
-
-  React.useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add("dark")
-    } else {
-      document.documentElement.classList.remove("dark")
-    }
-  }, [isDarkMode])
+  const { isDarkMode, setTheme } = useTheme()
 
   return (
-    <footer className="relative w-full m-0 py-12 md:py-16 bg-designBg text-foreground transition-colors duration-300">
+    <footer className="relative w-full m-0 py-12 md:py-16 bg-background text-foreground transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="grid gap-8 md:gap-12 md:grid-cols-2 lg:grid-cols-4">
           <div className="relative">
@@ -140,7 +133,7 @@ function Footer() {
               <Switch
                 id="dark-mode"
                 checked={isDarkMode}
-                onCheckedChange={setIsDarkMode}
+                onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
               />
               <Moon className="h-4 w-4" />
               <Label htmlFor="dark-mode" className="sr-only">

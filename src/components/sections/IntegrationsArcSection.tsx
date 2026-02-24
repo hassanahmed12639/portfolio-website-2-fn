@@ -172,14 +172,14 @@ export default function IntegrationsArcSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full min-h-screen overflow-hidden rounded-3xl bg-[#0F0F0F]"
+      className="relative w-full min-h-screen overflow-hidden rounded-3xl bg-background"
       style={{ transform: 'translateZ(0)' }}
     >
       <div
         ref={stickyContentRef}
         className="sticky top-0 w-full min-h-screen flex flex-col items-center justify-center"
       >
-        <h2 className="text-3xl md:text-4xl font-semibold mb-6 md:mb-8 text-[#FFFFFF] text-center px-4">
+        <h2 className="text-3xl md:text-4xl font-semibold mb-6 md:mb-8 text-foreground text-center px-4">
           Integrate with your existing tools
         </h2>
 
@@ -198,7 +198,7 @@ export default function IntegrationsArcSection() {
               ref={(el) => {
                 iconRefs.current[index] = el
               }}
-              className="absolute flex items-center justify-center rounded-2xl bg-[#1A1A1A] border border-[#222222]"
+              className="absolute flex items-center justify-center rounded-2xl bg-white/25 dark:bg-white/5 backdrop-blur-xl border-2 border-[#AAFF00]/70 dark:border-white/15 shadow-lg dark:shadow-black/20"
               style={{
                 width: `${cardSize}px`,
                 height: `${cardSize}px`,

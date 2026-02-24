@@ -28,7 +28,7 @@ export default function Home() {
       <EmissionsIntroSection />
       <IntegrationsArcSection />
       <TestimonialSplitSection />
-      <section className="w-full m-0 py-12 md:py-16 lg:py-20 px-6 md:px-[5%] bg-[#0F0F0F]">
+      <section className="w-full m-0 py-12 md:py-16 lg:py-20 px-6 md:px-[5%] bg-background">
         <div className="max-w-7xl mx-auto">
           <CTASection />
         </div>

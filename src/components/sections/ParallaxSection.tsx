@@ -20,7 +20,7 @@ const PARALLAX_BG_STYLE: React.CSSProperties = {
   backgroundPosition: 'center',
   backgroundRepeat: 'no-repeat',
   backgroundSize: 'cover',
-  backgroundColor: '#0F0F0F',
+  backgroundColor: 'hsl(var(--background))',
 };
 
 export default function ParallaxSection() {

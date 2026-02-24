@@ -49,7 +49,7 @@ export function SwipeCards({ cards }: { cards: SwipeCardItem[] }) {
         >
           <div>
             {currentCard.icon && (
-              <div className="w-12 h-12 rounded-xl bg-designBg flex items-center justify-center mb-4">
+              <div className="w-12 h-12 rounded-xl bg-background flex items-center justify-center mb-4">
                 <img src={currentCard.icon} alt="" className="w-7 h-7 object-contain" />
               </div>
             )}

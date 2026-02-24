@@ -88,13 +88,7 @@ function ContactContent() {
   };
 
   return (
-    <div style={{
-      minHeight: "100vh",
-      background: "#0a0a0a",
-      fontFamily: "'DM Sans', 'Helvetica Neue', sans-serif",
-      color: "#fff",
-      overflowX: "hidden",
-    }}>
+    <div className="min-h-screen overflow-x-hidden bg-background text-foreground font-sans" style={{ fontFamily: "'DM Sans', 'Helvetica Neue', sans-serif" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=Syne:wght@700;800&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -405,7 +399,7 @@ function ContactContent() {
 
 export default function ContactPage() {
   return (
-    <main className="w-full min-h-screen m-0 p-0 bg-[#0F0F0F]">
+    <main className="w-full min-h-screen m-0 p-0 bg-background">
       <Header />
       <ContactContent />
       <Footer />

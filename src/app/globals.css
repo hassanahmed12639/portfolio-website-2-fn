@@ -19,13 +19,13 @@ body {
   padding: 0 !important;
   width: 100%;
   overflow-x: hidden;
-  background-color: #0F0F0F;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
 }
 
 body {
   border: none !important;
   outline: none !important;
-  color: #FFFFFF;
 }
 
 #__next {
@@ -64,12 +64,16 @@ main > * {
   --text-on-light: #0F0F0F;
 }
 
-/* Legacy design system (mapped to new theme) */
+/* Legacy design system (mapped to new theme) — light default */
 :root {
-  --color-bg: #0F0F0F;
-  --color-text: #FFFFFF;
+  --color-bg: #FFFFFF;
+  --color-text: #0F0F0F;
   --color-accent: #AAFF00;
   --color-accent-hover: #AAFF00;
+}
+.dark {
+  --color-bg: #0F0F0F;
+  --color-text: #FFFFFF;
 }
 
 /* Typography Scale */
@@ -120,7 +124,7 @@ a {
   width: 4px;
 }
 ::-webkit-scrollbar-track {
-  background: #0F0F0F;
+  background: hsl(var(--background));
 }
 ::-webkit-scrollbar-thumb {
   background: #AAFF00;
@@ -175,24 +179,24 @@ header {
 
 @layer base {
   :root {
-    --background: 0 0% 5.9%;
-    --foreground: 0 0% 100%;
-    --card: 0 0% 5.9%;
-    --card-foreground: 0 0% 100%;
-    --popover: 0 0% 5.9%;
-    --popover-foreground: 0 0% 100%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 6%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 6%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 6%;
     --primary: 84 100% 50%;
     --primary-foreground: 0 0% 6%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
     --accent: 84 100% 50%;
     --accent-foreground: 0 0% 6%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
     --ring: 84 100% 50%;
     --chart-1: 84 100% 50%;
     --chart-2: 173 58% 39%;
@@ -400,7 +404,7 @@ a.bg-primary:hover,
   font-size: clamp(2.2rem, 4vw, 3.5rem);
   font-weight: 700;
   line-height: 1.2;
-  color: #FFFFFF;
+  color: hsl(var(--foreground));
   margin: 0;
 }
 
@@ -422,7 +426,7 @@ a.bg-primary:hover,
   position: absolute;
   width: clamp(160px, 14vw, 220px);
   aspect-ratio: 200 / 128;
-  background: #0F0F0F;
+  background: hsl(var(--background));
   border-radius: 14px;
   overflow: hidden;
   box-shadow: none;
@@ -451,12 +455,12 @@ a.bg-primary:hover,
   position: absolute;
   bottom: 10px;
   left: 10px;
-  background: rgba(15, 15, 15, 0.95);
+  background: hsl(var(--card));
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 0.8rem;
   font-weight: 600;
-  color: #FFFFFF;
+  color: hsl(var(--card-foreground));
   backdrop-filter: blur(8px);
 }
 
@@ -509,7 +513,7 @@ a.bg-primary:hover,
   opacity: 0.6;
   font-size: 0.75rem;
   letter-spacing: 2px;
-  color: #FFFFFF;
+  color: hsl(var(--foreground));
   z-index: 20;
 }
 
@@ -621,10 +625,10 @@ a.bg-primary:hover,
 .sector-scroll-section .sector-description-text {
   font-size: 1.25rem;
   line-height: 1.6;
-  color: #FFFFFF;
+  color: hsl(var(--foreground));
   margin-bottom: 32px;
   font-weight: 400;
-  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.15);
   max-width: 580px;
 }
 
@@ -780,8 +784,8 @@ a.bg-primary:hover,
 
 /* Arch section (above IntegrationsArcSection) */
 .arch-section {
-  color: #FFFFFF;
-  background-color: #0F0F0F;
+  color: hsl(var(--foreground));
+  background-color: hsl(var(--background));
   font-family: "Outfit", sans-serif;
 }
 
@@ -825,7 +829,7 @@ a.bg-primary:hover,
 }
 
 .arch-section .arch__left .arch__info p.desc {
-  color: rgba(255, 255, 255, 0.8);
+  color: hsl(var(--muted-foreground));
   font-size: 18px;
   letter-spacing: -0.54px;
   margin-block: 6px 28px;

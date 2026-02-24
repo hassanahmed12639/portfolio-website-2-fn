@@ -22,7 +22,7 @@ export function HomePage() {
   const expandRadius = animationProgress * 300
 
   return (
-    <div ref={sectionRef} className="min-h-screen bg-designBg">
+    <div ref={sectionRef} className="min-h-screen bg-background">
       <div className="h-screen flex items-center justify-center p-8 sticky top-0">
         <div className="relative">
           <div
@@ -36,7 +36,7 @@ export function HomePage() {
               }`}
             >
               <div className="w-[400px] h-[400px] rounded-full bg-gradient-to-r from-accent via-accent to-accentHover p-0.5 flex items-center justify-center relative">
-                <div className="w-full h-full rounded-full bg-designBg flex items-center justify-center relative">
+                <div className="w-full h-full rounded-full bg-background flex items-center justify-center relative">
                   <div
                     className="absolute w-24 h-24 rounded-2xl overflow-hidden border-4 border-designBg shadow-lg transition-transform duration-300 ease-out z-0"
                     style={{

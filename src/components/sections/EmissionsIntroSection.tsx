@@ -886,7 +886,7 @@ export default function EmissionsIntroSection() {
     <>
       <section
         ref={sectionRef}
-        className="relative min-h-screen w-full overflow-hidden bg-[#0F0F0F] px-4 py-6 sm:px-6 sm:py-8 md:px-[4%] md:py-10 lg:px-[5%] lg:py-12"
+        className="relative min-h-screen w-full overflow-hidden bg-background px-4 py-6 sm:px-6 sm:py-8 md:px-[4%] md:py-10 lg:px-[5%] lg:py-12"
       >
         <div
           ref={parallaxLayerRef}
@@ -907,7 +907,7 @@ export default function EmissionsIntroSection() {
         <div ref={textBlockRef} className="absolute left-0 right-3 top-[45%] z-20 max-w-[93%] md:static md:max-w-xl md:w-auto md:flex-shrink-0 md:pr-4">
           <h2
             ref={headingRef}
-            className="text-[13px] font-semibold leading-[1.06] tracking-[-0.015em] text-white md:-translate-y-2 md:text-[26px] md:leading-[1.25] md:tracking-normal lg:text-[30px] xl:text-[34px]"
+            className="text-[13px] font-semibold leading-[1.06] tracking-[-0.015em] text-foreground md:-translate-y-2 md:text-[26px] md:leading-[1.25] md:tracking-normal lg:text-[30px] xl:text-[34px]"
           >
             {HEADLINE_LINES.map((line, i) => (
               <span
@@ -937,8 +937,8 @@ export default function EmissionsIntroSection() {
                 alt={card.alt}
                 className={
                   card.id === 'manufacturing'
-                    ? 'aspect-[1/1.06] w-full rounded-[2px] object-cover shadow-[0_10px_30px_rgba(0,0,0,0.5)] md:h-[96px] lg:h-[86px] xl:h-[90px] 2xl:h-[96px]'
-                    : 'h-[82px] w-full rounded-[2px] object-cover shadow-[0_10px_30px_rgba(0,0,0,0.5)] md:h-[96px] lg:h-[86px] xl:h-[90px] 2xl:h-[96px]'
+                    ? 'aspect-[1/1.06] w-full rounded-[2px] object-cover md:h-[96px] lg:h-[86px] xl:h-[90px] 2xl:h-[96px]'
+                    : 'h-[82px] w-full rounded-[2px] object-cover md:h-[96px] lg:h-[86px] xl:h-[90px] 2xl:h-[96px]'
                 }
               />
             </div>
@@ -1289,14 +1289,14 @@ export default function EmissionsIntroSection() {
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10">
           <div
             ref={messageTextRef}
-            className="mx-auto max-w-[780px] text-center text-[28px] font-semibold leading-[1.1] tracking-[-0.02em] text-white sm:text-[32px] md:text-[36px] lg:text-[44px]"
+            className="mx-auto max-w-[780px] text-center text-[28px] font-semibold leading-[1.1] tracking-[-0.02em] text-foreground sm:text-[32px] md:text-[36px] lg:text-[44px]"
           >
             <div className="flex flex-wrap items-center justify-center gap-x-3 md:gap-x-4">
               {FINAL_MESSAGE_LINE_1.map((word) => (
                 <span
                   key={word}
                   className={`message-word inline-block ${
-                    word === 'energy' || word === 'innovation' ? 'text-[#AAFF00]' : 'text-white'
+                    word === 'energy' || word === 'innovation' ? 'text-[#AAFF00]' : 'text-foreground'
                   }`}
                 >
                   {word}
@@ -1305,7 +1305,7 @@ export default function EmissionsIntroSection() {
             </div>
             <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 md:mt-3 md:gap-x-4">
               {FINAL_MESSAGE_LINE_2.map((word) => (
-                <span key={word} className="message-word inline-block text-white">
+                <span key={word} className="message-word inline-block text-foreground">
                   {word}
                 </span>
               ))}

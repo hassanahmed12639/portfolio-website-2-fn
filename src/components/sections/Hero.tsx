@@ -23,14 +23,14 @@ const FloatingIconsHero = React.forwardRef<
     <section
       ref={ref}
       className={cn(
-        'relative w-full flex flex-col items-center overflow-hidden bg-[#0F0F0F] pb-20 md:pb-24 lg:pb-28',
+        'relative w-full flex flex-col items-center overflow-hidden bg-background pb-20 md:pb-24 lg:pb-28',
         className
       )}
       {...props}
     >
       <Header />
       <div className="relative z-10 mx-auto w-full max-w-4xl text-center px-4 sm:max-w-4xl md:max-w-5xl pt-20 md:pt-14 lg:pt-20">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-[#FFFFFF] flex flex-col items-center justify-center">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground flex flex-col items-center justify-center">
           <LayoutGroup>
             <motion.span className="flex flex-col items-center gap-2 sm:gap-3 leading-[44px] sm:leading-[52px] md:leading-[58px] lg:leading-[75px]" layout>
               <motion.span
@@ -63,9 +63,9 @@ const FloatingIconsHero = React.forwardRef<
             </motion.span>
           </LayoutGroup>
         </h1>
-        <MagicText text={subtitle} className="mt-6 w-full max-w-4xl mx-auto text-base md:text-lg text-[#888888] md:max-w-5xl justify-center md:justify-start" />
+        <MagicText text={subtitle} className="mt-6 w-full max-w-4xl mx-auto text-base md:text-lg text-foreground md:max-w-5xl justify-center md:justify-start" />
         <div className="mt-10">
-          <Button asChild size="lg" className="px-8 py-6 text-base font-semibold">
+          <Button asChild size="lg" className="px-8 py-6 text-base font-semibold bg-[#AAFF00] text-[#0F0F0F] hover:bg-[#AAFF00]/90 hover:opacity-95 focus-visible:ring-[#AAFF00] dark:bg-[#AAFF00] dark:text-[#0F0F0F] dark:hover:bg-[#AAFF00]/90">
             <a href={ctaHref}>{ctaText}</a>
           </Button>
         </div>

@@ -25,7 +25,7 @@ export default function CTASection({
   email = "hassanonclouds@gmail.com",
   avatarSrc = "https://img.clerk.com/eyJ0eXBlIjoicHJveHkiLCJzcmMiOiJodHRwczovL2ltYWdlcy5jbGVyay5kZXYvb2F1dGhfZ2l0aHViL2ltZ18yc2pLdFl5STR0MkZMcUNKaVNMQVJXRmNBSXIifQ",
   statusText = "Available for work",
-  statusColor = "bg-accent",
+  statusColor = "bg-[#AAFF00]",
   glowText = "Currently High on Creativity",
   className,
 }: ComponentProps) {
@@ -87,7 +87,7 @@ export default function CTASection({
               />
             </div>
             <div className="min-w-0 flex-1">
-              <h3 className="truncate text-lg font-semibold tracking-tight sm:text-xl md:text-2xl">
+              <h3 className="truncate text-lg font-semibold tracking-tight sm:text-xl md:text-2xl text-white">
                 {name}
               </h3>
               <p className="mt-0.5 text-xs sm:text-sm text-[#888888]">{role}</p>
@@ -97,7 +97,7 @@ export default function CTASection({
           <div className="mt-4 sm:mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <Button
               variant="secondary"
-              className="h-11 sm:h-12 justify-start gap-3 rounded-2xl bg-accent text-designBg hover:bg-accentHover text-sm sm:text-base font-semibold px-6 md:px-8"
+              className="h-11 sm:h-12 justify-start gap-3 rounded-2xl bg-[#AAFF00] text-[#0F0F0F] hover:bg-[#AAFF00]/90 dark:bg-[#AAFF00] dark:text-[#0F0F0F] dark:hover:bg-[#AAFF00]/90 text-sm sm:text-base font-semibold px-6 md:px-8"
             >
               <Plus className="h-4 w-4 shrink-0" /> Hire Me
             </Button>
@@ -105,7 +105,7 @@ export default function CTASection({
             <Button
               variant="secondary"
               onClick={handleCopy}
-              className="h-11 sm:h-12 justify-start gap-3 rounded-2xl bg-accent text-designBg hover:bg-accentHover text-sm sm:text-base font-semibold px-6 md:px-8"
+              className="h-11 sm:h-12 justify-start gap-3 rounded-2xl bg-[#AAFF00] text-[#0F0F0F] hover:bg-[#AAFF00]/90 dark:bg-[#AAFF00] dark:text-[#0F0F0F] dark:hover:bg-[#AAFF00]/90 text-sm sm:text-base font-semibold px-6 md:px-8"
             >
               <Copy className="h-4 w-4 shrink-0" /> {copied ? "Copied" : "Copy Email"}
             </Button>
