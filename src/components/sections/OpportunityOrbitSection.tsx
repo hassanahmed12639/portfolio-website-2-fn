@@ -722,20 +722,16 @@ export default function OpportunityOrbitSection() {
   }, [])
 
   return (
-    <div ref={scrollTrackRef} className="relative bg-[#f2f2f0]">
+    <div ref={scrollTrackRef} className="relative bg-white">
       <div ref={sectionSlotRef} aria-hidden />
       <div ref={pinSpacerRef} aria-hidden />
-      <section ref={sectionRef} className="min-h-screen w-full overflow-hidden bg-[#f2f2f0] px-6 py-8 pb-40 md:px-[5%] md:py-12 md:pb-12">
+      <section ref={sectionRef} className="min-h-screen w-full overflow-hidden bg-white px-6 py-8 pb-40 md:px-[5%] md:py-12 md:pb-12">
       <div className="relative mx-auto flex h-full w-full max-w-7xl items-center">
         <div className="absolute left-2 top-1/2 hidden -translate-y-1/2 flex-col items-center gap-3 md:flex">
           <span className="h-[5px] w-[5px] rounded-full bg-[#cfff3f]" />
           <span className="h-[5px] w-[5px] rounded-full border border-black/20" />
           <span className="h-[5px] w-[5px] rounded-full border border-black/20" />
         </div>
-
-        <p className="absolute right-2 top-1/2 hidden -translate-y-1/2 text-xs font-semibold tracking-[0.16em] text-black/55 md:block">
-          DISCOVER
-        </p>
 
         <div
           ref={leftTextWrapperRef}
@@ -808,10 +804,7 @@ export default function OpportunityOrbitSection() {
                       <span className="premium-label-text"></span>
                     </div>
 
-                    <div className="premium-axis" aria-hidden="true">
-                      <span className="axis-tick axis-tick-top" />
-                      <span className="axis-tick axis-tick-mid" />
-                    </div>
+                    <div className="premium-axis" aria-hidden="true" />
                   </div>
                 </div>
               </div>

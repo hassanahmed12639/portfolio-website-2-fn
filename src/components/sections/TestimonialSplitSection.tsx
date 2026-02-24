@@ -119,7 +119,7 @@ const TESTIMONIALS: Testimonial[] = [
 
 export default function TestimonialSplitSection() {
   return (
-    <section className="section-testimonials-light w-full flex flex-col md:flex-row items-stretch bg-[#F5F5F5] py-12 md:py-16 lg:py-20 px-6 md:px-[5%]">
+    <section className="section-testimonials-light w-full flex flex-col md:flex-row items-stretch bg-white py-12 md:py-16 lg:py-20 px-6 md:px-[5%]">
       <div className="w-full md:w-1/2 flex flex-col justify-center pr-0 md:pr-8 lg:pr-12 mb-14 md:mb-0 -mt-3 md:mt-0">
         <h2 className="text-3xl md:text-4xl font-semibold text-[#0F0F0F] mb-4 md:mb-6">
           What people are saying

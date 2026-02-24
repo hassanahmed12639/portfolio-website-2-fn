@@ -55,23 +55,23 @@ export default function CTASection({
       transition={{ duration: 0.4, ease: "easeOut" }}
       className={cn("relative w-full max-w-3xl mx-auto", className)}
     >
-      <div className="pointer-events-none absolute inset-x-0 -bottom-8 top-[72%] rounded-[28px] bg-accent/20 shadow-[0_40px_80px_-16px_rgba(170,255,0,0.3)] z-0" />
+      <div className="pointer-events-none absolute inset-x-0 -bottom-8 top-[72%] rounded-[28px] bg-[#AAFF00]/20 shadow-[0_40px_80px_-16px_rgba(170,255,0,0.3)] z-0" />
 
       <div className="absolute inset-x-0 -bottom-8 z-0">
-        <div className="flex items-center justify-center gap-2 bg-transparent py-3 text-center text-sm font-medium text-[#FFFFFF]">
+        <div className="flex items-center justify-center gap-2 bg-transparent py-3 text-center text-sm font-medium text-[#AAFF00] dark:text-[#AAFF00]">
           <Zap className="h-4 w-4 shrink-0 text-[#AAFF00]" /> <span className="truncate">{glowText}</span>
         </div>
       </div>
 
-      <Card className="relative z-10 w-full overflow-visible rounded-[28px] border border-[#222222] bg-[#1A1A1A] text-[#FFFFFF] shadow-2xl">
+      <Card className="relative z-10 w-full overflow-visible rounded-[28px] border border-[#222222] bg-[#1A1A1A] text-[#FFFFFF] dark:bg-[#1A1A1A] dark:border-[#222222] dark:text-[#FFFFFF] [box-shadow:none]">
         <CardContent className="p-4 sm:p-6 md:p-8">
-          <div className="mb-4 sm:mb-6 flex flex-wrap items-center justify-between gap-2 text-sm text-[#888888]">
+          <div className="mb-4 sm:mb-6 flex flex-wrap items-center justify-between gap-2 text-sm text-[#888888] dark:text-[#888888]">
             <div className="flex items-center gap-2 min-w-0">
               <span className={cn("inline-block h-2.5 w-2.5 shrink-0 rounded-full animate-pulse", statusColor)} />
               <span className="select-none truncate">{statusText}</span>
             </div>
-            <div className="flex items-center gap-2 opacity-80 shrink-0">
-              <Clock className="h-4 w-4" />
+            <div className="flex items-center gap-2 opacity-80 shrink-0 text-[#888888] dark:text-[#888888]">
+              <Clock className="h-4 w-4 text-current" />
               <span className="tabular-nums">{timeText}</span>
             </div>
           </div>
@@ -87,17 +87,17 @@ export default function CTASection({
               />
             </div>
             <div className="min-w-0 flex-1">
-              <h3 className="truncate text-lg font-semibold tracking-tight sm:text-xl md:text-2xl text-white">
+              <h3 className="truncate text-lg font-semibold tracking-tight sm:text-xl md:text-2xl text-white dark:text-white">
                 {name}
               </h3>
-              <p className="mt-0.5 text-xs sm:text-sm text-[#888888]">{role}</p>
+              <p className="mt-0.5 text-xs sm:text-sm text-[#888888] dark:text-[#888888]">{role}</p>
             </div>
           </div>
 
           <div className="mt-4 sm:mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <Button
               variant="secondary"
-              className="h-11 sm:h-12 justify-start gap-3 rounded-2xl bg-[#AAFF00] text-[#0F0F0F] hover:bg-[#AAFF00]/90 dark:bg-[#AAFF00] dark:text-[#0F0F0F] dark:hover:bg-[#AAFF00]/90 text-sm sm:text-base font-semibold px-6 md:px-8"
+              className="h-11 sm:h-12 justify-start gap-3 rounded-2xl bg-[#AAFF00] text-[#0F0F0F] hover:bg-[#AAFF00]/90 dark:bg-[#AAFF00] dark:text-[#0F0F0F] dark:hover:bg-[#AAFF00]/90 text-sm sm:text-base font-semibold px-6 md:px-8 [&_svg]:text-[#0F0F0F]"
             >
               <Plus className="h-4 w-4 shrink-0" /> Hire Me
             </Button>
@@ -105,7 +105,7 @@ export default function CTASection({
             <Button
               variant="secondary"
               onClick={handleCopy}
-              className="h-11 sm:h-12 justify-start gap-3 rounded-2xl bg-[#AAFF00] text-[#0F0F0F] hover:bg-[#AAFF00]/90 dark:bg-[#AAFF00] dark:text-[#0F0F0F] dark:hover:bg-[#AAFF00]/90 text-sm sm:text-base font-semibold px-6 md:px-8"
+              className="h-11 sm:h-12 justify-start gap-3 rounded-2xl bg-[#AAFF00] text-[#0F0F0F] hover:bg-[#AAFF00]/90 dark:bg-[#AAFF00] dark:text-[#0F0F0F] dark:hover:bg-[#AAFF00]/90 text-sm sm:text-base font-semibold px-6 md:px-8 [&_svg]:text-[#0F0F0F]"
             >
               <Copy className="h-4 w-4 shrink-0" /> {copied ? "Copied" : "Copy Email"}
             </Button>
