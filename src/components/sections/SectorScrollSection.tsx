@@ -206,7 +206,7 @@ export default function SectorScrollSection() {
               </h1>
             </div>
             <div className="sector-cards-container">
-              <div ref={cardManufacturingRef} className="sector-card" style={{ top: '8%', left: '32%' }}>
+              <div ref={cardManufacturingRef} className="sector-card" style={{ top: '13%', left: '32%' }}>
                 <div className="sector-card-label">Paid Media</div>
               </div>
               <div ref={cardElectricityRef} className="sector-card" style={{ top: '10%', right: '12%', left: 'auto' }}>
@@ -234,7 +234,7 @@ export default function SectorScrollSection() {
             const titleRef = [titleManufacturingRef, titleElectricityRef, titleAgricultureRef, titleTransportationRef, titleBuildingsRef][i]
             const contentRef = [contentManufacturingRef, contentElectricityRef, contentAgricultureRef, contentTransportationRef, contentBuildingsRef][i]
             return (
-              <div key={sector.id} ref={sectionRef} className="sector-layer sector-full-section" id={`${sector.id}-section`}>
+              <div key={sector.id} ref={sectionRef} className={`sector-layer sector-full-section ${sector.id === 'manufacturing' ? 'sector-full-section-first' : ''}`} id={`${sector.id}-section`}>
                 {sector.id === 'manufacturing' && (
                   <div className="sector-full-section-image">
                     <img

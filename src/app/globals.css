@@ -572,6 +572,10 @@ a.bg-primary:hover,
   padding: 40px 0;
 }
 
+.sector-scroll-section .sector-full-section-first .sector-section-content {
+  padding-top: 5rem;
+}
+
 .sector-scroll-section .sector-section-title {
   font-size: clamp(4rem, 9vw, 8rem);
   font-weight: 700;

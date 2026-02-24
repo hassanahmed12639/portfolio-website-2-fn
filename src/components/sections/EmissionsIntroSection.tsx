@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { registerGsapPlugins, ScrollTrigger } from '../../lib/gsap'
 import OrbitalScrollAnimationSection from './OrbitalScrollAnimationSection'
+import FeaturedCaseStudiesSection from './FeaturedCaseStudiesSection'
 
 const CARDS = [
   {
@@ -1309,6 +1310,7 @@ export default function EmissionsIntroSection() {
       </div>
       </section>
       <OrbitalScrollAnimationSection />
+      <FeaturedCaseStudiesSection />
     </>
   )
 }
