@@ -11,7 +11,18 @@ const navItems = [
   { name: "Home", url: "/" },
   { name: "About", url: "/about-me" },
   { name: "Projects", url: "/project" },
-  { name: "My Process", url: "/my-process" },
+  {
+    name: "My Process",
+    url: "/my-process",
+    children: [
+      {
+        name: "Tools",
+        children: [
+          { name: "UTM Builder", url: "/my-process/tools/utm-builder" },
+        ],
+      },
+    ],
+  },
   { name: "Resume", url: "/resume" },
   { name: "Contact", url: "/contact" },
 ]
