@@ -30,9 +30,7 @@ export default function ThemeToggle() {
           padding: '12px 8px',
           backdropFilter: 'blur(16px) saturate(140%)',
           WebkitBackdropFilter: 'blur(16px) saturate(140%)',
-          boxShadow: isDark
-            ? '-4px 0 24px rgba(180,255,0,0.08), 0 4px 16px rgba(0,0,0,0.5)'
-            : '-4px 0 16px rgba(0,0,0,0.08)',
+          boxShadow: 'none',
           cursor: 'pointer',
           outline: 'none',
           transition: 'background 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease',
@@ -45,7 +43,7 @@ export default function ThemeToggle() {
             height: 52,
             borderRadius: 13,
             background: isDark ? '#b4ff00' : '#111',
-            boxShadow: isDark ? '0 0 12px rgba(180,255,0,0.45)' : 'none',
+            boxShadow: 'none',
             flexShrink: 0,
             transition: 'background 0.4s ease, box-shadow 0.4s ease',
           }}
@@ -79,7 +77,7 @@ export default function ThemeToggle() {
               height: 20,
               borderRadius: '50%',
               background: isDark ? '#000' : '#b4ff00',
-              boxShadow: '0 2px 6px rgba(0,0,0,0.4)',
+              boxShadow: 'none',
               transition:
                 'top 0.45s cubic-bezier(0.34,1.56,0.64,1), background 0.4s ease',
             }}

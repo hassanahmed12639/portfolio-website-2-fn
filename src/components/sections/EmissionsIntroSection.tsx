@@ -776,7 +776,6 @@ export default function EmissionsIntroSection() {
       tl.to(nextStage, { y: CARD_GAP, duration: CARD_ENTER_DURATION, ease: [0.33, 1, 0.38, 1] }, '>')
       if (nextFrame) {
         tl.to(nextFrame, { y: 0, scale: 1, duration: CARD_ENTER_DURATION, ease: [0.33, 1, 0.38, 1] }, '<')
-        tl.to(nextFrame, { boxShadow: '0 30px 90px rgba(0,0,0,0.8)', duration: 0.35, ease: 'power2.out' }, '<+0.65')
         tl.set(nextFrame, { clearProps: 'y,scale' }, '>+0.1')
       }
       tl.to(nextTitle, { y: 0, opacity: 1, duration: 0.55, ease: 'power2.out' }, '<+0.2')
@@ -985,7 +984,7 @@ export default function EmissionsIntroSection() {
 
             <div
               ref={revealFrameRef}
-              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[95%] lg:max-w-[2000px] xl:max-w-[2400px] 2xl:max-w-[92vw]"
+              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl md:max-w-[95%] lg:max-w-[2000px] xl:max-w-[2400px] 2xl:max-w-[92vw]"
             >
               <img
                 ref={revealImageRef}
@@ -1052,7 +1051,7 @@ export default function EmissionsIntroSection() {
 
             <div
               ref={electricityFrameRef}
-              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[95%] lg:max-w-[2000px] xl:max-w-[2400px] 2xl:max-w-[92vw]"
+              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl md:max-w-[95%] lg:max-w-[2000px] xl:max-w-[2400px] 2xl:max-w-[92vw]"
             >
               <img
                 ref={electricityImageRef}
@@ -1119,7 +1118,7 @@ export default function EmissionsIntroSection() {
 
             <div
               ref={agricultureFrameRef}
-              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[95%] lg:max-w-[2000px] xl:max-w-[2400px] 2xl:max-w-[92vw]"
+              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl md:max-w-[95%] lg:max-w-[2000px] xl:max-w-[2400px] 2xl:max-w-[92vw]"
             >
               <img
                 ref={agricultureImageRef}
@@ -1186,7 +1185,7 @@ export default function EmissionsIntroSection() {
 
             <div
               ref={transportationFrameRef}
-              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[95%] lg:max-w-[2000px] xl:max-w-[2400px] 2xl:max-w-[92vw]"
+              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl md:max-w-[95%] lg:max-w-[2000px] xl:max-w-[2400px] 2xl:max-w-[92vw]"
             >
               <img
                 ref={transportationImageRef}
@@ -1253,7 +1252,7 @@ export default function EmissionsIntroSection() {
 
             <div
               ref={buildingsFrameRef}
-              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] md:max-w-[95%] lg:max-w-[2000px] xl:max-w-[2400px] 2xl:max-w-[92vw]"
+              className="relative z-10 mx-auto w-full max-w-none overflow-hidden rounded-2xl md:max-w-[95%] lg:max-w-[2000px] xl:max-w-[2400px] 2xl:max-w-[92vw]"
             >
               <img
                 ref={buildingsImageRef}

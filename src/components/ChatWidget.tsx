@@ -62,7 +62,7 @@ export default function ChatWidget() {
         type="button"
         onClick={() => setOpen((o) => !o)}
         className={cn(
-          'fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-all',
+          'fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full transition-all',
           'bg-[#AAFF00] text-[#0F0F0F] hover:bg-[#AAFF00] focus:outline-none focus:ring-2 focus:ring-[#AAFF00] focus:ring-offset-2'
         )}
         aria-label={open ? 'Close chat' : 'Open chat'}
@@ -86,7 +86,7 @@ export default function ChatWidget() {
       {open && (
         <div
           className={cn(
-            'fixed bottom-24 right-6 z-50 flex w-[min(100vw-3rem,400px)] flex-col overflow-hidden rounded-xl shadow-xl',
+            'fixed bottom-24 right-6 z-50 flex w-[min(100vw-3rem,400px)] flex-col overflow-hidden rounded-xl',
             'border border-gray-200 bg-white'
           )}
         >
