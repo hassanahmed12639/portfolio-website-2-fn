@@ -27,7 +27,7 @@ export default function FeaturedCaseStudiesSection() {
         <h2 className="mb-10 text-2xl font-semibold tracking-tight text-[#0F0F0F] md:mb-12 md:text-3xl">
           Featured Case Studies
         </h2>
-        <div className="flex gap-5 overflow-x-auto pb-2 scroll-smooth snap-x snap-mandatory md:grid md:grid-cols-2 md:overflow-visible md:snap-none lg:grid-cols-3 [scrollbar-width:none] [-webkit-overflow-scrolling:touch] [&::-webkit-scrollbar]:hidden">
+        <div className="flex gap-5 overflow-x-auto pb-2 scroll-smooth snap-x snap-mandatory md:grid md:grid-cols-2 md:overflow-visible md:snap-none 2xl:grid-cols-3 [scrollbar-width:none] [-webkit-overflow-scrolling:touch] [&::-webkit-scrollbar]:hidden">
           {CASE_STUDIES.map((study, i) => (
             <article className="relative aspect-[4/5] min-h-[300px] w-[85vw] min-w-[280px] flex-shrink-0 snap-center overflow-hidden rounded-2xl bg-white shadow-sm md:w-auto md:min-w-0 md:flex-shrink">
               <Image

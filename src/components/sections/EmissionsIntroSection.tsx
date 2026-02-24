@@ -11,31 +11,36 @@ const CARDS = [
     id: 'manufacturing',
     src: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=900&q=80',
     alt: 'Industrial facility',
-    className: 'top-[8%] right-[22%] w-[82px] md:top-[2%] md:left-[-20%] md:right-auto md:w-44',
+    className:
+      'top-[8%] right-[22%] w-[82px] md:top-[2%] md:left-[-20%] md:right-auto md:w-44 lg:left-[-16%] xl:left-[-14%] 2xl:left-[-20%]',
   },
   {
     id: 'electricity',
     src: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=900&q=80',
     alt: 'Electricity grid',
-    className: 'top-[18%] left-[8%] w-[82px] md:top-[5%] md:right-[6%] md:left-auto md:w-44',
+    className:
+      'top-[18%] left-[8%] w-[82px] md:top-[5%] md:right-[6%] md:left-auto md:w-44 lg:right-[10%] xl:right-[12%] 2xl:right-[6%]',
   },
   {
     id: 'agriculture',
     src: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=900&q=80',
     alt: 'Green agriculture field',
-    className: 'top-[35%] right-[2%] w-[82px] md:top-[32%] md:left-[16%] md:right-auto md:w-44',
+    className:
+      'top-[35%] right-[2%] w-[82px] md:top-[32%] md:left-[16%] md:right-auto md:w-44 lg:left-[12%] xl:left-[10%] 2xl:left-[16%]',
   },
   {
     id: 'transportation',
     src: 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=900&q=80',
     alt: 'Road transportation',
-    className: 'top-auto bottom-[8%] left-[8%] w-[82px] md:top-auto md:bottom-[24%] md:right-[8%] md:left-auto md:w-44',
+    className:
+      'top-auto bottom-[8%] left-[8%] w-[82px] md:top-auto md:bottom-[24%] md:right-[8%] md:left-auto md:w-44 lg:right-[12%] xl:right-[14%] 2xl:right-[8%]',
   },
   {
     id: 'buildings',
     src: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=900&q=80',
     alt: 'Buildings and city',
-    className: 'top-[84%] right-[8%] w-[82px] md:bottom-[2%] md:left-[22%] md:right-auto md:top-auto md:w-44',
+    className:
+      'top-[84%] right-[8%] w-[82px] md:bottom-[2%] md:left-[22%] md:right-auto md:top-auto md:w-44 lg:left-[18%] xl:left-[16%] 2xl:left-[22%]',
   },
 ]
 
@@ -917,7 +922,7 @@ export default function EmissionsIntroSection() {
           </h2>
         </div>
 
-        <div className="absolute inset-0 z-10 h-full w-full md:relative md:ml-auto md:h-[420px] md:w-[52%] md:flex-shrink-0 lg:h-[500px] xl:h-[560px]">
+        <div className="absolute inset-0 z-10 h-full w-full md:relative md:ml-auto md:h-[420px] md:w-[52%] md:flex-shrink-0 lg:h-[500px] lg:w-[56%] xl:h-[560px] xl:w-[60%] 2xl:w-[52%]">
           {CARDS.map((card, index) => (
             <div
               key={card.id}
@@ -932,8 +937,8 @@ export default function EmissionsIntroSection() {
                 alt={card.alt}
                 className={
                   card.id === 'manufacturing'
-                    ? 'aspect-[1/1.06] w-full rounded-[2px] object-cover shadow-[0_10px_30px_rgba(0,0,0,0.5)] md:h-[96px]'
-                    : 'h-[82px] w-full rounded-[2px] object-cover shadow-[0_10px_30px_rgba(0,0,0,0.5)] md:h-[96px]'
+                    ? 'aspect-[1/1.06] w-full rounded-[2px] object-cover shadow-[0_10px_30px_rgba(0,0,0,0.5)] md:h-[96px] lg:h-[86px] xl:h-[90px] 2xl:h-[96px]'
+                    : 'h-[82px] w-full rounded-[2px] object-cover shadow-[0_10px_30px_rgba(0,0,0,0.5)] md:h-[96px] lg:h-[86px] xl:h-[90px] 2xl:h-[96px]'
                 }
               />
             </div>
