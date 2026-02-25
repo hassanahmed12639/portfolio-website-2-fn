@@ -15,13 +15,15 @@ const navItems = [
     name: "My Process",
     url: "/my-process",
     children: [
-      {
-        name: "Tools",
-        children: [
-          { name: "UTM Builder", url: "/my-process/tools/utm-builder" },
-          { name: "A/B Test Calculator", url: "/my-process/tools/ab-test-calculator" },
-        ],
-      },
+          {
+            name: "Tools",
+            children: [
+              { name: "UTM Builder", url: "/my-process/tools/utm-builder" },
+              { name: "A/B Test Calculator", url: "/my-process/tools/ab-test-calculator" },
+              { name: "ROAS Calculator", url: "/my-process/tools/roas-calculator" },
+              { name: "Budget Reverse Calculator", url: "/my-process/tools/budget-reverse-calculator" },
+            ],
+          },
     ],
   },
   { name: "Resume", url: "/resume" },
