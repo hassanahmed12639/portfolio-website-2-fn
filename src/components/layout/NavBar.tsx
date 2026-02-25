@@ -136,7 +136,9 @@ function DesktopNavItem({
                   <Link
                     href={child.url}
                     className={cn(
-                      "block px-4 py-2.5 text-sm font-medium hover:bg-[rgba(170,255,0,0.1)] hover:text-[#AAFF00] rounded-lg mx-1",
+                      "block px-4 py-2.5 text-sm font-medium rounded-lg mx-1",
+                      "text-black dark:text-white",
+                      "hover:bg-[rgba(170,255,0,0.1)] hover:text-[#AAFF00] focus:text-[#AAFF00]",
                       pathname === child.url && "text-[#AAFF00] bg-[rgba(170,255,0,0.08)]"
                     )}
                   >
@@ -156,7 +158,9 @@ function DesktopNavItem({
                           key={sub.name}
                           href={sub.url}
                           className={cn(
-                            "block px-4 py-2.5 text-sm font-medium hover:bg-[rgba(170,255,0,0.1)] hover:text-[#AAFF00] rounded-lg mx-1",
+                            "block px-4 py-2.5 text-sm font-medium rounded-lg mx-1",
+                            "text-black dark:text-white",
+                            "hover:bg-[rgba(170,255,0,0.1)] hover:text-[#AAFF00] focus:text-[#AAFF00]",
                             pathname === sub.url && "text-[#AAFF00] bg-[rgba(170,255,0,0.08)]"
                           )}
                         >

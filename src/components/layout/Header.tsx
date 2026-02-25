@@ -19,6 +19,7 @@ const navItems = [
         name: "Tools",
         children: [
           { name: "UTM Builder", url: "/my-process/tools/utm-builder" },
+          { name: "A/B Test Calculator", url: "/my-process/tools/ab-test-calculator" },
         ],
       },
     ],
