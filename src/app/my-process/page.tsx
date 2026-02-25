@@ -2,16 +2,58 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { useTheme } from "@/components/ThemeProvider";
 
-const T = {
-  bg:       "#0d0d0d",
-  card:     "#141414",
-  border:   "#252525",
-  green:    "#aaff00",
-  greenDim: "#5a8800",
-  white:    "#ffffff",
-  grey:     "#555555",
-  dim:      "#2a2a2a",
+const GREEN = "#aaff00";
+
+const DARK_T = {
+  bg:            "#0d0d0d",
+  card:          "#141414",
+  border:        "#252525",
+  green:         GREEN,
+  greenDim:      "#5a8800",
+  white:         "#ffffff",
+  grey:          "#555555",
+  dim:           "#2a2a2a",
+  dotsFill:      "#1a1a1a",
+  edgeDim:       "#2e2e2e",
+  nodeHoverBg:   "#191919",
+  centerBar:     "#181818",
+  centerBarStroke: "#2a2a2a",
+  centerUrlBg:   "#1f1f1f",
+  infoCardText:  "#bbb",
+  headerBg:      "#0f0f0f",
+  panelBg:       "#0a0a0a",
+  legendBg:      "#0f0f0f",
+  legendInactive: "#333",
+  swipeHintBg:   "rgba(13,13,13,0.88)",
+  swipeHintBorder: "#252525",
+  swipeHintColor: "#555",
+};
+
+const LIGHT_T = {
+  bg:            "#ffffff",
+  card:          "#f5f5f5",
+  border:        "#e0e0e0",
+  green:         GREEN,
+  greenDim:      "#6a9a00",
+  white:         "#0f0f0f",
+  grey:          "#555555",
+  dim:           "#888888",
+  dotsFill:      "#e8e8e8",
+  edgeDim:       "#cccccc",
+  nodeHoverBg:   "#ebebeb",
+  centerBar:     "#eeeeee",
+  centerBarStroke: "#cccccc",
+  centerUrlBg:   "#e5e5e5",
+  infoCardText:  "#555555",
+  headerBg:      "#f5f5f5",
+  panelBg:       "#ffffff",
+  legendBg:      "#f5f5f5",
+  legendInactive: "#999999",
+  swipeHintBg:   "rgba(255,255,255,0.95)",
+  swipeHintBorder: "#e0e0e0",
+  swipeHintColor: "#666666",
 };
 
 const JOURNEY = [
@@ -149,6 +191,8 @@ function NodeIcon({ id, cx, cy, color, size = 13 }: { id: string; cx: number; cy
 }
 
 function MarketingArchitecture() {
+  const { isDarkMode } = useTheme();
+  const T = isDarkMode ? DARK_T : LIGHT_T;
   const svgRef = useRef<SVGSVGElement>(null);
   const drag   = useRef<{ id: string; ox: number; oy: number } | null>(null);
   const [pos, setPos] = useState(() =>
@@ -207,7 +251,7 @@ function MarketingArchitecture() {
     <div style={{
       display:"flex", alignItems:"center", gap:10, flexWrap:"wrap",
       padding: isMobile ? "11px 14px" : "12px 20px",
-      background:"#0f0f0f", borderBottom:`1px solid ${T.border}`,
+      background: T.headerBg, borderBottom:`1px solid ${T.border}`,
     }}>
       <span style={{
         width:7,height:7,borderRadius:"50%",flexShrink:0,
@@ -251,7 +295,7 @@ function MarketingArchitecture() {
 
   const journeyPanel = showJourney && (
     <div style={{
-      background:"#0a0a0a",borderBottom:`1px solid ${T.border}`,
+      background: T.panelBg, borderBottom:`1px solid ${T.border}`,
       padding: isMobile ? "14px 14px" : "16px 20px",
       display:"flex",flexDirection:"column",gap:12,
     }}>
@@ -297,7 +341,7 @@ function MarketingArchitecture() {
             padding: isMobile ? "10px 12px" : "10px 13px",
           }}>
             <div style={{fontSize:8,fontWeight:700,color:accent,letterSpacing:"0.15em",marginBottom:5}}>{label}</div>
-            <div style={{fontSize: isMobile ? 11 : 11,color:"#bbb",lineHeight:1.6}}>{text}</div>
+            <div style={{fontSize: isMobile ? 11 : 11,color:T.infoCardText,lineHeight:1.6}}>{text}</div>
           </div>
         ))}
       </div>
@@ -348,11 +392,11 @@ function MarketingArchitecture() {
             bottom: 12,
             left: "50%",
             transform: "translateX(-50%)",
-            background: "rgba(13,13,13,0.88)",
-            border: "1px solid #252525",
+            background: T.swipeHintBg,
+            border: `1px solid ${T.swipeHintBorder}`,
             borderRadius: 20,
             padding: "3px 14px",
-            color: "#555",
+            color: T.swipeHintColor,
             fontSize: 9,
             pointerEvents: "none",
             zIndex: 10,
@@ -362,9 +406,9 @@ function MarketingArchitecture() {
             whiteSpace: "nowrap",
           }}
         >
-          <span style={{ color: "#aaff00" }}>←</span>
+          <span style={{ color: T.green }}>←</span>
           <span>SWIPE TO EXPLORE</span>
-          <span style={{ color: "#aaff00" }}>→</span>
+          <span style={{ color: T.green }}>→</span>
         </div>
       )}
       <svg
@@ -385,7 +429,7 @@ function MarketingArchitecture() {
       >
         <defs>
           <pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse">
-            <circle cx="13" cy="13" r="0.85" fill="#1a1a1a"/>
+            <circle cx="13" cy="13" r="0.85" fill={T.dotsFill}/>
           </pattern>
           <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
             <feGaussianBlur stdDeviation="9" result="b"/>
@@ -400,7 +444,7 @@ function MarketingArchitecture() {
             <path d="M0,0.5 L0,6.5 L7,3.5Z" fill={T.green} opacity="0.9"/>
           </marker>
           <marker id="arr-dim" markerWidth="6" markerHeight="6" refX="4.5" refY="3" orient="auto">
-            <path d="M0,0.5 L0,5.5 L6,3Z" fill="#2e2e2e" opacity="0.9"/>
+            <path d="M0,0.5 L0,5.5 L6,3Z" fill={T.edgeDim} opacity="0.9"/>
           </marker>
         </defs>
 
@@ -473,7 +517,7 @@ function MarketingArchitecture() {
                   fill={T.green} opacity={isActive?0.09:0.05} filter="url(#glow)"/>
               )}
               <rect x={0} y={0} width={W} height={H} rx={8}
-                fill={isActive||isHov?"#191919":T.card}
+                fill={isActive||isHov?T.nodeHoverBg:T.card}
                 stroke={T.green}
                 strokeWidth={isCenter?2:isActive?1.6:0.9}
                 strokeOpacity={isActive||isHov?1:isCenter?0.6:0.3}
@@ -513,7 +557,7 @@ function MarketingArchitecture() {
                   <rect x={W-25} y={5} width={20} height={12} rx={4}
                     fill={T.green} opacity={0.95}/>
                   <text x={W-15} y={13.5} textAnchor="middle"
-                    fill="#000" fontSize={7.5} fontWeight="800"
+                    fill={isDarkMode ? "#000" : T.white} fontSize={7.5} fontWeight="800"
                     fontFamily="'DM Sans',sans-serif">{step.step}</text>
                 </>
               )}
@@ -538,16 +582,16 @@ function MarketingArchitecture() {
       {/* Legend */}
       <div style={{
         padding: isTablet ? "8px 16px" : "8px 20px",
-        borderTop:`1px solid ${T.border}`,background:"#0f0f0f",
+        borderTop:`1px solid ${T.border}`, background: T.legendBg,
         display:"flex",gap:16,flexWrap:"wrap",alignItems:"center",
       }}>
         {[
           [T.green,"Active node"],
-          ["#333","Inactive (dimmed)"],
+          [T.legendInactive,"Inactive (dimmed)"],
         ].map(([col,lbl])=>(
           <span key={String(lbl)} style={{display:"flex",alignItems:"center",gap:5}}>
             <span style={{width:10,height:7,borderRadius:2,border:`1.5px solid ${col}`,
-              background:T.card,display:"inline-block",opacity:col==="#333"?0.4:1}}/>
+              background:T.card,display:"inline-block",opacity:col===T.legendInactive?0.4:1}}/>
             <span style={{fontSize:9.5,color:T.grey,fontWeight:600}}>{lbl}</span>
           </span>
         ))}
