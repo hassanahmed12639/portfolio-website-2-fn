@@ -3,6 +3,7 @@ import './globals.css'
 import ChatWidget from '@/components/ChatWidget'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import ThemeToggle from '@/components/ThemeToggle'
+import ScrollToTop from '@/components/ScrollToTop'
 
 export const metadata: Metadata = {
   title: 'Next.js GSAP Portfolio',
@@ -38,6 +39,7 @@ export default function RootLayout({
         <ThemeProvider>
           {children}
           <ThemeToggle />
+          <ScrollToTop />
           <ChatWidget />
         </ThemeProvider>
       </body>
