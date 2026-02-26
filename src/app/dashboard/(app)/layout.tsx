@@ -16,6 +16,12 @@ export default async function DashboardAppLayout({
 
   const nav = [
     { label: 'Overview', href: '/dashboard' },
+    { label: 'Playground', href: '/dashboard/playground' },
+    { label: 'Scanner', href: '/dashboard/scanner' },
+    { label: 'Event Replay', href: '/dashboard/event-replay' },
+    { label: 'Logs', href: '/dashboard/logs' },
+    { label: 'AI Analysis', href: '/dashboard/ai-analysis' },
+    { label: 'Anomalies', href: '/dashboard/anomalies' },
     { label: 'Integrations', href: '/dashboard/integrations' },
     { label: 'Setup & Snippet', href: '/dashboard/setup' },
     { label: 'Billing', href: '/dashboard/billing' },

@@ -6,6 +6,7 @@
       var payload = {
         api_key: key,
         event_name: eventName,
+        event_id: Math.random().toString(36).substr(2, 9),
         value: data.value || null,
         currency: data.currency || 'USD',
         email: data.email || null,

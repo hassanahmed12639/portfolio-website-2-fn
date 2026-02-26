@@ -1,0 +1,681 @@
+'use client'
+
+import { useEffect, useState, useCallback } from 'react'
+
+const EVENT_TYPES = [
+  { id: 'Purchase', label: 'Purchase', icon: '🛒' },
+  { id: 'Lead', label: 'Lead', icon: '👤' },
+  { id: 'PageView', label: 'PageView', icon: '📄' },
+  { id: 'AddToCart', label: 'AddToCart', icon: '➕' },
+  { id: 'InitiateCheckout', label: 'InitiateCheckout', icon: '💳' },
+  { id: 'ViewContent', label: 'ViewContent', icon: '👀' },
+  { id: 'Search', label: 'Search', icon: '🔍' },
+  { id: 'CompleteRegistration', label: 'CompleteRegistration', icon: '✅' },
+] as const
+
+const CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'AUD']
+
+type EventParams = {
+  value: string
+  currency: string
+  email: string
+  phone: string
+  order_id: string
+  form_name: string
+  page_url: string
+  page_title: string
+  product_id: string
+  product_name: string
+  event_id: string
+  event_source_url: string
+}
+
+const defaultParams: EventParams = {
+  value: '',
+  currency: 'USD',
+  email: '',
+  phone: '',
+  order_id: '',
+  form_name: '',
+  page_url: '',
+  page_title: '',
+  product_id: '',
+  product_name: '',
+  event_id: '',
+  event_source_url: '',
+}
+
+function generateEventId(): string {
+  return `evt_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`
+}
+
+type HistoryItem = {
+  id: string
+  event_name: string
+  time: string
+  status: 'success' | 'fail'
+  response?: unknown
+  payload?: unknown
+}
+
+function qualityTips(score: number): string[] {
+  const tips: string[] = []
+  if (score < 30) tips.push('Add email or phone for +30 points and better attribution.')
+  if (score < 50) tips.push('Include event_id for deduplication (+20).')
+  if (score < 65) tips.push('Add event_source_url (+15) and currency for purchase events (+15).')
+  if (score < 80) tips.push('For Purchase events, send value (+20).')
+  return tips.length ? tips : ['Event looks great. All key fields present.']
+}
+
+export default function PlaygroundPage() {
+  const [eventType, setEventType] = useState<string>('Purchase')
+  const [customEventName, setCustomEventName] = useState('')
+  const [params, setParams] = useState<EventParams>({ ...defaultParams, event_id: generateEventId() })
+  const [includeTestEmail, setIncludeTestEmail] = useState(false)
+  const [autoGenerateEventId, setAutoGenerateEventId] = useState(true)
+  const [sendTarget, setSendTarget] = useState<'both' | 'meta' | 'google'>('both')
+  const [resultTab, setResultTab] = useState<'response' | 'payload' | 'platform' | 'history'>('response')
+  const [lastResponse, setLastResponse] = useState<unknown>(null)
+  const [lastPayload, setLastPayload] = useState<unknown>(null)
+  const [sending, setSending] = useState(false)
+  const [history, setHistory] = useState<HistoryItem[]>([])
+  const [qualityScore, setQualityScore] = useState<number | null>(null)
+
+  const displayEventName = eventType === 'Custom' ? customEventName.trim() || 'Custom' : eventType
+
+  const buildPayload = useCallback(() => {
+    const email = includeTestEmail ? 'test@test.com' : params.email
+    const numValue = params.value === '' ? undefined : Number(params.value)
+    const payload: Record<string, unknown> = {
+      event_name: displayEventName,
+      event_id: autoGenerateEventId ? params.event_id : (params.event_id || generateEventId()),
+      event_source_url: params.event_source_url || undefined,
+      email: email || undefined,
+      phone: params.phone || undefined,
+      value: numValue,
+      currency: params.currency || undefined,
+      target: sendTarget,
+    }
+    if (params.order_id) payload.order_id = params.order_id
+    if (params.form_name) payload.form_name = params.form_name
+    if (params.page_url) payload.page_url = params.page_url
+    if (params.page_title) payload.page_title = params.page_title
+    if (params.product_id) payload.product_id = params.product_id
+    if (params.product_name) payload.product_name = params.product_name
+    return payload
+  }, [
+    displayEventName,
+    includeTestEmail,
+    params,
+    autoGenerateEventId,
+    sendTarget,
+  ])
+
+  const [payloadPreview, setPayloadPreview] = useState<Record<string, unknown>>({})
+  useEffect(() => {
+    setPayloadPreview(buildPayload())
+  }, [buildPayload])
+
+  useEffect(() => {
+    if (autoGenerateEventId) {
+      setParams((p) => ({ ...p, event_id: generateEventId() }))
+    }
+  }, [eventType, autoGenerateEventId])
+
+  const sendTestEvent = async (targetOverride?: 'both' | 'meta' | 'google') => {
+    const target = targetOverride ?? sendTarget
+    const payload = buildPayload()
+    setSending(true)
+    setLastResponse(null)
+    setQualityScore(null)
+    try {
+      const res = await fetch('/api/playground/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...payload, target }),
+      })
+      const data = await res.json().catch(() => ({}))
+      setLastPayload(payload)
+      setLastResponse(data)
+      if (typeof data.quality_score === 'number') setQualityScore(data.quality_score)
+      setHistory((h) => [
+        {
+          id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+          event_name: displayEventName,
+          time: new Date().toISOString(),
+          status: res.ok ? 'success' : 'fail',
+          response: data,
+          payload,
+        },
+        ...h,
+      ])
+    } catch {
+      setLastResponse({ success: false, error: 'Network error' })
+      setQualityScore(null)
+      setHistory((h) => [
+        {
+          id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+          event_name: displayEventName,
+          time: new Date().toISOString(),
+          status: 'fail',
+          payload,
+        },
+        ...h,
+      ])
+    } finally {
+      setSending(false)
+    }
+  }
+
+  const updateParam = (key: keyof EventParams, value: string) => {
+    setParams((p) => ({ ...p, [key]: value }))
+  }
+
+  const showField = (key: keyof EventParams) => {
+    const purchase = ['value', 'currency', 'email', 'phone', 'order_id', 'event_id', 'event_source_url']
+    const lead = ['email', 'phone', 'form_name', 'event_id', 'event_source_url']
+    const pageView = ['page_url', 'page_title', 'event_id', 'event_source_url']
+    const addToCart = ['value', 'currency', 'product_id', 'product_name', 'event_id', 'event_source_url']
+    const all = ['event_id', 'event_source_url']
+    switch (eventType) {
+      case 'Purchase':
+        return purchase.includes(key)
+      case 'Lead':
+        return lead.includes(key)
+      case 'PageView':
+        return pageView.includes(key)
+      case 'AddToCart':
+        return addToCart.includes(key)
+      case 'InitiateCheckout':
+      case 'ViewContent':
+      case 'Search':
+      case 'CompleteRegistration':
+        return all.includes(key) || ['value', 'currency', 'email', 'phone'].includes(key)
+      default:
+        return [...new Set([...all, 'value', 'currency', 'email', 'phone'])].includes(key)
+    }
+  }
+
+  const success = lastResponse && typeof lastResponse === 'object' && 'success' in lastResponse && (lastResponse as { success?: boolean }).success
+
+  return (
+    <div className="p-6 md:p-8 min-h-screen">
+      <h1 className="text-xl font-semibold text-white mb-2">Event Playground</h1>
+      <p className="text-zinc-400 text-sm mb-6">Test events visually before going live. Test events do not count toward your quota.</p>
+
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        {/* Left — Event Builder */}
+        <div className="space-y-6">
+          <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
+            <div className="px-4 py-3 border-b border-zinc-800">
+              <h2 className="text-sm font-medium text-zinc-300">Choose Event Type</h2>
+            </div>
+            <div className="p-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {EVENT_TYPES.map((t) => (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => setEventType(t.id)}
+                    className={`px-3 py-2.5 rounded-lg border text-left text-sm transition-colors ${
+                      eventType === t.id
+                        ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300'
+                        : 'bg-zinc-800/50 border-zinc-700 text-zinc-300 hover:bg-zinc-800'
+                    }`}
+                  >
+                    <span className="mr-1.5">{t.icon}</span>
+                    {t.label}
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setEventType('Custom')}
+                  className={`px-3 py-2.5 rounded-lg border text-left text-sm transition-colors ${
+                    eventType === 'Custom'
+                      ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300'
+                      : 'bg-zinc-800/50 border-zinc-700 text-zinc-300 hover:bg-zinc-800'
+                  }`}
+                >
+                  Custom
+                </button>
+              </div>
+              {eventType === 'Custom' && (
+                <input
+                  type="text"
+                  value={customEventName}
+                  onChange={(e) => setCustomEventName(e.target.value)}
+                  placeholder="Event name"
+                  className="mt-3 w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 placeholder-zinc-500 text-sm"
+                />
+              )}
+            </div>
+          </section>
+
+          <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
+            <div className="px-4 py-3 border-b border-zinc-800">
+              <h2 className="text-sm font-medium text-zinc-300">Event Parameters</h2>
+            </div>
+            <div className="p-4 space-y-3">
+              {showField('value') && (
+                <div>
+                  <label className="block text-xs text-zinc-500 mb-1">value</label>
+                  <input
+                    type="number"
+                    value={params.value}
+                    onChange={(e) => updateParam('value', e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm"
+                    placeholder="0"
+                  />
+                </div>
+              )}
+              {showField('currency') && (
+                <div>
+                  <label className="block text-xs text-zinc-500 mb-1">currency</label>
+                  <select
+                    value={params.currency}
+                    onChange={(e) => updateParam('currency', e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm"
+                  >
+                    {CURRENCIES.map((c) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              {showField('email') && (
+                <div>
+                  <label className="block text-xs text-zinc-500 mb-1">email</label>
+                  <input
+                    type="email"
+                    value={params.email}
+                    onChange={(e) => updateParam('email', e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm"
+                    placeholder="user@example.com"
+                  />
+                </div>
+              )}
+              {showField('phone') && (
+                <div>
+                  <label className="block text-xs text-zinc-500 mb-1">phone</label>
+                  <input
+                    type="text"
+                    value={params.phone}
+                    onChange={(e) => updateParam('phone', e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm"
+                    placeholder="+1234567890"
+                  />
+                </div>
+              )}
+              {showField('order_id') && (
+                <div>
+                  <label className="block text-xs text-zinc-500 mb-1">order_id</label>
+                  <input
+                    type="text"
+                    value={params.order_id}
+                    onChange={(e) => updateParam('order_id', e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm"
+                  />
+                </div>
+              )}
+              {showField('form_name') && (
+                <div>
+                  <label className="block text-xs text-zinc-500 mb-1">form_name</label>
+                  <input
+                    type="text"
+                    value={params.form_name}
+                    onChange={(e) => updateParam('form_name', e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm"
+                  />
+                </div>
+              )}
+              {showField('page_url') && (
+                <div>
+                  <label className="block text-xs text-zinc-500 mb-1">page_url</label>
+                  <input
+                    type="url"
+                    value={params.page_url}
+                    onChange={(e) => updateParam('page_url', e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm"
+                    placeholder="https://..."
+                  />
+                </div>
+              )}
+              {showField('page_title') && (
+                <div>
+                  <label className="block text-xs text-zinc-500 mb-1">page_title</label>
+                  <input
+                    type="text"
+                    value={params.page_title}
+                    onChange={(e) => updateParam('page_title', e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm"
+                  />
+                </div>
+              )}
+              {showField('product_id') && (
+                <div>
+                  <label className="block text-xs text-zinc-500 mb-1">product_id</label>
+                  <input
+                    type="text"
+                    value={params.product_id}
+                    onChange={(e) => updateParam('product_id', e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm"
+                  />
+                </div>
+              )}
+              {showField('product_name') && (
+                <div>
+                  <label className="block text-xs text-zinc-500 mb-1">product_name</label>
+                  <input
+                    type="text"
+                    value={params.product_name}
+                    onChange={(e) => updateParam('product_name', e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm"
+                  />
+                </div>
+              )}
+              {showField('event_id') && (
+                <div>
+                  <label className="block text-xs text-zinc-500 mb-1">event_id</label>
+                  <input
+                    type="text"
+                    value={params.event_id}
+                    onChange={(e) => updateParam('event_id', e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm font-mono"
+                  />
+                </div>
+              )}
+              {showField('event_source_url') && (
+                <div>
+                  <label className="block text-xs text-zinc-500 mb-1">event_source_url</label>
+                  <input
+                    type="url"
+                    value={params.event_source_url}
+                    onChange={(e) => updateParam('event_source_url', e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm"
+                    placeholder="https://..."
+                  />
+                </div>
+              )}
+
+              <div className="flex flex-wrap gap-4 pt-2">
+                <label className="flex items-center gap-2 text-sm text-zinc-400 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={includeTestEmail}
+                    onChange={(e) => setIncludeTestEmail(e.target.checked)}
+                    className="rounded border-zinc-600 bg-zinc-800 text-emerald-500 focus:ring-emerald-500"
+                  />
+                  Include test email (test@test.com)
+                </label>
+                <label className="flex items-center gap-2 text-sm text-zinc-400 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={autoGenerateEventId}
+                    onChange={(e) => setAutoGenerateEventId(e.target.checked)}
+                    className="rounded border-zinc-600 bg-zinc-800 text-emerald-500 focus:ring-emerald-500"
+                  />
+                  Auto-generate event_id
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
+            <div className="px-4 py-3 border-b border-zinc-800">
+              <h2 className="text-sm font-medium text-zinc-300">Send Controls</h2>
+            </div>
+            <div className="p-4 space-y-3">
+              <div>
+                <label className="block text-xs text-zinc-500 mb-1">Send to</label>
+                <select
+                  value={sendTarget}
+                  onChange={(e) => setSendTarget(e.target.value as 'both' | 'meta' | 'google')}
+                  className="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm"
+                >
+                  <option value="both">Both</option>
+                  <option value="meta">Meta only</option>
+                  <option value="google">Google only</option>
+                </select>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => sendTestEvent('both')}
+                  disabled={sending}
+                  className="flex-1 min-w-[140px] px-4 py-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm disabled:opacity-50 transition-colors"
+                >
+                  {sending ? 'Sending…' : 'Send Test Event'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => sendTestEvent('meta')}
+                  disabled={sending}
+                  className="px-4 py-3 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-sm disabled:opacity-50 transition-colors"
+                >
+                  Send to Meta only
+                </button>
+                <button
+                  type="button"
+                  onClick={() => sendTestEvent('google')}
+                  disabled={sending}
+                  className="px-4 py-3 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-sm disabled:opacity-50 transition-colors"
+                >
+                  Send to Google only
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        {/* Right — Results */}
+        <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden flex flex-col min-h-[400px]">
+          <div className="flex border-b border-zinc-800">
+            {(['response', 'payload', 'platform', 'history'] as const).map((tab) => (
+              <button
+                key={tab}
+                type="button"
+                onClick={() => setResultTab(tab)}
+                className={`px-4 py-3 text-sm font-medium capitalize transition-colors ${
+                  resultTab === tab ? 'text-white border-b-2 border-emerald-500 bg-zinc-800/50' : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                {tab === 'response' ? 'Response' : tab === 'payload' ? 'Payload Preview' : tab === 'platform' ? 'Platform Preview' : 'Event History'}
+              </button>
+            ))}
+          </div>
+          <div className="flex-1 p-4 overflow-auto">
+            {resultTab === 'response' && (
+              <div className="space-y-3">
+                {lastResponse != null ? (
+                  <>
+                    <div
+                      className={`rounded-lg border p-4 ${
+                        success ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-red-500/10 border-red-500/30'
+                      }`}
+                    >
+                      <pre className="text-xs text-zinc-300 whitespace-pre-wrap font-mono">
+                        {JSON.stringify(lastResponse, null, 2)}
+                      </pre>
+                    </div>
+                    {typeof lastResponse === 'object' && lastResponse !== null && (
+                      <>
+                        {'platforms_fired' in lastResponse && (
+                          <p className="text-sm text-zinc-400">
+                            Platforms fired: {(lastResponse as { platforms_fired?: string[] }).platforms_fired?.join(', ') ?? '—'}
+                          </p>
+                        )}
+                        {'event_id' in lastResponse && (
+                          <p className="text-sm text-zinc-400">
+                            event_id: {String((lastResponse as { event_id?: string }).event_id ?? '—')}
+                          </p>
+                        )}
+                        {'timestamp' in lastResponse && (
+                          <p className="text-sm text-zinc-400">
+                            timestamp: {(lastResponse as { timestamp?: number }).timestamp ?? '—'}
+                          </p>
+                        )}
+                      </>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => navigator.clipboard.writeText(JSON.stringify(lastResponse, null, 2))}
+                      className="px-3 py-1.5 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-sm"
+                    >
+                      Copy Response
+                    </button>
+                  </>
+                ) : (
+                  <p className="text-zinc-500 text-sm">Send a test event to see the API response here.</p>
+                )}
+              </div>
+            )}
+
+            {resultTab === 'payload' && (
+              <div className="space-y-3">
+                <div className="rounded-lg border border-zinc-700 bg-zinc-950 p-4">
+                  <pre className="text-xs text-zinc-300 whitespace-pre-wrap font-mono">
+                    {JSON.stringify(payloadPreview, null, 2)}
+                  </pre>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => navigator.clipboard.writeText(JSON.stringify(payloadPreview, null, 2))}
+                  className="px-3 py-1.5 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-sm"
+                >
+                  Copy Payload
+                </button>
+              </div>
+            )}
+
+            {resultTab === 'platform' && (
+              <div className="space-y-6">
+                <div className="rounded-lg border border-zinc-700 p-4 space-y-2">
+                  <h3 className="text-sm font-medium text-white">Meta</h3>
+                  <ul className="text-sm text-zinc-400 space-y-1">
+                    <li>Event name mapping ✅</li>
+                    <li>Required fields check ✅</li>
+                    <li>Optional fields check ✅</li>
+                    <li>Match rate estimate: {params.email || params.phone ? 'High' : '—'}</li>
+                  </ul>
+                  <p className="text-xs text-zinc-500 pt-1">
+                    Meta will use this for: Conversion optimization, Audience building
+                  </p>
+                </div>
+                <div className="rounded-lg border border-zinc-700 p-4 space-y-2">
+                  <h3 className="text-sm font-medium text-white">Google</h3>
+                  <ul className="text-sm text-zinc-400 space-y-1">
+                    <li>Conversion mapping ✅</li>
+                    <li>Hashing status ✅</li>
+                  </ul>
+                  <p className="text-xs text-zinc-500 pt-1">
+                    Google will use this for: Smart bidding, Enhanced conversions
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {resultTab === 'history' && (
+              <div className="space-y-3">
+                {history.length === 0 ? (
+                  <p className="text-zinc-500 text-sm">No test events sent this session.</p>
+                ) : (
+                  <>
+                    <ul className="space-y-2">
+                      {history.map((item) => (
+                        <li
+                          key={item.id}
+                          className="flex items-center justify-between gap-2 py-2 border-b border-zinc-800"
+                        >
+                          <div>
+                            <span className="text-zinc-200 font-medium">{item.event_name}</span>
+                            <span className="text-zinc-500 text-xs ml-2">
+                              {new Date(item.time).toLocaleTimeString()}
+                            </span>
+                            <span
+                              className={`ml-2 text-xs ${
+                                item.status === 'success' ? 'text-emerald-400' : 'text-red-400'
+                              }`}
+                            >
+                              {item.status}
+                            </span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              if (!item.payload || typeof item.payload !== 'object') return
+                              setSending(true)
+                              setLastResponse(null)
+                              try {
+                                const res = await fetch('/api/playground/send', {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify(item.payload),
+                                })
+                                const data = await res.json().catch(() => ({}))
+                                setLastPayload(item.payload)
+                                setLastResponse(data)
+                                setQualityScore(typeof data.quality_score === 'number' ? data.quality_score : null)
+                                setResultTab('response')
+                                setHistory((h) => [
+                                  {
+                                    id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+                                    event_name: item.event_name,
+                                    time: new Date().toISOString(),
+                                    status: res.ok ? 'success' : 'fail',
+                                    response: data,
+                                    payload: item.payload,
+                                  },
+                                  ...h,
+                                ])
+                              } finally {
+                                setSending(false)
+                              }
+                            }}
+                            className="px-2 py-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-300 text-xs"
+                          >
+                            Replay
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                    <button
+                      type="button"
+                      onClick={() => setHistory([])}
+                      className="px-3 py-1.5 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-sm"
+                    >
+                      Clear History
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom — Quality Score */}
+      {qualityScore !== null && (
+        <div className="mt-6 rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
+          <div className="px-4 py-3 border-b border-zinc-800 flex items-center gap-4">
+            <span className="text-sm font-medium text-zinc-300">Event Quality Score</span>
+            <span
+              className={`text-2xl font-bold ${
+                qualityScore >= 80 ? 'text-emerald-400' : qualityScore >= 50 ? 'text-amber-400' : 'text-red-400'
+              }`}
+            >
+              {qualityScore}/100
+            </span>
+          </div>
+          <div className="p-4">
+            <p className="text-xs text-zinc-500 mb-2">Breakdown: email/phone +30 • value (purchase) +20 • event_id +20 • source URL +15 • currency +15</p>
+            <ul className="text-sm text-zinc-400 space-y-1">
+              {qualityTips(qualityScore).map((tip, i) => (
+                <li key={i}>{tip}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
