@@ -21,7 +21,7 @@ const navItems = [
               { name: "UTM Builder", url: "/my-process/tools/utm-builder" },
               { name: "A/B Test Calculator", url: "/my-process/tools/ab-test-calculator" },
               { name: "Budget Reverse Calculator", url: "/my-process/tools/budget-reverse-calculator" },
-              { name: "Custom Report Builder", url: "/my-process/-tools/custom-report-builder" },
+              { name: "Custom Audience Builder", url: "/my-process/tools/custom-audience-builder" },
             ],
           },
     ],
