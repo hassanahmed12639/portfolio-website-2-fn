@@ -273,7 +273,7 @@ function MarketingArchitecture() {
           color:showJourney?"#000":T.green,
           fontSize: isMobile ? 10 : 11,
           fontWeight:700,cursor:"pointer",
-          letterSpacing:"0.05em",fontFamily:"'DM Sans',sans-serif",
+          letterSpacing:"0.05em",fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif',
           transition:"all 0.15s", flexShrink:0,
         }}
       >
@@ -316,7 +316,7 @@ function MarketingArchitecture() {
             color: i===activeStep ? "#000" : T.grey,
             fontSize: isMobile ? 9 : 10,
             fontWeight:700,cursor:"pointer",
-            letterSpacing:"0.04em",fontFamily:"'DM Sans',sans-serif",
+            letterSpacing:"0.04em",fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif',
             transition:"all 0.12s",
           }}>
             {j.step} · {j.title}
@@ -354,7 +354,7 @@ function MarketingArchitecture() {
             border:`1px solid ${T.border}`,background:"transparent",
             color:activeStep===0?T.dim:T.white,
             fontSize:11,fontWeight:600,cursor:activeStep===0?"default":"pointer",
-            fontFamily:"'DM Sans',sans-serif",
+            fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif',
           }}>← Prev</button>
         <button onClick={() => setActiveStep(s => Math.min(JOURNEY.length-1,s+1))}
           disabled={activeStep===JOURNEY.length-1}
@@ -365,7 +365,7 @@ function MarketingArchitecture() {
             color:activeStep===JOURNEY.length-1?T.grey:"#000",
             fontSize:11,fontWeight:700,
             cursor:activeStep===JOURNEY.length-1?"default":"pointer",
-            fontFamily:"'DM Sans',sans-serif",
+            fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif',
           }}>Next →</button>
       </div>
     </div>
@@ -458,7 +458,7 @@ function MarketingArchitecture() {
         ].map(({t,x}) => (
           <text key={t} x={x} y={14} textAnchor="middle"
             fill={T.green} fontSize={7.5} fontWeight={700}
-            fontFamily="'DM Sans',sans-serif" letterSpacing="0.18em" opacity={0.3}>{t}</text>
+            fontFamily='"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif' letterSpacing="0.18em" opacity={0.3}>{t}</text>
         ))}
 
         {/* Edges */}
@@ -542,12 +542,12 @@ function MarketingArchitecture() {
                 <NodeIcon id={node.id} cx={18} cy={iconCY} color={T.green}/>
                 <text x={34} y={labelY}
                   fill={T.white} fontSize={11.5} fontWeight="700"
-                  fontFamily="'DM Sans',sans-serif" dominantBaseline="hanging">
+                  fontFamily='"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif' dominantBaseline="hanging">
                   {node.label}
                 </text>
                 <text x={34} y={subY}
                   fill={T.greenDim} fontSize={8.5}
-                  fontFamily="'DM Sans',sans-serif" dominantBaseline="hanging" opacity={0.85}>
+                  fontFamily='"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif' dominantBaseline="hanging" opacity={0.85}>
                   {node.sub}
                 </text>
               </g>
@@ -558,7 +558,7 @@ function MarketingArchitecture() {
                     fill={T.green} opacity={0.95}/>
                   <text x={W-15} y={13.5} textAnchor="middle"
                     fill={isDarkMode ? "#000" : T.white} fontSize={7.5} fontWeight="800"
-                    fontFamily="'DM Sans',sans-serif">{step.step}</text>
+                    fontFamily='"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif'>{step.step}</text>
                 </>
               )}
             </g>
@@ -573,7 +573,7 @@ function MarketingArchitecture() {
       width:"100%",background:T.bg,borderRadius:14,overflow:"hidden",
       border:`1px solid ${T.border}`,
       boxShadow:"0 24px 80px rgba(0,0,0,0.75)",
-      fontFamily:"'DM Sans',sans-serif",
+      fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif',
     }}>
       {header}
       {journeyPanel}

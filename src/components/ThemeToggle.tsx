@@ -114,7 +114,7 @@ export default function ThemeToggle() {
             textTransform: 'uppercase',
             color: isDark ? 'rgba(180,255,0,0.5)' : 'rgba(0,0,0,0.35)',
             marginTop: 10,
-            fontFamily: 'sans-serif',
+            fontFamily: '"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif',
             userSelect: 'none',
             transition: 'color 0.4s ease',
           }}

@@ -134,7 +134,7 @@ export default function BudgetReverseCalculator() {
           </span>
           <h1
             className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight leading-tight mb-3"
-            style={{ fontFamily: "Outfit, sans-serif" }}
+            style={{ fontFamily: '"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif' }}
           >
             AD BUDGET
             <br />
@@ -339,38 +339,38 @@ export default function BudgetReverseCalculator() {
         >
           <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: GREEN, boxShadow: isDarkMode ? "0 0 16px rgba(170,255,0,0.5)" : undefined }} />
           <div className="text-center mb-7">
-            <div className="text-2xl font-bold tracking-tight" style={{ fontFamily: "Outfit, sans-serif" }}>
+            <div className="text-2xl font-bold tracking-tight" style={{ fontFamily: '"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif' }}>
               YOUR <span style={{ color: GREEN }}>FUNNEL MATH</span>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-0 mb-8">
             <div className="text-center py-4 px-3 min-w-[80px] sm:min-w-[110px]">
-              <div className="text-2xl sm:text-3xl font-bold leading-none mb-1" style={{ color: GREEN, fontFamily: "Outfit, sans-serif" }}>{fmt(impressionsNeeded)}</div>
+              <div className="text-2xl sm:text-3xl font-bold leading-none mb-1" style={{ color: GREEN, fontFamily: '"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif' }}>{fmt(impressionsNeeded)}</div>
               <div className="text-[9px] uppercase tracking-wider" style={{ color: T.muted, fontFamily: "ui-monospace, monospace" }}>Impressions</div>
             </div>
             <div className="text-xl font-bold px-1 -mt-2" style={{ color: T.mutedLight }}>→</div>
             <div className="text-center py-4 px-3 min-w-[80px] sm:min-w-[110px]">
-              <div className="text-2xl sm:text-3xl font-bold leading-none mb-1" style={{ color: GREEN, fontFamily: "Outfit, sans-serif" }}>{fmt(clicksNeeded)}</div>
+              <div className="text-2xl sm:text-3xl font-bold leading-none mb-1" style={{ color: GREEN, fontFamily: '"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif' }}>{fmt(clicksNeeded)}</div>
               <div className="text-[9px] uppercase tracking-wider" style={{ color: T.muted, fontFamily: "ui-monospace, monospace" }}>Clicks</div>
             </div>
             {mode === "leads" && leadsNeeded != null && (
               <>
                 <div className="text-xl font-bold px-1 -mt-2" style={{ color: T.mutedLight }}>→</div>
                 <div className="text-center py-4 px-3 min-w-[80px] sm:min-w-[110px]">
-                  <div className="text-2xl sm:text-3xl font-bold leading-none mb-1" style={{ color: GREEN, fontFamily: "Outfit, sans-serif" }}>{fmt(leadsNeeded)}</div>
+                  <div className="text-2xl sm:text-3xl font-bold leading-none mb-1" style={{ color: GREEN, fontFamily: '"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif' }}>{fmt(leadsNeeded)}</div>
                   <div className="text-[9px] uppercase tracking-wider" style={{ color: T.muted, fontFamily: "ui-monospace, monospace" }}>Leads</div>
                 </div>
               </>
             )}
             <div className="text-xl font-bold px-1 -mt-2" style={{ color: T.mutedLight }}>→</div>
             <div className="text-center py-4 px-3 min-w-[80px] sm:min-w-[110px]">
-              <div className="text-2xl sm:text-3xl font-bold leading-none mb-1" style={{ color: GREEN, fontFamily: "Outfit, sans-serif" }}>{fmt(targetConvs)}</div>
+              <div className="text-2xl sm:text-3xl font-bold leading-none mb-1" style={{ color: GREEN, fontFamily: '"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif' }}>{fmt(targetConvs)}</div>
               <div className="text-[9px] uppercase tracking-wider" style={{ color: T.muted, fontFamily: "ui-monospace, monospace" }}>Sales</div>
             </div>
             <div className="text-xl font-bold px-1 -mt-2" style={{ color: T.mutedLight }}>=</div>
             <div className="text-center py-4 px-3 min-w-[80px] sm:min-w-[110px]">
-              <div className="text-2xl sm:text-3xl font-bold leading-none mb-1" style={{ color: GREEN, fontFamily: "Outfit, sans-serif" }}>${fmt(targetRevenue)}</div>
+              <div className="text-2xl sm:text-3xl font-bold leading-none mb-1" style={{ color: GREEN, fontFamily: '"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif' }}>${fmt(targetRevenue)}</div>
               <div className="text-[9px] uppercase tracking-wider" style={{ color: T.muted, fontFamily: "ui-monospace, monospace" }}>Revenue</div>
             </div>
           </div>
@@ -389,7 +389,7 @@ export default function BudgetReverseCalculator() {
             <div className="text-[11px] uppercase tracking-widest mb-2" style={{ color: T.muted, fontFamily: "ui-monospace, monospace" }}>Required Monthly Ad Budget</div>
             <div
               className="text-5xl sm:text-6xl lg:text-[88px] font-bold leading-none"
-              style={{ color: GREEN, textShadow: isDarkMode ? "0 0 50px rgba(170,255,0,0.3)" : undefined, fontFamily: "Outfit, sans-serif" }}
+              style={{ color: GREEN, textShadow: isDarkMode ? "0 0 50px rgba(170,255,0,0.3)" : undefined, fontFamily: '"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif' }}
             >
               ${Math.round(budget).toLocaleString()}
             </div>

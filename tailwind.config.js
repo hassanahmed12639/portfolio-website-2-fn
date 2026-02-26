@@ -9,7 +9,7 @@ module.exports = {
   theme: {
   	extend: {
   		fontFamily: {
-  			sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+  			sans: ['"Segoe UI"', '"Segoe UI Variable"', '-apple-system', 'BlinkMacSystemFont', '"Helvetica Neue"', 'Arial', 'sans-serif'],
   			playfair: ['Playfair Display', 'serif'],
   			overusedGrotesk: ['Overused Grotesk', 'sans-serif']
   		},

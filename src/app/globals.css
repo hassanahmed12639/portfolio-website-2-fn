@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Outfit:wght@400;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap");
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,7 +7,19 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+}
+
+body,
+* {
+  font-family: "Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code,
+pre,
+kbd {
+  font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
 }
 
 html,
@@ -77,28 +87,42 @@ main > * {
 
 /* Typography Scale */
 h1 {
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  font-weight: 700;
+  font-size: 2.5rem;
+  font-weight: 300;
   line-height: 1.2;
   color: var(--color-text);
 }
 
 h2 {
-  font-size: clamp(2rem, 4vw, 3rem);
-  font-weight: 700;
+  font-size: 2rem;
+  font-weight: 300;
   line-height: 1.2;
   color: var(--color-text);
 }
 
 h3 {
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  font-weight: 600;
+  font-size: 1.5rem;
+  font-weight: 400;
   line-height: 1.3;
   color: var(--color-text);
 }
 
 h4 {
   font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+h5 {
+  font-size: 1.1rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+h6 {
+  font-size: 1rem;
   font-weight: 600;
   line-height: 1.4;
   color: var(--color-text);
@@ -106,12 +130,25 @@ h4 {
 
 p {
   font-size: 1rem;
+  font-weight: 400;
   line-height: 1.6;
   color: var(--color-text);
 }
 
 a {
   color: inherit;
+}
+
+small,
+.text-caption,
+[class*="caption"] {
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+nav a {
+  font-size: 0.95rem;
+  font-weight: 500;
 }
 
 ::selection {
@@ -348,7 +385,8 @@ header {
 button.bg-primary,
 a.bg-primary,
 [class*="bg-primary"]:is(button, a) {
-  font-weight: 700;
+  font-size: 0.95rem;
+  font-weight: 600;
   box-shadow: 0 0 20px rgba(170, 255, 0, 0.45);
 }
 button.bg-primary:hover,
@@ -401,7 +439,7 @@ a.bg-primary:hover,
 
 .sector-scroll-section .sector-hero-title {
   font-size: clamp(2.2rem, 4vw, 3.5rem);
-  font-weight: 700;
+  font-weight: 300;
   line-height: 1.2;
   color: hsl(var(--foreground));
   margin: 0;
@@ -409,7 +447,7 @@ a.bg-primary:hover,
 
 .sector-scroll-section .sector-hero-title .highlight {
   color: #AAFF00;
-  font-weight: 700;
+  font-weight: 400;
 }
 
 .sector-scroll-section .sector-cards-container {
@@ -581,7 +619,7 @@ a.bg-primary:hover,
 
 .sector-scroll-section .sector-section-title {
   font-size: clamp(4rem, 9vw, 8rem);
-  font-weight: 700;
+  font-weight: 300;
   line-height: 0.95;
   margin-bottom: 40px;
   opacity: 0;
@@ -637,8 +675,8 @@ a.bg-primary:hover,
   border: none;
   padding: 16px 32px;
   border-radius: 8px;
-  font-weight: 700;
-  font-size: 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 0 20px rgba(170, 255, 0, 0.45);
@@ -785,7 +823,7 @@ a.bg-primary:hover,
 .arch-section {
   color: hsl(var(--foreground));
   background-color: hsl(var(--background));
-  font-family: "Outfit", sans-serif;
+  font-family: "Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
 }
 
 .arch-section .container {
@@ -821,9 +859,9 @@ a.bg-primary:hover,
 }
 
 .arch-section .arch__left .arch__info h2.header {
-  font-family: Outfit, sans-serif;
+  font-family: "Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   font-size: 42px;
-  font-weight: 800;
+  font-weight: 300;
   letter-spacing: -0.84px;
 }
 
@@ -927,7 +965,7 @@ a.bg-primary:hover,
 
 /* Who I Am section (below ArchSection) */
 .who-i-am-section {
-  font-family: "Outfit", sans-serif;
+  font-family: "Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
 }
 
 .who-i-am-container {
@@ -1004,8 +1042,8 @@ a.bg-primary:hover,
   gap: 0.35rem;
   background: #AAFF00;
   color: #0F0F0F;
-  font-weight: 700;
-  font-size: clamp(0.9375rem, 1.1vw, 1rem);
+  font-weight: 600;
+  font-size: 0.95rem;
   padding: 0.75rem 1.5rem;
   border-radius: 9999px;
   text-decoration: none;

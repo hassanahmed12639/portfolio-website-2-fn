@@ -268,7 +268,7 @@ export const Timeline = ({ data }) => {
       style={{
         width: "100%",
         background: "#000",
-        fontFamily: "'Inter', 'Helvetica Neue', sans-serif",
+        fontFamily: '"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif',
         padding: isMobile ? "0 12px" : "0 20px",
       }}
     >

@@ -211,7 +211,7 @@ export default function UTMBuilder() {
       style={{
         background: DARK,
         minHeight: '100%',
-        fontFamily: 'Inter, sans-serif',
+        fontFamily: '"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif',
         color: textColor,
         padding: '40px 20px',
       }}

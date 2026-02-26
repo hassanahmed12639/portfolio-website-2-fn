@@ -88,19 +88,18 @@ function ContactContent() {
   };
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-background text-foreground font-sans" style={{ fontFamily: "'DM Sans', 'Helvetica Neue', sans-serif" }}>
+    <div className="min-h-screen overflow-x-hidden bg-background text-foreground font-sans" style={{ fontFamily: '"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif' }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=Syne:wght@700;800&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: #0a0a0a; }
-        input, textarea, select { font-family: 'DM Sans', sans-serif; }
-        ::placeholder { color: #555; }
+        input, textarea, select { font-family: "Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif; font-size: 1rem; font-weight: 400; }
+        ::placeholder { color: #555; font-weight: 300; }
         ::-webkit-scrollbar { width: 4px; } 
         ::-webkit-scrollbar-thumb { background: #AAFF0033; border-radius: 2px; }
 
         .tab-btn {
           background: none; border: none; cursor: pointer;
-          font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500;
+          font-family: "Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif; font-size: 0.95rem; font-weight: 500;
           padding: 10px 28px; border-radius: 100px;
           transition: all 0.2s;
           color: #888;
@@ -108,7 +107,7 @@ function ContactContent() {
         .tab-btn.active {
           background: #AAFF00;
           color: #000;
-          font-weight: 700;
+          font-weight: 600;
           box-shadow: 0 0 20px #AAFF0055;
         }
         .form-input {
@@ -121,8 +120,8 @@ function ContactContent() {
         .lime-btn {
           background: #AAFF00; color: #000; border: none;
           border-radius: 100px; padding: 14px 36px;
-          font-size: 15px; font-weight: 700; cursor: pointer;
-          font-family: 'DM Sans', sans-serif;
+          font-size: 0.95rem; font-weight: 600; cursor: pointer;
+          font-family: "Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
           transition: all 0.2s; box-shadow: 0 0 0 0 #AAFF0055;
           letter-spacing: 0.3px;
         }
@@ -131,7 +130,7 @@ function ContactContent() {
         .day-btn {
           width: 38px; height: 38px; border-radius: 10px;
           border: none; background: #161616; color: #aaa;
-          font-family: 'DM Sans', sans-serif; font-size: 13px;
+          font-family: "Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif; font-size: 0.875rem;
           cursor: pointer; transition: all 0.15s;
           display: flex; align-items: center; justify-content: center;
         }
@@ -141,7 +140,7 @@ function ContactContent() {
         .time-chip {
           padding: 8px 16px; border-radius: 8px;
           border: 1px solid #222; background: #111; color: #aaa;
-          font-size: 13px; font-family: 'DM Sans', sans-serif;
+          font-size: 0.875rem; font-family: "Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
           cursor: pointer; transition: all 0.15s;
         }
         .time-chip:hover { border-color: #AAFF0066; color: #fff; }
@@ -174,10 +173,10 @@ function ContactContent() {
           width:400, height:200, background:"#AAFF0012",
           filter:"blur(80px)", borderRadius:"50%", pointerEvents:"none"
         }}/>
-        <p style={{ fontFamily:"'Syne', sans-serif", fontSize:13, letterSpacing:4, color:LIME, textTransform:"uppercase", marginBottom:16, fontWeight:700 }}>
+        <p style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', fontSize:13, letterSpacing:4, color:LIME, textTransform:"uppercase", marginBottom:16, fontWeight:600 }}>
           Let's Work Together
         </p>
-        <h1 style={{ fontFamily:"'Syne', sans-serif", fontSize:"clamp(36px,6vw,72px)", fontWeight:800, lineHeight:1.05, letterSpacing:"-1px" }}>
+        <h1 style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', fontSize:"clamp(36px,6vw,72px)", fontWeight:300, lineHeight:1.05, letterSpacing:"-1px" }}>
           Ready to{" "}
           <span
             style={{
@@ -217,7 +216,7 @@ function ContactContent() {
         <div style={{ display:"flex", flexDirection:"column", gap:24 }}>
           <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:20, padding:32, position:"relative", overflow:"hidden" }} className="noise-bg">
             <div style={{ position:"absolute", top:-40, right:-40, width:120, height:120, background:LIME, borderRadius:"50%", opacity:0.06, filter:"blur(30px)" }}/>
-            <p style={{ fontFamily:"'Syne', sans-serif", fontSize:11, letterSpacing:3, color:LIME, textTransform:"uppercase", marginBottom:20 }}>Contact Info</p>
+            <p style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', fontSize:11, letterSpacing:3, color:LIME, textTransform:"uppercase", marginBottom:20 }}>Contact Info</p>
             {[
               { icon:"📧", label:"Email", val:"hassan@example.com" },
               { icon:"📍", label:"Location", val:"Remote · Worldwide" },
@@ -234,7 +233,7 @@ function ContactContent() {
           </div>
 
           <div style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:20, padding:32 }}>
-            <p style={{ fontFamily:"'Syne', sans-serif", fontSize:11, letterSpacing:3, color:LIME, textTransform:"uppercase", marginBottom:16 }}>What I Help With</p>
+            <p style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', fontSize:11, letterSpacing:3, color:LIME, textTransform:"uppercase", marginBottom:16 }}>What I Help With</p>
             {["Paid Social & Paid Search","Funnel Strategy & CRO","Marketing Automation","Analytics & Attribution","Campaign Audits"].map(s => (
               <div key={s} style={{ display:"flex", alignItems:"center", gap:10, marginBottom:12 }}>
                 <div style={{ width:6, height:6, borderRadius:"50%", background:LIME, boxShadow:LIME_GLOW, flexShrink:0 }}/>
@@ -245,7 +244,7 @@ function ContactContent() {
 
           <div style={{ background:`linear-gradient(135deg, ${LIME}22 0%, #0a0a0a 100%)`, border:`1px solid ${LIME}33`, borderRadius:20, padding:28 }}>
             <div style={{ fontSize:28, marginBottom:8 }}>🚀</div>
-            <p style={{ fontFamily:"'Syne', sans-serif", fontSize:18, fontWeight:700, marginBottom:8 }}>Free Campaign Audit</p>
+            <p style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', fontSize:18, fontWeight:600, marginBottom:8 }}>Free Campaign Audit</p>
             <p style={{ fontSize:13, color:"#999", lineHeight:1.6, marginBottom:16 }}>Book a free 45-min audit call and I'll review your existing campaigns live — no strings attached.</p>
             <button className="lime-btn" style={{ padding:"10px 22px", fontSize:13 }} type="button" onClick={()=>{ setActiveTab("calendar"); setSelectedType("audit"); }}>
               Claim Free Audit →
@@ -259,13 +258,13 @@ function ContactContent() {
               {formSent ? (
                 <div style={{ textAlign:"center", padding:"40px 0" }}>
                   <div style={{ fontSize:56, marginBottom:16 }}>✅</div>
-                  <h3 style={{ fontFamily:"'Syne', sans-serif", fontSize:24, marginBottom:8 }}>Message Sent!</h3>
+                  <h3 style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', fontSize:24, marginBottom:8 }}>Message Sent!</h3>
                   <p style={{ color:"#777", fontSize:14 }}>I'll get back to you within 24 hours.</p>
                   <button className="lime-btn" style={{ marginTop:24 }} type="button" onClick={()=>{ setFormSent(false); setForm({ name:"",email:"",company:"",budget:"",message:"" }); }}>Send Another</button>
                 </div>
               ) : (
                 <form onSubmit={handleFormSubmit} style={{ display:"flex", flexDirection:"column", gap:16 }}>
-                  <p style={{ fontFamily:"'Syne', sans-serif", fontSize:11, letterSpacing:3, color:LIME, textTransform:"uppercase", marginBottom:4 }}>Send a Message</p>
+                  <p style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', fontSize:11, letterSpacing:3, color:LIME, textTransform:"uppercase", marginBottom:4 }}>Send a Message</p>
                   <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:14 }}>
                     <div>
                       <label style={{ fontSize:12, color:"#555", display:"block", marginBottom:6 }}>Full Name *</label>
@@ -307,7 +306,7 @@ function ContactContent() {
               {booked ? (
                 <div style={{ textAlign:"center", padding:"40px 0" }}>
                   <div style={{ fontSize:56, marginBottom:16 }}>🎉</div>
-                  <h3 style={{ fontFamily:"'Syne', sans-serif", fontSize:24, marginBottom:8 }}>Meeting Booked!</h3>
+                  <h3 style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', fontSize:24, marginBottom:8 }}>Meeting Booked!</h3>
                   <p style={{ color:"#777", fontSize:14, marginBottom:4 }}>
                     {meetingTypes.find(t=>t.id===selectedType)?.label} on
                   </p>
@@ -319,7 +318,7 @@ function ContactContent() {
                 </div>
               ) : (
                 <form onSubmit={handleBook} style={{ display:"flex", flexDirection:"column", gap:22 }}>
-                  <p style={{ fontFamily:"'Syne', sans-serif", fontSize:11, letterSpacing:3, color:LIME, textTransform:"uppercase" }}>Book a Meeting</p>
+                  <p style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', fontSize:11, letterSpacing:3, color:LIME, textTransform:"uppercase" }}>Book a Meeting</p>
 
                   <div>
                     <p style={{ fontSize:12, color:"#555", marginBottom:10 }}>Meeting Type</p>
@@ -341,7 +340,7 @@ function ContactContent() {
                     <div style={{ background:"#0e0e0e", borderRadius:14, padding:18 }}>
                       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
                         <button type="button" onClick={prevMonth} style={{ background:"none",border:"none",color:"#666",cursor:"pointer",fontSize:18,padding:"0 8px" }}>‹</button>
-                        <span style={{ fontFamily:"'Syne',sans-serif", fontWeight:700, fontSize:15 }}>{monthNames[calMonth]} {calYear}</span>
+                        <span style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', fontWeight:600, fontSize:15 }}>{monthNames[calMonth]} {calYear}</span>
                         <button type="button" onClick={nextMonth} style={{ background:"none",border:"none",color:"#666",cursor:"pointer",fontSize:18,padding:"0 8px" }}>›</button>
                       </div>
                       <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:4, marginBottom:8 }}>
