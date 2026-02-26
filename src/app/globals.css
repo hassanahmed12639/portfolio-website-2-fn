@@ -63,6 +63,7 @@ main > * {
 
 /* Design tokens */
 :root {
+  font-size: clamp(16px, 1.2vw + 2px, 18px);
   --neon: #AAFF00;
   --neon-dim: rgba(170, 255, 0, 0.15);
   --black: #0F0F0F;
