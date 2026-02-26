@@ -2,6 +2,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import ShareArticleLinks from "@/components/ShareArticleLinks";
 import CaseStudyTOC from "@/components/CaseStudyTOC";
+import SummarizeInChatGPT from "@/components/SummarizeInChatGPT";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -38,8 +39,8 @@ export default async function CaseStudyPage({ params }: Props) {
   return (
     <main className="w-full min-h-screen m-0 p-0 bg-background">
       <Header />
-      <section className="w-full m-0 py-8 md:py-12 px-6 md:px-[5%]">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[200px_1fr] gap-10 lg:gap-12">
+      <section className="w-full m-0 py-8 md:py-12 px-4 md:px-8 lg:px-12">
+        <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-10 lg:gap-14">
           {/* Sidebar: TOC, Share, CTA (left on desktop) */}
           <aside className="order-2 lg:order-1 lg:sticky lg:top-24 self-start space-y-8">
             <CaseStudyTOC items={tocItems} />
@@ -54,7 +55,7 @@ export default async function CaseStudyPage({ params }: Props) {
                 %
               </div>
               <h3 className="font-semibold text-[var(--color-text)] mb-1">See more in action</h3>
-              <p className="text-sm text-[var(--color-text)]/70 mb-4">
+              <p className="text-base text-[var(--color-text)]/70 mb-4">
                 Explore other case studies and project outcomes.
               </p>
               <Link
@@ -67,10 +68,10 @@ export default async function CaseStudyPage({ params }: Props) {
           </aside>
 
           {/* Main content: hero first, then breadcrumb, title, meta, author, body */}
-          <article className="flex flex-col text-[var(--color-text)] order-1 lg:order-2">
-            {/* Hero: full-width image with light black overlay + CASE STUDY */}
+          <article className="flex flex-col text-[var(--color-text)] text-[21px] order-1 lg:order-2 min-w-0">
+            {/* Hero: full-width image */}
             <div id="hero" className="mb-8 md:mb-12">
-              <div className="relative min-h-[220px] md:min-h-[280px] rounded-2xl overflow-hidden border-[3px] border-[var(--color-accent)]">
+              <div className="relative min-h-[220px] md:min-h-[280px] rounded-2xl overflow-hidden">
                 <Image
                   src={study.src}
                   alt=""
@@ -79,17 +80,11 @@ export default async function CaseStudyPage({ params }: Props) {
                   sizes="100vw"
                   priority
                 />
-                <div className="absolute inset-0 bg-black/45" aria-hidden />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-[var(--color-accent)] font-bold text-lg md:text-xl tracking-[0.2em] uppercase">
-                    CASE STUDY
-                  </span>
-                </div>
               </div>
             </div>
 
             {/* Breadcrumb */}
-            <nav className="text-sm mb-4" aria-label="Breadcrumb">
+            <nav className="mb-4" aria-label="Breadcrumb">
               <Link href="/" className="text-[var(--color-accent)] hover:underline underline-offset-2">HOME</Link>
               <span className="mx-2 text-[var(--color-text)]/50">/</span>
               <Link href="/project" className="text-[var(--color-accent)] hover:underline underline-offset-2">PROJECTS</Link>
@@ -98,12 +93,12 @@ export default async function CaseStudyPage({ params }: Props) {
             </nav>
 
             {/* Large heading */}
-            <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-[2.25rem] font-bold text-[var(--color-text)] mb-6 leading-tight max-w-3xl">
+            <h1 className="text-[48px] font-bold text-[var(--color-text)] mb-6 leading-tight">
               {study.title}
             </h1>
 
             {/* Metadata row: Published, read time, Summarize in ChatGPT */}
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-[var(--color-text)]/70 mb-6">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[var(--color-text)]/70 mb-6">
               <span className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-[var(--color-accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                 Published: {study.date}
@@ -114,20 +109,17 @@ export default async function CaseStudyPage({ params }: Props) {
                   {study.readTime}
                 </span>
               )}
-              <a
-                href="https://chat.openai.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-[var(--color-accent)] hover:underline underline-offset-2"
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-                Summarize in ChatGPT
-              </a>
+              <SummarizeInChatGPT
+                title={study.title}
+                description={study.description}
+                sections={sections}
+                slug={slug}
+              />
             </div>
 
             {/* Author block: avatar, name + badge, title + caret */}
             <div className="flex items-center gap-3 mb-10 pb-8 border-b border-[var(--color-text)]/10">
-              <div className="w-12 h-12 rounded-full bg-[var(--color-accent)]/20 flex items-center justify-center text-[var(--color-accent)] font-semibold text-lg shrink-0">
+              <div className="w-12 h-12 rounded-full bg-[var(--color-accent)]/20 flex items-center justify-center text-[var(--color-accent)] font-semibold shrink-0">
                 {study.author.charAt(0)}
               </div>
               <div className="min-w-0">
@@ -137,7 +129,7 @@ export default async function CaseStudyPage({ params }: Props) {
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
                   </span>
                 </p>
-                <p className="text-sm text-[var(--color-text)]/70 flex items-center gap-1">
+                <p className="text-[var(--color-text)]/70 flex items-center gap-1">
                   {study.authorTitle ?? "Case Study"}
                   <span className="text-[var(--color-text)]/50" aria-hidden>
                     <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
@@ -149,15 +141,15 @@ export default async function CaseStudyPage({ params }: Props) {
             {/* Key Takeaways */}
             {takeaways.length > 0 && (
               <div id="key-takeaways" className="mb-10 scroll-mt-24">
-                <h2 className="text-lg font-semibold text-[var(--color-text)] mb-3 flex items-center gap-2">
+                <h2 className="font-semibold text-[var(--color-text)] mb-3 flex items-center gap-2">
                   <span className="text-[var(--color-accent)]">◆</span> Key Takeaways
                 </h2>
-                <p className="text-[var(--color-text)]/90 text-sm leading-relaxed mb-4">
+                <p className="text-[var(--color-text)]/90 leading-relaxed mb-4">
                   {study.description}
                 </p>
                 <ul className="space-y-2">
                   {takeaways.map((t, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm">
+                    <li key={i} className="flex items-start gap-2">
                       <span className="text-[var(--color-accent)] mt-0.5">•</span>
                       <span className="text-[var(--color-text)]/90">{t}</span>
                     </li>
@@ -173,7 +165,7 @@ export default async function CaseStudyPage({ params }: Props) {
                 id={sec.id}
                 className="mb-10 scroll-mt-24"
               >
-                <h2 className="text-xl md:text-2xl font-semibold text-[var(--color-text)] mb-4">
+                <h2 className="font-semibold text-[var(--color-text)] mb-4">
                   {sec.heading}
                 </h2>
                 <p className="text-[var(--color-text)]/90 leading-relaxed">
@@ -191,7 +183,7 @@ export default async function CaseStudyPage({ params }: Props) {
             <div className="mt-12 pt-8 border-t border-[var(--color-text)]/10">
               <Link
                 href="/project"
-                className="inline-flex items-center gap-1 text-sm font-medium text-[var(--color-accent)] hover:underline underline-offset-2"
+                className="inline-flex items-center gap-1 font-medium text-[var(--color-accent)] hover:underline underline-offset-2"
               >
                 ← Back to all case studies
               </Link>

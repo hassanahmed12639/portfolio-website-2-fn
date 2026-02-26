@@ -12,7 +12,7 @@ export default function CaseStudyTOC({ items }: { items: Item[] }) {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="text-sm font-semibold text-[var(--color-text)] mb-3 flex items-center justify-between w-full hover:text-[var(--color-accent)] transition-colors"
+        className="text-base font-semibold text-[var(--color-text)] mb-3 flex items-center justify-between w-full hover:text-[var(--color-accent)] transition-colors"
       >
         Table of Contents
         <span className="text-[var(--color-text)]/60 transition-transform" aria-hidden>
@@ -26,7 +26,7 @@ export default function CaseStudyTOC({ items }: { items: Item[] }) {
         </span>
       </button>
       {open && (
-        <ul className="space-y-2 text-sm">
+        <ul className="space-y-2 text-base">
           {items.map((item) => (
             <li key={item.id}>
               <a
