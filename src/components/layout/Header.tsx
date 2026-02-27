@@ -28,6 +28,12 @@ const navItems = [
   },
   { name: "Resume", url: "/resume" },
   { name: "Contact", url: "/contact" },
+  {
+    name: "TrackHive",
+    url: "/trackhive",
+    highlight: true,
+    badge: "NEW",
+  },
 ]
 
 export default function Header() {

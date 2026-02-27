@@ -1,123 +1,242 @@
 import { createClient } from '@/lib/supabase/server'
-import { UpgradeButton } from './UpgradeButton'
+import {
+  PLANS,
+  getEffectivePlan,
+  getEventsLimit,
+  isUnlimited,
+  type PlanName,
+} from '@/lib/plans'
+import { StartTrialButton } from './StartTrialButton'
+import { UpgradeProButton } from './UpgradeProButton'
+import Link from 'next/link'
 
 export default async function BillingPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
   if (!user) return null
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('plan, events_used, events_reset_at')
+    .select(
+      'plan, is_trial, trial_expires_at, trial_started_at, events_used, events_reset_at, monthly_scans, monthly_ai_analyses'
+    )
     .eq('id', user.id)
     .single()
 
-  const currentPlan = (profile?.plan as string) ?? 'free'
+  const effectivePlan = getEffectivePlan(profile ?? {})
+  const planKey = effectivePlan as PlanName
+  const eventsLimit = getEventsLimit(planKey)
   const eventsUsed = profile?.events_used ?? 0
-  const eventsResetAt = profile?.events_reset_at
-    ? new Date(profile.events_reset_at).toLocaleDateString()
-    : null
+  const scansUsed = profile?.monthly_scans ?? 0
+  const aiUsed = profile?.monthly_ai_analyses ?? 0
+  const scansLimit = PLANS[planKey]?.scans_limit ?? 3
+  const aiLimit = PLANS[planKey]?.ai_analyses_limit ?? 3
 
-  const freeLimit = 500
-  const usagePct = currentPlan === 'free' ? Math.min(100, (eventsUsed / freeLimit) * 100) : 0
+  const isOnTrial =
+    profile?.is_trial &&
+    profile?.trial_expires_at &&
+    new Date(profile.trial_expires_at) > new Date()
+  const trialExpiresAt = profile?.trial_expires_at
+    ? new Date(profile.trial_expires_at)
+    : null
+  const trialDaysLeft =
+    trialExpiresAt && isOnTrial
+      ? Math.max(0, Math.ceil((trialExpiresAt.getTime() - Date.now()) / (24 * 60 * 60 * 1000)))
+      : 0
+  const neverStartedTrial = !profile?.trial_started_at && (profile?.plan === 'free' || !profile?.plan)
+  const currentPlanLabel = profile?.plan ?? 'free'
+
+  const usagePct =
+    !isUnlimited(eventsLimit) && eventsLimit > 0
+      ? Math.min(100, (eventsUsed / eventsLimit) * 100)
+      : 0
   const usageWarn = usagePct >= 80
 
   return (
     <div className="p-6 md:p-8">
       <h1 className="text-xl font-semibold text-white mb-2">Billing</h1>
-      <p className="text-zinc-400 text-sm mb-6">Manage your plan and billing.</p>
+      <p className="text-zinc-400 text-sm mb-6">
+        Manage your plan, usage, and billing.
+      </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-          <p className="text-sm text-zinc-400 mb-1">Current plan</p>
-          <p className="text-2xl font-semibold text-white capitalize">{currentPlan}</p>
-        </div>
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-          <p className="text-sm text-zinc-400 mb-1">Events used</p>
-          <p className="text-2xl font-semibold text-white">
-            {currentPlan === 'free' ? `${eventsUsed} / ${freeLimit}` : eventsUsed}
-          </p>
-        </div>
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-          <p className="text-sm text-zinc-400 mb-1">Events reset at</p>
-          <p className="text-2xl font-semibold text-white">
-            {eventsResetAt ?? '—'}
-          </p>
-        </div>
-      </div>
-
-      {currentPlan === 'free' && (
-        <div className="mb-8">
-          <div className="flex justify-between text-sm mb-2">
-            <span className="text-zinc-400">Usage this period</span>
-            <span className={usageWarn ? 'text-amber-400' : 'text-zinc-300'}>
-              {eventsUsed} / {freeLimit} ({Math.round(usagePct)}%)
-            </span>
-          </div>
-          <div className="h-2 rounded-full bg-zinc-800 overflow-hidden">
-            <div
-              className={`h-full rounded-full transition-all ${
-                usageWarn ? 'bg-amber-500' : 'bg-zinc-600'
-              }`}
-              style={{ width: `${usagePct}%` }}
-            />
-          </div>
-          {usageWarn && (
-            <p className="text-amber-400 text-sm mt-1">
-              You&apos;ve used over 80% of your monthly events.
+      {/* Trial banner: free user who never started trial */}
+      {neverStartedTrial && (
+        <div className="mb-6 rounded-xl bg-emerald-500/20 border border-emerald-500/50 p-4 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p className="font-medium text-white">
+              🎉 Try TrackHive Pro FREE for 7 days — No credit card required
             </p>
-          )}
+            <p className="text-sm text-zinc-300 mt-0.5">
+              Full Pro access: 50k events, all platforms, all features.
+            </p>
+          </div>
+          <StartTrialButton className="shrink-0 px-4 py-2 rounded-lg font-medium bg-emerald-500 text-emerald-950 hover:bg-emerald-400 transition-colors">
+            Start Free Trial
+          </StartTrialButton>
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Free */}
+      {/* Trial countdown: currently on trial */}
+      {isOnTrial && (
+        <div className="mb-6 rounded-xl bg-amber-500/20 border border-amber-500/50 p-4 flex flex-wrap items-center justify-between gap-4">
+          <p className="font-medium text-white">
+            ⏳ Your free trial ends in {trialDaysLeft} day{trialDaysLeft !== 1 ? 's' : ''} — Upgrade to keep access
+          </p>
+          <Link
+            href="/dashboard/billing"
+            className="shrink-0 px-4 py-2 rounded-lg font-medium bg-amber-500 text-amber-950 hover:bg-amber-400 transition-colors"
+          >
+            Upgrade Now
+          </Link>
+        </div>
+      )}
+
+      {/* Current usage */}
+      <div className="mb-8 space-y-4">
+        <h2 className="text-sm font-medium text-zinc-400 uppercase tracking-wider">
+          Current usage
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
+            <p className="text-sm text-zinc-400 mb-1">Events this period</p>
+            <p className="text-2xl font-semibold text-white">
+              {isUnlimited(eventsLimit)
+                ? eventsUsed.toLocaleString()
+                : `${eventsUsed} / ${eventsLimit}`}
+            </p>
+          </div>
+          <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
+            <p className="text-sm text-zinc-400 mb-1">Scans used</p>
+            <p className="text-2xl font-semibold text-white">
+              {isUnlimited(scansLimit)
+                ? scansUsed
+                : `${scansUsed} / ${scansLimit}`}
+            </p>
+          </div>
+          <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
+            <p className="text-sm text-zinc-400 mb-1">AI analyses used</p>
+            <p className="text-2xl font-semibold text-white">
+              {isUnlimited(aiLimit) ? aiUsed : `${aiUsed} / ${aiLimit}`}
+            </p>
+          </div>
+        </div>
+        {!isUnlimited(eventsLimit) && eventsLimit > 0 && (
+          <div>
+            <div className="flex justify-between text-sm mb-2">
+              <span className="text-zinc-400">Events progress</span>
+              <span
+                className={
+                  usageWarn ? 'text-amber-400' : 'text-zinc-300'
+                }
+              >
+                {eventsUsed} / {eventsLimit} ({Math.round(usagePct)}%)
+              </span>
+            </div>
+            <div className="h-2 rounded-full bg-zinc-800 overflow-hidden">
+              <div
+                className={`h-full rounded-full transition-all ${
+                  usageWarn ? 'bg-amber-500' : 'bg-zinc-600'
+                }`}
+                style={{ width: `${usagePct}%` }}
+              />
+            </div>
+          </div>
+        )}
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-medium px-2 py-1 rounded bg-zinc-700 text-zinc-200 capitalize">
+            {currentPlanLabel}
+            {isOnTrial && trialExpiresAt && (
+              <span className="ml-1 text-zinc-400">
+                · Expires {trialExpiresAt.toLocaleDateString()}
+              </span>
+            )}
+          </span>
+        </div>
+      </div>
+
+      {/* Plan cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        {/* FREE */}
         <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-6 flex flex-col">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-white">Free</h2>
-            {currentPlan === 'free' && (
+            {currentPlanLabel === 'free' && !profile?.trial_started_at && (
               <span className="text-xs font-medium px-2 py-1 rounded bg-zinc-700 text-zinc-200">
                 Current Plan
               </span>
             )}
           </div>
-          <p className="text-2xl font-bold text-white mb-1">$0<span className="text-base font-normal text-zinc-400">/month</span></p>
+          <p className="text-2xl font-bold text-white mb-1">
+            $0<span className="text-base font-normal text-zinc-400">/mo</span>
+          </p>
           <p className="text-sm text-zinc-400 mb-4">500 events/month</p>
           <ul className="space-y-2 text-sm text-zinc-300 mb-6 flex-1">
-            <li>Meta CAPI ✓</li>
-            <li>Google Enhanced ✓</li>
-            <li className="text-zinc-500">Deduplication ✗</li>
-            <li className="text-zinc-500">Webhooks ✗</li>
+            <li>1 domain</li>
+            <li>Meta CAPI ✅</li>
+            <li>Google Enhanced ✅</li>
+            <li>AI Analysis: 3/month</li>
+            <li>Scanner: 3/month</li>
+            <li className="text-zinc-500">TikTok / Snapchat / GA4 ❌</li>
+            <li className="text-zinc-500">Advanced features ❌</li>
           </ul>
         </div>
 
-        {/* Pro */}
+        {/* TRIAL — only if never used trial */}
+        {neverStartedTrial && (
+          <div className="rounded-xl bg-zinc-900 border border-emerald-500/50 p-6 flex flex-col">
+            <span className="text-xs font-medium px-2 py-1 rounded bg-emerald-500/20 text-emerald-400 w-fit mb-4">
+              7 Days Free
+            </span>
+            <h2 className="text-lg font-semibold text-white mb-4">Trial</h2>
+            <p className="text-sm text-zinc-400 mb-4">
+              Full Pro access. No credit card needed.
+            </p>
+            <ul className="space-y-2 text-sm text-zinc-300 mb-6 flex-1">
+              <li>50,000 events</li>
+              <li>3 domains</li>
+              <li>All 5 platforms ✅</li>
+              <li>All features ✅</li>
+            </ul>
+            <StartTrialButton className="w-full py-2.5 rounded-lg font-medium bg-emerald-500 text-emerald-950 hover:bg-emerald-400 transition-colors">
+              Start Free Trial
+            </StartTrialButton>
+          </div>
+        )}
+
+        {/* PRO */}
         <div className="rounded-xl bg-zinc-900 border-2 border-emerald-500 p-6 flex flex-col relative">
           <div className="absolute -top-2.5 left-4 px-2 py-0.5 rounded text-xs font-medium bg-emerald-500 text-emerald-950">
-            Recommended
+            Most Popular
           </div>
           <h2 className="text-lg font-semibold text-white mb-4 mt-1">Pro</h2>
-          <p className="text-2xl font-bold text-white mb-1">$29<span className="text-base font-normal text-zinc-400">/month</span></p>
-          <p className="text-sm text-zinc-400 mb-4">Unlimited events</p>
+          <p className="text-2xl font-bold text-white mb-1">
+            $10<span className="text-base font-normal text-zinc-400">/mo</span>
+          </p>
+          <p className="text-sm text-zinc-400 mb-4">50,000 events/month</p>
           <ul className="space-y-2 text-sm text-zinc-300 mb-6 flex-1">
-            <li>Meta CAPI ✓</li>
-            <li>Google Enhanced ✓</li>
-            <li>Deduplication ✓</li>
-            <li>Webhooks ✓</li>
-            <li>Event Debugger ✓</li>
+            <li>3 domains</li>
+            <li>All 5 platforms ✅</li>
+            <li>All features ✅</li>
+            <li className="text-zinc-500">GTM Templates ❌</li>
           </ul>
-          <UpgradeButton />
+          <UpgradeProButton />
         </div>
 
-        {/* Agency */}
+        {/* AGENCY */}
         <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-6 flex flex-col">
           <h2 className="text-lg font-semibold text-white mb-4">Agency</h2>
-          <p className="text-2xl font-bold text-white mb-1">$99<span className="text-base font-normal text-zinc-400">/month</span></p>
-          <p className="text-sm text-zinc-400 mb-4">Everything in Pro</p>
+          <p className="text-2xl font-bold text-white mb-1">
+            $25<span className="text-base font-normal text-zinc-400">/mo</span>
+          </p>
+          <p className="text-sm text-zinc-400 mb-4">Unlimited events</p>
           <ul className="space-y-2 text-sm text-zinc-300 mb-6 flex-1">
-            <li>Up to 10 clients</li>
-            <li>White-label reports</li>
-            <li>Priority support</li>
+            <li>10 domains</li>
+            <li>Everything in Pro ✅</li>
+            <li>GTM Templates ✅ (80+ templates)</li>
+            <li>White-label ✅</li>
+            <li>Priority support ✅</li>
           </ul>
           <a
             href="mailto:hassan@itshassanahmed.com"
@@ -126,6 +245,80 @@ export default async function BillingPage() {
             Contact Hassan
           </a>
         </div>
+      </div>
+
+      {/* Feature comparison table */}
+      <h2 className="text-sm font-medium text-zinc-400 uppercase tracking-wider mb-4">
+        Feature comparison
+      </h2>
+      <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-zinc-800">
+              <th className="text-left px-4 py-3 font-medium text-zinc-300">
+                Feature
+              </th>
+              <th className="text-left px-4 py-3 font-medium text-zinc-300">
+                Free
+              </th>
+              <th className="text-left px-4 py-3 font-medium text-zinc-300">
+                Pro
+              </th>
+              <th className="text-left px-4 py-3 font-medium text-zinc-300">
+                Agency
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {(
+              [
+                ['meta_capi', 'Meta CAPI'],
+                ['google_enhanced', 'Google Enhanced'],
+                ['tiktok', 'TikTok'],
+                ['snapchat', 'Snapchat'],
+                ['ga4', 'GA4'],
+                ['cookie_extender', 'Cookie Extender'],
+                ['reverse_proxy', 'Reverse Proxy'],
+                ['enrichment', 'Enrichment'],
+                ['anomaly_detection', 'Anomaly Detection'],
+                ['event_replay', 'Event Replay'],
+                ['raw_data_export', 'Raw Data Export'],
+                ['attribution', 'Attribution'],
+                ['ai_analysis', 'AI Analysis'],
+                ['website_scanner', 'Website Scanner'],
+                ['http_headers', 'HTTP Headers'],
+                ['privacy_config', 'Privacy Config'],
+                ['playground', 'Playground'],
+                ['gtm_templates', 'GTM Templates'],
+              ] as const
+            ).map(([key, label]) => (
+              <tr key={key} className="border-b border-zinc-800/80">
+                <td className="px-4 py-3 text-zinc-300">{label}</td>
+                <td className="px-4 py-3">
+                  {PLANS.free.features[key] ? (
+                    <span className="text-emerald-400">✓</span>
+                  ) : (
+                    <span className="text-zinc-500">—</span>
+                  )}
+                </td>
+                <td className="px-4 py-3">
+                  {PLANS.pro.features[key] ? (
+                    <span className="text-emerald-400">✓</span>
+                  ) : (
+                    <span className="text-zinc-500">—</span>
+                  )}
+                </td>
+                <td className="px-4 py-3">
+                  {PLANS.agency.features[key] ? (
+                    <span className="text-emerald-400">✓</span>
+                  ) : (
+                    <span className="text-zinc-500">—</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   )

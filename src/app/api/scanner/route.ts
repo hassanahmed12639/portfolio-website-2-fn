@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server'
 
 function normalizeUrl(url: string): string {
   let u = url.trim()
@@ -12,6 +13,40 @@ function detectPattern(html: string, patterns: string[]): boolean {
 }
 
 export async function POST(request: NextRequest) {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('id, plan, is_trial, trial_expires_at, monthly_scans')
+    .eq('id', user.id)
+    .single()
+  if (!profile) {
+    return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
+  }
+
+  const effectivePlan =
+    profile.is_trial &&
+    profile.trial_expires_at &&
+    new Date(profile.trial_expires_at) > new Date()
+      ? 'trial'
+      : (profile.plan as string) ?? 'free'
+  const scanLimit = effectivePlan === 'free' ? 3 : -1
+  const scansUsed = profile.monthly_scans ?? 0
+  if (scanLimit !== -1 && scansUsed >= scanLimit) {
+    return NextResponse.json(
+      {
+        error: 'Scan limit reached. Start free trial or upgrade.',
+      },
+      { status: 429 }
+    )
+  }
+
   try {
     const body = await request.json()
     const rawUrl = body?.url
@@ -313,6 +348,11 @@ export async function POST(request: NextRequest) {
       },
       recommendations,
     }
+
+    await supabase
+      .from('profiles')
+      .update({ monthly_scans: scansUsed + 1 })
+      .eq('id', profile.id)
 
     return NextResponse.json(report)
   } catch (e) {

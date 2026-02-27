@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { getEffectivePlan, type PlanName } from '@/lib/plans'
+import { FeatureGate } from '@/components/FeatureGate'
 import CookieExtenderClient from './CookieExtenderClient'
 
 export default async function CookieExtenderPage() {
@@ -12,7 +14,7 @@ export default async function CookieExtenderPage() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('api_key')
+    .select('api_key, plan, is_trial, trial_expires_at')
     .eq('id', user.id)
     .single()
 
@@ -29,13 +31,25 @@ export default async function CookieExtenderPage() {
     is_active: settings?.is_active ?? true,
   }
 
+  const effectivePlan = getEffectivePlan(profile ?? {}) as PlanName
+  const trialExpired =
+    !!profile?.is_trial &&
+    !!profile?.trial_expires_at &&
+    new Date(profile.trial_expires_at) <= new Date()
+
   return (
     <div className="p-6 md:p-8">
-      <h1 className="text-xl font-semibold text-white mb-2">Cookie Lifetime Extender</h1>
-      <p className="text-zinc-400 text-sm mb-8">
-        Extend tracking window with server-side cookies. Browser cookies expire in ~7 days (Safari ITP); server cookies last up to 180 days.
-      </p>
-      <CookieExtenderClient apiKey={apiKey} initialSettings={initialSettings} />
+      <FeatureGate
+        feature="cookie_extender"
+        userPlan={effectivePlan}
+        trialExpired={trialExpired}
+      >
+        <h1 className="text-xl font-semibold text-white mb-2">Cookie Lifetime Extender</h1>
+        <p className="text-zinc-400 text-sm mb-8">
+          Extend tracking window with server-side cookies. Browser cookies expire in ~7 days (Safari ITP); server cookies last up to 180 days.
+        </p>
+        <CookieExtenderClient apiKey={apiKey} initialSettings={initialSettings} />
+      </FeatureGate>
     </div>
   )
 }

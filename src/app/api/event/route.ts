@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
 
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
-    .select('id, events_used, plan')
+    .select('id, events_used, plan, is_trial, trial_expires_at')
     .eq('api_key', api_key)
     .single()
 
@@ -58,11 +58,31 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid API key' }, { status: 401 })
   }
 
+  const effectivePlan =
+    profile.is_trial &&
+    profile.trial_expires_at &&
+    new Date(profile.trial_expires_at) > new Date()
+      ? 'trial'
+      : (profile.plan as string) ?? 'free'
+  const eventsLimit =
+    effectivePlan === 'agency'
+      ? -1
+      : effectivePlan === 'pro' || effectivePlan === 'trial'
+        ? 50000
+        : 500
   const eventsUsed = profile.events_used ?? 0
-  const plan = (profile.plan as string) ?? 'free'
-  if (!is_test && plan === 'free' && eventsUsed >= 500) {
+  if (
+    !is_test &&
+    eventsLimit !== -1 &&
+    eventsUsed >= eventsLimit
+  ) {
     return NextResponse.json(
-      { error: 'Monthly limit reached. Please upgrade.' },
+      {
+        error: 'Monthly event limit reached',
+        limit: eventsLimit,
+        used: eventsUsed,
+        upgrade_url: 'https://track.itshassanahmed.com/dashboard/billing',
+      },
       { status: 429 }
     )
   }

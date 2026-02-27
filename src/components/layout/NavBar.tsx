@@ -10,6 +10,9 @@ export interface NavItem {
   name: string
   url?: string
   children?: NavItem[]
+  external?: boolean
+  highlight?: boolean
+  badge?: string
 }
 
 interface NavBarProps {
@@ -37,19 +40,32 @@ function NavLinkItem({
   onLinkClick?: () => void
 }) {
   if (!item.url) return null
-  const isActive = pathname === item.url
-  return (
-    <Link
-      href={item.url}
-      onClick={onLinkClick}
-      className={cn(
-        "relative cursor-pointer text-sm font-semibold px-6 py-2 rounded-full transition-colors hover:text-[#AAFF00] block",
-        isMobile ? "text-white" : "text-foreground dark:text-white/50",
-        isActive && "bg-muted text-[#AAFF00]"
+  const isActive = !item.external && pathname === item.url
+  const isHighlight = item.highlight
+
+  const baseClass = cn(
+    "relative cursor-pointer text-sm font-semibold px-6 py-2 rounded-full transition-all duration-200 block",
+    !isHighlight && "hover:text-[#AAFF00]",
+    isMobile && !isHighlight && "text-white",
+    !isMobile && !isHighlight && "text-foreground dark:text-white/50",
+    isActive && "bg-muted text-[#AAFF00]"
+  )
+  const highlightClass = cn(
+    "flex items-center gap-1.5 text-emerald-500 border border-emerald-500/50",
+    "hover:shadow-[0_0_14px_rgba(16,185,129,0.35)] hover:border-emerald-400/70 hover:text-emerald-400",
+    isMobile && "text-emerald-400"
+  )
+
+  const content = (
+    <>
+      {isHighlight && <span className="text-base leading-none" aria-hidden>⚡</span>}
+      {item.badge && (
+        <span className="absolute -top-1.5 -right-1 text-[9px] font-bold uppercase tracking-wider text-emerald-500 bg-emerald-500/15 px-1.5 py-0.5 rounded">
+          {item.badge}
+        </span>
       )}
-    >
       {item.name}
-      {isActive && (
+      {isActive && !item.external && (
         <motion.div
           layoutId="lamp"
           className="absolute inset-0 w-full bg-[rgba(170,255,0,0.1)] rounded-full -z-10"
@@ -66,6 +82,26 @@ function NavLinkItem({
           )}
         </motion.div>
       )}
+    </>
+  )
+
+  if (item.external) {
+    return (
+      <a
+        href={item.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={onLinkClick}
+        className={cn(baseClass, isHighlight && highlightClass)}
+      >
+        {content}
+      </a>
+    )
+  }
+
+  return (
+    <Link href={item.url} onClick={onLinkClick} className={cn(baseClass, isHighlight && highlightClass)}>
+      {content}
     </Link>
   )
 }

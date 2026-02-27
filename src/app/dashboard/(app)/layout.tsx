@@ -14,8 +14,20 @@ export default async function DashboardAppLayout({
     redirect('/dashboard/login')
   }
 
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('plan, is_trial, trial_expires_at')
+    .eq('id', user.id)
+    .single()
+
+  const trialExpired =
+    !!profile?.is_trial &&
+    !!profile?.trial_expires_at &&
+    new Date(profile.trial_expires_at) <= new Date()
+
   const nav = [
     { label: 'Overview', href: '/dashboard' },
+    { label: 'Templates', href: '/dashboard/templates' },
     { label: 'Privacy', href: '/dashboard/privacy' },
     { label: 'Headers', href: '/dashboard/headers' },
     { label: 'Attribution', href: '/dashboard/attribution' },
@@ -65,8 +77,23 @@ export default async function DashboardAppLayout({
           </p>
         </div>
       </aside>
-      <main className="flex-1 overflow-auto">
-        {children}
+      <main className="flex-1 overflow-auto flex flex-col">
+        {trialExpired && (
+          <div className="shrink-0 rounded-none bg-red-500/20 border-b border-red-500/50 px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+            <p className="font-medium text-white">
+              Your trial has expired. Upgrade to Pro for $10/mo to keep access.
+            </p>
+            <Link
+              href="/dashboard/billing"
+              className="shrink-0 px-4 py-2 rounded-lg font-medium bg-red-500 text-white hover:bg-red-600 transition-colors"
+            >
+              Upgrade Now
+            </Link>
+          </div>
+        )}
+        <div className="flex-1 overflow-auto">
+          {children}
+        </div>
       </main>
     </div>
   )

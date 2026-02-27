@@ -9,6 +9,32 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('id, plan, is_trial, trial_expires_at, monthly_ai_analyses')
+    .eq('id', user.id)
+    .single()
+  if (!profile) {
+    return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
+  }
+
+  const effectivePlan =
+    profile.is_trial &&
+    profile.trial_expires_at &&
+    new Date(profile.trial_expires_at) > new Date()
+      ? 'trial'
+      : (profile.plan as string) ?? 'free'
+  const aiLimit = effectivePlan === 'free' ? 3 : -1
+  const aiUsed = profile.monthly_ai_analyses ?? 0
+  if (aiLimit !== -1 && aiUsed >= aiLimit) {
+    return NextResponse.json(
+      {
+        error: 'AI analysis limit reached. Start free trial or upgrade.',
+      },
+      { status: 429 }
+    )
+  }
+
   const apiKey = process.env.GROQ_API_KEY
   if (!apiKey) {
     return NextResponse.json({ error: 'Groq API key not configured' }, { status: 500 })
@@ -80,6 +106,11 @@ Event data: ${JSON.stringify(payload)}`,
   if (typeof content !== 'string') {
     return NextResponse.json({ error: 'Invalid Groq response' }, { status: 502 })
   }
+
+  await supabase
+    .from('profiles')
+    .update({ monthly_ai_analyses: aiUsed + 1 })
+    .eq('id', profile.id)
 
   const cleaned = content.replace(/```json|```/g, '').trim()
   let result: unknown
