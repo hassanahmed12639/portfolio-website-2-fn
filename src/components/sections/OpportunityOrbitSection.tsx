@@ -4,16 +4,16 @@ import { useEffect, useRef } from 'react'
 
 const TEXT_BLOCKS = [
   {
-    title: 'Investing in Opportunity',
-    body: 'We survey the landscape for white space where we can drive technology discovery and leverage our unique talents to build great companies from the ground up.',
+    title: 'Investing in Growth',
+    body: 'I scan every channel for hidden potential where I can drive measurable impact and leverage sharp strategy to build high-performing campaigns from the ground up.',
   },
   {
-    title: 'Building for the Future',
-    body: 'We partner with founders and teams to turn bold ideas into lasting companies, combining capital with hands-on expertise.',
+    title: 'Building for the Results',
+    body: 'I partner with brands and teams to turn marketing budgets into measurable revenue, combining sharp strategy with hands-on execution.',
   },
   {
-    title: 'Where We Land',
-    body: 'The final layer stays in view. Scroll further to continue to the next section.',
+    title: 'Where Results Land',
+    body: 'Every campaign I build is optimized to convert. Scroll further to see the work that proves it.',
   },
   {
     title: 'What Comes Next',
@@ -346,7 +346,7 @@ export default function OpportunityOrbitSection() {
       const textProgress = easeInOutCubic(clamp((spreadProgress - 0.34) / 0.36))
       const axisProgress = easeInOutCubic(clamp((spreadProgress - 0.2) / 0.5))
 
-      premiumLabelText.textContent = textProgress > 0.02 ? 'Green Premiums' : ''
+      premiumLabelText.textContent = textProgress > 0.02 ? 'Conversion-Driven' : ''
       premiumLabel.style.top = `calc(50% - ${offsetY}px)`
       premiumLabelLine.style.width = `${lineWidth}px`
       premiumLabelLine.style.height = `${lerp(1, 2, textProgress)}px`

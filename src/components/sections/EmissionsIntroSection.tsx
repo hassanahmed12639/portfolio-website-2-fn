@@ -51,8 +51,8 @@ const HEADLINE_LINES = [
   'turning data and experimentation into growth that compounds month over month.',
 ]
 
-const FINAL_MESSAGE_LINE_1 = ['This', 'is', 'energy', 'innovation']
-const FINAL_MESSAGE_LINE_2 = ['on', 'a', 'global', 'scale']
+const FINAL_MESSAGE_LINE_1 = ['This', 'is', 'performance', 'marketing']
+const FINAL_MESSAGE_LINE_2 = ['on', 'a', 'measurable', 'scale.']
 const MANUFACTURING_ZOOM_SCALE_FACTOR = 0.98
 
 export default function EmissionsIntroSection() {
@@ -1294,7 +1294,7 @@ export default function EmissionsIntroSection() {
                 <span
                   key={word}
                   className={`message-word inline-block ${
-                    word === 'energy' || word === 'innovation' ? 'text-[#AAFF00]' : 'text-foreground'
+                    word === 'performance' || word === 'marketing' ? 'text-[#AAFF00]' : 'text-white'
                   }`}
                 >
                   {word}
@@ -1303,7 +1303,7 @@ export default function EmissionsIntroSection() {
             </div>
             <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 md:mt-3 md:gap-x-4">
               {FINAL_MESSAGE_LINE_2.map((word) => (
-                <span key={word} className="message-word inline-block text-foreground">
+                <span key={word} className="message-word inline-block text-white">
                   {word}
                 </span>
               ))}
