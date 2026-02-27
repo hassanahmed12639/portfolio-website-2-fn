@@ -4,27 +4,53 @@ import { useState } from 'react'
 
 type MetaIntegration = { pixel_id: string | null; access_token: string | null } | null
 type GoogleIntegration = { tag_id: string | null } | null
+type PixelTokenIntegration = { pixel_id: string | null; access_token: string | null } | null
+type Ga4Integration = { tag_id: string | null; access_token: string | null } | null
 
 export default function IntegrationsForms({
   meta,
   google,
+  tiktok,
+  snapchat,
+  ga4,
 }: {
   meta: MetaIntegration
   google: GoogleIntegration
+  tiktok: PixelTokenIntegration
+  snapchat: PixelTokenIntegration
+  ga4: Ga4Integration
 }) {
   const [metaPixelId, setMetaPixelId] = useState(meta?.pixel_id ?? '')
   const [metaAccessToken, setMetaAccessToken] = useState(meta?.access_token ?? '')
   const [googleTagId, setGoogleTagId] = useState(google?.tag_id ?? '')
+  const [tiktokPixelId, setTiktokPixelId] = useState(tiktok?.pixel_id ?? '')
+  const [tiktokAccessToken, setTiktokAccessToken] = useState(tiktok?.access_token ?? '')
+  const [snapPixelId, setSnapPixelId] = useState(snapchat?.pixel_id ?? '')
+  const [snapAccessToken, setSnapAccessToken] = useState(snapchat?.access_token ?? '')
+  const [ga4MeasurementId, setGa4MeasurementId] = useState(ga4?.tag_id ?? '')
+  const [ga4ApiSecret, setGa4ApiSecret] = useState(ga4?.access_token ?? '')
 
   const [metaSaveMsg, setMetaSaveMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [metaTestMsg, setMetaTestMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [googleSaveMsg, setGoogleSaveMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [googleTestMsg, setGoogleTestMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const [tiktokSaveMsg, setTiktokSaveMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const [tiktokTestMsg, setTiktokTestMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const [snapSaveMsg, setSnapSaveMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const [snapTestMsg, setSnapTestMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const [ga4SaveMsg, setGa4SaveMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const [ga4TestMsg, setGa4TestMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   const [metaSaving, setMetaSaving] = useState(false)
   const [metaTesting, setMetaTesting] = useState(false)
   const [googleSaving, setGoogleSaving] = useState(false)
   const [googleTesting, setGoogleTesting] = useState(false)
+  const [tiktokSaving, setTiktokSaving] = useState(false)
+  const [tiktokTesting, setTiktokTesting] = useState(false)
+  const [snapSaving, setSnapSaving] = useState(false)
+  const [snapTesting, setSnapTesting] = useState(false)
+  const [ga4Saving, setGa4Saving] = useState(false)
+  const [ga4Testing, setGa4Testing] = useState(false)
 
   async function handleMetaSave(e: React.FormEvent) {
     e.preventDefault()
@@ -134,11 +160,242 @@ export default function IntegrationsForms({
     setGoogleTestMsg({ type: 'error', text: 'Google test not implemented yet.' })
   }
 
+  async function handleTiktokSave(e: React.FormEvent) {
+    e.preventDefault()
+    setTiktokSaveMsg(null)
+    setTiktokTestMsg(null)
+    setTiktokSaving(true)
+    try {
+      const saveRes = await fetch('/api/integrations/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          platform: 'tiktok',
+          pixel_id: tiktokPixelId.trim() || undefined,
+          access_token: tiktokAccessToken.trim() || undefined,
+        }),
+      })
+      const saveData = await saveRes.json().catch(() => ({}))
+      if (!saveRes.ok) {
+        setTiktokSaveMsg({ type: 'error', text: saveData.error ?? 'Save failed' })
+        return
+      }
+      setTiktokSaveMsg({ type: 'success', text: 'Saved.' })
+      if (tiktokPixelId.trim() && tiktokAccessToken.trim()) {
+        const testRes = await fetch('/api/integrations/test', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            platform: 'tiktok',
+            pixel_id: tiktokPixelId.trim(),
+            access_token: tiktokAccessToken.trim(),
+          }),
+        })
+        const testData = await testRes.json().catch(() => ({}))
+        if (testRes.ok) {
+          setTiktokTestMsg({ type: 'success', text: testData.message ?? 'Test event sent successfully' })
+        } else {
+          setTiktokTestMsg({ type: 'error', text: testData.error ?? testData.details ?? 'Test failed' })
+        }
+      }
+    } catch {
+      setTiktokSaveMsg({ type: 'error', text: 'Request failed' })
+    } finally {
+      setTiktokSaving(false)
+    }
+  }
+
+  async function handleTiktokTest(e: React.FormEvent) {
+    e.preventDefault()
+    setTiktokTestMsg(null)
+    if (!tiktokPixelId.trim() || !tiktokAccessToken.trim()) {
+      setTiktokTestMsg({ type: 'error', text: 'Enter Pixel ID and Access Token first' })
+      return
+    }
+    setTiktokTesting(true)
+    try {
+      const res = await fetch('/api/integrations/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          platform: 'tiktok',
+          pixel_id: tiktokPixelId.trim(),
+          access_token: tiktokAccessToken.trim(),
+        }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (res.ok) {
+        setTiktokTestMsg({ type: 'success', text: data.message ?? 'Test event sent successfully' })
+      } else {
+        setTiktokTestMsg({ type: 'error', text: data.error ?? data.details ?? 'Test failed' })
+      }
+    } catch {
+      setTiktokTestMsg({ type: 'error', text: 'Request failed' })
+    } finally {
+      setTiktokTesting(false)
+    }
+  }
+
+  async function handleSnapSave(e: React.FormEvent) {
+    e.preventDefault()
+    setSnapSaveMsg(null)
+    setSnapTestMsg(null)
+    setSnapSaving(true)
+    try {
+      const saveRes = await fetch('/api/integrations/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          platform: 'snapchat',
+          pixel_id: snapPixelId.trim() || undefined,
+          access_token: snapAccessToken.trim() || undefined,
+        }),
+      })
+      const saveData = await saveRes.json().catch(() => ({}))
+      if (!saveRes.ok) {
+        setSnapSaveMsg({ type: 'error', text: saveData.error ?? 'Save failed' })
+        return
+      }
+      setSnapSaveMsg({ type: 'success', text: 'Saved.' })
+      if (snapPixelId.trim() && snapAccessToken.trim()) {
+        const testRes = await fetch('/api/integrations/test', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            platform: 'snapchat',
+            pixel_id: snapPixelId.trim(),
+            access_token: snapAccessToken.trim(),
+          }),
+        })
+        const testData = await testRes.json().catch(() => ({}))
+        if (testRes.ok) {
+          setSnapTestMsg({ type: 'success', text: testData.message ?? 'Test event sent successfully' })
+        } else {
+          setSnapTestMsg({ type: 'error', text: testData.error ?? testData.details ?? 'Test failed' })
+        }
+      }
+    } catch {
+      setSnapSaveMsg({ type: 'error', text: 'Request failed' })
+    } finally {
+      setSnapSaving(false)
+    }
+  }
+
+  async function handleSnapTest(e: React.FormEvent) {
+    e.preventDefault()
+    setSnapTestMsg(null)
+    if (!snapPixelId.trim() || !snapAccessToken.trim()) {
+      setSnapTestMsg({ type: 'error', text: 'Enter Pixel ID and Access Token first' })
+      return
+    }
+    setSnapTesting(true)
+    try {
+      const res = await fetch('/api/integrations/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          platform: 'snapchat',
+          pixel_id: snapPixelId.trim(),
+          access_token: snapAccessToken.trim(),
+        }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (res.ok) {
+        setSnapTestMsg({ type: 'success', text: data.message ?? 'Test event sent successfully' })
+      } else {
+        setSnapTestMsg({ type: 'error', text: data.error ?? data.details ?? 'Test failed' })
+      }
+    } catch {
+      setSnapTestMsg({ type: 'error', text: 'Request failed' })
+    } finally {
+      setSnapTesting(false)
+    }
+  }
+
+  async function handleGa4Save(e: React.FormEvent) {
+    e.preventDefault()
+    setGa4SaveMsg(null)
+    setGa4TestMsg(null)
+    setGa4Saving(true)
+    try {
+      const saveRes = await fetch('/api/integrations/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          platform: 'ga4',
+          tag_id: ga4MeasurementId.trim() || undefined,
+          access_token: ga4ApiSecret.trim() || undefined,
+        }),
+      })
+      const saveData = await saveRes.json().catch(() => ({}))
+      if (!saveRes.ok) {
+        setGa4SaveMsg({ type: 'error', text: saveData.error ?? 'Save failed' })
+        return
+      }
+      setGa4SaveMsg({ type: 'success', text: 'Saved.' })
+      if (ga4MeasurementId.trim() && ga4ApiSecret.trim()) {
+        const testRes = await fetch('/api/integrations/test', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            platform: 'ga4',
+            tag_id: ga4MeasurementId.trim(),
+            access_token: ga4ApiSecret.trim(),
+          }),
+        })
+        const testData = await testRes.json().catch(() => ({}))
+        if (testRes.ok) {
+          setGa4TestMsg({ type: 'success', text: testData.message ?? 'Test event sent successfully' })
+        } else {
+          setGa4TestMsg({ type: 'error', text: testData.error ?? testData.details ?? 'Test failed' })
+        }
+      }
+    } catch {
+      setGa4SaveMsg({ type: 'error', text: 'Request failed' })
+    } finally {
+      setGa4Saving(false)
+    }
+  }
+
+  async function handleGa4Test(e: React.FormEvent) {
+    e.preventDefault()
+    setGa4TestMsg(null)
+    if (!ga4MeasurementId.trim() || !ga4ApiSecret.trim()) {
+      setGa4TestMsg({ type: 'error', text: 'Enter Measurement ID and API Secret first' })
+      return
+    }
+    setGa4Testing(true)
+    try {
+      const res = await fetch('/api/integrations/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          platform: 'ga4',
+          tag_id: ga4MeasurementId.trim(),
+          access_token: ga4ApiSecret.trim(),
+        }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (res.ok) {
+        setGa4TestMsg({ type: 'success', text: data.message ?? 'Test event sent successfully' })
+      } else {
+        setGa4TestMsg({ type: 'error', text: data.error ?? data.details ?? 'Test failed' })
+      }
+    } catch {
+      setGa4TestMsg({ type: 'error', text: 'Request failed' })
+    } finally {
+      setGa4Testing(false)
+    }
+  }
+
   const metaConnected = meta && (meta.pixel_id || meta.access_token)
   const googleConnected = google && google.tag_id
+  const tiktokConnected = tiktok && (tiktok.pixel_id || tiktok.access_token)
+  const snapConnected = snapchat && (snapchat.pixel_id || snapchat.access_token)
+  const ga4Connected = ga4 && (ga4.tag_id || ga4.access_token)
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 overflow-y-auto">
       <section className="rounded-xl bg-zinc-900 border border-zinc-800 p-6">
         <div className="flex items-center gap-2 mb-4">
           <h2 className="text-lg font-semibold text-white">Meta CAPI</h2>
@@ -254,6 +511,232 @@ export default function IntegrationsForms({
           {googleTestMsg && (
             <p className={googleTestMsg.type === 'success' ? 'text-emerald-400 text-sm' : 'text-red-400 text-sm'}>
               {googleTestMsg.text}
+            </p>
+          )}
+        </form>
+      </section>
+
+      <section className="rounded-xl bg-zinc-900 border border-zinc-800 p-6">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="text-xl" aria-hidden>🎵</span>
+          <h2 className="text-lg font-semibold text-white">TikTok Events API</h2>
+          {tiktokConnected && (
+            <span className="px-2 py-0.5 rounded text-xs font-medium bg-emerald-950 text-emerald-400 border border-emerald-800">
+              Connected
+            </span>
+          )}
+        </div>
+        <form onSubmit={handleTiktokSave} className="space-y-4 max-w-md">
+          <div>
+            <label htmlFor="tiktok-pixel-id" className="block text-sm font-medium text-zinc-300 mb-1.5">
+              TikTok Pixel ID
+            </label>
+            <input
+              id="tiktok-pixel-id"
+              type="text"
+              value={tiktokPixelId}
+              onChange={(e) => setTiktokPixelId(e.target.value)}
+              placeholder="CXXXXXXXX"
+              className="w-full px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+            />
+          </div>
+          <div>
+            <label htmlFor="tiktok-access-token" className="block text-sm font-medium text-zinc-300 mb-1.5">
+              TikTok Access Token
+            </label>
+            <input
+              id="tiktok-access-token"
+              type="password"
+              value={tiktokAccessToken}
+              onChange={(e) => setTiktokAccessToken(e.target.value)}
+              placeholder="••••••••"
+              className="w-full px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+            />
+            <a
+              href="https://ads.tiktok.com/help/article?aid=10028"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-1 block text-xs text-zinc-500 hover:text-zinc-400"
+            >
+              Get your token from TikTok Events Manager → Management → Generate Access Token
+            </a>
+          </div>
+          {tiktokSaveMsg && (
+            <p className={tiktokSaveMsg.type === 'success' ? 'text-emerald-400 text-sm' : 'text-red-400 text-sm'}>
+              {tiktokSaveMsg.text}
+            </p>
+          )}
+          <div className="flex gap-3">
+            <button
+              type="submit"
+              disabled={tiktokSaving}
+              className="px-4 py-2 rounded-lg bg-white text-zinc-900 font-medium hover:bg-zinc-200 disabled:opacity-50 text-sm"
+            >
+              {tiktokSaving ? 'Saving…' : 'Save & Test'}
+            </button>
+            <button
+              type="button"
+              onClick={handleTiktokTest}
+              disabled={tiktokTesting || !tiktokPixelId.trim() || !tiktokAccessToken.trim()}
+              className="px-4 py-2 rounded-lg bg-zinc-700 text-white font-medium hover:bg-zinc-600 disabled:opacity-50 text-sm"
+            >
+              {tiktokTesting ? 'Sending…' : 'Test only'}
+            </button>
+          </div>
+          {tiktokTestMsg && (
+            <p className={tiktokTestMsg.type === 'success' ? 'text-emerald-400 text-sm' : 'text-red-400 text-sm'}>
+              {tiktokTestMsg.text}
+            </p>
+          )}
+        </form>
+      </section>
+
+      <section className="rounded-xl bg-zinc-900 border border-zinc-800 p-6">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="text-xl" aria-hidden>👻</span>
+          <h2 className="text-lg font-semibold text-white">Snapchat CAPI</h2>
+          {snapConnected && (
+            <span className="px-2 py-0.5 rounded text-xs font-medium bg-emerald-950 text-emerald-400 border border-emerald-800">
+              Connected
+            </span>
+          )}
+        </div>
+        <form onSubmit={handleSnapSave} className="space-y-4 max-w-md">
+          <div>
+            <label htmlFor="snap-pixel-id" className="block text-sm font-medium text-zinc-300 mb-1.5">
+              Snap Pixel ID
+            </label>
+            <input
+              id="snap-pixel-id"
+              type="text"
+              value={snapPixelId}
+              onChange={(e) => setSnapPixelId(e.target.value)}
+              placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+              className="w-full px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+            />
+          </div>
+          <div>
+            <label htmlFor="snap-access-token" className="block text-sm font-medium text-zinc-300 mb-1.5">
+              Snapchat Access Token
+            </label>
+            <input
+              id="snap-access-token"
+              type="password"
+              value={snapAccessToken}
+              onChange={(e) => setSnapAccessToken(e.target.value)}
+              placeholder="••••••••"
+              className="w-full px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+            />
+            <a
+              href="https://businesshelp.snapchat.com/s/article/pixel-setup"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-1 block text-xs text-zinc-500 hover:text-zinc-400"
+            >
+              Get from Snapchat Ads Manager → Assets → Snap Pixel → Settings
+            </a>
+          </div>
+          {snapSaveMsg && (
+            <p className={snapSaveMsg.type === 'success' ? 'text-emerald-400 text-sm' : 'text-red-400 text-sm'}>
+              {snapSaveMsg.text}
+            </p>
+          )}
+          <div className="flex gap-3">
+            <button
+              type="submit"
+              disabled={snapSaving}
+              className="px-4 py-2 rounded-lg bg-white text-zinc-900 font-medium hover:bg-zinc-200 disabled:opacity-50 text-sm"
+            >
+              {snapSaving ? 'Saving…' : 'Save & Test'}
+            </button>
+            <button
+              type="button"
+              onClick={handleSnapTest}
+              disabled={snapTesting || !snapPixelId.trim() || !snapAccessToken.trim()}
+              className="px-4 py-2 rounded-lg bg-zinc-700 text-white font-medium hover:bg-zinc-600 disabled:opacity-50 text-sm"
+            >
+              {snapTesting ? 'Sending…' : 'Test only'}
+            </button>
+          </div>
+          {snapTestMsg && (
+            <p className={snapTestMsg.type === 'success' ? 'text-emerald-400 text-sm' : 'text-red-400 text-sm'}>
+              {snapTestMsg.text}
+            </p>
+          )}
+        </form>
+      </section>
+
+      <section className="rounded-xl bg-zinc-900 border border-zinc-800 p-6">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="text-xl" aria-hidden>📊</span>
+          <h2 className="text-lg font-semibold text-white">GA4 (Google Analytics 4)</h2>
+          {ga4Connected && (
+            <span className="px-2 py-0.5 rounded text-xs font-medium bg-emerald-950 text-emerald-400 border border-emerald-800">
+              Connected
+            </span>
+          )}
+        </div>
+        <form onSubmit={handleGa4Save} className="space-y-4 max-w-md">
+          <div>
+            <label htmlFor="ga4-measurement-id" className="block text-sm font-medium text-zinc-300 mb-1.5">
+              GA4 Measurement ID
+            </label>
+            <input
+              id="ga4-measurement-id"
+              type="text"
+              value={ga4MeasurementId}
+              onChange={(e) => setGa4MeasurementId(e.target.value)}
+              placeholder="G-XXXXXXXXXX"
+              className="w-full px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+            />
+            <p className="mt-1 text-xs text-zinc-500">Format: G-XXXXXXXXXX</p>
+          </div>
+          <div>
+            <label htmlFor="ga4-api-secret" className="block text-sm font-medium text-zinc-300 mb-1.5">
+              GA4 API Secret
+            </label>
+            <input
+              id="ga4-api-secret"
+              type="password"
+              value={ga4ApiSecret}
+              onChange={(e) => setGa4ApiSecret(e.target.value)}
+              placeholder="••••••••"
+              className="w-full px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+            />
+            <a
+              href="https://support.google.com/analytics/answer/9539598"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-1 block text-xs text-zinc-500 hover:text-zinc-400"
+            >
+              Get from GA4 → Admin → Data Streams → Measurement Protocol API secrets
+            </a>
+          </div>
+          {ga4SaveMsg && (
+            <p className={ga4SaveMsg.type === 'success' ? 'text-emerald-400 text-sm' : 'text-red-400 text-sm'}>
+              {ga4SaveMsg.text}
+            </p>
+          )}
+          <div className="flex gap-3">
+            <button
+              type="submit"
+              disabled={ga4Saving}
+              className="px-4 py-2 rounded-lg bg-white text-zinc-900 font-medium hover:bg-zinc-200 disabled:opacity-50 text-sm"
+            >
+              {ga4Saving ? 'Saving…' : 'Save & Test'}
+            </button>
+            <button
+              type="button"
+              onClick={handleGa4Test}
+              disabled={ga4Testing || !ga4MeasurementId.trim() || !ga4ApiSecret.trim()}
+              className="px-4 py-2 rounded-lg bg-zinc-700 text-white font-medium hover:bg-zinc-600 disabled:opacity-50 text-sm"
+            >
+              {ga4Testing ? 'Sending…' : 'Test only'}
+            </button>
+          </div>
+          {ga4TestMsg && (
+            <p className={ga4TestMsg.type === 'success' ? 'text-emerald-400 text-sm' : 'text-red-400 text-sm'}>
+              {ga4TestMsg.text}
             </p>
           )}
         </form>

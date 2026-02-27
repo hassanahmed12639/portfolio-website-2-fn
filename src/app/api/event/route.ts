@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
     phone?: string
     visitor_id?: string
     is_test?: boolean
+    consent_rejected?: boolean
   }
 
   try {
@@ -39,7 +40,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
-  const { api_key, event_name, event_id, event_source_url: bodySourceUrl, value = 0, currency = 'USD', email, phone, is_test } = body
+  const { api_key, event_name, event_id, event_source_url: bodySourceUrl, value = 0, currency = 'USD', email, phone, is_test, consent_rejected } = body
   const event_source_url = bodySourceUrl ?? request.headers.get('referer') ?? undefined
   if (!api_key || !event_name) {
     return NextResponse.json({ error: 'api_key and event_name required' }, { status: 400 })
@@ -68,13 +69,141 @@ export async function POST(request: NextRequest) {
 
   const { data: integrations } = await supabase
     .from('integrations')
-    .select('platform, pixel_id, access_token')
+    .select('platform, pixel_id, access_token, tag_id')
     .eq('user_id', profile.id)
     .eq('is_active', true)
 
+  const { data: privacySettings } = await supabase
+    .from('privacy_settings')
+    .select('*')
+    .eq('user_id', profile.id)
+    .single()
+
+  const { data: headerSettings } = await supabase
+    .from('header_settings')
+    .select('*')
+    .eq('user_id', profile.id)
+    .eq('is_active', true)
+    .single()
+
+  const ipRaw = getClientIp(request.headers) ?? request.headers.get('x-real-ip') ?? '127.0.0.1'
+  const ipMode = (privacySettings?.ip_modification as string) || 'anonymized'
+  let processedIp = ipRaw
+  if (ipMode === 'anonymized' && ipRaw) {
+    const parts = ipRaw.split('.')
+    if (parts.length === 4) {
+      processedIp = parts.slice(0, 3).join('.') + '.0'
+    }
+  } else if (ipMode === 'partial' && ipRaw) {
+    const parts = ipRaw.split('.')
+    if (parts.length === 4) {
+      processedIp = parts.slice(0, 2).join('.') + '.x.x'
+    }
+  } else if (ipMode === 'full_mask') {
+    processedIp = '0.0.0.0'
+  }
+  const ip = processedIp
+
+  let sourceUrl = body.event_source_url ?? request.headers.get('referer') ?? ''
+  if (typeof sourceUrl !== 'string') sourceUrl = ''
+  if (privacySettings?.strip_query_params && sourceUrl) {
+    sourceUrl = sourceUrl.split('?')[0]
+  }
+  const event_source_url_final = sourceUrl || undefined
+
+  const userAgentRaw = request.headers.get('user-agent') ?? ''
+  let processedUA = userAgentRaw
+  if (privacySettings?.anonymize_user_agent && userAgentRaw) {
+    const device = /mobile/i.test(userAgentRaw) ? 'Mobile' : 'Desktop'
+    const os = /windows/i.test(userAgentRaw) ? 'Windows'
+      : /mac/i.test(userAgentRaw) ? 'MacOS'
+      : /android/i.test(userAgentRaw) ? 'Android'
+      : /iphone|ipad/i.test(userAgentRaw) ? 'iOS'
+      : 'Unknown'
+    processedUA = `${device}/${os}`
+  }
+  const userAgent = processedUA
+
+  if (privacySettings?.consent_mode && consent_rejected) {
+    const validation = validateEvent({
+      event_name,
+      event_time: Math.floor(Date.now() / 1000),
+      email: email ?? undefined,
+      phone: phone ?? undefined,
+      value,
+      currency,
+      event_id: event_id ?? undefined,
+      event_source_url: event_source_url_final,
+    })
+    const internalPayload = {
+      event_name,
+      event_time: Math.floor(Date.now() / 1000),
+      value,
+      currency,
+      event_id: event_id ?? null,
+      event_source_url: event_source_url_final ?? null,
+      visitor_id: body.visitor_id ?? null,
+    }
+    for (const integration of integrations ?? []) {
+      await supabase.from('events').insert({
+        user_id: profile.id,
+        event_name,
+        platform: integration.platform,
+        value,
+        status: 'consent_rejected',
+        ip,
+        event_id: event_id ?? null,
+        validation_score: validation.score,
+        validation_issues: validation.issues,
+        validation_checks: validation.checks,
+        payload: internalPayload,
+      })
+    }
+    if (!is_test) {
+      await supabase
+        .from('profiles')
+        .update({ events_used: (profile.events_used ?? 0) + 1 })
+        .eq('id', profile.id)
+    }
+    return NextResponse.json({
+      success: true,
+      note: 'Event logged but not forwarded due to consent rejection',
+    })
+  }
+
   const platformsFired: string[] = []
-  const ip = getClientIp(request.headers) ?? request.headers.get('x-real-ip') ?? '127.0.0.1'
-  const userAgent = request.headers.get('user-agent') ?? ''
+
+  function buildHeaders(
+    platform: string,
+    hs: typeof headerSettings,
+    ipAddr: string,
+    ua: string,
+    referer: string | undefined
+  ): Record<string, string> {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    if (!hs) return headers
+    const uaToSend = hs.override_user_agent && hs.custom_user_agent ? hs.custom_user_agent : ua
+    if (hs.forward_user_agent) headers['User-Agent'] = uaToSend
+    if (hs.forward_ip) headers['X-Forwarded-For'] = ipAddr
+    if (hs.forward_referer && referer) headers['Referer'] = referer
+    if (hs.forward_origin && referer) {
+      try {
+        headers['Origin'] = new URL(referer).origin
+      } catch {
+        // skip
+      }
+    }
+    const custom = hs.custom_headers as Array<{ name?: string; value?: string }> | undefined
+    if (Array.isArray(custom)) {
+      for (const h of custom) {
+        if (h?.name?.trim()) headers[h.name.trim()] = String(h.value ?? '').trim()
+      }
+    }
+    if (platform === 'meta' && hs.meta_send_test_event_code && hs.meta_test_event_code) {
+      headers['X-Test-Event-Code'] = hs.meta_test_event_code
+    }
+    return headers
+  }
 
   const { data: enrichmentSettingsRow } = await supabase
     .from('enrichment_settings')
@@ -119,7 +248,7 @@ export async function POST(request: NextRequest) {
     value,
     currency,
     event_id: event_id ?? undefined,
-    event_source_url: event_source_url ?? undefined,
+    event_source_url: event_source_url_final,
   }
   const validation = validateEvent(eventForValidation)
   const internalPayload = {
@@ -128,8 +257,8 @@ export async function POST(request: NextRequest) {
     value,
     currency,
     event_id: event_id ?? null,
-    event_source_url: event_source_url ?? null,
-    visitor_id: visitor_id ?? null,
+    event_source_url: event_source_url_final ?? null,
+    visitor_id: body.visitor_id ?? null,
   }
 
   const fiveMinutesFromNow = new Date(Date.now() + 5 * 60 * 1000).toISOString()
@@ -162,24 +291,28 @@ export async function POST(request: NextRequest) {
         userData.client_ip_address = ip
         userData.client_user_agent = userAgent
 
+        const actionSource = (headerSettings?.meta_send_action_source !== false && headerSettings?.meta_action_source)
+          ? headerSettings.meta_action_source
+          : 'website'
         const metaEvent: Record<string, unknown> = {
           event_name,
           event_time: Math.floor(Date.now() / 1000),
-          action_source: 'website',
+          action_source: actionSource,
           user_data: userData,
           custom_data: { value, currency },
         }
         if (event_id) metaEvent.event_id = event_id
-        if (event_source_url) metaEvent.event_source_url = event_source_url
+        if (event_source_url_final) metaEvent.event_source_url = event_source_url_final
 
         const metaRequestBody = { data: [metaEvent] }
         originalPayload = metaRequestBody
 
+        const metaHeaders = buildHeaders('meta', headerSettings, ip, userAgent, event_source_url_final)
         const res = await fetch(
           `https://graph.facebook.com/v19.0/${pixelId}/events?access_token=${encodeURIComponent(accessToken)}`,
           {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: metaHeaders,
             body: JSON.stringify(metaRequestBody),
           }
         )
@@ -191,6 +324,121 @@ export async function POST(request: NextRequest) {
     } else if (integration.platform === 'google') {
       console.log('[event] Google integration (not implemented):', { event_name, value, currency })
       status = 'success'
+    } else if (integration.platform === 'tiktok') {
+      const pixelId = integration.pixel_id
+      const accessToken = integration.access_token
+      if (pixelId && accessToken) {
+        const tiktokPayload = {
+          pixel_code: pixelId,
+          event: event_name === 'Purchase' ? 'CompletePayment' :
+                 event_name === 'Lead' ? 'SubmitForm' :
+                 event_name === 'AddToCart' ? 'AddToCart' :
+                 event_name === 'ViewContent' ? 'ViewContent' :
+                 event_name === 'PageView' ? 'Pageview' : event_name,
+          event_time: Math.floor(Date.now() / 1000),
+          event_id: event_id || crypto.randomUUID(),
+          user: {
+            email: email ? createHash('sha256').update(email.toLowerCase().trim()).digest('hex') : undefined,
+            phone_number: phone ? createHash('sha256').update(phone).digest('hex') : undefined,
+            ip,
+            user_agent: userAgent,
+          },
+          properties: {
+            value: value || 0,
+            currency: currency || 'USD',
+          },
+        }
+        originalPayload = { data: [tiktokPayload] }
+        const tiktokHeaders = buildHeaders('tiktok', headerSettings, ip, userAgent, event_source_url_final)
+        tiktokHeaders['Access-Token'] = accessToken
+        const tiktokResponse = await fetch(
+          'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+          {
+            method: 'POST',
+            headers: tiktokHeaders,
+            body: JSON.stringify({ data: [tiktokPayload] }),
+          }
+        )
+        if (tiktokResponse.ok) {
+          status = 'success'
+          platformsFired.push('tiktok')
+        }
+      }
+    } else if (integration.platform === 'snapchat') {
+      const pixelId = integration.pixel_id
+      const accessToken = integration.access_token
+      if (pixelId && accessToken) {
+        const snapPayload = {
+          pixel_id: pixelId,
+          event_type: event_name === 'Purchase' ? 'PURCHASE' :
+                      event_name === 'Lead' ? 'SIGN_UP' :
+                      event_name === 'AddToCart' ? 'ADD_CART' :
+                      event_name === 'PageView' ? 'PAGE_VIEW' : 'CUSTOM',
+          event_time: Math.floor(Date.now() / 1000),
+          event_tag: event_id || crypto.randomUUID(),
+          hashed_data_fields: {
+            email: email ? createHash('sha256').update(email.toLowerCase().trim()).digest('hex') : undefined,
+            phone_number: phone ? createHash('sha256').update(phone).digest('hex') : undefined,
+            ip_address: ip,
+            user_agent: userAgent,
+          },
+          custom_data: {
+            currency: currency || 'USD',
+            price: value || 0,
+          },
+        }
+        originalPayload = snapPayload
+        const snapHeaders = buildHeaders('snapchat', headerSettings, ip, userAgent, event_source_url_final)
+        snapHeaders['Authorization'] = `Bearer ${accessToken}`
+        const snapResponse = await fetch(
+          'https://tr.snapchat.com/v2/conversion',
+          {
+            method: 'POST',
+            headers: snapHeaders,
+            body: JSON.stringify(snapPayload),
+          }
+        )
+        if (snapResponse.ok) {
+          status = 'success'
+          platformsFired.push('snapchat')
+        }
+      }
+    } else if (integration.platform === 'ga4') {
+      const measurementId = integration.tag_id
+      const apiSecret = integration.access_token
+      if (measurementId && apiSecret) {
+        const ga4Payload = {
+          client_id: body.visitor_id || crypto.randomUUID(),
+          events: [{
+            name: event_name === 'Purchase' ? 'purchase' :
+                  event_name === 'Lead' ? 'generate_lead' :
+                  event_name === 'AddToCart' ? 'add_to_cart' :
+                  event_name === 'PageView' ? 'page_view' :
+                  event_name === 'ViewContent' ? 'view_item' :
+                  event_name.toLowerCase(),
+            params: {
+              currency: currency || 'USD',
+              value: value || 0,
+              transaction_id: event_id || crypto.randomUUID(),
+              engagement_time_msec: 100,
+            },
+          }],
+        }
+        originalPayload = ga4Payload
+        const ga4Headers = buildHeaders('google', headerSettings, ip, userAgent, event_source_url_final)
+        const ga4Response = await fetch(
+          `https://www.google-analytics.com/mp/collect?measurement_id=${measurementId}&api_secret=${apiSecret}`,
+          {
+            method: 'POST',
+            headers: ga4Headers,
+            body: JSON.stringify(ga4Payload),
+          }
+        )
+        if (ga4Response.ok) {
+          status = 'success'
+          platformsFired.push('ga4')
+        }
+      }
     }
 
     const insertRow: Record<string, unknown> = {

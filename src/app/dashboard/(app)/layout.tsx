@@ -16,6 +16,8 @@ export default async function DashboardAppLayout({
 
   const nav = [
     { label: 'Overview', href: '/dashboard' },
+    { label: 'Privacy', href: '/dashboard/privacy' },
+    { label: 'Headers', href: '/dashboard/headers' },
     { label: 'Attribution', href: '/dashboard/attribution' },
     { label: 'Cookie Extender', href: '/dashboard/cookie-extender' },
     { label: 'Reverse Proxy', href: '/dashboard/reverse-proxy' },
@@ -27,6 +29,7 @@ export default async function DashboardAppLayout({
     { label: 'AI Analysis', href: '/dashboard/ai-analysis' },
     { label: 'Anomalies', href: '/dashboard/anomalies' },
     { label: 'Integrations', href: '/dashboard/integrations' },
+    { label: 'Raw Data', href: '/dashboard/raw-data' },
     { label: 'Setup & Snippet', href: '/dashboard/setup' },
     { label: 'Billing', href: '/dashboard/billing' },
   ]
