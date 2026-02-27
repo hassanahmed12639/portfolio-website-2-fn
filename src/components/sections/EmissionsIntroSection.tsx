@@ -45,11 +45,10 @@ const CARDS = [
 ]
 
 const HEADLINE_LINES = [
-  'We work to accelerate progress',
-  'across every source of emissions,',
-  'transforming the five sectors of the',
-  'global economy into',
-  'a landscape of opportunity.',
+  "Great results don't come from one tactic,",
+  'they come from the right system.',
+  'I build across every performance channel,',
+  'turning data and experimentation into growth that compounds month over month.',
 ]
 
 const FINAL_MESSAGE_LINE_1 = ['This', 'is', 'energy', 'innovation']

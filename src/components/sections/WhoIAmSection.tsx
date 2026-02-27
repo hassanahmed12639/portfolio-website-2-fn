@@ -79,7 +79,7 @@ export default function WhoIAmSection() {
             <p ref={leadRef} className="who-i-am-lead">
               {!leadInView ? (
                 <span className="invisible" aria-hidden>
-                  I help brands drive revenue through campaigns powered by structured testing, data-led decisions, creative experimentation, and conversion systems built to scale profitably.
+                  I help brands grow revenue through performance marketing built on structured testing, data-led decisions, and conversion systems designed to scale profitably.
                 </span>
               ) : (
                 <>
@@ -92,7 +92,7 @@ export default function WhoIAmSection() {
                     </TextEffect>
                   </span>
                   <TextEffect as="span" trigger={leadInView} per="word" preset="fade" delay={0.1}>
-                    {' '}drive revenue through campaigns powered by{' '}
+                    {' '}grow revenue through performance marketing built on{' '}
                   </TextEffect>
                   <span className="who-i-am-highlight who-i-am-highlight--orange">
                     <TextEffect as="span" trigger={leadInView} per="word" preset="fade" delay={0.1}>
@@ -100,7 +100,7 @@ export default function WhoIAmSection() {
                     </TextEffect>
                   </span>
                   <TextEffect as="span" trigger={leadInView} per="word" preset="fade" delay={0.1}>
-                    , data-led decisions, creative experimentation, and conversion systems built to{' '}
+                    , data-led decisions, and conversion systems designed to{' '}
                   </TextEffect>
                   <span className="who-i-am-highlight who-i-am-highlight--green">
                     <TextEffect as="span" trigger={leadInView} per="word" preset="fade" delay={0.1}>
@@ -117,7 +117,7 @@ export default function WhoIAmSection() {
             </p>
           </div>
           <div className="who-i-am-cta-wrap">
-            <Link ref={ctaRef} href="#about" className="who-i-am-cta">
+          <Link ref={ctaRef} href="/about-me" className="who-i-am-cta">
               <span className="who-i-am-cta-icon" aria-hidden>+</span>
               About Me
             </Link>

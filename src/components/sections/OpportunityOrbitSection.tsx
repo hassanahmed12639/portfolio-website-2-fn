@@ -557,20 +557,28 @@ export default function OpportunityOrbitSection() {
       scrollTrack.style.minHeight = `${sectionHeight + pinDistance}px`
     }
 
+    let pinnedAbsoluteTop: number | null = null
+
     const updatePinnedState = (pinProgress: number) => {
       if (pinProgress <= 0) {
         section.style.position = 'absolute'
         section.style.top = '0px'
         section.style.left = '0px'
         section.style.width = '100%'
+        pinnedAbsoluteTop = null
       } else if (pinProgress < 1) {
         section.style.position = 'fixed'
         section.style.top = '0px'
         section.style.left = '0px'
         section.style.width = '100%'
       } else {
+        if (pinnedAbsoluteTop === null) {
+          const trackRect = scrollTrack.getBoundingClientRect()
+          const sectionRect = section.getBoundingClientRect()
+          pinnedAbsoluteTop = sectionRect.top - trackRect.top
+        }
         section.style.position = 'absolute'
-        section.style.top = `${pinDistance}px`
+        section.style.top = `${pinnedAbsoluteTop}px`
         section.style.left = '0px'
         section.style.width = '100%'
       }

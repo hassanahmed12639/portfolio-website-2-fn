@@ -6,10 +6,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { registerGsapPlugins } from '../../lib/gsap';
 
 const LINES = [
-  'When I see a tough problem, my first thought is always',
-  '"how can innovation help solve this?"',
-  "That's why I approach marketing – to bring the power of",
-  'data and testing to bear on the toughest challenges.',
+  'When I see a business struggling to scale, my first thought is always,',
+  '"where\'s the data, and what\'s it telling us?"',
+  "That's how I approach performance marketing, cutting through guesswork to drive measurable growth",
+  'through precision targeting, relentless testing, and campaigns that convert.',
 ];
 
 const PIN_SCROLL_DISTANCE = 900;
