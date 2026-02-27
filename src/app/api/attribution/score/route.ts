@@ -126,6 +126,8 @@ export async function GET() {
       truth_score: score,
       meta_score: metaScore,
       google_score: googleScore,
+      platform: event.platform,
+      status: event.status,
       breakdown,
       confidence,
     })

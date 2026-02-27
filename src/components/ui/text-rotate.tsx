@@ -13,7 +13,7 @@ export interface TextRotateProps {
   exit?: { y: string };
   staggerDuration?: number;
   splitLevelClassName?: string;
-  transition?: { type: string; damping: number; stiffness: number };
+  transition?: { type: 'spring'; damping: number; stiffness: number };
   rotationInterval?: number;
 }
 

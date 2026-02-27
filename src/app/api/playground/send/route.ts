@@ -88,16 +88,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Profile or API key not found' }, { status: 400 })
   }
 
-  let integrations = await serviceSupabase
+  const integrationsRes = await serviceSupabase
     .from('integrations')
     .select('platform, pixel_id, access_token')
     .eq('user_id', profile.id)
     .eq('is_active', true)
 
+  let list = integrationsRes.data ?? []
   if (target === 'meta') {
-    integrations = { ...integrations, data: integrations.data?.filter((i) => i.platform === 'meta') ?? [] }
+    list = list.filter((i) => i.platform === 'meta')
   } else if (target === 'google') {
-    integrations = { ...integrations, data: integrations.data?.filter((i) => i.platform === 'google') ?? [] }
+    list = list.filter((i) => i.platform === 'google')
   }
 
   const eventTime = Math.floor(Date.now() / 1000)

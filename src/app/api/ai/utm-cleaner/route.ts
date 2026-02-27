@@ -44,9 +44,9 @@ export async function POST(request: NextRequest) {
         },
         { role: 'user', content: prompt },
       ],
+      temperature: 0.3,
+      max_tokens: 2000,
     }),
-    temperature: 0.3,
-    max_tokens: 2000,
   })
 
   if (!response.ok) {

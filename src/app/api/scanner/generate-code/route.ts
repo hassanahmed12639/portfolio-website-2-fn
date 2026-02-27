@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
 
     const eventNames = events
       .map((e: unknown) => (typeof e === 'string' ? e : (e as { event?: string })?.event))
-      .filter((name): name is string => typeof name === 'string' && name.length > 0)
+      .filter((name: unknown): name is string => typeof name === 'string' && name.length > 0)
 
     const gtmLines: string[] = []
     const scriptLines: string[] = []

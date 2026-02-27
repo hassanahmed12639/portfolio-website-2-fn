@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 export interface MagicTextProps {
@@ -12,7 +12,7 @@ export interface MagicTextProps {
 
 interface WordProps {
   children: string;
-  progress: Parameters<typeof useTransform>[0];
+  progress: MotionValue<number>;
   range: number[];
 }
 

@@ -773,9 +773,9 @@ export default function EmissionsIntroSection() {
           transformOrigin: 'center center',
         }, '>')
       }
-      tl.to(nextStage, { y: CARD_GAP, duration: CARD_ENTER_DURATION, ease: [0.33, 1, 0.38, 1] }, '>')
+      tl.to(nextStage, { y: CARD_GAP, duration: CARD_ENTER_DURATION, ease: 'power2.out' }, '>')
       if (nextFrame) {
-        tl.to(nextFrame, { y: 0, scale: 1, duration: CARD_ENTER_DURATION, ease: [0.33, 1, 0.38, 1] }, '<')
+        tl.to(nextFrame, { y: 0, scale: 1, duration: CARD_ENTER_DURATION, ease: 'power2.out' }, '<')
         tl.set(nextFrame, { clearProps: 'y,scale' }, '>+0.1')
       }
       tl.to(nextTitle, { y: 0, opacity: 1, duration: 0.55, ease: 'power2.out' }, '<+0.2')

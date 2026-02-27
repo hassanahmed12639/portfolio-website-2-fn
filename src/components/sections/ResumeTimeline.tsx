@@ -22,7 +22,7 @@ const useIsMobile = () => {
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
-const Badge = ({ children }) => (
+const Badge = ({ children }: { children: React.ReactNode }) => (
   <span style={{
     display: "inline-block",
     padding: "2px 12px",
@@ -40,7 +40,7 @@ const Badge = ({ children }) => (
   </span>
 );
 
-const MetricCard = ({ metric, label }) => (
+const MetricCard = ({ metric, label }: { metric: string; label: string }) => (
   <div style={{
     background: "#0d0d0d",
     border: "1px solid #1f1f1f",
@@ -52,7 +52,7 @@ const MetricCard = ({ metric, label }) => (
   </div>
 );
 
-const Bullet = ({ children }) => (
+const Bullet = ({ children }: { children: React.ReactNode }) => (
   <li style={{ display: "flex", gap: "8px", fontSize: "14px", color: "#aaa", listStyle: "none", alignItems: "flex-start" }}>
     <span style={{ color: LIME, marginTop: "2px", flexShrink: 0 }}>▸</span>
     {children}
@@ -222,8 +222,8 @@ const resumeData = [
                   textDecoration: "none",
                   transition: "border-color 0.2s, color 0.2s",
                 }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = LIME; const p = e.currentTarget.querySelector(".pname"); if (p) p.style.color = LIME; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "#1f1f1f"; const p = e.currentTarget.querySelector(".pname"); if (p) p.style.color = "#fff"; }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = LIME; const p = e.currentTarget.querySelector(".pname") as HTMLElement | null; if (p) p.style.color = LIME; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "#1f1f1f"; const p = e.currentTarget.querySelector(".pname") as HTMLElement | null; if (p) p.style.color = "#fff"; }}
               >
                 <div>
                   <p className="pname" style={{ fontSize: "13px", fontWeight: 600, color: "#fff", margin: 0, transition: "color 0.2s" }}>{name}</p>
@@ -241,10 +241,11 @@ const resumeData = [
 
 // ─── Timeline Component ───────────────────────────────────────────────────────
 
-export const Timeline = ({ data }) => {
+type TimelineItem = { title: string; content: React.ReactNode }
+export const Timeline = ({ data }: { data: TimelineItem[] }) => {
   const isMobile = useIsMobile();
-  const ref = useRef(null);
-  const containerRef = useRef(null);
+  const ref = useRef<HTMLDivElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const [height, setHeight] = useState(0);
 
   useEffect(() => {

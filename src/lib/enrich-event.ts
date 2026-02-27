@@ -54,7 +54,7 @@ function detectOS(userAgent: string): string {
 
 const emptyGeo = { country: '', city: '', countryCode: '', region: '' }
 const emptyDevice = { type: 'unknown', browser: 'Unknown', os: 'Unknown' }
-const emptyCustomer = { type: 'new', ltv: 0, visitCount: 1, firstSeen: null }
+const emptyCustomer: EnrichedData['customer'] = { type: 'new', ltv: 0, visitCount: 1, firstSeen: null }
 
 export async function enrichEvent(
   settings: EnrichmentSettings,

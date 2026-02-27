@@ -8,7 +8,7 @@ import { registerGsapPlugins } from '../../lib/gsap'
 const SMOOTHNESS = 1.6
 const EXIT_DURATION = 1.8
 const READY_DURATION = 1.2
-const SMOOTH_EASE = [0.25, 0.46, 0.45, 0.94] as const
+const SMOOTH_EASE = 'power2.out' as const
 
 const SECTORS = [
   { id: 'manufacturing', label: 'Paid Media', letter: 'P', rest: 'aid Media', emissions: '30%', description: 'The clean industrial revolution starts with transforming how we make everything in the world—from steel and cement to everyday materials.', cta: '29 Manufacturing Companies' },
@@ -98,14 +98,14 @@ export default function SectorScrollSection() {
         },
       }) as any
 
-      tl.to(cardManufacturingRef.current, { opacity: 1, x: 0, y: 0, duration: 1.2, ease: [0.22, 1, 0.36, 1] }, 0)
-        .to(cardElectricityRef.current, { opacity: 1, x: 0, y: 0, duration: 1.2, delay: 0.15, ease: [0.22, 1, 0.36, 1] }, 0)
-        .to(cardAgricultureRef.current, { opacity: 1, x: '-50%', y: 0, duration: 1.2, delay: 0.3, ease: [0.22, 1, 0.36, 1] }, 0)
-        .to(cardTransportationRef.current, { opacity: 1, x: 0, y: 0, duration: 1.2, delay: 0.45, ease: [0.22, 1, 0.36, 1] }, 0)
-        .to(cardBuildingsRef.current, { opacity: 1, x: '-50%', y: 0, duration: 1.2, delay: 0.6, ease: [0.22, 1, 0.36, 1] }, 0)
+      tl.to(cardManufacturingRef.current, { opacity: 1, x: 0, y: 0, duration: 1.2, ease: 'power2.out' }, 0)
+        .to(cardElectricityRef.current, { opacity: 1, x: 0, y: 0, duration: 1.2, delay: 0.15, ease: 'power2.out' }, 0)
+        .to(cardAgricultureRef.current, { opacity: 1, x: '-50%', y: 0, duration: 1.2, delay: 0.3, ease: 'power2.out' }, 0)
+        .to(cardTransportationRef.current, { opacity: 1, x: 0, y: 0, duration: 1.2, delay: 0.45, ease: 'power2.out' }, 0)
+        .to(cardBuildingsRef.current, { opacity: 1, x: '-50%', y: 0, duration: 1.2, delay: 0.6, ease: 'power2.out' }, 0)
         .to({}, { duration: 2 })
 
-        .to(cardBuildingsRef.current, { y: 500, scale: 1.15, duration: EXIT_DURATION * 1.4, ease: [0.6, 0.04, 0.98, 0.34] })
+        .to(cardBuildingsRef.current, { y: 500, scale: 1.15, duration: EXIT_DURATION * 1.4, ease: 'power2.inOut' })
         .to(buildingsSectionRef.current, { opacity: 1, visibility: 'visible', duration: 1.2, ease: SMOOTH_EASE }, '<+0.8')
         .to(titleBuildingsRef.current, { opacity: 1, y: 0, duration: 1.3, ease: SMOOTH_EASE }, '<+0.5')
         .to(contentBuildingsRef.current, { opacity: 1, y: 0, duration: 1.2, ease: SMOOTH_EASE }, '<+0.3')
@@ -113,7 +113,7 @@ export default function SectorScrollSection() {
         .to([titleBuildingsRef.current, contentBuildingsRef.current], { opacity: 0, y: -30, duration: 0.9, ease: SMOOTH_EASE })
         .to(buildingsSectionRef.current, { opacity: 0, visibility: 'hidden', duration: 0.4 }, '<+0.5')
 
-        .to(cardTransportationRef.current, { y: 500, scale: 1.15, duration: EXIT_DURATION * 1.4, ease: [0.6, 0.04, 0.98, 0.34] })
+        .to(cardTransportationRef.current, { y: 500, scale: 1.15, duration: EXIT_DURATION * 1.4, ease: 'power2.inOut' })
         .to(transportationSectionRef.current, { opacity: 1, visibility: 'visible', duration: 1.2, ease: SMOOTH_EASE }, '<+0.8')
         .to(titleTransportationRef.current, { opacity: 1, y: 0, duration: 1.3, ease: SMOOTH_EASE }, '<+0.5')
         .to(contentTransportationRef.current, { opacity: 1, y: 0, duration: 1.2, ease: SMOOTH_EASE }, '<+0.3')
@@ -125,7 +125,7 @@ export default function SectorScrollSection() {
         .to(cardAgricultureRef.current, { top: layout3.agriculture.top, left: layout3.agriculture.left, x: '-50%', y: 0, duration: READY_DURATION * 1.5, ease: SMOOTH_EASE }, '<')
         .to({}, { duration: 0.8 })
 
-        .to(cardAgricultureRef.current, { y: 500, scale: 1.15, duration: EXIT_DURATION * 1.4, ease: [0.6, 0.04, 0.98, 0.34] })
+        .to(cardAgricultureRef.current, { y: 500, scale: 1.15, duration: EXIT_DURATION * 1.4, ease: 'power2.inOut' })
         .to(agricultureSectionRef.current, { opacity: 1, visibility: 'visible', duration: 1.2, ease: SMOOTH_EASE }, '<+0.8')
         .to(titleAgricultureRef.current, { opacity: 1, y: 0, duration: 1.3, ease: SMOOTH_EASE }, '<+0.5')
         .to(contentAgricultureRef.current, { opacity: 1, y: 0, duration: 1.2, ease: SMOOTH_EASE }, '<+0.3')
@@ -136,7 +136,7 @@ export default function SectorScrollSection() {
         .to(cardElectricityRef.current, { top: layout2.electricity.top, left: layout2.electricity.left, x: '-50%', y: 0, duration: READY_DURATION * 1.5, ease: SMOOTH_EASE }, '<')
         .to({}, { duration: 0.8 })
 
-        .to(cardElectricityRef.current, { y: 500, scale: 1.15, duration: EXIT_DURATION * 1.4, ease: [0.6, 0.04, 0.98, 0.34] })
+        .to(cardElectricityRef.current, { y: 500, scale: 1.15, duration: EXIT_DURATION * 1.4, ease: 'power2.inOut' })
         .to(electricitySectionRef.current, { opacity: 1, visibility: 'visible', duration: 1.2, ease: SMOOTH_EASE }, '<+0.8')
         .to(titleElectricityRef.current, { opacity: 1, y: 0, duration: 1.3, ease: SMOOTH_EASE }, '<+0.5')
         .to(contentElectricityRef.current, { opacity: 1, y: 0, duration: 1.2, ease: SMOOTH_EASE }, '<+0.3')
@@ -144,7 +144,7 @@ export default function SectorScrollSection() {
         .to([titleElectricityRef.current, contentElectricityRef.current], { opacity: 0, y: -30, duration: 0.9, ease: SMOOTH_EASE })
         .to(electricitySectionRef.current, { opacity: 0, visibility: 'hidden', duration: 0.4 }, '<+0.5')
 
-        .to(cardManufacturingRef.current, { y: 500, scale: 1.35, duration: EXIT_DURATION * 1.4, ease: [0.6, 0.04, 0.98, 0.34] })
+        .to(cardManufacturingRef.current, { y: 500, scale: 1.35, duration: EXIT_DURATION * 1.4, ease: 'power2.inOut' })
         .to(heroSectionRef.current, { opacity: 0, visibility: 'hidden', duration: 0.8, ease: SMOOTH_EASE }, '<')
         .to(manufacturingSectionRef.current, { opacity: 1, visibility: 'visible', duration: 1.2, ease: SMOOTH_EASE }, '<+0.8')
         .to(manufacturingImageRef.current, { opacity: 1, scale: 1, duration: 2, ease: 'power2.out' }, '<')
