@@ -8,6 +8,12 @@ const SNIPPET_TEMPLATE = (apiKey: string) => `<!-- TrackHive by itshassanahmed.c
 </script>
 <script src="https://track.itshassanahmed.com/th.js" async></script>`
 
+const SNIPPET_WITH_PROXY = (apiKey: string) => `<!-- TrackHive with Reverse Proxy -->
+<script>
+  window.TRACKHIVE_KEY = "${apiKey}";
+</script>
+<script src="/th-proxy/th" async></script>`
+
 const MANUAL_EVENTS_CODE = `// Track a purchase
 TrackHive.track('Purchase', {
   value: 99.00,
@@ -90,7 +96,23 @@ export default async function SetupPage() {
           </div>
         </section>
 
-        {/* Section 4 — GTM Instructions */}
+        {/* Section 4 — Using Reverse Proxy */}
+        <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
+          <div className="px-4 py-3 border-b border-zinc-800 flex items-center justify-between">
+            <h2 className="text-sm font-medium text-zinc-300">Using Reverse Proxy (Recommended)</h2>
+            <CopyButton text={SNIPPET_WITH_PROXY(apiKey)} />
+          </div>
+          <div className="p-4">
+            <p className="text-zinc-400 text-sm mb-3">
+              Serve the script from your own domain so ad blockers do not block it. Configure rewrites on your server (see Reverse Proxy page).
+            </p>
+            <pre className="bg-zinc-950 rounded-lg border border-zinc-800 p-4 text-sm text-zinc-300 font-mono overflow-x-auto whitespace-pre">
+              {SNIPPET_WITH_PROXY(apiKey)}
+            </pre>
+          </div>
+        </section>
+
+        {/* Section 5 — GTM Instructions */}
         <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
           <div className="px-4 py-3 border-b border-zinc-800">
             <h2 className="text-sm font-medium text-zinc-300">Google Tag Manager</h2>

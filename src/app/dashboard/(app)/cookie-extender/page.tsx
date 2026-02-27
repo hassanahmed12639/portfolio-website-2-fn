@@ -1,0 +1,41 @@
+import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
+import CookieExtenderClient from './CookieExtenderClient'
+
+export default async function CookieExtenderPage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    redirect('/dashboard/login')
+  }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('api_key')
+    .eq('id', user.id)
+    .single()
+
+  const { data: settings } = await supabase
+    .from('cookie_settings')
+    .select('cookie_lifetime_days, cookie_name, is_active')
+    .eq('user_id', user.id)
+    .single()
+
+  const apiKey = profile?.api_key ?? ''
+  const initialSettings = {
+    cookie_lifetime_days: settings?.cookie_lifetime_days ?? 180,
+    cookie_name: settings?.cookie_name ?? '_th_uid',
+    is_active: settings?.is_active ?? true,
+  }
+
+  return (
+    <div className="p-6 md:p-8">
+      <h1 className="text-xl font-semibold text-white mb-2">Cookie Lifetime Extender</h1>
+      <p className="text-zinc-400 text-sm mb-8">
+        Extend tracking window with server-side cookies. Browser cookies expire in ~7 days (Safari ITP); server cookies last up to 180 days.
+      </p>
+      <CookieExtenderClient apiKey={apiKey} initialSettings={initialSettings} />
+    </div>
+  )
+}

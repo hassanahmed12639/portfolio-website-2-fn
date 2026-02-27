@@ -6,8 +6,18 @@ const SCAN_STEPS = [
   'Fetching page...',
   'Analyzing pixels...',
   'Checking GTM...',
+  'AI analyzing detected actions...',
   'Generating report...',
 ]
+
+type SmartEvent = {
+  event: string
+  reason: string
+  priority: string
+  platforms: string[]
+  gtm_code?: string
+  script_code?: string
+}
 
 type Report = {
   url: string
@@ -23,6 +33,7 @@ type Report = {
   }
   capi: { metaCapi: boolean; googleEnhanced: boolean }
   recommendedEvents: { name: string; why: string; priority: string }[]
+  smartEvents?: SmartEvent[]
   scripts: {
     totalScripts: number
     blockingScripts: number
@@ -30,6 +41,23 @@ type Report = {
     trackingOverhead: string
   }
   recommendations: { text: string; priority: string }[]
+}
+
+const EVENT_ICONS: Record<string, string> = {
+  AddToCart: '🛒',
+  InitiateCheckout: '💳',
+  Purchase: '💰',
+  Lead: '👤',
+  ViewContent: '👀',
+  Search: '🔍',
+  'WhatsApp Click': '📱',
+  'Phone Click': '📞',
+  'Email Click': '📧',
+  'Video Watch': '🎥',
+  PageView: '📄',
+  'Scroll Depth': '📜',
+  'Button Click': '🖱️',
+  CompleteRegistration: '📝',
 }
 
 const PIXEL_LABELS: { key: keyof Report['pixels']; label: string }[] = [
@@ -96,12 +124,90 @@ export default function ScannerPage() {
   const [stepIndex, setStepIndex] = useState(0)
   const [report, setReport] = useState<Report | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [enabledEvents, setEnabledEvents] = useState<Set<string>>(new Set())
+  const [codeModalOpen, setCodeModalOpen] = useState(false)
+  const [codeModalType, setCodeModalType] = useState<'gtm' | 'script'>('gtm')
+  const [generatedCode, setGeneratedCode] = useState('')
+  const [generatingCode, setGeneratingCode] = useState(false)
+  const [copyDone, setCopyDone] = useState(false)
+
+  const smartEvents = (report?.smartEvents ?? []).reduce<SmartEvent[]>((acc, ev) => {
+    if (!acc.some((e) => e.event === ev.event)) acc.push(ev)
+    return acc
+  }, [])
+  const enabledSet = new Set(enabledEvents)
+
+  function toggleEvent(eventName: string) {
+    setEnabledEvents((prev) => {
+      const next = new Set(prev)
+      if (next.has(eventName)) next.delete(eventName)
+      else next.add(eventName)
+      return next
+    })
+  }
+
+  function enableAllRecommended() {
+    const recommended = smartEvents.filter(
+      (e) => e.priority === 'critical' || e.priority === 'recommended'
+    )
+    setEnabledEvents((prev) => {
+      const next = new Set(prev)
+      recommended.forEach((e) => next.add(e.event))
+      return next
+    })
+  }
+
+  async function openCodeModal(type: 'gtm' | 'script') {
+    const events = Array.from(enabledSet)
+    if (events.length === 0) {
+      setGeneratedCode('// Enable at least one event above, then generate code.')
+      setCodeModalType(type)
+      setCodeModalOpen(true)
+      return
+    }
+    setGeneratingCode(true)
+    setCodeModalType(type)
+    setCodeModalOpen(true)
+    try {
+      const res = await fetch('/api/scanner/generate-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ events: events.map((e) => ({ event: e })), type }),
+      })
+      const data = await res.json()
+      if (res.ok) setGeneratedCode(type === 'gtm' ? data.gtm_code : data.script_code)
+      else setGeneratedCode('// Failed to generate code.')
+    } catch {
+      setGeneratedCode('// Network error.')
+    } finally {
+      setGeneratingCode(false)
+    }
+  }
+
+  function copyCode() {
+    if (generatedCode) {
+      navigator.clipboard.writeText(generatedCode)
+      setCopyDone(true)
+      setTimeout(() => setCopyDone(false), 2000)
+    }
+  }
+
+  function downloadAsJs() {
+    if (!generatedCode) return
+    const blob = new Blob([generatedCode], { type: 'text/javascript' })
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
+    a.download = codeModalType === 'gtm' ? 'trackhive-gtm-events.js' : 'trackhive-events.js'
+    a.click()
+    URL.revokeObjectURL(a.href)
+  }
 
   async function handleScan(e: React.FormEvent) {
     e.preventDefault()
     if (!url.trim()) return
     setError(null)
     setReport(null)
+    setEnabledEvents(new Set())
     setLoading(true)
     setStepIndex(0)
     const stepInterval = setInterval(() => {
@@ -319,6 +425,161 @@ export default function ScannerPage() {
               ))}
             </ol>
           </section>
+
+          {/* Smart Events Auto-Detection */}
+          <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
+            <div className="px-4 py-3 border-b border-zinc-800">
+              <h2 className="text-sm font-medium text-zinc-300">Smart Events Auto-Detection</h2>
+              <p className="text-xs text-zinc-500 mt-0.5">Detected actions on website — enable and generate code</p>
+            </div>
+            <div className="p-4">
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {smartEvents.map((ev) => {
+                  const icon = EVENT_ICONS[ev.event] ?? '📌'
+                  const enabled = enabledSet.has(ev.event)
+                  const priorityClass =
+                    ev.priority === 'critical'
+                      ? 'bg-red-500/20 text-red-400'
+                      : ev.priority === 'recommended'
+                        ? 'bg-amber-500/20 text-amber-400'
+                        : 'bg-zinc-600 text-zinc-400'
+                  return (
+                    <div
+                      key={ev.event}
+                      className="rounded-lg border border-zinc-800 bg-zinc-800/50 p-4 flex flex-col gap-3"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <span className="text-2xl" aria-hidden>{icon}</span>
+                        <span
+                          className={`text-xs px-2 py-0.5 rounded capitalize ${priorityClass}`}
+                        >
+                          {ev.priority}
+                        </span>
+                      </div>
+                      <h3 className="font-medium text-zinc-200">{ev.event}</h3>
+                      <p className="text-xs text-zinc-500">{ev.reason}</p>
+                      <div className="flex flex-wrap gap-1">
+                        {ev.platforms?.map((p) => (
+                          <span
+                            key={p}
+                            className="text-xs px-2 py-0.5 rounded bg-zinc-700 text-zinc-300 capitalize"
+                          >
+                            {p}
+                          </span>
+                        ))}
+                      </div>
+                      <div className="flex items-center justify-between gap-2 mt-auto pt-2 border-t border-zinc-700">
+                        <button
+                          type="button"
+                          onClick={() => toggleEvent(ev.event)}
+                          className="rounded-md bg-emerald-600 text-white px-3 py-1.5 text-xs font-medium hover:bg-emerald-500 transition-colors"
+                        >
+                          {enabled ? 'Enabled' : 'Enable with one click'}
+                        </button>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <span className="text-xs text-zinc-400">On</span>
+                          <input
+                            type="checkbox"
+                            checked={enabled}
+                            onChange={() => toggleEvent(ev.event)}
+                            className="rounded border-zinc-600 bg-zinc-800 text-emerald-500 focus:ring-emerald-500"
+                          />
+                        </label>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+              {smartEvents.length === 0 && (
+                <p className="text-sm text-zinc-500 py-4">No events detected. Run a scan to see suggestions.</p>
+              )}
+              <div className="mt-6 flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={enableAllRecommended}
+                  className="rounded-lg bg-zinc-700 text-zinc-200 px-4 py-2.5 text-sm font-medium hover:bg-zinc-600 transition-colors"
+                >
+                  Enable All Recommended Events
+                </button>
+                <button
+                  type="button"
+                  onClick={() => openCodeModal('gtm')}
+                  disabled={generatingCode}
+                  className="rounded-lg bg-zinc-700 text-zinc-200 px-4 py-2.5 text-sm font-medium hover:bg-zinc-600 disabled:opacity-50 transition-colors"
+                >
+                  Generate GTM Code
+                </button>
+                <button
+                  type="button"
+                  onClick={() => openCodeModal('script')}
+                  disabled={generatingCode}
+                  className="rounded-lg bg-zinc-700 text-zinc-200 px-4 py-2.5 text-sm font-medium hover:bg-zinc-600 disabled:opacity-50 transition-colors"
+                >
+                  Generate Script Tag Code
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      )}
+
+      {/* Code Generation Modal */}
+      {codeModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70"
+          onClick={() => setCodeModalOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Generated code"
+        >
+          <div
+            className="rounded-xl bg-zinc-900 border border-zinc-700 shadow-xl w-full max-w-2xl max-h-[85vh] flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="px-4 py-3 border-b border-zinc-800 flex items-center justify-between">
+              <h3 className="text-sm font-medium text-zinc-300">
+                {codeModalType === 'gtm' ? 'GTM dataLayer code' : 'TrackHive script code'}
+              </h3>
+              <button
+                type="button"
+                onClick={() => setCodeModalOpen(false)}
+                className="text-zinc-400 hover:text-white transition-colors"
+                aria-label="Close"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="p-4 overflow-auto flex-1">
+              {generatingCode ? (
+                <div className="flex items-center gap-2 text-zinc-400 text-sm">
+                  <span className="inline-block w-4 h-4 border-2 border-zinc-500 border-t-zinc-300 rounded-full animate-spin" />
+                  Generating...
+                </div>
+              ) : (
+                <pre className="text-xs text-zinc-300 bg-zinc-950 rounded-lg p-4 overflow-x-auto whitespace-pre-wrap font-mono">
+                  {generatedCode}
+                </pre>
+              )}
+            </div>
+            <div className="px-4 py-3 border-t border-zinc-800 flex gap-2">
+              <button
+                type="button"
+                onClick={copyCode}
+                disabled={generatingCode || !generatedCode}
+                className="rounded-lg bg-zinc-700 text-zinc-200 px-4 py-2 text-sm font-medium hover:bg-zinc-600 disabled:opacity-50 transition-colors"
+              >
+                {copyDone ? 'Copied!' : 'Copy'}
+              </button>
+              <button
+                type="button"
+                onClick={downloadAsJs}
+                disabled={generatingCode || !generatedCode}
+                className="rounded-lg bg-zinc-700 text-zinc-200 px-4 py-2 text-sm font-medium hover:bg-zinc-600 disabled:opacity-50 transition-colors"
+              >
+                Download as .js file
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

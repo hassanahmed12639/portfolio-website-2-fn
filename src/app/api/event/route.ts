@@ -1,4 +1,5 @@
 import { validateEvent } from '@/lib/validate-event'
+import { enrichEvent } from '@/lib/enrich-event'
 import { createClient } from '@supabase/supabase-js'
 import { createHash } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
@@ -28,6 +29,7 @@ export async function POST(request: NextRequest) {
     currency?: string
     email?: string
     phone?: string
+    visitor_id?: string
     is_test?: boolean
   }
 
@@ -71,7 +73,43 @@ export async function POST(request: NextRequest) {
     .eq('is_active', true)
 
   const platformsFired: string[] = []
-  const ip = getClientIp(request.headers)
+  const ip = getClientIp(request.headers) ?? request.headers.get('x-real-ip') ?? '127.0.0.1'
+  const userAgent = request.headers.get('user-agent') ?? ''
+
+  const { data: enrichmentSettingsRow } = await supabase
+    .from('enrichment_settings')
+    .select('*')
+    .eq('user_id', profile.id)
+    .single()
+
+  const enrichmentSettings = enrichmentSettingsRow
+    ? {
+        geo_enabled: enrichmentSettingsRow.geo_enabled ?? true,
+        device_enabled: enrichmentSettingsRow.device_enabled ?? true,
+        customer_type_enabled: enrichmentSettingsRow.customer_type_enabled ?? true,
+        ltv_enabled: enrichmentSettingsRow.ltv_enabled ?? true,
+        email_hash_enabled: enrichmentSettingsRow.email_hash_enabled ?? true,
+        phone_hash_enabled: enrichmentSettingsRow.phone_hash_enabled ?? true,
+      }
+    : {}
+
+  let enrichmentData: Awaited<ReturnType<typeof enrichEvent>> | null = null
+  try {
+    enrichmentData = await enrichEvent(
+      enrichmentSettings,
+      {
+        ip,
+        userAgent,
+        visitorId: body.visitor_id ?? null,
+        email: email ?? null,
+        phone: phone ?? null,
+        userId: profile.id,
+      },
+      supabase
+    )
+  } catch {
+    // continue without enrichment
+  }
 
   const eventForValidation = {
     event_name,
@@ -91,6 +129,7 @@ export async function POST(request: NextRequest) {
     currency,
     event_id: event_id ?? null,
     event_source_url: event_source_url ?? null,
+    visitor_id: visitor_id ?? null,
   }
 
   const fiveMinutesFromNow = new Date(Date.now() + 5 * 60 * 1000).toISOString()
@@ -103,9 +142,25 @@ export async function POST(request: NextRequest) {
       const pixelId = integration.pixel_id
       const accessToken = integration.access_token
       if (pixelId && accessToken) {
-        const userData: Record<string, string[]> = {}
-        if (email) userData.em = [sha256(email)]
-        if (phone) userData.ph = [sha256(phone.replace(/\D/g, ''))]
+        const userData: Record<string, string | string[]> = {}
+        if (enrichmentData?.hashes?.email_hash) {
+          userData.em = [enrichmentData.hashes.email_hash]
+        } else if (email) {
+          userData.em = [sha256(email)]
+        }
+        if (enrichmentData?.hashes?.phone_hash) {
+          userData.ph = [enrichmentData.hashes.phone_hash]
+        } else if (phone) {
+          userData.ph = [sha256(phone.replace(/\D/g, ''))]
+        }
+        if (enrichmentData?.geo?.countryCode) {
+          userData.country = [enrichmentData.geo.countryCode.toLowerCase()]
+        }
+        if (enrichmentData?.geo?.city) {
+          userData.ct = [enrichmentData.geo.city.toLowerCase().replace(/\s/g, '')]
+        }
+        userData.client_ip_address = ip
+        userData.client_user_agent = userAgent
 
         const metaEvent: Record<string, unknown> = {
           event_name,
@@ -150,6 +205,13 @@ export async function POST(request: NextRequest) {
       validation_issues: validation.issues,
       validation_checks: validation.checks,
       payload: internalPayload,
+    }
+    if (enrichmentData) {
+      insertRow.country = enrichmentData.geo.country || null
+      insertRow.city = enrichmentData.geo.city || null
+      insertRow.device_type = enrichmentData.device.type || null
+      insertRow.customer_type = enrichmentData.customer.type || null
+      insertRow.enriched_data = enrichmentData
     }
     if (status === 'failed') {
       insertRow.original_payload = originalPayload

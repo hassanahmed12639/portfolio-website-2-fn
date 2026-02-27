@@ -80,6 +80,111 @@ export async function POST(request: NextRequest) {
     const hasPrice = /\b(price|\.00|currency|usd|eur)\b/i.test(html) || /\$\d+|\d+\.\d{2}/.test(html)
     const ecommerceSignals = hasCart || hasCheckout || hasPrice
 
+    const detectedActions: { event: string; reason: string; priority: string }[] = []
+
+    if (hasCart || lower.includes('add-to-cart') || lower.includes('addtocart') || lower.includes('add to cart')) {
+      detectedActions.push({ event: 'AddToCart', reason: 'Found cart button or add to cart text', priority: 'critical' })
+    }
+    if (lower.includes('checkout') || lower.includes('place-order')) {
+      detectedActions.push({ event: 'InitiateCheckout', reason: 'Found checkout element', priority: 'critical' })
+    }
+    if (lower.includes('thank') || lower.includes('order confirmation') || lower.includes('payment') || lower.includes('order-complete')) {
+      detectedActions.push({ event: 'Purchase', reason: 'Found thank you / order confirmation signals', priority: 'critical' })
+    }
+    if (html.includes('<form') || lower.includes('contact-form') || lower.includes('newsletter')) {
+      detectedActions.push({ event: 'Lead', reason: 'Found form element', priority: 'critical' })
+    }
+    if (lower.includes('product') || lower.includes('article') || lower.includes('blog') || html.includes('<article')) {
+      detectedActions.push({ event: 'ViewContent', reason: 'Found product/article/content page signals', priority: 'recommended' })
+    }
+    if (lower.includes('search') && (html.includes('<input') || html.includes('type="search"'))) {
+      detectedActions.push({ event: 'Search', reason: 'Found search input', priority: 'recommended' })
+    }
+    if (html.includes('wa.me') || lower.includes('whatsapp')) {
+      detectedActions.push({ event: 'WhatsApp Click', reason: 'Found WhatsApp link', priority: 'recommended' })
+    }
+    if (html.includes('tel:')) {
+      detectedActions.push({ event: 'Phone Click', reason: 'Found phone link', priority: 'recommended' })
+    }
+    if (html.includes('mailto:')) {
+      detectedActions.push({ event: 'Email Click', reason: 'Found mailto link', priority: 'recommended' })
+    }
+    if (lower.includes('youtube.com') || lower.includes('vimeo.com') || html.includes('<video')) {
+      detectedActions.push({ event: 'Video Watch', reason: 'Found video element', priority: 'recommended' })
+    }
+    detectedActions.push({ event: 'PageView', reason: 'Always required', priority: 'critical' })
+    detectedActions.push({ event: 'Scroll Depth', reason: 'Improves engagement tracking', priority: 'recommended' })
+    if (lower.includes('btn') || lower.includes('button') || lower.includes('cta') || html.includes('<button')) {
+      detectedActions.push({ event: 'Button Click', reason: 'Found CTA/button elements', priority: 'optional' })
+    }
+
+    let smartEvents: {
+      event: string
+      reason: string
+      priority: string
+      platforms: string[]
+      gtm_code?: string
+      script_code?: string
+    }[] = []
+
+    const groqKey = process.env.GROQ_API_KEY
+    if (groqKey) {
+      try {
+        const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${groqKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'llama-3.1-8b-instant',
+            messages: [
+              {
+                role: 'system',
+                content: 'You are a tracking expert. Return ONLY valid JSON, no markdown, no backticks.',
+              },
+              {
+                role: 'user',
+                content: `Based on this website HTML summary and detected actions, suggest the best tracking events. Return ONLY a JSON array of objects, each with: "event" (string), "reason" (string), "priority" ("critical"|"recommended"|"optional"), "platforms" (array of "meta" and/or "google"), "gtm_code" (string, a single dataLayer.push line for that event), "script_code" (string, TrackHive.track call for that event). Detected actions: ${JSON.stringify(detectedActions)}. Website hints: forms=${hasForm}, ecommerce=${hasCart || hasCheckout || hasPrice}, blog=${lower.includes('article') || lower.includes('blog')}. Output only the JSON array, nothing else.`,
+              },
+            ],
+            temperature: 0.3,
+            max_tokens: 2000,
+          }),
+          signal: AbortSignal.timeout(10000),
+        })
+        const groqData = await groqRes.json()
+        const content = groqData?.choices?.[0]?.message?.content
+        if (content && typeof content === 'string') {
+          const parsed = JSON.parse(content.trim().replace(/^```\w*\n?|\n?```$/g, '')) as unknown
+          if (Array.isArray(parsed)) {
+            smartEvents = parsed.map((item: unknown) => {
+              const o = item as Record<string, unknown>
+              return {
+                event: String(o.event ?? ''),
+                reason: String(o.reason ?? ''),
+                priority: String(o.priority ?? 'recommended').toLowerCase(),
+                platforms: Array.isArray(o.platforms) ? o.platforms.map(String) : ['meta', 'google'],
+                gtm_code: o.gtm_code != null ? String(o.gtm_code) : undefined,
+                script_code: o.script_code != null ? String(o.script_code) : undefined,
+              }
+            })
+          }
+        }
+      } catch (groqErr) {
+        console.warn('[scanner] Groq enrichment failed', groqErr)
+      }
+    }
+
+    if (smartEvents.length === 0) {
+      smartEvents = detectedActions.map((a) => ({
+        event: a.event,
+        reason: a.reason,
+        priority: a.priority,
+        platforms: ['meta', 'google'] as string[],
+      }))
+    }
+
     const recommendedEvents: { name: string; why: string; priority: 'High' | 'Medium' | 'Low' }[] = []
     recommendedEvents.push({
       name: 'PageView',
@@ -199,6 +304,7 @@ export async function POST(request: NextRequest) {
         hasPrice,
       },
       recommendedEvents,
+      smartEvents,
       scripts: {
         totalScripts,
         blockingScripts,
