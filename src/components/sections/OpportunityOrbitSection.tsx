@@ -586,13 +586,19 @@ export default function OpportunityOrbitSection() {
     }
 
     const updateRadar = (pinProgress: number) => {
+      updatePinnedState(pinProgress)
+
+      if (pinProgress >= 1) {
+        radarContainer.style.visibility = 'hidden'
+        return
+      }
+      radarContainer.style.visibility = 'visible'
+
       const radarProgress = Math.max(0, Math.min(1, pinProgress / RADAR_PHASE_PORTION))
       const revealPortion = 0.55
       const revealProgress = Math.max(0, Math.min(1, radarProgress / revealPortion))
       const fadeProgress = Math.max(0, Math.min(1, (radarProgress - revealPortion) / (1 - revealPortion)))
       const rotation = radarProgress * 360
-
-      updatePinnedState(pinProgress)
 
       if (pinProgress <= 0) {
         stopAutoRotation()
@@ -731,8 +737,8 @@ export default function OpportunityOrbitSection() {
 
   return (
     <div ref={scrollTrackRef} className="relative bg-white">
-      <div ref={sectionSlotRef} aria-hidden />
-      <div ref={pinSpacerRef} aria-hidden />
+      <div ref={sectionSlotRef} className="bg-white" aria-hidden />
+      <div ref={pinSpacerRef} className="bg-white" aria-hidden />
       <section ref={sectionRef} className="min-h-screen w-full overflow-hidden bg-white px-6 py-8 pb-40 md:px-[5%] md:py-12 md:pb-12">
       <div className="relative mx-auto flex h-full w-full max-w-7xl items-center">
         <div className="absolute left-2 top-1/2 hidden -translate-y-1/2 flex-col items-center gap-3 md:flex">

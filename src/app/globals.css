@@ -61,6 +61,11 @@ main > * {
   margin: 0 !important;
 }
 
+/* GSAP ScrollTrigger pin-spacer: use page background so no black gap between sections */
+.pin-spacer {
+  background: hsl(var(--background));
+}
+
 /* Design tokens */
 :root {
   font-size: clamp(16px, 1.2vw + 2px, 18px);

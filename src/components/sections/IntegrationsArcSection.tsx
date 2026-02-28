@@ -20,6 +20,8 @@ export default function IntegrationsArcSection() {
   const stickyContentRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const iconRefs = useRef<(HTMLDivElement | null)[]>([])
+  const progressRef = useRef(0)
+  const applyProgressRef = useRef<(p: number) => void>(() => {})
   const cardSize = 120
   const gap = 24
 
@@ -51,8 +53,9 @@ export default function IntegrationsArcSection() {
     const ctx = gsap.context(() => {
       if (!sectionRef.current || !stickyContentRef.current || !containerRef.current) return
 
-      const iconElements = iconRefs.current.filter(Boolean) as HTMLDivElement[]
+      const iconElements = Array.from(containerRef.current.children) as HTMLDivElement[]
       const totalIcons = iconElements.length
+      if (totalIcons === 0) return
       const iconWidth = cardSize + gap // distance between icon starts
       const arcHeight = 55 // Height of the arc curve
       
@@ -101,6 +104,7 @@ export default function IntegrationsArcSection() {
         const containerWidth = containerRef.current.offsetWidth
         if (!containerWidth) return
 
+        progressRef.current = progress
         const centerX = containerWidth / 2 - cardSize / 2
         const centerAnchorIndex = containerWidth < 768 ? 1 : 2
         const initialXOffset = centerX - centerAnchorIndex * iconWidth
@@ -140,17 +144,19 @@ export default function IntegrationsArcSection() {
       }
 
       applyProgress(0)
+      applyProgressRef.current = applyProgress
 
       const scrubVal = containerRef.current.offsetWidth >= 768 ? 4 : 2.2
       ScrollTrigger.create({
-        trigger: stickyContentRef.current,
-        start: 'bottom 98%',
+        trigger: sectionRef.current,
+        start: 'top bottom',
         end: '+=1000vh',
         pin: sectionRef.current,
         anticipatePin: 2,
         scrub: scrubVal,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
+          progressRef.current = self.progress
           applyProgress(self.progress)
         },
         onLeave: () => {
@@ -162,6 +168,49 @@ export default function IntegrationsArcSection() {
         },
       })
 
+      const container = containerRef.current
+      const sensitivity = 600
+      let startX = 0
+      let startProgress = 0
+      let isDragging = false
+
+      const clamp01 = (n: number) => Math.max(0, Math.min(1, n))
+
+      const onPointerDown = (e: PointerEvent) => {
+        if ((e.target as HTMLElement).closest('a, button')) return
+        isDragging = true
+        startX = e.clientX
+        startProgress = progressRef.current
+        container.setPointerCapture?.(e.pointerId)
+      }
+
+      const onPointerMove = (e: PointerEvent) => {
+        if (!isDragging) return
+        const deltaX = startX - e.clientX
+        const offset = deltaX / sensitivity
+        applyProgressRef.current(clamp01(startProgress + offset))
+      }
+
+      const onPointerUp = (e: PointerEvent) => {
+        if (!isDragging) return
+        isDragging = false
+        container.releasePointerCapture?.(e.pointerId)
+        applyProgressRef.current(progressRef.current)
+      }
+
+      container.addEventListener('pointerdown', onPointerDown)
+      container.addEventListener('pointermove', onPointerMove)
+      container.addEventListener('pointerup', onPointerUp)
+      container.addEventListener('pointerleave', onPointerUp)
+
+      ScrollTrigger.refresh()
+
+      return () => {
+        container.removeEventListener('pointerdown', onPointerDown)
+        container.removeEventListener('pointermove', onPointerMove)
+        container.removeEventListener('pointerup', onPointerUp)
+        container.removeEventListener('pointerleave', onPointerUp)
+      }
     }, sectionRef)
 
     return () => {
@@ -177,7 +226,7 @@ export default function IntegrationsArcSection() {
     >
       <div
         ref={stickyContentRef}
-        className="sticky top-0 w-full min-h-screen flex flex-col items-center justify-center"
+        className="sticky top-0 w-full min-h-screen flex flex-col items-center justify-start pt-16 md:pt-20"
       >
         <h2 className="text-3xl md:text-4xl font-semibold mb-6 md:mb-8 text-foreground text-center px-4">
           Integrate with your existing tools
@@ -186,7 +235,7 @@ export default function IntegrationsArcSection() {
         {/* Icons container — edge mask on desktop removes visible clip line */}
         <div
           ref={containerRef}
-          className="integrations-arc-container relative w-full h-[280px] overflow-hidden shrink-0 lg:max-w-[720px] lg:mx-auto"
+          className="integrations-arc-container relative w-full h-[280px] overflow-hidden shrink-0 lg:max-w-[720px] lg:mx-auto cursor-grab active:cursor-grabbing touch-none select-none"
           style={{
             contain: 'layout style paint',
             transform: 'translateZ(0)',

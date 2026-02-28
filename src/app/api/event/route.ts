@@ -11,6 +11,10 @@ function sha256(value: string): string {
   return createHash('sha256').update(value.trim().toLowerCase()).digest('hex')
 }
 
+function hashValue(value: string): string {
+  return createHash('sha256').update(value).digest('hex')
+}
+
 function getClientIp(headers: Headers): string | null {
   return headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? null
 }
@@ -29,7 +33,18 @@ export async function POST(request: NextRequest) {
     currency?: string
     email?: string
     phone?: string
+    first_name?: string
+    last_name?: string
+    city?: string
+    state?: string
+    zip?: string
+    country?: string
+    date_of_birth?: string
+    gender?: string
     visitor_id?: string
+    fbc?: string
+    fbp?: string
+    fbclid?: string
     is_test?: boolean
     consent_rejected?: boolean
   }
@@ -40,7 +55,30 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
-  const { api_key, event_name, event_id, event_source_url: bodySourceUrl, value = 0, currency = 'USD', email, phone, is_test, consent_rejected } = body
+  const {
+    api_key,
+    event_name,
+    event_id,
+    event_source_url: bodySourceUrl,
+    value = 0,
+    currency = 'USD',
+    email,
+    phone,
+    first_name,
+    last_name,
+    city,
+    state,
+    zip,
+    country: userCountry,
+    date_of_birth,
+    gender,
+    visitor_id,
+    fbc,
+    fbp,
+    fbclid,
+    is_test,
+    consent_rejected,
+  } = body
   const event_source_url = bodySourceUrl ?? request.headers.get('referer') ?? undefined
   if (!api_key || !event_name) {
     return NextResponse.json({ error: 'api_key and event_name required' }, { status: 400 })
@@ -124,7 +162,7 @@ export async function POST(request: NextRequest) {
   }
   const ip = processedIp
 
-  let sourceUrl = body.event_source_url ?? request.headers.get('referer') ?? ''
+  let sourceUrl = bodySourceUrl ?? request.headers.get('referer') ?? ''
   if (typeof sourceUrl !== 'string') sourceUrl = ''
   if (privacySettings?.strip_query_params && sourceUrl) {
     sourceUrl = sourceUrl.split('?')[0]
@@ -162,7 +200,7 @@ export async function POST(request: NextRequest) {
       currency,
       event_id: event_id ?? null,
       event_source_url: event_source_url_final ?? null,
-      visitor_id: body.visitor_id ?? null,
+      visitor_id: visitor_id ?? null,
     }
     for (const integration of integrations ?? []) {
       await supabase.from('events').insert({
@@ -249,7 +287,7 @@ export async function POST(request: NextRequest) {
       {
         ip,
         userAgent,
-        visitorId: body.visitor_id ?? null,
+        visitorId: visitor_id ?? null,
         email: email ?? null,
         phone: phone ?? null,
         userId: profile.id,
@@ -278,7 +316,7 @@ export async function POST(request: NextRequest) {
     currency,
     event_id: event_id ?? null,
     event_source_url: event_source_url_final ?? null,
-    visitor_id: body.visitor_id ?? null,
+    visitor_id: visitor_id ?? null,
   }
 
   const fiveMinutesFromNow = new Date(Date.now() + 5 * 60 * 1000).toISOString()
@@ -291,25 +329,30 @@ export async function POST(request: NextRequest) {
       const pixelId = integration.pixel_id
       const accessToken = integration.access_token
       if (pixelId && accessToken) {
-        const userData: Record<string, string | string[]> = {}
-        if (enrichmentData?.hashes?.email_hash) {
-          userData.em = [enrichmentData.hashes.email_hash]
-        } else if (email) {
-          userData.em = [sha256(email)]
+        const hashedEmail = enrichmentData?.hashes?.email_hash ?? (email ? sha256(email) : undefined)
+        const hashedPhone = enrichmentData?.hashes?.phone_hash ?? (phone ? sha256(phone.replace(/\D/g, '')) : undefined)
+        const userData: Record<string, string | string[]> = {
+          client_ip_address: ip,
+          client_user_agent: userAgent,
+          em: hashedEmail ? [hashedEmail] : undefined,
+          ph: hashedPhone ? [hashedPhone] : undefined,
+          fbc: fbc || undefined,
+          fbp: fbp || undefined,
+          fn: first_name ? [hashValue(first_name.toLowerCase().trim())] : undefined,
+          ln: last_name ? [hashValue(last_name.toLowerCase().trim())] : undefined,
+          ct: city ? [hashValue(city.toLowerCase().trim())] : undefined,
+          st: state ? [hashValue(state.toLowerCase().trim())] : undefined,
+          zp: zip ? [hashValue(zip.toLowerCase().trim())] : undefined,
+          country: userCountry ? [hashValue(userCountry.toLowerCase().trim())] : undefined,
+          db: date_of_birth ? [hashValue(date_of_birth.replace(/-/g, ''))] : undefined,
+          ge: gender ? [hashValue(gender.toLowerCase().trim())] : undefined,
         }
-        if (enrichmentData?.hashes?.phone_hash) {
-          userData.ph = [enrichmentData.hashes.phone_hash]
-        } else if (phone) {
-          userData.ph = [sha256(phone.replace(/\D/g, ''))]
-        }
-        if (enrichmentData?.geo?.countryCode) {
+        if (enrichmentData?.geo?.countryCode && !userData.country) {
           userData.country = [enrichmentData.geo.countryCode.toLowerCase()]
         }
-        if (enrichmentData?.geo?.city) {
+        if (enrichmentData?.geo?.city && !userData.ct) {
           userData.ct = [enrichmentData.geo.city.toLowerCase().replace(/\s/g, '')]
         }
-        userData.client_ip_address = ip
-        userData.client_user_agent = userAgent
 
         const actionSource = (headerSettings?.meta_send_action_source !== false && headerSettings?.meta_action_source)
           ? headerSettings.meta_action_source
@@ -339,6 +382,9 @@ export async function POST(request: NextRequest) {
         if (res.ok) {
           status = 'success'
           platformsFired.push('meta')
+        } else {
+          const metaResponseBody = await res.text()
+          console.log('[Meta CAPI] Non-200 response:', res.status, metaResponseBody)
         }
       }
     } else if (integration.platform === 'google') {
@@ -428,7 +474,7 @@ export async function POST(request: NextRequest) {
       const apiSecret = integration.access_token
       if (measurementId && apiSecret) {
         const ga4Payload = {
-          client_id: body.visitor_id || crypto.randomUUID(),
+          client_id: visitor_id || crypto.randomUUID(),
           events: [{
             name: event_name === 'Purchase' ? 'purchase' :
                   event_name === 'Lead' ? 'generate_lead' :
@@ -473,6 +519,9 @@ export async function POST(request: NextRequest) {
       validation_issues: validation.issues,
       validation_checks: validation.checks,
       payload: internalPayload,
+      fbc: fbc || null,
+      fbp: fbp || null,
+      fbclid: fbclid || null,
     }
     if (enrichmentData) {
       insertRow.country = enrichmentData.geo.country || null

@@ -9,12 +9,14 @@ type Ga4Integration = { tag_id: string | null; access_token: string | null } | n
 
 export default function IntegrationsForms({
   meta,
+  metaFbclidCount = 0,
   google,
   tiktok,
   snapchat,
   ga4,
 }: {
   meta: MetaIntegration
+  metaFbclidCount?: number
   google: GoogleIntegration
   tiktok: PixelTokenIntegration
   snapchat: PixelTokenIntegration
@@ -460,6 +462,35 @@ export default function IntegrationsForms({
             </p>
           )}
         </form>
+
+        <div className="mt-6 pt-6 border-t border-zinc-800">
+          <h3 className="text-sm font-medium text-zinc-300 mb-3">Meta Signal Status</h3>
+          <div className="space-y-3">
+            <div className="flex items-start gap-3">
+              <span className="flex h-2 w-2 rounded-full bg-emerald-500 mt-1.5 shrink-0" aria-hidden />
+              <div>
+                <p className="text-sm font-medium text-white">fbp (Browser ID)</p>
+                <p className="text-xs text-zinc-400">Auto-captured — unique visitor ID sent to Meta</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <span className="flex h-2 w-2 rounded-full bg-emerald-500 mt-1.5 shrink-0" aria-hidden />
+              <div>
+                <p className="text-sm font-medium text-white">fbc (Click Cookie)</p>
+                <p className="text-xs text-zinc-400">Auto-captured — set when visitor clicks Meta ad</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <span className="flex h-2 w-2 rounded-full bg-emerald-500 mt-1.5 shrink-0" aria-hidden />
+              <div>
+                <p className="text-sm font-medium text-white">fbclid (Ad Click ID)</p>
+                <p className="text-xs text-zinc-400">
+                  {metaFbclidCount} events confirmed from Meta ad clicks this month
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section className="rounded-xl bg-zinc-900 border border-zinc-800 p-6">

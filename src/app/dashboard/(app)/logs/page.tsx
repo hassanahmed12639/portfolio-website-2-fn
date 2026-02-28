@@ -11,6 +11,8 @@ type EventRow = {
   status: string
   ip: string | null
   created_at: string
+  fbclid?: string | null
+  fbc?: string | null
   [key: string]: unknown
 }
 
@@ -262,6 +264,21 @@ export default function LogsPage() {
                           row.platform
                         )}
                       </td>
+                      <td className="px-4 py-3">
+                        {row.fbclid ? (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-950 text-emerald-400 border border-emerald-800">
+                            Ad Click
+                          </span>
+                        ) : row.fbc ? (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-950 text-blue-400 border border-blue-800">
+                            Returning
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-zinc-800 text-zinc-400">
+                            Organic
+                          </span>
+                        )}
+                      </td>
                       <td className="px-4 py-3 text-zinc-300">
                         {row.value != null ? row.value : '—'}
                       </td>
@@ -285,7 +302,7 @@ export default function LogsPage() {
                     </tr>
                     {expandedId === row.id && (
                       <tr key={`${row.id}-exp`} className="bg-zinc-950">
-                        <td colSpan={7} className="px-4 py-3">
+                        <td colSpan={8} className="px-4 py-3">
                           <pre className="text-xs text-zinc-400 overflow-auto rounded bg-zinc-900 p-4 max-h-48">
                             {JSON.stringify(row, null, 2)}
                           </pre>

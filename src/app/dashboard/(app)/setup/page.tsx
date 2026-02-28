@@ -112,7 +112,62 @@ export default async function SetupPage() {
           </div>
         </section>
 
-        {/* Section 5 — GTM Instructions */}
+        {/* Section 5 — Meta Signal Capture */}
+        <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
+          <div className="px-4 py-3 border-b border-zinc-800">
+            <h2 className="text-sm font-medium text-zinc-300">Meta Signal Capture</h2>
+          </div>
+          <div className="p-4 space-y-6">
+            <p className="text-zinc-400 text-sm">
+              TrackHive auto-captures <strong className="text-zinc-300">fbclid</strong>, <strong className="text-zinc-300">fbc</strong>, and <strong className="text-zinc-300">fbp</strong> to improve Meta CAPI match rates. No extra code required — the snippet handles it.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="rounded-lg border border-zinc-700 bg-zinc-950 p-4">
+                <p className="text-xs font-medium text-amber-400/90 mb-2">WITHOUT Meta Signals</p>
+                <p className="text-zinc-400 text-sm mb-1">Match rate: ~60–70%</p>
+                <p className="text-zinc-500 text-xs">Data sent: email, phone</p>
+              </div>
+              <div className="rounded-lg border border-emerald-800/60 bg-emerald-950/30 p-4">
+                <p className="text-xs font-medium text-emerald-400 mb-2">WITH TrackHive Meta Signals</p>
+                <p className="text-zinc-300 text-sm mb-1">Match rate: ~90–95%</p>
+                <p className="text-zinc-500 text-xs">Data sent: email, phone, fbc, fbp, fbclid, name, city, zip, country</p>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-zinc-400">What TrackHive auto-captures</p>
+              <ul className="text-sm text-zinc-400 space-y-1.5 list-disc list-inside">
+                <li><strong className="text-zinc-300">fbp</strong> — Always created. Unique browser fingerprint for Meta.</li>
+                <li><strong className="text-zinc-300">fbc</strong> — Created when visitor arrives from a Meta ad (fbclid in URL).</li>
+                <li><strong className="text-zinc-300">fbclid</strong> — Captured from URL when visitor clicks your Meta ad.</li>
+              </ul>
+            </div>
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-zinc-400">Match rate improvement</p>
+              <div className="space-y-2">
+                <div>
+                  <div className="flex justify-between text-xs text-zinc-500 mb-1">
+                    <span>Standard pixel</span>
+                    <span>65%</span>
+                  </div>
+                  <div className="h-2 rounded-full bg-zinc-800 overflow-hidden">
+                    <div className="h-full w-[65%] rounded-full bg-amber-600/80" />
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between text-xs text-zinc-500 mb-1">
+                    <span>TrackHive CAPI</span>
+                    <span>93%</span>
+                  </div>
+                  <div className="h-2 rounded-full bg-zinc-800 overflow-hidden">
+                    <div className="h-full w-[93%] rounded-full bg-emerald-500" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 6 — GTM Instructions */}
         <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
           <div className="px-4 py-3 border-b border-zinc-800">
             <h2 className="text-sm font-medium text-zinc-300">Google Tag Manager</h2>

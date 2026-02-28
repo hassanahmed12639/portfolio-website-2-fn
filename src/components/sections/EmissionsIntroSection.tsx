@@ -4,8 +4,6 @@ import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { registerGsapPlugins, ScrollTrigger } from '../../lib/gsap'
 import OrbitalScrollAnimationSection from './OrbitalScrollAnimationSection'
-import FeaturedCaseStudiesSection from './FeaturedCaseStudiesSection'
-
 const CARDS = [
   {
     id: 'manufacturing',
@@ -1294,7 +1292,7 @@ export default function EmissionsIntroSection() {
                 <span
                   key={word}
                   className={`message-word inline-block ${
-                    word === 'performance' || word === 'marketing' ? 'text-[#AAFF00]' : 'text-white'
+                    word === 'performance' || word === 'marketing' ? 'text-[#AAFF00]' : 'text-black dark:text-white'
                   }`}
                 >
                   {word}
@@ -1303,7 +1301,7 @@ export default function EmissionsIntroSection() {
             </div>
             <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 md:mt-3 md:gap-x-4">
               {FINAL_MESSAGE_LINE_2.map((word) => (
-                <span key={word} className="message-word inline-block text-white">
+                <span key={word} className="message-word inline-block text-black dark:text-white">
                   {word}
                 </span>
               ))}
@@ -1313,7 +1311,6 @@ export default function EmissionsIntroSection() {
       </div>
       </section>
       <OrbitalScrollAnimationSection />
-      <FeaturedCaseStudiesSection />
     </>
   )
 }
