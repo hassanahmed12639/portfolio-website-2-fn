@@ -128,6 +128,7 @@
       date_of_birth: data.date_of_birth || null,
       gender: data.gender || null,
       visitor_id: TrackHive.visitorId || null,
+      // Meta signals — auto-included from page signals
       fbc: TrackHive.fbc || null,
       fbp: TrackHive.fbp || null,
       fbclid: TrackHive.fbclid || null

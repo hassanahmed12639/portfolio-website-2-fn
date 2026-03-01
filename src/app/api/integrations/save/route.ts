@@ -15,6 +15,7 @@ export async function POST(request: NextRequest) {
     pixel_id?: string
     access_token?: string
     tag_id?: string
+    meta_test_event_code?: string
   }
 
   try {
@@ -23,7 +24,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
-  const { platform, pixel_id, access_token, tag_id } = body
+  const { platform, pixel_id, access_token, tag_id, meta_test_event_code } = body
   if (!platform) {
     return NextResponse.json({ error: 'platform required' }, { status: 400 })
   }
@@ -44,6 +45,7 @@ export async function POST(request: NextRequest) {
   if (pixel_id !== undefined) row.pixel_id = pixel_id || null
   if (access_token !== undefined) row.access_token = access_token || null
   if (tag_id !== undefined) row.tag_id = tag_id || null
+  if (platform === 'meta' && meta_test_event_code !== undefined) row.meta_test_event_code = meta_test_event_code?.trim() || null
 
   const { data: existing } = await supabase
     .from('integrations')
@@ -53,14 +55,16 @@ export async function POST(request: NextRequest) {
     .single()
 
   if (existing) {
+    const updatePayload: Record<string, unknown> = {
+      pixel_id: row.pixel_id,
+      access_token: row.access_token,
+      tag_id: row.tag_id,
+      is_active: true,
+    }
+    if (platform === 'meta' && meta_test_event_code !== undefined) updatePayload.meta_test_event_code = meta_test_event_code?.trim() || null
     const { error } = await supabase
       .from('integrations')
-      .update({
-        pixel_id: row.pixel_id,
-        access_token: row.access_token,
-        tag_id: row.tag_id,
-        is_active: true,
-      })
+      .update(updatePayload)
       .eq('id', existing.id)
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 })

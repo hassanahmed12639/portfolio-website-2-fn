@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
-  let body: { platform?: string; pixel_id?: string; access_token?: string; tag_id?: string }
+  let body: { platform?: string; pixel_id?: string; access_token?: string; tag_id?: string; meta_test_event_code?: string }
 
   try {
     body = await request.json()
@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
-  const { platform, pixel_id, access_token, tag_id } = body
+  const { platform, pixel_id, access_token, tag_id, meta_test_event_code } = body
 
   if (platform === 'meta') {
     if (!pixel_id || !access_token) {
@@ -18,25 +18,51 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
-    const payload = {
+    const clientIp = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+      ?? request.headers.get('x-real-ip')
+      ?? '127.0.0.1'
+    const clientUa = request.headers.get('user-agent') ?? 'TrackHive-Test/1.0'
+    const testEventCode = meta_test_event_code?.trim() || undefined
+
+    const metaPayload: Record<string, unknown> = {
       data: [
         {
           event_name: 'PageView',
           event_time: Math.floor(Date.now() / 1000),
           action_source: 'website',
+          event_source_url: 'https://test.com',
+          user_data: {
+            client_ip_address: clientIp,
+            client_user_agent: clientUa,
+          },
         },
       ],
+      access_token: access_token,
     }
-    const url = `https://graph.facebook.com/v19.0/${pixel_id}/events?access_token=${encodeURIComponent(access_token)}`
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    })
+    if (testEventCode) {
+      metaPayload.test_event_code = testEventCode
+    }
+
+    const res = await fetch(
+      `https://graph.facebook.com/v18.0/${pixel_id}/events`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(metaPayload),
+      }
+    )
     if (!res.ok) {
-      const text = await res.text()
+      const raw = await res.text()
+      let errorMessage = 'Test event failed'
+      try {
+        const parsed = JSON.parse(raw)
+        const msg = parsed?.error?.message ?? parsed?.error?.error_user_msg
+        if (typeof msg === 'string') errorMessage = msg
+      } catch {
+        if (raw) errorMessage = raw.slice(0, 200)
+      }
       return NextResponse.json(
-        { error: 'Test event failed', details: text },
+        { error: errorMessage, details: raw },
         { status: 502 }
       )
     }

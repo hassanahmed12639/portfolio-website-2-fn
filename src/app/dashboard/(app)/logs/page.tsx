@@ -233,6 +233,7 @@ export default function LogsPage() {
                   <th className="px-4 py-3 font-medium w-8">Status</th>
                   <th className="px-4 py-3 font-medium">Event</th>
                   <th className="px-4 py-3 font-medium">Platform</th>
+                  <th className="px-4 py-3 font-medium">Source</th>
                   <th className="px-4 py-3 font-medium">Value</th>
                   <th className="px-4 py-3 font-medium">IP</th>
                   <th className="px-4 py-3 font-medium">Time</th>
@@ -302,7 +303,7 @@ export default function LogsPage() {
                     </tr>
                     {expandedId === row.id && (
                       <tr key={`${row.id}-exp`} className="bg-zinc-950">
-                        <td colSpan={8} className="px-4 py-3">
+                        <td colSpan={9} className="px-4 py-3">
                           <pre className="text-xs text-zinc-400 overflow-auto rounded bg-zinc-900 p-4 max-h-48">
                             {JSON.stringify(row, null, 2)}
                           </pre>

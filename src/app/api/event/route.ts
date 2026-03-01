@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
 
   const { data: integrations } = await supabase
     .from('integrations')
-    .select('platform, pixel_id, access_token, tag_id')
+    .select('platform, pixel_id, access_token, tag_id, meta_test_event_code')
     .eq('user_id', profile.id)
     .eq('is_active', true)
 
@@ -331,22 +331,22 @@ export async function POST(request: NextRequest) {
       if (pixelId && accessToken) {
         const hashedEmail = enrichmentData?.hashes?.email_hash ?? (email ? sha256(email) : undefined)
         const hashedPhone = enrichmentData?.hashes?.phone_hash ?? (phone ? sha256(phone.replace(/\D/g, '')) : undefined)
-        const userData: Record<string, string | string[]> = {
-          client_ip_address: ip,
-          client_user_agent: userAgent,
-          em: hashedEmail ? [hashedEmail] : undefined,
-          ph: hashedPhone ? [hashedPhone] : undefined,
-          fbc: fbc || undefined,
-          fbp: fbp || undefined,
-          fn: first_name ? [hashValue(first_name.toLowerCase().trim())] : undefined,
-          ln: last_name ? [hashValue(last_name.toLowerCase().trim())] : undefined,
-          ct: city ? [hashValue(city.toLowerCase().trim())] : undefined,
-          st: state ? [hashValue(state.toLowerCase().trim())] : undefined,
-          zp: zip ? [hashValue(zip.toLowerCase().trim())] : undefined,
-          country: userCountry ? [hashValue(userCountry.toLowerCase().trim())] : undefined,
-          db: date_of_birth ? [hashValue(date_of_birth.replace(/-/g, ''))] : undefined,
-          ge: gender ? [hashValue(gender.toLowerCase().trim())] : undefined,
-        }
+
+        const userData: Record<string, string | string[]> = {}
+        if (ip) userData.client_ip_address = ip
+        if (userAgent) userData.client_user_agent = userAgent
+        if (hashedEmail) userData.em = [hashedEmail]
+        if (hashedPhone) userData.ph = [hashedPhone]
+        if (fbc) userData.fbc = fbc
+        if (fbp) userData.fbp = fbp
+        if (first_name) userData.fn = [hashValue(first_name.toLowerCase().trim())]
+        if (last_name) userData.ln = [hashValue(last_name.toLowerCase().trim())]
+        if (city) userData.ct = [hashValue(city.toLowerCase().trim())]
+        if (state) userData.st = [hashValue(state.toLowerCase().trim())]
+        if (zip) userData.zp = [hashValue(zip.toLowerCase().trim())]
+        if (userCountry) userData.country = [hashValue(userCountry.toLowerCase().trim())]
+        if (date_of_birth) userData.db = [hashValue(date_of_birth.replace(/-/g, ''))]
+        if (gender) userData.ge = [hashValue(gender.toLowerCase().trim())]
         if (enrichmentData?.geo?.countryCode && !userData.country) {
           userData.country = [enrichmentData.geo.countryCode.toLowerCase()]
         }
@@ -366,6 +366,8 @@ export async function POST(request: NextRequest) {
         }
         if (event_id) metaEvent.event_id = event_id
         if (event_source_url_final) metaEvent.event_source_url = event_source_url_final
+        const integrationTestCode = (integration as { meta_test_event_code?: string | null }).meta_test_event_code
+        if (integrationTestCode?.trim()) metaEvent.test_event_code = integrationTestCode.trim()
 
         const metaRequestBody = { data: [metaEvent] }
         originalPayload = metaRequestBody

@@ -226,7 +226,7 @@ export default function IntegrationsArcSection() {
     >
       <div
         ref={stickyContentRef}
-        className="sticky top-0 w-full min-h-screen flex flex-col items-center justify-start pt-16 md:pt-20"
+        className="sticky top-0 w-full min-h-screen flex flex-col items-center justify-start pt-8 md:pt-10"
       >
         <h2 className="text-3xl md:text-4xl font-semibold mb-6 md:mb-8 text-foreground text-center px-4">
           Integrate with your existing tools

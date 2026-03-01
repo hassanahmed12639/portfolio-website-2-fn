@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-type MetaIntegration = { pixel_id: string | null; access_token: string | null } | null
+type MetaIntegration = { pixel_id: string | null; access_token: string | null; meta_test_event_code?: string | null } | null
 type GoogleIntegration = { tag_id: string | null } | null
 type PixelTokenIntegration = { pixel_id: string | null; access_token: string | null } | null
 type Ga4Integration = { tag_id: string | null; access_token: string | null } | null
@@ -24,6 +24,7 @@ export default function IntegrationsForms({
 }) {
   const [metaPixelId, setMetaPixelId] = useState(meta?.pixel_id ?? '')
   const [metaAccessToken, setMetaAccessToken] = useState(meta?.access_token ?? '')
+  const [metaTestEventCode, setMetaTestEventCode] = useState(meta?.meta_test_event_code ?? '')
   const [googleTagId, setGoogleTagId] = useState(google?.tag_id ?? '')
   const [tiktokPixelId, setTiktokPixelId] = useState(tiktok?.pixel_id ?? '')
   const [tiktokAccessToken, setTiktokAccessToken] = useState(tiktok?.access_token ?? '')
@@ -67,6 +68,7 @@ export default function IntegrationsForms({
           platform: 'meta',
           pixel_id: metaPixelId.trim() || undefined,
           access_token: metaAccessToken.trim() || undefined,
+          meta_test_event_code: metaTestEventCode.trim() || undefined,
         }),
       })
       const saveData = await saveRes.json().catch(() => ({}))
@@ -83,6 +85,7 @@ export default function IntegrationsForms({
             platform: 'meta',
             pixel_id: metaPixelId.trim(),
             access_token: metaAccessToken.trim(),
+            meta_test_event_code: metaTestEventCode.trim() || undefined,
           }),
         })
         const testData = await testRes.json().catch(() => ({}))
@@ -115,6 +118,7 @@ export default function IntegrationsForms({
           platform: 'meta',
           pixel_id: metaPixelId.trim(),
           access_token: metaAccessToken.trim(),
+          meta_test_event_code: metaTestEventCode.trim() || undefined,
         }),
       })
       const data = await res.json().catch(() => ({}))
@@ -433,6 +437,20 @@ export default function IntegrationsForms({
               placeholder="••••••••"
               className="w-full px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
             />
+          </div>
+          <div>
+            <label htmlFor="meta-test-event-code" className="block text-sm font-medium text-zinc-300 mb-1.5">
+              Test Event Code (optional)
+            </label>
+            <input
+              id="meta-test-event-code"
+              type="text"
+              placeholder="TEST86916"
+              value={metaTestEventCode}
+              onChange={(e) => setMetaTestEventCode(e.target.value)}
+              className="w-full px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+            />
+            <p className="mt-1 text-xs text-zinc-500">Only needed during testing. Remove before going live.</p>
           </div>
           {metaSaveMsg && (
             <p className={metaSaveMsg.type === 'success' ? 'text-emerald-400 text-sm' : 'text-red-400 text-sm'}>

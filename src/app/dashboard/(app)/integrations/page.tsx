@@ -12,7 +12,7 @@ export default async function IntegrationsPage() {
 
   const { data: integrations } = await supabase
     .from('integrations')
-    .select('platform, pixel_id, access_token, tag_id')
+    .select('platform, pixel_id, access_token, tag_id, meta_test_event_code')
     .eq('user_id', user.id)
 
   const startOfMonth = new Date()
@@ -36,7 +36,7 @@ export default async function IntegrationsPage() {
       <h1 className="text-xl font-semibold text-white mb-2">Integrations</h1>
       <p className="text-zinc-400 text-sm mb-8">Connect Meta CAPI, Google, TikTok Events API, Snapchat CAPI, and GA4.</p>
       <IntegrationsForms
-        meta={meta ? { pixel_id: meta.pixel_id, access_token: meta.access_token } : null}
+        meta={meta ? { pixel_id: meta.pixel_id, access_token: meta.access_token, meta_test_event_code: meta.meta_test_event_code } : null}
         metaFbclidCount={metaFbclidCount ?? 0}
         google={google ? { tag_id: google.tag_id } : null}
         tiktok={tiktok ? { pixel_id: tiktok.pixel_id, access_token: tiktok.access_token } : null}

@@ -589,7 +589,8 @@ export default function OpportunityOrbitSection() {
       updatePinnedState(pinProgress)
 
       if (pinProgress >= 1) {
-        radarContainer.style.visibility = 'hidden'
+        radarContainer.style.visibility = 'visible'
+        updatePremiumAnimation(1)
         return
       }
       radarContainer.style.visibility = 'visible'
