@@ -11,23 +11,35 @@ function sha256(value: string): string {
   return createHash('sha256').update(value.trim().toLowerCase()).digest('hex')
 }
 
-function qualityScore(payload: {
+function calculateDataQuality(payload: {
   email?: string
   phone?: string
-  value?: number
-  event_name?: string
-  event_id?: string
-  event_source_url?: string
-  currency?: string
-}): number {
+  fbp?: string
+  fbc?: string
+  first_name?: string
+  last_name?: string
+  city?: string
+  state?: string
+  zip?: string
+  fbclid?: string
+}): { score: number; label: string; breakdown: Record<string, boolean> } {
   let score = 0
-  if (payload.email || payload.phone) score += 30
-  const name = String(payload.event_name || '').toLowerCase()
-  if (name === 'purchase' && payload.value != null && payload.value >= 0) score += 20
-  if (payload.event_id) score += 20
-  if (payload.event_source_url) score += 15
-  if (payload.currency) score += 15
-  return Math.min(100, score)
+  const breakdown: Record<string, boolean> = {}
+
+  if (payload.email) { score += 20; breakdown.email = true } else { breakdown.email = false }
+  if (payload.phone) { score += 15; breakdown.phone = true } else { breakdown.phone = false }
+  if (payload.fbp) { score += 20; breakdown.fbp = true } else { breakdown.fbp = false }
+  if (payload.fbc) { score += 15; breakdown.fbc = true } else { breakdown.fbc = false }
+  if (payload.first_name && payload.last_name) { score += 10; breakdown.name = true } else { breakdown.name = false }
+  if (payload.city || payload.state || payload.zip) { score += 10; breakdown.location = true } else { breakdown.location = false }
+  if (payload.fbclid) { score += 10; breakdown.fbclid = true } else { breakdown.fbclid = false }
+
+  let label = 'Poor'
+  if (score >= 80) label = 'Excellent'
+  else if (score >= 60) label = 'Good'
+  else if (score >= 40) label = 'Fair'
+
+  return { score, label, breakdown }
 }
 
 export async function POST(request: NextRequest) {
@@ -49,6 +61,14 @@ export async function POST(request: NextRequest) {
     currency?: string
     email?: string
     phone?: string
+    fbp?: string
+    fbc?: string
+    first_name?: string
+    last_name?: string
+    city?: string
+    state?: string
+    zip?: string
+    fbclid?: string
     order_id?: string
     form_name?: string
     page_url?: string
@@ -126,6 +146,20 @@ export async function POST(request: NextRequest) {
     event_source_url: event_source_url ?? null,
   }
 
+  const dataQuality = calculateDataQuality({
+    email,
+    phone,
+    fbp: body.fbp,
+    fbc: body.fbc,
+    first_name: body.first_name,
+    last_name: body.last_name,
+    city: body.city,
+    state: body.state,
+    zip: body.zip,
+    fbclid: body.fbclid,
+  })
+  console.log('[DQ]', dataQuality)
+
   for (const integration of list) {
     let status: 'success' | 'failed' = 'failed'
     let originalPayload: Record<string, unknown> = {}
@@ -184,19 +218,12 @@ export async function POST(request: NextRequest) {
       validation_issues: validation.issues,
       validation_checks: validation.checks,
       payload: internalPayload,
+      data_quality_score: dataQuality.score,
+      data_quality_label: dataQuality.label,
+      data_quality_breakdown: dataQuality.breakdown,
       ...(status === 'failed' && { original_payload: originalPayload }),
     })
   }
-
-  const score = qualityScore({
-    email,
-    phone,
-    value,
-    event_name,
-    event_id,
-    event_source_url,
-    currency,
-  })
 
   return NextResponse.json({
     success: true,
@@ -205,7 +232,8 @@ export async function POST(request: NextRequest) {
     timestamp: eventTime,
     meta_response: metaResponse ?? undefined,
     google_response: googleResponse ?? undefined,
-    quality_score: score,
+    quality_score: dataQuality.score,
+    data_quality: dataQuality,
     validation,
   })
 }

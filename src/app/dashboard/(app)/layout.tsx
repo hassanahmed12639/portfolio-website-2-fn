@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { Shield } from 'lucide-react'
 
 export default async function DashboardAppLayout({
   children,
@@ -38,6 +39,7 @@ export default async function DashboardAppLayout({
     { label: 'Scanner', href: '/dashboard/scanner' },
     { label: 'Event Replay', href: '/dashboard/event-replay' },
     { label: 'Logs', href: '/dashboard/logs' },
+    { label: 'Data Quality', href: '/dashboard/data-quality', icon: Shield },
     { label: 'AI Analysis', href: '/dashboard/ai-analysis' },
     { label: 'Anomalies', href: '/dashboard/anomalies' },
     { label: 'Integrations', href: '/dashboard/integrations' },
@@ -55,12 +57,13 @@ export default async function DashboardAppLayout({
           </Link>
         </div>
         <nav className="flex-1 p-3 space-y-0.5">
-          {nav.map(({ label, href }) => (
+          {nav.map(({ label, href, icon: Icon }) => (
             <Link
               key={href}
               href={href}
-              className="block px-3 py-2 rounded-lg text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors text-sm"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors text-sm"
             >
+              {Icon && <Icon className="w-4 h-4 shrink-0" />}
               {label}
             </Link>
           ))}

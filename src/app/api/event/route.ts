@@ -84,6 +84,56 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'api_key and event_name required' }, { status: 400 })
   }
 
+  let qualityScore = 0
+  const qualityBreakdown: Record<string, boolean> = {}
+  if (email) {
+    qualityScore += 20
+    qualityBreakdown.email = true
+  } else {
+    qualityBreakdown.email = false
+  }
+  if (phone) {
+    qualityScore += 15
+    qualityBreakdown.phone = true
+  } else {
+    qualityBreakdown.phone = false
+  }
+  if (fbp) {
+    qualityScore += 20
+    qualityBreakdown.fbp = true
+  } else {
+    qualityBreakdown.fbp = false
+  }
+  if (fbc) {
+    qualityScore += 15
+    qualityBreakdown.fbc = true
+  } else {
+    qualityBreakdown.fbc = false
+  }
+  if (first_name && last_name) {
+    qualityScore += 10
+    qualityBreakdown.name = true
+  } else {
+    qualityBreakdown.name = false
+  }
+  if (city || state || zip) {
+    qualityScore += 10
+    qualityBreakdown.location = true
+  } else {
+    qualityBreakdown.location = false
+  }
+  if (fbclid) {
+    qualityScore += 10
+    qualityBreakdown.fbclid = true
+  } else {
+    qualityBreakdown.fbclid = false
+  }
+  let qualityLabel = 'Poor'
+  if (qualityScore >= 80) qualityLabel = 'Excellent'
+  else if (qualityScore >= 60) qualityLabel = 'Good'
+  else if (qualityScore >= 40) qualityLabel = 'Fair'
+  else qualityLabel = 'Poor'
+
   const supabase = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } })
 
   const { data: profile, error: profileError } = await supabase
@@ -203,6 +253,7 @@ export async function POST(request: NextRequest) {
       visitor_id: visitor_id ?? null,
     }
     for (const integration of integrations ?? []) {
+      console.log('[QS]', { qualityScore, qualityLabel, qualityBreakdown })
       await supabase.from('events').insert({
         user_id: profile.id,
         event_name,
@@ -215,6 +266,9 @@ export async function POST(request: NextRequest) {
         validation_issues: validation.issues,
         validation_checks: validation.checks,
         payload: internalPayload,
+        data_quality_score: qualityScore,
+        data_quality_label: qualityLabel,
+        data_quality_breakdown: qualityBreakdown,
       })
     }
     if (!is_test) {
@@ -524,6 +578,9 @@ export async function POST(request: NextRequest) {
       fbc: fbc || null,
       fbp: fbp || null,
       fbclid: fbclid || null,
+      data_quality_score: qualityScore,
+      data_quality_label: qualityLabel,
+      data_quality_breakdown: qualityBreakdown,
     }
     if (enrichmentData) {
       insertRow.country = enrichmentData.geo.country || null
@@ -537,6 +594,10 @@ export async function POST(request: NextRequest) {
       insertRow.retry_count = 0
       insertRow.next_retry_at = fiveMinutesFromNow
     }
+    insertRow.data_quality_score = qualityScore
+    insertRow.data_quality_label = qualityLabel
+    insertRow.data_quality_breakdown = qualityBreakdown
+    console.log('[QS]', { qualityScore, qualityLabel, qualityBreakdown })
     await supabase.from('events').insert(insertRow)
   }
 

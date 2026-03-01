@@ -1,5 +1,24 @@
 import { createClient } from '@/lib/supabase/server'
 
+const QUALITY_FIELD_POINTS: Record<string, number> = {
+  email: 20,
+  phone: 15,
+  fbp: 20,
+  fbc: 15,
+  name: 10,
+  location: 10,
+  fbclid: 10,
+}
+const QUALITY_FIELD_LABELS: Record<string, string> = {
+  email: 'Email',
+  phone: 'Phone',
+  fbp: 'fbp',
+  fbc: 'fbc',
+  name: 'Name',
+  location: 'Location',
+  fbclid: 'fbclid',
+}
+
 export default async function DashboardOverviewPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -26,17 +45,60 @@ export default async function DashboardOverviewPage() {
   startOfToday.setHours(0, 0, 0, 0)
   const startIso = startOfToday.toISOString()
 
+  const startOfMonth = new Date(startOfToday.getFullYear(), startOfToday.getMonth(), 1)
+  const startOfMonthIso = startOfMonth.toISOString()
+
   const { count: eventsToday } = await supabase
     .from('events')
     .select('*', { count: 'exact', head: true })
     .eq('user_id', user.id)
     .gte('created_at', startIso)
 
+  const { data: qualityData } = await supabase
+    .from('events')
+    .select('data_quality_score, data_quality_label, data_quality_breakdown')
+    .eq('user_id', user.id)
+    .gte('created_at', startOfMonthIso)
+
+  let avgScore = 0
+  let qualityLabel = 'Poor'
+  const distribution = { Excellent: 0, Good: 0, Fair: 0, Poor: 0 }
+  let topMissingField = ''
+  let topMissingPoints = 0
+  if (qualityData?.length) {
+    const sum = qualityData.reduce((s, e) => s + (e.data_quality_score ?? 0), 0)
+    avgScore = Math.round(sum / qualityData.length)
+    if (avgScore >= 80) qualityLabel = 'Excellent'
+    else if (avgScore >= 60) qualityLabel = 'Good'
+    else if (avgScore >= 40) qualityLabel = 'Fair'
+    else qualityLabel = 'Poor'
+    qualityData.forEach((e) => {
+      const s = e.data_quality_score ?? 0
+      const l = s >= 80 ? 'Excellent' : s >= 60 ? 'Good' : s >= 40 ? 'Fair' : 'Poor'
+      distribution[l as keyof typeof distribution]++
+    })
+    const missingCount: Record<string, number> = {}
+    qualityData.forEach((e) => {
+      const b = (e.data_quality_breakdown as Record<string, boolean>) ?? {}
+      for (const key of Object.keys(QUALITY_FIELD_POINTS)) {
+        if (!b[key]) missingCount[key] = (missingCount[key] ?? 0) + 1
+      }
+    })
+    let maxMissing = 0
+    for (const [key, count] of Object.entries(missingCount)) {
+      if (count > maxMissing) {
+        maxMissing = count
+        topMissingField = QUALITY_FIELD_LABELS[key] ?? key
+        topMissingPoints = QUALITY_FIELD_POINTS[key] ?? 0
+      }
+    }
+  }
+
   return (
     <div className="p-6 md:p-8">
       <h1 className="text-xl font-semibold text-white mb-6">Overview</h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
           <p className="text-sm text-zinc-400 mb-1">Events used</p>
           <p className="text-2xl font-semibold text-white">
@@ -51,6 +113,53 @@ export default async function DashboardOverviewPage() {
           <p className="text-sm text-zinc-400 mb-1">Events today</p>
           <p className="text-2xl font-semibold text-white">{eventsToday ?? 0}</p>
         </div>
+      </div>
+
+      <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4 mb-8">
+        <h2 className="text-sm font-medium text-zinc-300 mb-3">Data Quality (this month)</h2>
+        <div className="flex flex-wrap items-center gap-6">
+          <div>
+            <p className="text-3xl font-semibold text-white">{avgScore}/100</p>
+            <p className="text-sm text-zinc-400">{qualityLabel}</p>
+          </div>
+          <div className="flex-1 min-w-[200px] flex h-6 rounded overflow-hidden bg-zinc-800">
+            {(() => {
+              const total = qualityData?.length || 1
+              return (
+                <>
+                  <span
+                    className="bg-emerald-600 transition-all"
+                    style={{ width: `${(distribution.Excellent / total) * 100}%` }}
+                    title={`Excellent: ${distribution.Excellent}`}
+                  />
+                  <span
+                    className="bg-blue-600 transition-all"
+                    style={{ width: `${(distribution.Good / total) * 100}%` }}
+                    title={`Good: ${distribution.Good}`}
+                  />
+                  <span
+                    className="bg-amber-500 transition-all"
+                    style={{ width: `${(distribution.Fair / total) * 100}%` }}
+                    title={`Fair: ${distribution.Fair}`}
+                  />
+                  <span
+                    className="bg-red-600 transition-all"
+                    style={{ width: `${(distribution.Poor / total) * 100}%` }}
+                    title={`Poor: ${distribution.Poor}`}
+                  />
+                </>
+              )
+            })()}
+          </div>
+          <div className="text-sm text-zinc-400">
+            Excellent: {distribution.Excellent} · Good: {distribution.Good} · Fair: {distribution.Fair} · Poor: {distribution.Poor}
+          </div>
+        </div>
+        {topMissingField && (
+          <p className="text-sm text-zinc-400 mt-3">
+            Top missing field: <span className="text-amber-400 font-medium">{topMissingField}</span> (+{topMissingPoints} pts average gain)
+          </p>
+        )}
       </div>
 
       <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">

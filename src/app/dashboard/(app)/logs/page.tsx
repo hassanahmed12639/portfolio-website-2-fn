@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, useCallback, Fragment } from 'react'
+import * as Tooltip from '@radix-ui/react-tooltip'
 
 type EventRow = {
   id: string
@@ -13,7 +14,72 @@ type EventRow = {
   created_at: string
   fbclid?: string | null
   fbc?: string | null
+  data_quality_score?: number | null
+  data_quality_label?: string | null
+  data_quality_breakdown?: Record<string, boolean> | null
   [key: string]: unknown
+}
+
+const QUALITY_FIELDS: { key: keyof EventRow; label: string; points: number }[] = [
+  { key: 'email', label: 'Email', points: 20 },
+  { key: 'fbp', label: 'fbp', points: 20 },
+  { key: 'fbc', label: 'fbc', points: 15 },
+  { key: 'phone', label: 'Phone', points: 15 },
+  { key: 'name', label: 'Name', points: 10 },
+  { key: 'location', label: 'Location', points: 10 },
+  { key: 'fbclid', label: 'fbclid', points: 10 },
+]
+
+function QualityBadge({ row }: { row: EventRow }) {
+  const score = row.data_quality_score ?? 0
+  const label = row.data_quality_label ?? 'Poor'
+  const breakdown = row.data_quality_breakdown ?? {}
+  const badgeClass =
+    score >= 80
+      ? 'bg-emerald-950 text-emerald-400 border-emerald-800'
+      : score >= 60
+        ? 'bg-blue-950 text-blue-400 border-blue-800'
+        : score >= 40
+          ? 'bg-amber-950 text-amber-400 border-amber-800'
+          : 'bg-red-950 text-red-400 border-red-800'
+  return (
+    <Tooltip.Provider delayDuration={200}>
+      <Tooltip.Root>
+        <Tooltip.Trigger asChild>
+          <span
+            className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border cursor-default ${badgeClass}`}
+          >
+            {label}
+          </span>
+        </Tooltip.Trigger>
+        <Tooltip.Portal>
+          <Tooltip.Content
+            side="left"
+            className="z-50 max-w-xs rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-200 shadow-xl"
+            sideOffset={6}
+          >
+            <p className="font-medium text-white mb-2">
+              Data Quality: {score}/100
+            </p>
+            <ul className="space-y-1">
+              {QUALITY_FIELDS.map(({ key, label: l, points }) => {
+                const present = breakdown[key as string]
+                return (
+                  <li key={key} className="flex items-center gap-2">
+                    {present ? (
+                      <>✅ {l} present</>
+                    ) : (
+                      <>❌ {l} missing (+{points})</>
+                    )}
+                  </li>
+                )
+              })}
+            </ul>
+          </Tooltip.Content>
+        </Tooltip.Portal>
+      </Tooltip.Root>
+    </Tooltip.Provider>
+  )
 }
 
 function formatRelative(dateStr: string): string {
@@ -217,6 +283,7 @@ export default function LogsPage() {
       </div>
 
       <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
+        <Tooltip.Provider delayDuration={200}>
         {loading && !events.length ? (
           <div className="py-16 text-center">
             <p className="text-zinc-400 animate-pulse">Waiting for events...</p>
@@ -235,6 +302,7 @@ export default function LogsPage() {
                   <th className="px-4 py-3 font-medium">Platform</th>
                   <th className="px-4 py-3 font-medium">Source</th>
                   <th className="px-4 py-3 font-medium">Value</th>
+                  <th className="px-4 py-3 font-medium">Quality</th>
                   <th className="px-4 py-3 font-medium">IP</th>
                   <th className="px-4 py-3 font-medium">Time</th>
                   <th className="px-4 py-3 font-medium w-20" />
@@ -283,6 +351,9 @@ export default function LogsPage() {
                       <td className="px-4 py-3 text-zinc-300">
                         {row.value != null ? row.value : '—'}
                       </td>
+                      <td className="px-4 py-3">
+                        <QualityBadge row={row} />
+                      </td>
                       <td className="px-4 py-3 text-zinc-500 font-mono text-xs">
                         {row.ip ?? '—'}
                       </td>
@@ -303,7 +374,7 @@ export default function LogsPage() {
                     </tr>
                     {expandedId === row.id && (
                       <tr key={`${row.id}-exp`} className="bg-zinc-950">
-                        <td colSpan={9} className="px-4 py-3">
+                        <td colSpan={10} className="px-4 py-3">
                           <pre className="text-xs text-zinc-400 overflow-auto rounded bg-zinc-900 p-4 max-h-48">
                             {JSON.stringify(row, null, 2)}
                           </pre>
@@ -316,6 +387,7 @@ export default function LogsPage() {
             </table>
           </div>
         )}
+        </Tooltip.Provider>
       </div>
     </div>
   )
