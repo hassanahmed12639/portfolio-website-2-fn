@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import MatchRateSummary from './MatchRateSummary'
 
 const QUALITY_FIELD_POINTS: Record<string, number> = {
   email: 20,
@@ -160,6 +161,7 @@ export default async function DashboardOverviewPage() {
             Top missing field: <span className="text-amber-400 font-medium">{topMissingField}</span> (+{topMissingPoints} pts average gain)
           </p>
         )}
+        <MatchRateSummary avgScore={avgScore} />
       </div>
 
       <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">

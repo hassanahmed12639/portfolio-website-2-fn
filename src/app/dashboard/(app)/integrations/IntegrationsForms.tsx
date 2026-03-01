@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
 
 type MetaIntegration = { pixel_id: string | null; access_token: string | null; meta_test_event_code?: string | null } | null
 type GoogleIntegration = { tag_id: string | null } | null
@@ -46,6 +47,11 @@ export default function IntegrationsForms({
 
   const [metaSaving, setMetaSaving] = useState(false)
   const [metaTesting, setMetaTesting] = useState(false)
+  const [matchRate, setMatchRate] = useState<{
+    estimated_match_rate?: number
+    label?: string
+    error?: string
+  } | null>(null)
   const [googleSaving, setGoogleSaving] = useState(false)
   const [googleTesting, setGoogleTesting] = useState(false)
   const [tiktokSaving, setTiktokSaving] = useState(false)
@@ -394,6 +400,13 @@ export default function IntegrationsForms({
     }
   }
 
+  useEffect(() => {
+    fetch('/api/meta/match-rate')
+      .then((r) => r.json())
+      .then(setMatchRate)
+      .catch(() => setMatchRate(null))
+  }, [])
+
   const metaConnected = meta && (meta.pixel_id || meta.access_token)
   const googleConnected = google && google.tag_id
   const tiktokConnected = tiktok && (tiktok.pixel_id || tiktok.access_token)
@@ -505,6 +518,36 @@ export default function IntegrationsForms({
                 <p className="text-xs text-zinc-400">
                   {metaFbclidCount} events confirmed from Meta ad clicks this month
                 </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <span className="flex h-2 w-2 rounded-full bg-emerald-500 mt-1.5 shrink-0" aria-hidden />
+              <div className="flex-1">
+                <p className="text-sm font-medium text-white">Match Rate</p>
+                <p className="text-xs text-zinc-400 flex items-center gap-2 flex-wrap mt-1">
+                  {matchRate?.error ? (
+                    'Unable to load'
+                  ) : typeof matchRate?.estimated_match_rate === 'number' ? (
+                    <>
+                      <span className="inline-flex h-2 w-24 rounded-full bg-zinc-800 overflow-hidden">
+                        <span
+                          className="block h-full bg-emerald-500 rounded-full"
+                          style={{ width: `${matchRate.estimated_match_rate}%` }}
+                        />
+                      </span>
+                      <span className="font-medium text-white">{matchRate.estimated_match_rate}%</span>
+                      <span className="text-zinc-500">{matchRate.label ?? ''}</span>
+                    </>
+                  ) : (
+                    'No Meta events yet'
+                  )}
+                </p>
+                <Link
+                  href="/dashboard/data-quality"
+                  className="text-xs text-zinc-500 hover:text-zinc-300 mt-1 inline-block"
+                >
+                  View full report →
+                </Link>
               </div>
             </div>
           </div>

@@ -12,6 +12,8 @@ import {
   BarChart,
   Bar,
   Legend,
+  RadialBarChart,
+  RadialBar,
 } from 'recharts'
 
 const INDUSTRY_AVG = 45
@@ -34,6 +36,27 @@ type DataQualityResponse = {
   topMissing: string
   topMissingPoints: number
   dailyQuality: { date: string; Excellent: number; Good: number; Fair: number; Poor: number }[]
+}
+
+type MatchRateResponse = {
+  estimated_match_rate?: number
+  label?: string
+  recommendation?: string
+  trend?: number
+  trend_direction?: 'up' | 'down' | 'stable'
+  total_events?: number
+  coverage?: {
+    email: number
+    phone: number
+    fbp: number
+    fbc: number
+    name: number
+    location: number
+    fbclid: number
+  }
+  last_updated?: string
+  message?: string
+  error?: string
 }
 
 function ScoreRing({ score }: { score: number }) {
@@ -65,15 +88,57 @@ function ScoreRing({ score }: { score: number }) {
   )
 }
 
+function gaugeColor(rate: number) {
+  if (rate >= 80) return '#22c55e'
+  if (rate >= 60) return '#eab308'
+  if (rate >= 40) return '#f97316'
+  return '#ef4444'
+}
+
+function barColor(pct: number) {
+  if (pct >= 80) return 'bg-emerald-500'
+  if (pct >= 50) return 'bg-amber-500'
+  return 'bg-red-500'
+}
+
+function formatLastUpdated(iso: string | undefined) {
+  if (!iso) return 'just now'
+  const d = new Date(iso)
+  const sec = Math.floor((Date.now() - d.getTime()) / 1000)
+  if (sec < 60) return 'just now'
+  if (sec < 3600) return `${Math.floor(sec / 60)} mins ago`
+  return 'just now'
+}
+
 export default function DataQualityPage() {
   const [data, setData] = useState<DataQualityResponse | null>(null)
   const [loading, setLoading] = useState(true)
+  const [matchRate, setMatchRate] = useState<MatchRateResponse | null>(null)
+  const [matchRateLoading, setMatchRateLoading] = useState(true)
+  const [matchRateRefreshing, setMatchRateRefreshing] = useState(false)
 
   useEffect(() => {
     fetch('/api/dashboard/data-quality')
       .then((res) => res.ok ? res.json() : null)
       .then(setData)
       .finally(() => setLoading(false))
+  }, [])
+
+  const fetchMatchRate = (isRefresh = false) => {
+    if (isRefresh) setMatchRateRefreshing(true)
+    else setMatchRateLoading(true)
+    fetch('/api/meta/match-rate')
+      .then((r) => r.json())
+      .then(setMatchRate)
+      .catch(() => setMatchRate(null))
+      .finally(() => {
+        setMatchRateLoading(false)
+        setMatchRateRefreshing(false)
+      })
+  }
+
+  useEffect(() => {
+    fetchMatchRate()
   }, [])
 
   if (loading) {
@@ -113,9 +178,147 @@ export default function DataQualityPage() {
     recommendations.push('Your data quality is solid. Keep passing all available user data for best match rates.')
   }
 
+  const rate = matchRate?.estimated_match_rate ?? 0
+  const trendDir = matchRate?.trend_direction ?? 'stable'
+  const trendVal = Math.abs(matchRate?.trend ?? 0)
+  const coverage = matchRate?.coverage
+  const coverageOrder = ['email', 'phone', 'fbp', 'fbc', 'name', 'location', 'fbclid'] as const
+  const lowestCoverage = coverage
+    ? (coverageOrder
+        .map((key) => ({ key, pct: coverage[key] }))
+        .filter((x) => x.key !== 'fbclid' || x.pct < 100)
+        .sort((a, b) => a.pct - b.pct)[0] ?? { key: 'email', pct: 0 })
+    : null
+  const gaugeData = [{ name: 'rate', value: rate, fill: gaugeColor(rate) }]
+
   return (
     <div className="p-6 md:p-8 space-y-8">
       <h1 className="text-xl font-semibold text-white">Data Quality</h1>
+
+      <section className="rounded-xl bg-zinc-900 border border-zinc-800 p-6">
+        <div className="flex items-center justify-between gap-4 mb-4">
+          <h2 className="text-sm font-medium text-zinc-300">Meta Match Rate</h2>
+          {matchRateLoading && !matchRate ? (
+            <span className="text-xs text-zinc-500">Loading…</span>
+          ) : (
+            <span
+              className={`text-xs font-medium ${
+                trendDir === 'up'
+                  ? 'text-emerald-400'
+                  : trendDir === 'down'
+                    ? 'text-red-400'
+                    : 'text-zinc-500'
+              }`}
+            >
+              {trendDir === 'up' && `↑ +${trendVal}% this week`}
+              {trendDir === 'down' && `↓ -${trendVal}% this week`}
+              {trendDir === 'stable' && '→ Stable this week'}
+            </span>
+          )}
+        </div>
+        {matchRateLoading && !matchRate ? (
+          <p className="text-zinc-400 animate-pulse py-8">Loading match rate...</p>
+        ) : matchRate?.error ? (
+          <p className="text-zinc-400 py-4">Unable to load match rate.</p>
+        ) : matchRate?.message === 'No events yet' ? (
+          <p className="text-zinc-400 py-4">No Meta events yet. Send events to see your estimated match rate.</p>
+        ) : (
+          <>
+            <div className="flex flex-col items-center py-4">
+              <ResponsiveContainer width={200} height={200}>
+                <RadialBarChart
+                  cx="50%"
+                  cy="50%"
+                  innerRadius="60%"
+                  outerRadius="95%"
+                  barSize={14}
+                  data={gaugeData}
+                  startAngle={180}
+                  endAngle={0}
+                >
+                  <RadialBar background dataKey="value" max={100} cornerRadius={6} />
+                </RadialBarChart>
+              </ResponsiveContainer>
+              <p className="text-4xl font-semibold text-white -mt-6">{rate}%</p>
+              <p
+                className="text-sm font-medium"
+                style={{ color: gaugeColor(rate) }}
+              >
+                {matchRate?.label ?? '—'}
+              </p>
+            </div>
+            {matchRate?.recommendation && (
+              <blockquote className="text-sm text-zinc-400 border-l-2 border-zinc-700 pl-4 my-4 italic">
+                &ldquo;{matchRate.recommendation}&rdquo;
+              </blockquote>
+            )}
+            <p className="text-xs text-zinc-500 mb-6">
+              Based on {matchRate?.total_events ?? 0} events · Updated {formatLastUpdated(matchRate?.last_updated)}
+            </p>
+
+            {coverage && (
+              <div className="space-y-3 mb-6">
+                {coverageOrder.map((key) => {
+                  const pct = coverage[key]
+                  const displayLabel =
+                    key === 'email'
+                      ? 'Email Coverage'
+                      : key === 'phone'
+                        ? 'Phone Coverage'
+                        : key === 'fbp'
+                          ? 'fbp Coverage'
+                          : key === 'fbc'
+                            ? 'fbc Coverage'
+                            : key === 'name'
+                              ? 'Name Coverage'
+                              : key === 'location'
+                                ? 'Location Coverage'
+                                : 'Ad Click (fbclid)'
+                  return (
+                    <div key={key}>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span className="text-zinc-400">{displayLabel}</span>
+                        <span className="text-zinc-300">{pct}%</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-zinc-800 overflow-hidden">
+                        <span
+                          className={`block h-full rounded-full ${barColor(pct)}`}
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+
+            {matchRate?.recommendation && lowestCoverage && (
+              <div className="rounded-lg bg-zinc-800/50 border border-zinc-700 p-4">
+                <p className="text-sm font-medium text-zinc-300 mb-1">💡 How to improve your match rate</p>
+                <p className="text-sm text-zinc-400">{matchRate.recommendation}</p>
+                <p className="text-sm text-zinc-500 mt-2">
+                  Currently only {lowestCoverage.pct}% of events include{' '}
+                  {lowestCoverage.key === 'fbclid'
+                    ? 'ad click (fbclid)'
+                    : lowestCoverage.key === 'fbp'
+                      ? 'fbp'
+                      : lowestCoverage.key === 'fbc'
+                        ? 'fbc'
+                        : lowestCoverage.key}.
+                </p>
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={() => fetchMatchRate(true)}
+              disabled={matchRateRefreshing}
+              className="mt-4 text-sm text-zinc-400 hover:text-white disabled:opacity-50"
+            >
+              {matchRateRefreshing ? 'Refreshing…' : '🔄 Refresh'}
+            </button>
+          </>
+        )}
+      </section>
 
       <section className="rounded-xl bg-zinc-900 border border-zinc-800 p-6">
         <h2 className="text-sm font-medium text-zinc-300 mb-4">Score overview</h2>

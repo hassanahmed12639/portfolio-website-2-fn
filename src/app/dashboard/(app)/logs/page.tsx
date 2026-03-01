@@ -149,6 +149,19 @@ export default function LogsPage() {
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [newPulse, setNewPulse] = useState(false)
   const [prevCount, setPrevCount] = useState(0)
+  const [matchRate, setMatchRate] = useState<{
+    total_events?: number
+    estimated_match_rate?: number
+    avg_quality?: number
+    coverage?: { fbclid?: number }
+  } | null>(null)
+
+  useEffect(() => {
+    fetch('/api/meta/match-rate')
+      .then((r) => r.json())
+      .then(setMatchRate)
+      .catch(() => setMatchRate(null))
+  }, [])
 
   const fetchEvents = useCallback(async () => {
     const params = new URLSearchParams()
@@ -189,6 +202,23 @@ export default function LogsPage() {
 
   return (
     <div className="p-6 md:p-8">
+      <div className="rounded-lg bg-zinc-900 border border-zinc-800 px-4 py-3 mb-6 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-zinc-400">
+        <span>
+          This month: <span className="text-white font-medium">{matchRate?.total_events ?? 0}</span> events
+        </span>
+        <span className="text-zinc-600">|</span>
+        <span>
+          Est. Match Rate: <span className="text-white font-medium">{matchRate?.estimated_match_rate ?? 0}%</span>
+        </span>
+        <span className="text-zinc-600">|</span>
+        <span>
+          Avg Quality: <span className="text-white font-medium">{matchRate?.avg_quality ?? 0}/100</span>
+        </span>
+        <span className="text-zinc-600">|</span>
+        <span>
+          Ad Clicks: <span className="text-white font-medium">{matchRate?.coverage?.fbclid ?? 0}%</span>
+        </span>
+      </div>
       <div className="flex items-center gap-3 mb-6">
         <h1 className="text-xl font-semibold text-white">Event logs</h1>
         {newPulse && (
