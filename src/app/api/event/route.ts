@@ -1,5 +1,6 @@
 import { validateEvent } from '@/lib/validate-event'
 import { enrichEvent } from '@/lib/enrich-event'
+import { calculateNextRetry } from '@/lib/retry-queue'
 import { createClient } from '@supabase/supabase-js'
 import { createHash } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
@@ -135,6 +136,7 @@ export async function POST(request: NextRequest) {
   else qualityLabel = 'Poor'
 
   const supabase = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } })
+  const supabaseService = supabase
 
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
@@ -420,10 +422,12 @@ export async function POST(request: NextRequest) {
         }
         if (event_id) metaEvent.event_id = event_id
         if (event_source_url_final) metaEvent.event_source_url = event_source_url_final
-        const integrationTestCode = (integration as { meta_test_event_code?: string | null }).meta_test_event_code
-        if (integrationTestCode?.trim()) metaEvent.test_event_code = integrationTestCode.trim()
 
-        const metaRequestBody = { data: [metaEvent] }
+        const testEventCode = (integration as { meta_test_event_code?: string | null }).meta_test_event_code?.trim() || null
+        const metaRequestBody: { data: Record<string, unknown>[]; test_event_code?: string } = { data: [metaEvent] }
+        if (testEventCode) {
+          metaRequestBody.test_event_code = testEventCode
+        }
         originalPayload = metaRequestBody
 
         const metaHeaders = buildHeaders('meta', headerSettings, ip, userAgent, event_source_url_final)
@@ -440,7 +444,43 @@ export async function POST(request: NextRequest) {
           platformsFired.push('meta')
         } else {
           const metaResponseBody = await res.text()
-          console.log('[Meta CAPI] Non-200 response:', res.status, metaResponseBody)
+          const metaErrorMessage = `${res.status}: ${metaResponseBody.slice(0, 300)}`
+          console.log('[Meta CAPI] Failed:', metaErrorMessage)
+          if (status === 'failed' && integration.platform === 'meta') {
+            const userId = profile.id
+            console.log('[RetryQueue] Attempting to add to queue for user:', userId)
+            const nextRetry = calculateNextRetry(1)
+            console.log('[RetryQueue] Next retry at:', nextRetry)
+
+            const { error: retryError } = await supabaseService.from('retry_queue').insert({
+              user_id: userId,
+              event_id: event_id ?? null,
+              payload: {
+                event_name,
+                email: email ?? null,
+                phone: phone ?? null,
+                value: value ?? null,
+                currency: currency ?? 'USD',
+                event_id: event_id ?? null,
+                event_source_url: event_source_url_final ?? null,
+                fbp: fbp ?? null,
+                fbc: fbc ?? null,
+                fbclid: fbclid ?? null,
+              },
+              platform: 'meta',
+              attempt: 1,
+              max_attempts: 4,
+              next_retry_at: nextRetry.toISOString(),
+              last_error: metaErrorMessage ?? 'Meta CAPI call failed',
+              status: 'pending',
+            })
+
+            if (retryError) {
+              console.error('[RetryQueue] Insert error:', retryError)
+            } else {
+              console.log('[RetryQueue] Successfully added to queue')
+            }
+          }
         }
       }
     } else if (integration.platform === 'google') {

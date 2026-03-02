@@ -6,6 +6,7 @@ import * as Tooltip from '@radix-ui/react-tooltip'
 type EventRow = {
   id: string
   user_id: string
+  event_id?: string | null
   event_name: string
   platform: string
   value: number | null
@@ -19,6 +20,8 @@ type EventRow = {
   data_quality_breakdown?: Record<string, boolean> | null
   [key: string]: unknown
 }
+
+type RetryJobMap = Record<string, { status: string; next_retry_at?: string }>
 
 const QUALITY_FIELDS: { key: keyof EventRow; label: string; points: number }[] = [
   { key: 'email', label: 'Email', points: 20 },
@@ -93,6 +96,69 @@ function formatRelative(dateStr: string): string {
   return d.toLocaleDateString()
 }
 
+function formatRetryIn(dateStr: string): string {
+  const d = new Date(dateStr)
+  const now = new Date()
+  const sec = Math.floor((d.getTime() - now.getTime()) / 1000)
+  if (sec <= 0) return 'any moment'
+  if (sec < 60) return 'under a minute'
+  if (sec < 3600) return `${Math.floor(sec / 60)} mins`
+  return `${Math.floor(sec / 3600)} hours`
+}
+
+function RetryBadge({ row, retryMap }: { row: EventRow; retryMap: RetryJobMap }) {
+  const eid = row.event_id
+  if (!eid || typeof eid !== 'string') return null
+  const job = retryMap[eid]
+  if (!job) return null
+  if (job.status === 'success') {
+    return (
+      <Tooltip.Provider delayDuration={200}>
+        <Tooltip.Root>
+          <Tooltip.Trigger asChild>
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-950 text-emerald-400 border border-emerald-800 ml-1">
+              Recovered
+            </span>
+          </Tooltip.Trigger>
+          <Tooltip.Portal>
+            <Tooltip.Content
+              side="left"
+              className="z-50 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-200 shadow-xl"
+              sideOffset={6}
+            >
+              Retry succeeded; event delivered to Meta.
+            </Tooltip.Content>
+          </Tooltip.Portal>
+        </Tooltip.Root>
+      </Tooltip.Provider>
+    )
+  }
+  if (job.status === 'pending' || job.status === 'retrying') {
+    const retryIn = job.next_retry_at ? formatRetryIn(job.next_retry_at) : ''
+    return (
+      <Tooltip.Provider delayDuration={200}>
+        <Tooltip.Root>
+          <Tooltip.Trigger asChild>
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-950 text-amber-400 border border-amber-800 ml-1">
+              In Retry Queue
+            </span>
+          </Tooltip.Trigger>
+          <Tooltip.Portal>
+            <Tooltip.Content
+              side="left"
+              className="z-50 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-200 shadow-xl"
+              sideOffset={6}
+            >
+              Retry scheduled in {retryIn}.
+            </Tooltip.Content>
+          </Tooltip.Portal>
+        </Tooltip.Root>
+      </Tooltip.Root>
+    )
+  }
+  return null
+}
+
 function modeEventName(events: EventRow[]): string {
   if (!events.length) return '—'
   const counts: Record<string, number> = {}
@@ -155,6 +221,7 @@ export default function LogsPage() {
     avg_quality?: number
     coverage?: { fbclid?: number }
   } | null>(null)
+  const [retryMap, setRetryMap] = useState<RetryJobMap>({})
 
   useEffect(() => {
     fetch('/api/meta/match-rate')
@@ -162,6 +229,28 @@ export default function LogsPage() {
       .then(setMatchRate)
       .catch(() => setMatchRate(null))
   }, [])
+
+  const fetchRetryMap = useCallback(() => {
+    fetch('/api/dashboard/retry-queue')
+      .then((r) => r.json())
+      .then((data) => {
+        const map: RetryJobMap = {}
+        for (const j of data.jobs ?? []) {
+          if (j.event_id) map[j.event_id] = { status: j.status, next_retry_at: j.next_retry_at }
+        }
+        setRetryMap(map)
+      })
+      .catch(() => setRetryMap({}))
+  }, [])
+
+  useEffect(() => {
+    fetchRetryMap()
+  }, [fetchRetryMap])
+
+  useEffect(() => {
+    const interval = setInterval(fetchRetryMap, 15000)
+    return () => clearInterval(interval)
+  }, [fetchRetryMap])
 
   const fetchEvents = useCallback(async () => {
     const params = new URLSearchParams()
@@ -346,12 +435,15 @@ export default function LogsPage() {
                       className="border-b border-zinc-800/80 hover:bg-zinc-800/30"
                     >
                       <td className="px-4 py-3">
-                        <span
-                          className={`inline-block h-2 w-2 rounded-full ${
-                            row.status === 'success' ? 'bg-emerald-500' : 'bg-red-500'
-                          }`}
-                          title={row.status}
-                        />
+                        <span className="inline-flex items-center flex-wrap gap-1">
+                          <span
+                            className={`inline-block h-2 w-2 rounded-full shrink-0 ${
+                              row.status === 'success' ? 'bg-emerald-500' : 'bg-red-500'
+                            }`}
+                            title={row.status}
+                          />
+                          <RetryBadge row={row} retryMap={retryMap} />
+                        </span>
                       </td>
                       <td className="px-4 py-3 text-white">{row.event_name}</td>
                       <td className="px-4 py-3 text-zinc-300">
