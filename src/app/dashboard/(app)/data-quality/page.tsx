@@ -30,6 +30,7 @@ const FIELD_LABELS: Record<string, string> = {
 type DataQualityResponse = {
   avgScore: number
   total: number
+  errorCount?: number
   distribution: { Excellent: number; Good: number; Fair: number; Poor: number }
   trendData: { date: string; avgScore: number; count: number }[]
   fieldCoverage: { field: string; coverage: number; points: number }[]
@@ -179,7 +180,53 @@ export default function DataQualityPage() {
   }
 
   const rate = matchRate?.estimated_match_rate ?? 0
+  const estimatedMatchRate = matchRate?.estimated_match_rate ?? 0
   const trendDir = matchRate?.trend_direction ?? 'stable'
+
+  useEffect(() => {
+    if (data?.avgScore === undefined || data?.avgScore === null) return
+    const errorCount = data?.errorCount ?? 0
+    const eventVolume = data?.total ?? 0
+    fetch('/api/alerts')
+      .then((r) => r.json())
+      .then(async (rules: import('@/lib/email-alerts').AlertRule[]) => {
+        const { checkAlertRules } = await import('@/lib/email-alerts')
+        const triggered = checkAlertRules(rules, {
+          avgScore: data!.avgScore,
+          matchRate: estimatedMatchRate,
+          errorCount,
+          eventVolume,
+        })
+        for (const rule of triggered) {
+          const value =
+            rule.condition === 'score_below'
+              ? data!.avgScore
+              : rule.condition === 'match_rate_below'
+                ? estimatedMatchRate
+                : rule.condition === 'error_spike'
+                  ? errorCount
+                  : eventVolume
+          await fetch('/api/alerts/send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              ruleId: rule.id,
+              ruleName: rule.name,
+              condition: rule.condition,
+              value,
+              threshold: rule.threshold,
+              email: rule.notifyEmail,
+            }),
+          })
+          await fetch('/api/alerts', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ...rule, lastTriggeredAt: new Date().toISOString() }),
+          })
+        }
+      })
+      .catch(() => {})
+  }, [data?.avgScore, estimatedMatchRate, data?.errorCount, data?.total])
   const trendVal = Math.abs(matchRate?.trend ?? 0)
   const coverage = matchRate?.coverage
   const coverageOrder = ['email', 'phone', 'fbp', 'fbc', 'name', 'location', 'fbclid'] as const

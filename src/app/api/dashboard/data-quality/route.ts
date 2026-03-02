@@ -24,13 +24,14 @@ export async function GET() {
 
   const { data: events } = await supabase
     .from('events')
-    .select('data_quality_score, data_quality_label, data_quality_breakdown, created_at')
+    .select('data_quality_score, data_quality_label, data_quality_breakdown, created_at, status')
     .eq('user_id', user.id)
     .gte('created_at', fromIso)
     .order('created_at', { ascending: true })
 
   const list = events ?? []
   const total = list.length
+  const errorCount = list.filter((e) => (e as { status?: string }).status === 'error').length
 
   const avgScore = total
     ? Math.round(list.reduce((s, e) => s + (e.data_quality_score ?? 0), 0) / total)
@@ -114,6 +115,7 @@ export async function GET() {
   return NextResponse.json({
     avgScore,
     total,
+    errorCount,
     distribution,
     trendData,
     fieldCoverage,

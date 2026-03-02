@@ -1,0 +1,24 @@
+[
+  {
+    "id": "cec52afb-2a3a-41aa-9041-6f5a9d088df1",
+    "ruleId": "test",
+    "ruleName": "Test Alert",
+    "triggeredAt": "2026-03-02T16:07:43.197Z",
+    "condition": "score_below",
+    "value": 55,
+    "threshold": 70,
+    "emailSentTo": "hassanonclouds@gmail.com",
+    "status": "sent"
+  },
+  {
+    "id": "469c4df0-c5b1-4060-aaae-9130f779dcce",
+    "ruleId": "test",
+    "ruleName": "Test Alert",
+    "triggeredAt": "2026-03-02T16:13:50.366Z",
+    "condition": "score_below",
+    "value": 55,
+    "threshold": 70,
+    "emailSentTo": "hassanonclouds@gmail.com",
+    "status": "sent"
+  }
+]

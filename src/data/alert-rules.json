@@ -1,0 +1,13 @@
+[
+  {
+    "id": "27e71f00-a23a-459f-82fa-0a08f7411d56",
+    "name": "low scroe alert",
+    "enabled": true,
+    "condition": "score_below",
+    "threshold": 70,
+    "notifyEmail": "hassanonclouds@gmail.com",
+    "cooldownMinutes": 60,
+    "lastTriggeredAt": null,
+    "createdAt": "2026-03-02T16:04:22.741Z"
+  }
+]
