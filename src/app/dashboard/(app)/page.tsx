@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import MatchRateSummary from './MatchRateSummary'
 
@@ -97,7 +98,20 @@ export default async function DashboardOverviewPage() {
 
   return (
     <div className="p-6 md:p-8">
-      <h1 className="text-xl font-semibold text-white mb-6">Overview</h1>
+      <div className="flex items-center justify-between gap-4 mb-6">
+        <h1 className="text-xl font-semibold text-white">Overview</h1>
+        <Link
+          href="/dashboard/live"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 hover:text-white text-sm font-medium transition-colors border border-zinc-700"
+        >
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75 animate-ping" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500" />
+          </span>
+          LIVE
+          <span className="text-zinc-500">View real-time event stream →</span>
+        </Link>
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">

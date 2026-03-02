@@ -68,7 +68,8 @@ module.exports = {
   			'float-gentle': 'floatGentle 4s ease-in-out infinite',
   			marquee: 'marquee 30s linear infinite',
   			'beam-scatter-1': 'beamScatter1 12s ease-in-out infinite',
-  			'beam-scatter-2': 'beamScatter2 15s ease-in-out infinite'
+  			'beam-scatter-2': 'beamScatter2 15s ease-in-out infinite',
+  			'slide-down': 'slideDown 0.3s ease-out'
   		},
   		keyframes: {
   			marquee: {
@@ -105,6 +106,10 @@ module.exports = {
   				'50%': { transform: 'translate(50px, -70px) rotate(28deg)' },
   				'75%': { transform: 'translate(-70px, -30px) rotate(12deg)' },
   				'100%': { transform: 'translate(0, 0) rotate(20deg)' }
+  			},
+  			slideDown: {
+  				'0%': { opacity: '0', transform: 'translateY(-8px)' },
+  				'100%': { opacity: '1', transform: 'translateY(0)' }
   			}
   		}
   	}

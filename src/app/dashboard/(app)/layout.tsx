@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { Shield, ShieldCheck, RefreshCw, Bell, Copy } from 'lucide-react'
+import { Shield, ShieldCheck, RefreshCw, Bell, Copy, Radio } from 'lucide-react'
 
 export default async function DashboardAppLayout({
   children,
@@ -28,6 +28,7 @@ export default async function DashboardAppLayout({
 
   const nav = [
     { label: 'Overview', href: '/dashboard' },
+    { label: 'Live Stream', href: '/dashboard/live', icon: Radio },
     { label: 'Templates', href: '/dashboard/templates' },
     { label: 'Privacy', href: '/dashboard/privacy' },
     { label: 'Headers', href: '/dashboard/headers' },
