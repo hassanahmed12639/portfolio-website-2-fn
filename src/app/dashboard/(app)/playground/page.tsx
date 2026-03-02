@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
+import Link from 'next/link'
+import { validatePayload, type ValidationResult } from '@/lib/payload-validator'
 
 const EVENT_TYPES = [
   { id: 'Purchase', label: 'Purchase', icon: '🛒' },
@@ -67,6 +69,13 @@ function qualityTips(score: number): string[] {
   return tips.length ? tips : ['Event looks great. All key fields present.']
 }
 
+function getFieldSeverity(result: ValidationResult | null, field: string): 'error' | 'warning' | 'suggestion' | null {
+  if (!result) return null
+  const all = [...result.errors, ...result.warnings, ...result.suggestions]
+  const match = all.find((i) => i.field === field || (field === 'email' && i.field === 'email/phone') || (field === 'phone' && i.field === 'email/phone'))
+  return match ? match.severity : null
+}
+
 export default function PlaygroundPage() {
   const [eventType, setEventType] = useState<string>('Purchase')
   const [customEventName, setCustomEventName] = useState('')
@@ -80,6 +89,9 @@ export default function PlaygroundPage() {
   const [sending, setSending] = useState(false)
   const [history, setHistory] = useState<HistoryItem[]>([])
   const [qualityScore, setQualityScore] = useState<number | null>(null)
+  const [validationResult, setValidationResult] = useState<ValidationResult | null>(null)
+  const [sendConfirm, setSendConfirm] = useState<{ show: boolean; errors: number; warnings: number } | null>(null)
+  const [pendingSendTarget, setPendingSendTarget] = useState<'both' | 'meta' | 'google' | null>(null)
 
   const displayEventName = eventType === 'Custom' ? customEventName.trim() || 'Custom' : eventType
 
@@ -117,12 +129,19 @@ export default function PlaygroundPage() {
   }, [buildPayload])
 
   useEffect(() => {
+    const payload = buildPayload()
+    const forMeta = { ...payload } as Record<string, unknown>
+    delete forMeta.target
+    setValidationResult(validatePayload(forMeta))
+  }, [buildPayload])
+
+  useEffect(() => {
     if (autoGenerateEventId) {
       setParams((p) => ({ ...p, event_id: generateEventId() }))
     }
   }, [eventType, autoGenerateEventId])
 
-  const sendTestEvent = async (targetOverride?: 'both' | 'meta' | 'google') => {
+  const doSendTestEvent = async (targetOverride?: 'both' | 'meta' | 'google') => {
     const target = targetOverride ?? sendTarget
     const payload = buildPayload()
     setSending(true)
@@ -165,6 +184,20 @@ export default function PlaygroundPage() {
     } finally {
       setSending(false)
     }
+  }
+
+  const sendTestEvent = (targetOverride?: 'both' | 'meta' | 'google') => {
+    const target = targetOverride ?? sendTarget
+    if (validationResult && (validationResult.errors.length > 0 || validationResult.warnings.length > 0)) {
+      setSendConfirm({
+        show: true,
+        errors: validationResult.errors.length,
+        warnings: validationResult.warnings.length,
+      })
+      setPendingSendTarget(target)
+      return
+    }
+    doSendTestEvent(targetOverride)
   }
 
   const updateParam = (key: keyof EventParams, value: string) => {
@@ -252,13 +285,38 @@ export default function PlaygroundPage() {
           </section>
 
           <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-            <div className="px-4 py-3 border-b border-zinc-800">
+            <div className="px-4 py-3 border-b border-zinc-800 flex flex-wrap items-center justify-between gap-2">
               <h2 className="text-sm font-medium text-zinc-300">Event Parameters</h2>
+              {validationResult && (
+                <div className="flex items-center gap-4 text-xs">
+                  <span
+                    className={`font-medium ${
+                      validationResult.score >= 80 ? 'text-emerald-400' : validationResult.score >= 50 ? 'text-amber-400' : 'text-red-400'
+                    }`}
+                  >
+                    Payload Score: {validationResult.score}/100
+                  </span>
+                  <span className="text-zinc-400">Est. Match Rate: {validationResult.estimatedMatchRate}%</span>
+                </div>
+              )}
             </div>
             <div className="p-4 space-y-3">
               {showField('value') && (
                 <div>
-                  <label className="block text-xs text-zinc-500 mb-1">value</label>
+                  <label className="block text-xs text-zinc-500 mb-1 flex items-center gap-1.5">
+                    value
+                    {getFieldSeverity(validationResult, 'value') && (
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          getFieldSeverity(validationResult, 'value') === 'error'
+                            ? 'bg-red-400'
+                            : getFieldSeverity(validationResult, 'value') === 'warning'
+                              ? 'bg-amber-400'
+                              : 'bg-blue-400'
+                        }`}
+                      />
+                    )}
+                  </label>
                   <input
                     type="number"
                     value={params.value}
@@ -270,7 +328,16 @@ export default function PlaygroundPage() {
               )}
               {showField('currency') && (
                 <div>
-                  <label className="block text-xs text-zinc-500 mb-1">currency</label>
+                  <label className="block text-xs text-zinc-500 mb-1 flex items-center gap-1.5">
+                    currency
+                    {getFieldSeverity(validationResult, 'currency') && (
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          getFieldSeverity(validationResult, 'currency') === 'error' ? 'bg-red-400' : getFieldSeverity(validationResult, 'currency') === 'warning' ? 'bg-amber-400' : 'bg-blue-400'
+                        }`}
+                      />
+                    )}
+                  </label>
                   <select
                     value={params.currency}
                     onChange={(e) => updateParam('currency', e.target.value)}
@@ -284,7 +351,16 @@ export default function PlaygroundPage() {
               )}
               {showField('email') && (
                 <div>
-                  <label className="block text-xs text-zinc-500 mb-1">email</label>
+                  <label className="block text-xs text-zinc-500 mb-1 flex items-center gap-1.5">
+                    email
+                    {getFieldSeverity(validationResult, 'email') && (
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          getFieldSeverity(validationResult, 'email') === 'error' ? 'bg-red-400' : getFieldSeverity(validationResult, 'email') === 'warning' ? 'bg-amber-400' : 'bg-blue-400'
+                        }`}
+                      />
+                    )}
+                  </label>
                   <input
                     type="email"
                     value={params.email}
@@ -296,7 +372,16 @@ export default function PlaygroundPage() {
               )}
               {showField('phone') && (
                 <div>
-                  <label className="block text-xs text-zinc-500 mb-1">phone</label>
+                  <label className="block text-xs text-zinc-500 mb-1 flex items-center gap-1.5">
+                    phone
+                    {getFieldSeverity(validationResult, 'phone') && (
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          getFieldSeverity(validationResult, 'phone') === 'error' ? 'bg-red-400' : getFieldSeverity(validationResult, 'phone') === 'warning' ? 'bg-amber-400' : 'bg-blue-400'
+                        }`}
+                      />
+                    )}
+                  </label>
                   <input
                     type="text"
                     value={params.phone}
@@ -375,7 +460,16 @@ export default function PlaygroundPage() {
               )}
               {showField('event_id') && (
                 <div>
-                  <label className="block text-xs text-zinc-500 mb-1">event_id</label>
+                  <label className="block text-xs text-zinc-500 mb-1 flex items-center gap-1.5">
+                    event_id
+                    {getFieldSeverity(validationResult, 'event_id') && (
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          getFieldSeverity(validationResult, 'event_id') === 'error' ? 'bg-red-400' : getFieldSeverity(validationResult, 'event_id') === 'warning' ? 'bg-amber-400' : 'bg-blue-400'
+                        }`}
+                      />
+                    )}
+                  </label>
                   <input
                     type="text"
                     value={params.event_id}
@@ -386,7 +480,16 @@ export default function PlaygroundPage() {
               )}
               {showField('event_source_url') && (
                 <div>
-                  <label className="block text-xs text-zinc-500 mb-1">event_source_url</label>
+                  <label className="block text-xs text-zinc-500 mb-1 flex items-center gap-1.5">
+                    event_source_url
+                    {getFieldSeverity(validationResult, 'event_source_url') && (
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          getFieldSeverity(validationResult, 'event_source_url') === 'error' ? 'bg-red-400' : getFieldSeverity(validationResult, 'event_source_url') === 'warning' ? 'bg-amber-400' : 'bg-blue-400'
+                        }`}
+                      />
+                    )}
+                  </label>
                   <input
                     type="url"
                     value={params.event_source_url}
@@ -419,6 +522,49 @@ export default function PlaygroundPage() {
               </div>
             </div>
           </section>
+
+          {sendConfirm?.show && (
+            <div className="rounded-xl border border-amber-500/40 bg-amber-500/10 p-4 flex flex-wrap items-center justify-between gap-3">
+              <p className="text-amber-200 text-sm">
+                {sendConfirm.errors > 0 && sendConfirm.warnings > 0
+                  ? `${sendConfirm.errors} errors, ${sendConfirm.warnings} warnings found`
+                  : sendConfirm.errors > 0
+                    ? `${sendConfirm.errors} error(s) found`
+                    : `${sendConfirm.warnings} warning(s) found`}
+                — send anyway or fix first?
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <Link
+                  href="/dashboard/validator"
+                  className="px-3 py-2 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-sm transition-colors"
+                >
+                  Fix in Validator
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    doSendTestEvent(pendingSendTarget ?? sendTarget)
+                    setSendConfirm(null)
+                    setPendingSendTarget(null)
+                  }}
+                  disabled={sending}
+                  className="px-3 py-2 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-sm font-medium disabled:opacity-50 transition-colors"
+                >
+                  Send anyway
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSendConfirm(null)
+                    setPendingSendTarget(null)
+                  }}
+                  className="px-3 py-2 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-sm transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
 
           <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
             <div className="px-4 py-3 border-b border-zinc-800">
