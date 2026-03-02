@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { Shield, ShieldCheck, RefreshCw, Bell } from 'lucide-react'
+import { Shield, ShieldCheck, RefreshCw, Bell, Copy } from 'lucide-react'
 
 export default async function DashboardAppLayout({
   children,
@@ -39,6 +39,7 @@ export default async function DashboardAppLayout({
     { label: 'Scanner', href: '/dashboard/scanner' },
     { label: 'Event Replay', href: '/dashboard/event-replay' },
     { label: 'Retry Queue', href: '/dashboard/retry-queue', icon: RefreshCw },
+    { label: 'Deduplication', href: '/dashboard/deduplication', icon: Copy },
     { label: 'Logs', href: '/dashboard/logs' },
     { label: 'Validator', href: '/dashboard/validator', icon: ShieldCheck },
     { label: 'Alerts', href: '/dashboard/alerts', icon: Bell },

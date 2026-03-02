@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState, useCallback, Fragment } from 'react'
-import * as Tooltip from '@radix-ui/react-tooltip'
 
 type EventRow = {
   id: string
@@ -46,42 +45,12 @@ function QualityBadge({ row }: { row: EventRow }) {
           ? 'bg-amber-950 text-amber-400 border-amber-800'
           : 'bg-red-950 text-red-400 border-red-800'
   return (
-    <Tooltip.Provider delayDuration={200}>
-      <Tooltip.Root>
-        <Tooltip.Trigger asChild>
-          <span
-            className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border cursor-default ${badgeClass}`}
-          >
-            {label}
-          </span>
-        </Tooltip.Trigger>
-        <Tooltip.Portal>
-          <Tooltip.Content
-            side="left"
-            className="z-50 max-w-xs rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-200 shadow-xl"
-            sideOffset={6}
-          >
-            <p className="font-medium text-white mb-2">
-              Data Quality: {score}/100
-            </p>
-            <ul className="space-y-1">
-              {QUALITY_FIELDS.map(({ key, label: l, points }) => {
-                const present = breakdown[key as string]
-                return (
-                  <li key={key} className="flex items-center gap-2">
-                    {present ? (
-                      <>✅ {l} present</>
-                    ) : (
-                      <>❌ {l} missing (+{points})</>
-                    )}
-                  </li>
-                )
-              })}
-            </ul>
-          </Tooltip.Content>
-        </Tooltip.Portal>
-      </Tooltip.Root>
-    </Tooltip.Provider>
+    <span
+      title={`Data Quality: ${score}/100`}
+      className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border cursor-help ${badgeClass}`}
+    >
+      {label}
+    </span>
   )
 }
 
@@ -113,47 +82,23 @@ function RetryBadge({ row, retryMap }: { row: EventRow; retryMap: RetryJobMap })
   if (!job) return null
   if (job.status === 'success') {
     return (
-      <Tooltip.Provider delayDuration={200}>
-        <Tooltip.Root>
-          <Tooltip.Trigger asChild>
-            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-950 text-emerald-400 border border-emerald-800 ml-1">
-              Recovered
-            </span>
-          </Tooltip.Trigger>
-          <Tooltip.Portal>
-            <Tooltip.Content
-              side="left"
-              className="z-50 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-200 shadow-xl"
-              sideOffset={6}
-            >
-              Retry succeeded; event delivered to Meta.
-            </Tooltip.Content>
-          </Tooltip.Portal>
-        </Tooltip.Root>
-      </Tooltip.Provider>
+      <span
+        title="Retry succeeded; event delivered to Meta."
+        className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-950 text-emerald-400 border border-emerald-800 ml-1 cursor-help"
+      >
+        Recovered
+      </span>
     )
   }
   if (job.status === 'pending' || job.status === 'retrying') {
     const retryIn = job.next_retry_at ? formatRetryIn(job.next_retry_at) : ''
     return (
-      <Tooltip.Provider delayDuration={200}>
-        <Tooltip.Root>
-          <Tooltip.Trigger asChild>
-            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-950 text-amber-400 border border-amber-800 ml-1">
-              In Retry Queue
-            </span>
-          </Tooltip.Trigger>
-          <Tooltip.Portal>
-            <Tooltip.Content
-              side="left"
-              className="z-50 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-200 shadow-xl"
-              sideOffset={6}
-            >
-              Retry scheduled in {retryIn}.
-            </Tooltip.Content>
-          </Tooltip.Portal>
-        </Tooltip.Root>
-      </Tooltip.Root>
+      <span
+        title={retryIn ? `Retry scheduled in ${retryIn}` : 'In retry queue'}
+        className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-950 text-amber-400 border border-amber-800 ml-1 cursor-help"
+      >
+        In Retry Queue
+      </span>
     )
   }
   return null
@@ -402,7 +347,6 @@ export default function LogsPage() {
       </div>
 
       <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-        <Tooltip.Provider delayDuration={200}>
         {loading && !events.length ? (
           <div className="py-16 text-center">
             <p className="text-zinc-400 animate-pulse">Waiting for events...</p>
@@ -509,7 +453,6 @@ export default function LogsPage() {
             </table>
           </div>
         )}
-        </Tooltip.Provider>
       </div>
     </div>
   )

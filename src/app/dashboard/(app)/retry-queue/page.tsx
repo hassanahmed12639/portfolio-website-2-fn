@@ -184,7 +184,7 @@ export default function RetryQueuePage() {
                   {jobs.map((job) => (
                     <tr key={job.id} className="border-b border-zinc-800/80 hover:bg-zinc-800/30">
                       <td className="px-4 py-3 text-white">
-                        {(job.payload as Record<string, unknown>)?.event_name ?? '—'}
+                        {String((job.payload as Record<string, unknown>)?.event_name ?? '—')}
                       </td>
                       <td className="px-4 py-3 text-zinc-300">{job.platform}</td>
                       <td className="px-4 py-3 text-zinc-300">

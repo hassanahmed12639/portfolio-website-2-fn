@@ -148,6 +148,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid API key' }, { status: 401 })
   }
 
+  const userId = profile.id
+
   const effectivePlan =
     profile.is_trial &&
     profile.trial_expires_at &&
@@ -175,6 +177,37 @@ export async function POST(request: NextRequest) {
       },
       { status: 429 }
     )
+  }
+
+  // Check for duplicate before processing
+  if (event_id) {
+    const twentyFourHoursAgoIso = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+    const { data: existingEvent } = await supabaseService
+      .from('events')
+      .select('id')
+      .eq('user_id', userId)
+      .eq('event_id', event_id)
+      .gte('created_at', twentyFourHoursAgoIso)
+      .single()
+
+    if (existingEvent) {
+      await supabaseService.from('events').insert({
+        user_id: userId,
+        event_name,
+        platform: 'meta',
+        status: 'deduplicated',
+        event_id,
+        value: value || 0,
+        is_duplicate: true,
+        dedup_reason: 'Duplicate event_id within 24 hours',
+      })
+
+      return NextResponse.json({
+        success: true,
+        deduplicated: true,
+        message: 'Duplicate event detected and suppressed',
+      })
+    }
   }
 
   const { data: integrations } = await supabase
