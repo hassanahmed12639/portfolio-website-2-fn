@@ -122,7 +122,7 @@ export default function ValidatorPage() {
     <div className="p-6 md:p-8 min-h-screen max-w-6xl mx-auto">
       {/* Section 1 — Header */}
       <header className="mb-8">
-        <div className="flex items-center gap-2 text-[var(--dash-success)] mb-2">
+        <div className="flex items-center gap-2 text-blue-600 mb-2">
           <ShieldCheck className="w-6 h-6" />
           <h1 className="text-2xl font-bold text-[var(--dash-text)]">Payload Validator</h1>
         </div>
@@ -141,7 +141,7 @@ export default function ValidatorPage() {
             <span className="text-sm font-medium text-[var(--dash-muted)]">Event payload (JSON)</span>
             <div className="flex flex-wrap items-center gap-2">
               <select
-                className="px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] text-sm"
+                className="border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value=""
                 onChange={(e) => {
                   const idx = Number(e.target.value)
@@ -158,14 +158,14 @@ export default function ValidatorPage() {
               <button
                 type="button"
                 onClick={clear}
-                className="px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-border)] text-[var(--dash-text)] text-sm transition-colors"
+                className="bg-white hover:bg-slate-50 text-slate-700 font-medium px-4 py-2 rounded-lg text-sm border border-slate-200 transition-colors"
               >
                 Clear
               </button>
               <button
                 type="button"
                 onClick={runValidation}
-                className="px-4 py-2 rounded-lg bg-[var(--dash-success)] hover:bg-[var(--dash-success-strong)] text-white font-medium text-sm transition-colors"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg text-sm transition-colors shadow-sm"
               >
                 Validate Payload
               </button>
@@ -175,7 +175,7 @@ export default function ValidatorPage() {
             <textarea
               value={jsonInput}
               onChange={(e) => setJsonInput(e.target.value)}
-              className="w-full min-h-[220px] px-4 py-3 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] font-mono text-sm placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-success)]"
+              className="w-full h-48 font-mono text-sm bg-slate-950 text-green-400 border border-slate-200 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none placeholder:text-slate-500"
               placeholder='{"event_name": "Purchase", ...}'
               spellCheck={false}
             />

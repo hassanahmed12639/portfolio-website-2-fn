@@ -114,24 +114,24 @@ export default async function DashboardOverviewPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] shadow-sm p-4">
-          <p className="text-sm text-[var(--dash-muted)] mb-1">Events used</p>
-          <p className="text-2xl font-semibold text-[var(--dash-text)]">
+        <div className="bg-gradient-to-br from-blue-50 to-white border border-blue-100 rounded-xl p-5 shadow-sm">
+          <p className="text-sm text-slate-600 mb-1">Events used</p>
+          <p className="text-2xl font-semibold text-slate-900">
             {limit != null ? `${eventsUsed} / ${limit}` : eventsUsed}
           </p>
         </div>
-        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] shadow-sm p-4">
-          <p className="text-sm text-[var(--dash-muted)] mb-1">Current plan</p>
-          <p className="text-2xl font-semibold text-[var(--dash-text)] capitalize">{plan}</p>
+        <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl p-5 shadow-md text-white">
+          <p className="text-sm text-blue-100 mb-1">Current plan</p>
+          <p className="text-2xl font-semibold capitalize">{plan}</p>
         </div>
-        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] shadow-sm p-4">
-          <p className="text-sm text-[var(--dash-muted)] mb-1">Events today</p>
-          <p className="text-2xl font-semibold text-[var(--dash-text)]">{eventsToday ?? 0}</p>
+        <div className="bg-gradient-to-br from-sky-50 to-white border border-sky-100 rounded-xl p-5 shadow-sm">
+          <p className="text-sm text-slate-600 mb-1">Events today</p>
+          <p className="text-2xl font-semibold text-slate-900">{eventsToday ?? 0}</p>
         </div>
       </div>
 
-      <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] shadow-sm p-4 mb-8">
-        <h2 className="text-sm font-medium text-[var(--dash-text)] mb-3">Data Quality (this month)</h2>
+      <div className="rounded-xl bg-gradient-to-br from-indigo-50 to-white border border-indigo-100 shadow-sm p-4 mb-8">
+        <h2 className="text-sm font-medium text-slate-900 mb-3">Data Quality (this month)</h2>
         <div className="flex flex-wrap items-center gap-6">
           <div>
             <p className="text-3xl font-semibold text-[var(--dash-text)]">{avgScore}/100</p>

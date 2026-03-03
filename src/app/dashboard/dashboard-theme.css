@@ -1,24 +1,33 @@
-/* Dashboard light theme tokens - scoped to dashboard only */
-/* Primary accent: vibrant blue (#007bff) matching hero/CTA theme */
+/* Dashboard light theme — clean blue/white */
 .dashboard-shell {
   --dash-bg: #f8fafc;
-  --dash-surface: #ffffff;
-  --dash-surface-hover: #f1f5f9;
-  --dash-border: #e2e8f0;
-  --dash-border-strong: #cbd5e1;
+  --dash-card: #ffffff;
+  --dash-sidebar: #ffffff;
   --dash-text: #0f172a;
-  --dash-text-soft: #cbd5e1;
-  --dash-muted: #64748b;
-  --dash-primary: #007bff;
-  --dash-primary-strong: #0066d6;
-  --dash-primary-soft: #e7f1ff;
-  --dash-primary-soft-strong: #cce5ff;
-  --dash-success: #007bff;
-  --dash-success-strong: #0066d6;
-  --dash-success-soft: #e7f1ff;
-  --dash-success-badge-bg: #007bff;
+  --dash-text-secondary: #475569;
+  --dash-text-muted: #94a3b8;
+  --dash-border: #e2e8f0;
+  --dash-accent: #2563eb;
+  --dash-accent-hover: #1d4ed8;
+  --dash-accent-light: #eff6ff;
+  --dash-accent-border: #bfdbfe;
+
+  /* Aliases for existing usage */
+  --dash-surface: var(--dash-card);
+  --dash-surface-hover: #f1f5f9;
+  --dash-border-strong: #cbd5e1;
+  --dash-text-soft: #94a3b8;
+  --dash-muted: var(--dash-text-muted);
+  --dash-primary: var(--dash-accent);
+  --dash-primary-strong: var(--dash-accent-hover);
+  --dash-primary-soft: var(--dash-accent-light);
+  --dash-primary-soft-strong: #bfdbfe;
+  --dash-success: var(--dash-accent);
+  --dash-success-strong: var(--dash-accent-hover);
+  --dash-success-soft: var(--dash-accent-light);
+  --dash-success-badge-bg: var(--dash-accent);
   --dash-success-badge-text: #ffffff;
-  --dash-success-border: rgba(0, 123, 255, 0.5);
+  --dash-success-border: rgba(37, 99, 235, 0.5);
   --dash-warning: #d97706;
   --dash-danger: #dc2626;
   --dash-danger-soft: #fee2e2;

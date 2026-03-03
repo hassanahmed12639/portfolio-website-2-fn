@@ -90,7 +90,7 @@ function ScoreRing({ score }: { score: number }) {
 }
 
 function gaugeColor(rate: number) {
-  if (rate >= 80) return '#22c55e'
+  if (rate >= 80) return '#2563eb'
   if (rate >= 60) return '#eab308'
   if (rate >= 40) return '#f97316'
   return '#ef4444'
@@ -379,16 +379,16 @@ export default function DataQualityPage() {
             <p className="text-sm text-[var(--dash-muted)] mb-2">Score trend (last 7 days)</p>
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data.trendData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" />
-                <XAxis dataKey="date" tick={{ fill: '#a1a1aa', fontSize: 11 }} tickFormatter={(v) => v.slice(5)} />
-                <YAxis domain={[0, 100]} tick={{ fill: '#a1a1aa', fontSize: 11 }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                <XAxis dataKey="date" tick={{ fill: '#94a3b8', fontSize: 11 }} tickFormatter={(v) => v.slice(5)} />
+                <YAxis domain={[0, 100]} tick={{ fill: '#94a3b8', fontSize: 11 }} />
                 <RechartsTooltip
-                  contentStyle={{ backgroundColor: '#27272a', border: '1px solid #3f3f46', borderRadius: 8 }}
-                  labelStyle={{ color: '#fff' }}
+                  contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 8 }}
+                  labelStyle={{ color: '#0f172a' }}
                   formatter={(value: number | undefined) => [value ?? 0, 'Avg score']}
                   labelFormatter={(label) => label}
                 />
-                <Line type="monotone" dataKey="avgScore" stroke="#22c55e" strokeWidth={2} dot={{ fill: '#22c55e' }} name="Score" />
+                <Line type="monotone" dataKey="avgScore" stroke="#2563eb" strokeWidth={2} dot={{ fill: '#2563eb' }} name="Score" />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -454,20 +454,20 @@ export default function DataQualityPage() {
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data.dailyQuality} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
               <XAxis
                 dataKey="date"
-                tick={{ fill: '#a1a1aa', fontSize: 10 }}
+                tick={{ fill: '#94a3b8', fontSize: 10 }}
                 tickFormatter={(v) => v.slice(5)}
               />
-              <YAxis tick={{ fill: '#a1a1aa', fontSize: 11 }} />
+              <YAxis tick={{ fill: '#94a3b8', fontSize: 11 }} />
               <RechartsTooltip
-                contentStyle={{ backgroundColor: '#27272a', border: '1px solid #3f3f46', borderRadius: 8 }}
+                contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 8 }}
                 labelFormatter={(label) => label}
               />
               <Legend />
-              <Bar dataKey="Excellent" stackId="a" fill="#16a34a" name="Excellent" />
-              <Bar dataKey="Good" stackId="a" fill="#2563eb" name="Good" />
+              <Bar dataKey="Excellent" stackId="a" fill="#2563eb" name="Excellent" />
+              <Bar dataKey="Good" stackId="a" fill="#60a5fa" name="Good" />
               <Bar dataKey="Fair" stackId="a" fill="#eab308" name="Fair" />
               <Bar dataKey="Poor" stackId="a" fill="#dc2626" name="Poor" />
             </BarChart>

@@ -314,7 +314,7 @@ export default function HeadersClient() {
             type="button"
             onClick={saveHeaders}
             disabled={saving}
-            className="mt-4 bg-[var(--dash-success)] hover:bg-[var(--dash-success-strong)] text-white"
+            className="mt-4 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm transition-colors shadow-sm"
           >
             {saving ? 'Saving…' : 'Save Headers'}
           </Button>

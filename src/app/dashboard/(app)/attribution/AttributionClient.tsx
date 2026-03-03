@@ -376,15 +376,15 @@ export default function AttributionClient() {
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-                      <XAxis dataKey="name" tick={{ fill: '#a1a1aa', fontSize: 12 }} />
-                      <YAxis tick={{ fill: '#a1a1aa', fontSize: 12 }} />
+                      <XAxis dataKey="name" tick={{ fill: '#94a3b8', fontSize: 12 }} />
+                      <YAxis tick={{ fill: '#94a3b8', fontSize: 12 }} />
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: '#18181b',
-                          border: '1px solid #3f3f46',
+                          backgroundColor: '#ffffff',
+                          border: '1px solid #e2e8f0',
                           borderRadius: '8px',
                         }}
-                        labelStyle={{ color: '#d4d4d8' }}
+                        labelStyle={{ color: '#0f172a' }}
                       />
                       <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                       {chartData.map((entry, i) => (
@@ -509,7 +509,7 @@ export default function AttributionClient() {
               type="button"
               onClick={runAnalyze}
               disabled={analyzeLoading}
-              className="px-4 py-2 rounded-lg bg-[var(--dash-success)] hover:bg-[var(--dash-success-strong)] disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-sm transition-colors"
+              className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-sm transition-colors shadow-sm"
             >
               {analyzeLoading ? 'Analyzing…' : 'Analyze My Attribution'}
             </button>

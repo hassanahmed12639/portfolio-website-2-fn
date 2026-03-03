@@ -33,25 +33,25 @@ export function FeatureGate({
         {children}
       </div>
       <div
-        className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-950/70 rounded-xl min-h-[200px] p-6"
+        className="absolute inset-0 flex flex-col items-center justify-center bg-white/95 rounded-xl min-h-[200px] p-6 border border-slate-200"
         aria-hidden
       >
         <span className="text-4xl mb-3" aria-hidden>🔒</span>
-        <p className="text-white font-medium mb-1">This feature is locked</p>
-        <p className="text-zinc-400 text-sm mb-4 text-center">
+        <p className="text-slate-900 font-medium mb-1">This feature is locked</p>
+        <p className="text-slate-500 text-sm mb-4 text-center">
           Upgrade to Pro or start a free trial to unlock.
         </p>
         <div className="flex flex-col sm:flex-row gap-2">
           <button
             type="button"
             onClick={() => setShowModal(true)}
-            className="px-4 py-2 rounded-lg font-medium bg-[var(--dash-success)] text-white hover:bg-[var(--dash-success-strong)] transition-colors"
+            className="px-4 py-2 rounded-lg font-medium bg-blue-600 hover:bg-blue-700 text-white transition-colors shadow-sm"
           >
             Start Free Trial
           </button>
           <a
             href="/dashboard/billing"
-            className="px-4 py-2 rounded-lg font-medium text-center border border-zinc-500 text-zinc-200 hover:bg-zinc-800 transition-colors"
+            className="px-4 py-2 rounded-lg font-medium text-center border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 transition-colors"
           >
             Upgrade
           </a>

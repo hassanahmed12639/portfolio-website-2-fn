@@ -282,7 +282,7 @@ export default function RawDataClient() {
             <button
               type="button"
               onClick={handleExport}
-              className="px-4 py-2 rounded-lg bg-[var(--dash-success)] hover:bg-[var(--dash-success-strong)] text-white text-sm font-medium"
+              className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium shadow-sm transition-colors"
             >
               Download Full Export
             </button>
@@ -357,13 +357,13 @@ export default function RawDataClient() {
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={summary.events_per_day}>
-                      <XAxis dataKey="date" stroke="#71717a" fontSize={11} tickFormatter={(v) => v.slice(5)} />
-                      <YAxis stroke="#71717a" fontSize={11} />
+                      <XAxis dataKey="date" tick={{ fill: '#94a3b8', fontSize: 11 }} tickFormatter={(v) => v.slice(5)} />
+                      <YAxis tick={{ fill: '#94a3b8', fontSize: 11 }} />
                       <Tooltip
-                        contentStyle={{ backgroundColor: '#27272a', border: '1px solid #3f3f46' }}
-                        labelStyle={{ color: '#a1a1aa' }}
+                        contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0' }}
+                        labelStyle={{ color: '#0f172a' }}
                       />
-                      <Bar dataKey="count" fill="#10b981" radius={[2, 2, 0, 0]} />
+                      <Bar dataKey="count" fill="#2563eb" radius={[2, 2, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>

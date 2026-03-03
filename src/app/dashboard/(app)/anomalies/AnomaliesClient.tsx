@@ -344,21 +344,20 @@ export default function AnomaliesClient() {
                 <BarChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
                   <XAxis
                     dataKey="hour"
-                    tick={{ fill: '#a1a1aa', fontSize: 10 }}
-                    stroke="#3f3f46"
+                    tick={{ fill: '#94a3b8', fontSize: 10 }}
                   />
-                  <YAxis tick={{ fill: '#a1a1aa', fontSize: 10 }} stroke="#3f3f46" />
+                  <YAxis tick={{ fill: '#94a3b8', fontSize: 10 }} />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: '#18181b',
-                      border: '1px solid #3f3f46',
+                      backgroundColor: '#ffffff',
+                      border: '1px solid #e2e8f0',
                       borderRadius: '8px',
                     }}
-                    labelStyle={{ color: '#d4d4d8' }}
+                    labelStyle={{ color: '#0f172a' }}
                   />
-                  <Bar dataKey="count" radius={[4, 4, 0, 0]} fill="#3f3f46">
+                  <Bar dataKey="count" radius={[4, 4, 0, 0]} fill="#2563eb">
                     {chartData.map((entry, i) => (
-                      <Cell key={i} fill={entry.below ? '#ef4444' : '#3f3f46'} />
+                      <Cell key={i} fill={entry.below ? '#ef4444' : '#2563eb'} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -383,7 +382,7 @@ export default function AnomaliesClient() {
               type="button"
               onClick={runValidate}
               disabled={validateLoading}
-              className="mt-2 px-4 py-2 rounded-lg bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-border)] text-white text-sm font-medium disabled:opacity-50"
+              className="mt-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium disabled:opacity-50 shadow-sm transition-colors"
             >
               {validateLoading ? 'Validating...' : 'Validate'}
             </button>

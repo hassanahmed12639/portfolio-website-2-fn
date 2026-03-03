@@ -227,7 +227,7 @@ export default function AlertsPage() {
           </div>
           <button
             type="submit"
-            className="px-4 py-2 rounded-lg bg-[var(--dash-success)] text-white font-medium hover:bg-[var(--dash-success-strong)] transition-colors"
+            className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm transition-colors shadow-sm"
           >
             Create Alert Rule
           </button>
@@ -351,7 +351,7 @@ export default function AlertsPage() {
           <button
             type="button"
             onClick={sendTest}
-            className="px-4 py-2 rounded-lg bg-[var(--dash-success)] text-white font-medium hover:bg-[var(--dash-success-strong)] transition-colors"
+            className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm transition-colors shadow-sm"
           >
             Send Test Email
           </button>

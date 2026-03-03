@@ -335,7 +335,7 @@ export default function AiAnalysisPage() {
               type="button"
               onClick={runEventAnalysis}
               disabled={analyzeLoading}
-              className="px-4 py-2 rounded-lg bg-[var(--dash-success)] hover:bg-[var(--dash-success-strong)] disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-sm transition-colors"
+              className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-sm transition-colors shadow-sm"
             >
               {analyzeLoading ? 'Analyzing…' : 'Analyze My Events'}
             </button>
@@ -368,7 +368,7 @@ export default function AiAnalysisPage() {
               type="button"
               onClick={runUploadAnalysis}
               disabled={analyzeLoading || !uploadFile}
-              className="px-4 py-2 rounded-lg bg-[var(--dash-success)] hover:bg-[var(--dash-success-strong)] disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-sm transition-colors"
+              className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-sm transition-colors shadow-sm"
             >
               {analyzeLoading ? 'Analyzing…' : 'Analyze Uploaded Log'}
             </button>
@@ -403,7 +403,7 @@ export default function AiAnalysisPage() {
               type="button"
               onClick={runUtmCleaner}
               disabled={utmLoading || !utmUrl.trim()}
-              className="px-4 py-2 rounded-lg bg-[var(--dash-success)] hover:bg-[var(--dash-success-strong)] disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-sm transition-colors"
+              className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-sm transition-colors shadow-sm"
             >
               {utmLoading ? 'Analyzing…' : 'Clean & Analyze'}
             </button>

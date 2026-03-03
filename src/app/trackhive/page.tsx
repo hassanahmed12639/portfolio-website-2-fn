@@ -1,526 +1,379 @@
-"use client"
-
 import Link from "next/link"
-import { useState } from "react"
+import TrackHiveNavbar from "@/components/trackhive/Navbar"
+import TrackHiveFooter from "@/components/trackhive/Footer"
 
-const LIME = "#aaff00"
-const TEXT_PRIMARY = "#0a0a0a"
-const TEXT_SECONDARY = "#666666"
-const TEXT_MUTED = "#999999"
-const BORDER = "#e5e5e5"
-const BG_SECONDARY = "#fafafa"
-
-const FAQ_ITEMS = [
-  { q: "Do I need a developer?", a: "No. Paste one snippet or use our GTM template. Done in 5 minutes." },
-  { q: "How is this different from just the Meta Pixel?", a: "Browser pixels get blocked by 30-40% of users. Server-side CAPI cannot be blocked. You recover those lost conversions." },
-  { q: "Does it work with Shopify?", a: "Yes. We have dedicated Shopify templates and step-by-step guides." },
-  { q: "Is my customer data safe?", a: "All emails and phones are hashed with SHA-256 before storing. We never store raw PII." },
-  { q: "Is there a free trial?", a: "Yes. Every account gets 7 days of full Pro access free. No credit card needed." },
-  { q: "What platforms do you support?", a: "Meta CAPI, Google Enhanced Conversions, TikTok Events API, Snapchat Conversions API, and GA4 Measurement Protocol. More coming." },
+const FEATURES = [
+  { tag: "CORE FEATURE", title: "Meta CAPI Integration", desc: "Send purchase events server-side. Bypass every ad blocker. Achieve 85%+ match rates with advanced data hashing.", icon: "🌐" },
+  { tag: "AI POWERED", title: "AI Analysis", desc: "Finds gaps in your tracking automatically and suggests optimizations for better attribution.", icon: "⚡" },
+  { tag: "REAL-TIME", title: "Anomaly Detection", desc: "Alerts in 30 seconds when tracking breaks or conversion volume drops unexpectedly.", icon: "🛡️" },
+  { tag: "PRIVACY FEATURES", title: "Cookie Extender & Reverse Proxy", desc: "Extend cookies from 7 days to 180 days. Serve tracking scripts from your own domain.", icon: "🔒" },
+  { tag: "RELIABILITY", title: "Event Replay", desc: "Failed events retried automatically. Never lose a conversion due to server downtime.", icon: "🔄" },
+  { tag: "DATA QUALITY", title: "Truth Score™", desc: "Know exactly how accurate your data is across all platforms with our proprietary scoring.", icon: "📊" },
+  { tag: "TEMPLATES", title: "100+ Templates", desc: "Ready-made GTM and sGTM templates for every platform imaginable.", icon: "📋" },
+  { tag: "MULTI-PIXEL", title: "Multi-Pixel Support", desc: "Send every event to multiple pixels simultaneously. Perfect for agencies managing multiple clients.", icon: "🎯" },
+  { tag: "DEDUPLICATION", title: "Smart Deduplication", desc: "Automatically suppress duplicate events. Stop paying for the same conversion twice.", icon: "✅" },
 ]
 
-const SNIPPET = `<script>window.TRACKHIVE_KEY = "your-key";</script>
-<script src="https://track.itshassanahmed.com/th.js" async></script>`
-
-const PLATFORMS = [
-  { name: "Meta", desc: "Conversions API" },
-  { name: "Google Ads", desc: "Enhanced Conversions" },
-  { name: "TikTok", desc: "Events API" },
-  { name: "Snapchat", desc: "Conversions API" },
-  { name: "GA4", desc: "Measurement Protocol" },
-  { name: "More coming", desc: "Pinterest, LinkedIn" },
-]
+const INTEGRATIONS = ["Meta", "Google", "TikTok", "Snapchat", "GTM", "Shopify", "WooCommerce"]
 
 export default function TrackHivePage() {
-  const [faqOpen, setFaqOpen] = useState<number | null>(null)
-  const [copied, setCopied] = useState(false)
-
-  const copySnippet = () => {
-    navigator.clipboard.writeText(SNIPPET)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
-
   return (
-    <div className="min-h-screen bg-white text-[#0a0a0a] font-sans antialiased">
-      {/* ——— Section 1: Navbar ——— */}
-      <nav
-        className="sticky top-0 left-0 right-0 z-50 h-[60px] flex items-center justify-between px-6 md:px-10 bg-white border-b"
-        style={{ borderColor: BORDER }}
-      >
-        <Link href="/trackhive" className="flex items-center gap-1.5 font-bold text-lg">
-          <span style={{ color: LIME }}>⚡</span>
-          <span style={{ color: TEXT_PRIMARY }}>TrackHive</span>
-        </Link>
-        <div className="hidden md:flex items-center gap-6 text-sm" style={{ color: TEXT_SECONDARY }}>
-          <Link href="/trackhive#features" className="hover:opacity-80 transition-opacity">Features</Link>
-          <Link href="/trackhive#pricing" className="hover:opacity-80 transition-opacity">Pricing</Link>
-          <Link href="/dashboard/templates" className="hover:opacity-80 transition-opacity">Templates</Link>
-          <Link href="#" className="hover:opacity-80 transition-opacity">Docs</Link>
-        </div>
-        <div className="flex items-center gap-4">
-          <Link href="/dashboard/login" className="text-sm hover:opacity-80 transition-opacity" style={{ color: TEXT_SECONDARY }}>
-            Log in
-          </Link>
-          <Link
-            href="/dashboard/signup"
-            className="text-sm font-medium px-5 py-2 rounded-full bg-[#0a0a0a] text-white hover:opacity-90 transition-opacity"
-          >
-            Get started
-          </Link>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-white antialiased" style={{ color: "#0f172a" }}>
+      <TrackHiveNavbar />
 
-      {/* ——— Section 2: Hero ——— */}
-      <section className="py-32 px-6 md:px-10">
-        <div className="max-w-4xl mx-auto text-center">
-          <span
-            className="inline-block px-4 py-1.5 rounded-full text-sm font-medium mb-8"
-            style={{ background: LIME, color: TEXT_PRIMARY }}
+      {/* Section 1: Hero */}
+      <section
+        className="pt-32 pb-20"
+        style={{ background: "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f8fafc 100%)" }}
+      >
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          {/* Badge */}
+          <div
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-6"
+            style={{ backgroundColor: "#eff6ff", border: "1px solid #bfdbfe", color: "#1d4ed8" }}
           >
-            AI-Powered Server-Side Tracking
-          </span>
-          <h1 className="text-6xl md:text-7xl font-bold tracking-tight leading-tight" style={{ color: TEXT_PRIMARY }}>
+            <span
+              className="w-1.5 h-1.5 rounded-full animate-pulse"
+              style={{ backgroundColor: "#3b82f6" }}
+            />
+            AI-POWERED SERVER-SIDE TRACKING
+          </div>
+          {/* Headline */}
+          <h1 className="text-5xl md:text-6xl font-extrabold leading-tight mb-6" style={{ color: "#0f172a" }}>
             Stop losing conversions
             <br />
-            to ad blockers.
+            <span style={{ color: "#2563eb" }}>to ad blockers.</span>
           </h1>
-          <p className="text-lg max-w-xl mx-auto mt-6" style={{ color: TEXT_SECONDARY }}>
-            TrackHive sends your events server-side to Meta CAPI, Google, TikTok and Snapchat. Recover 30-40% of conversions you&apos;re currently losing.
+          {/* Subheadline */}
+          <p className="text-xl max-w-2xl mx-auto mb-10" style={{ color: "#475569" }}>
+            TrackHive sends your events server-side to Meta CAPI, Google, TikTok and Snapchat.
+            Recover 30-40% of conversions you&apos;re currently losing.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-10">
+          {/* CTA buttons */}
+          <div className="flex items-center justify-center gap-4 mb-6 flex-wrap">
             <Link
               href="/dashboard/signup"
-              className="w-full sm:w-auto px-8 py-3 rounded-full font-medium bg-[#0a0a0a] text-white hover:opacity-90 transition-opacity text-center"
+              className="font-semibold px-8 py-3.5 rounded-xl text-base transition-all shadow-lg"
+              style={{
+                backgroundColor: "#2563eb",
+                color: "#ffffff",
+                boxShadow: "0 10px 40px -10px rgba(37, 99, 235, 0.4)",
+              }}
             >
-              Start for free
+              Start for free →
             </Link>
             <Link
-              href="#how-it-works"
-              className="w-full sm:w-auto px-8 py-3 rounded-full font-medium border bg-white hover:bg-[#fafafa] transition-colors text-center"
-              style={{ borderColor: TEXT_PRIMARY, color: TEXT_PRIMARY }}
+              href="/features"
+              className="font-semibold px-8 py-3.5 rounded-xl text-base border transition-colors bg-white hover:bg-slate-50"
+              style={{ borderColor: "#e2e8f0", color: "#334155" }}
             >
-              See a demo →
+              See a demo
             </Link>
           </div>
-          <p className="mt-6 text-sm" style={{ color: TEXT_MUTED }}>
-            Free forever · No credit card · 7-day Pro trial
+          {/* Trust line */}
+          <p className="text-sm" style={{ color: "#94a3b8" }}>
+            Free forever • No credit card • 5 min setup
           </p>
+        </div>
 
-          {/* Floating cards */}
-          <div className="mt-20 relative flex justify-center items-start gap-4 md:gap-8 min-h-[320px]">
-            {/* Left card */}
-            <div
-              className="hidden md:block absolute left-0 md:left-[5%] lg:left-[10%] top-8 w-48 rounded-2xl border p-4 shadow-md bg-white -rotate-3 transition-transform hover:rotate-0"
-              style={{ borderColor: BORDER }}
-            >
-              <p className="text-sm font-semibold mb-1" style={{ color: TEXT_PRIMARY }}>⚡ Event fired</p>
-              <p className="text-xs mb-2" style={{ color: TEXT_SECONDARY }}>Purchase · $149</p>
-              <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium" style={{ background: LIME, color: TEXT_PRIMARY }}>
-                Server-side
+        {/* Dashboard preview card */}
+        <div className="max-w-4xl mx-auto px-6 mt-16">
+          <div
+            className="rounded-2xl p-6"
+            style={{
+              backgroundColor: "#ffffff",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04)",
+              border: "1px solid #f1f5f9",
+            }}
+          >
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-3 h-3 rounded-full bg-red-400" />
+              <div className="w-3 h-3 rounded-full bg-amber-400" />
+              <div className="w-3 h-3 rounded-full bg-green-400" />
+              <span className="text-xs ml-2" style={{ color: "#94a3b8" }}>
+                trackhive.io/dashboard
               </span>
             </div>
-
-            {/* Center card - main dashboard */}
+            {/* Mini dashboard preview */}
+            <div className="grid grid-cols-3 gap-4 mb-4">
+              <div className="rounded-xl p-4 border" style={{ backgroundColor: "#f8fafc", borderColor: "#f1f5f9" }}>
+                <p className="text-xs uppercase tracking-wide mb-1" style={{ color: "#94a3b8" }}>
+                  Total Events
+                </p>
+                <p className="text-2xl font-bold" style={{ color: "#2563eb" }}>1,247</p>
+                <p className="text-xs mt-1" style={{ color: "#16a34a" }}>+12% this week</p>
+              </div>
+              <div className="rounded-xl p-4 border" style={{ backgroundColor: "#f8fafc", borderColor: "#f1f5f9" }}>
+                <p className="text-xs uppercase tracking-wide mb-1" style={{ color: "#94a3b8" }}>
+                  Match Rate
+                </p>
+                <p className="text-2xl font-bold" style={{ color: "#16a34a" }}>94%</p>
+                <p className="text-xs mt-1" style={{ color: "#94a3b8" }}>Optimal</p>
+              </div>
+              <div className="rounded-xl p-4 border" style={{ backgroundColor: "#f8fafc", borderColor: "#f1f5f9" }}>
+                <p className="text-xs uppercase tracking-wide mb-1" style={{ color: "#94a3b8" }}>
+                  Platforms
+                </p>
+                <p className="text-2xl font-bold" style={{ color: "#0f172a" }}>5</p>
+                <p className="text-xs mt-1" style={{ color: "#94a3b8" }}>Active</p>
+              </div>
+            </div>
+            {/* Mini bar chart */}
+            <div className="flex items-end gap-1.5 h-16 mb-4">
+              {[40, 55, 45, 65, 58, 72, 68, 80, 75, 90, 85, 95].map((h, i) => (
+                <div
+                  key={i}
+                  className="flex-1 rounded-sm"
+                  style={{
+                    height: `${h}%`,
+                    backgroundColor: i === 9 ? "#2563eb" : "#dbeafe",
+                  }}
+                />
+              ))}
+            </div>
+            {/* Live event row */}
             <div
-              className="relative z-10 w-full max-w-lg rounded-2xl border p-6 shadow-lg bg-white"
-              style={{ borderColor: BORDER }}
+              className="flex items-center gap-3 rounded-lg px-4 py-2.5"
+              style={{ backgroundColor: "#f0fdf4", border: "1px solid #bbf7d0" }}
             >
-              <div className="flex items-center gap-2 mb-6">
-                <span className="flex gap-1">
-                  <span className="w-2 h-2 rounded-full bg-[#e5e5e5]" />
-                  <span className="w-2 h-2 rounded-full bg-[#e5e5e5]" />
-                  <span className="w-2 h-2 rounded-full bg-[#e5e5e5]" />
-                </span>
-                <span className="text-sm font-medium" style={{ color: TEXT_SECONDARY }}>TrackHive Dashboard</span>
-              </div>
-              <div className="grid grid-cols-3 gap-3 mb-6">
-                <div className="rounded-xl border py-3 px-3" style={{ borderColor: BORDER }}>
-                  <p className="text-2xl font-bold" style={{ color: TEXT_PRIMARY }}>1,247</p>
-                  <p className="text-xs" style={{ color: TEXT_SECONDARY }}>Events</p>
-                </div>
-                <div className="rounded-xl border py-3 px-3" style={{ borderColor: BORDER }}>
-                  <p className="text-2xl font-bold" style={{ color: TEXT_PRIMARY }}>94%</p>
-                  <p className="text-xs" style={{ color: TEXT_SECONDARY }}>Match Rate</p>
-                </div>
-                <div className="rounded-xl border py-3 px-3" style={{ borderColor: BORDER }}>
-                  <p className="text-2xl font-bold" style={{ color: TEXT_PRIMARY }}>5</p>
-                  <p className="text-xs" style={{ color: TEXT_SECONDARY }}>Platforms</p>
-                </div>
-              </div>
-              <div className="flex items-end gap-1 h-12 mb-4">
-                {[35, 55, 45, 70, 65, 85, 60].map((h, i) => (
-                  <div key={i} className="flex-1 rounded-t min-h-[4px]" style={{ height: `${h}%`, background: LIME }} />
-                ))}
-              </div>
-              <div className="flex items-center gap-2 rounded-lg border py-2 px-3 text-sm" style={{ borderColor: BORDER }}>
-                <span className="w-2 h-2 rounded-full" style={{ background: LIME }} />
-                <span style={{ color: TEXT_PRIMARY }}>Purchase · $149 · Meta CAPI · ✓ Delivered</span>
-              </div>
-            </div>
-
-            {/* Right card */}
-            <div
-              className="hidden md:block absolute right-0 md:right-[5%] lg:right-[10%] top-8 w-48 rounded-2xl border p-4 shadow-md bg-white rotate-3 transition-transform hover:rotate-0"
-              style={{ borderColor: BORDER }}
-            >
-              <p className="text-sm font-semibold mb-2" style={{ color: TEXT_PRIMARY }}>🤖 AI Analysis</p>
-              <p className="text-xs mb-1" style={{ color: TEXT_SECONDARY }}>Health Score</p>
-              <div className="h-2 rounded-full overflow-hidden mb-2" style={{ background: BORDER }}>
-                <div className="h-full rounded-full" style={{ width: "82%", background: LIME }} />
-              </div>
-              <p className="text-xs" style={{ color: TEXT_MUTED }}>82%</p>
-              <p className="text-xs mt-1" style={{ color: TEXT_SECONDARY }}>2 issues found</p>
+              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              <span className="text-sm" style={{ color: "#334155" }}>
+                Purchase — $99.99 — Meta CAPI —
+              </span>
+              <span className="text-sm font-medium" style={{ color: "#16a34a" }}>
+                Delivered
+              </span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ——— Section 3: Trust Bar ——— */}
-      <section className="py-6 px-6 border-t border-b bg-[#fafafa]" style={{ borderColor: BORDER }}>
-        <div className="max-w-4xl mx-auto text-center">
-          <p className="text-sm" style={{ color: TEXT_MUTED }}>
-            Trusted by performance marketers running ads on
-          </p>
-          <p className="text-sm mt-1" style={{ color: TEXT_MUTED }}>
-            Meta Ads · Google Ads · TikTok Ads · Snapchat · GA4
-          </p>
-        </div>
-      </section>
-
-      {/* ——— Section 4: Stats ——— */}
-      <section className="py-24 px-6 md:px-10">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="rounded-2xl border p-8 bg-white" style={{ borderColor: BORDER, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
-              <p className="text-5xl font-bold mb-2" style={{ color: TEXT_PRIMARY }}>30-40%</p>
-              <p className="text-sm mb-3" style={{ color: TEXT_SECONDARY }}>of conversions lost to ad blockers without server-side tracking</p>
-              <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium" style={{ background: LIME, color: TEXT_PRIMARY }}>Recoverable</span>
+      {/* Section 2: Stats bar */}
+      <section className="py-16 bg-white border-y" style={{ borderColor: "#f1f5f9" }}>
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <div>
+              <p className="text-4xl font-extrabold mb-2" style={{ color: "#0f172a" }}>
+                30-40%
+              </p>
+              <p className="text-sm mb-2" style={{ color: "#475569" }}>
+                of conversions lost to ad blockers without server-side tracking
+              </p>
+              <span className="text-xs font-semibold tracking-widest" style={{ color: "#2563eb" }}>
+                RECOVERABLE
+              </span>
             </div>
-            <div className="rounded-2xl border p-8 bg-white" style={{ borderColor: BORDER, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
-              <p className="text-5xl font-bold mb-2" style={{ color: TEXT_PRIMARY }}>85%+</p>
-              <p className="text-sm mb-3" style={{ color: TEXT_SECONDARY }}>average match rate achieved with TrackHive CAPI</p>
-              <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium" style={{ background: LIME, color: TEXT_PRIMARY }}>Industry-leading</span>
+            <div>
+              <p className="text-4xl font-extrabold mb-2" style={{ color: "#0f172a" }}>
+                85%+
+              </p>
+              <p className="text-sm mb-2" style={{ color: "#475569" }}>
+                average match rate achieved with TrackHive CAPI
+              </p>
+              <span className="text-xs font-semibold tracking-widest" style={{ color: "#2563eb" }}>
+                INDUSTRY LEADING
+              </span>
             </div>
-            <div className="rounded-2xl border p-8 bg-white" style={{ borderColor: BORDER, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
-              <p className="text-5xl font-bold mb-2" style={{ color: TEXT_PRIMARY }}>5 min</p>
-              <p className="text-sm mb-3" style={{ color: TEXT_SECONDARY }}>average setup time from signup to first server-side event</p>
-              <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium" style={{ background: LIME, color: TEXT_PRIMARY }}>Quick setup</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ——— Section 5: Features Bento Grid ——— */}
-      <section id="features" className="py-24 px-6 md:px-10">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold mb-2" style={{ color: TEXT_PRIMARY }}>Everything you need.</h2>
-          <p className="text-lg mb-16" style={{ color: TEXT_SECONDARY }}>Built by a performance marketer who was tired of broken tracking.</p>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Row 1: Large Meta CAPI + Small AI */}
-            <div className="lg:col-span-2 rounded-2xl border p-8 bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5" style={{ borderColor: BORDER, boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
-              <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium mb-4" style={{ background: LIME, color: TEXT_PRIMARY }}>Core Feature</span>
-              <h3 className="text-2xl font-bold mb-2" style={{ color: TEXT_PRIMARY }}>Meta CAPI</h3>
-              <p className="mb-6" style={{ color: TEXT_SECONDARY }}>Send purchase events server-side. Bypass every ad blocker. Achieve 85%+ match rates.</p>
-              <div className="flex items-center gap-2 text-sm font-mono py-3 px-4 rounded-xl" style={{ background: "#fafafa", borderColor: BORDER, borderWidth: 1 }}>
-                <span style={{ color: TEXT_SECONDARY }}>[Your Server]</span>
-                <span style={{ color: LIME }}> —→ </span>
-                <span style={{ color: TEXT_PRIMARY }}>[Meta CAPI]</span>
-              </div>
-            </div>
-            <div className="rounded-2xl border p-8 bg-white" style={{ borderColor: BORDER, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
-              <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium mb-4" style={{ background: LIME, color: TEXT_PRIMARY }}>AI Powered</span>
-              <h3 className="text-xl font-bold mb-2" style={{ color: TEXT_PRIMARY }}>AI Analysis</h3>
-              <p className="mb-4" style={{ color: TEXT_SECONDARY }}>Finds gaps in your tracking automatically</p>
-              <div className="flex items-center gap-2">
-                <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: BORDER }}>
-                  <div className="h-full rounded-full" style={{ width: "82%", background: LIME }} />
-                </div>
-                <span className="text-sm font-medium" style={{ color: TEXT_PRIMARY }}>82/100</span>
-              </div>
-            </div>
-
-            {/* Row 2: Small Anomaly + Large Cookie */}
-            <div className="rounded-2xl border p-8 bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5" style={{ borderColor: BORDER, boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
-              <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium mb-4" style={{ background: LIME, color: TEXT_PRIMARY }}>Real-time</span>
-              <h3 className="text-xl font-bold mb-2" style={{ color: TEXT_PRIMARY }}>Anomaly Detection</h3>
-              <p className="mb-4" style={{ color: TEXT_SECONDARY }}>Alerts in 30 seconds when tracking breaks</p>
-              <div className="rounded-lg border py-2 px-3 text-xs" style={{ borderColor: BORDER, color: TEXT_SECONDARY }}>
-                ⚠️ Event drop detected · 2 min ago
-              </div>
-            </div>
-            <div className="lg:col-span-2 rounded-2xl border p-8 bg-white" style={{ borderColor: BORDER, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
-              <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium mb-4" style={{ background: LIME, color: TEXT_PRIMARY }}>Privacy Features</span>
-              <h3 className="text-2xl font-bold mb-2" style={{ color: TEXT_PRIMARY }}>Cookie Extender & Reverse Proxy</h3>
-              <p className="mb-6" style={{ color: TEXT_SECONDARY }}>Extend cookies from 7 days to 180 days. Serve tracking scripts from your domain so ad blockers can&apos;t touch them.</p>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-xs mb-1" style={{ color: TEXT_SECONDARY }}>Browser Cookie: 7 days</p>
-                  <div className="h-2 rounded-full overflow-hidden" style={{ background: BORDER }}>
-                    <div className="h-full rounded-full" style={{ width: "15%", background: BORDER }} />
-                  </div>
-                </div>
-                <div>
-                  <p className="text-xs mb-1" style={{ color: TEXT_SECONDARY }}>Server Cookie: 180 days</p>
-                  <div className="h-2 rounded-full overflow-hidden" style={{ background: BORDER }}>
-                    <div className="h-full rounded-full" style={{ width: "100%", background: LIME }} />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Row 3: Three equal */}
-            <div className="rounded-2xl border p-8 bg-white" style={{ borderColor: BORDER, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
-              <p className="text-lg font-semibold mb-2" style={{ color: TEXT_PRIMARY }}>Event Replay</p>
-              <p className="text-sm" style={{ color: TEXT_SECONDARY }}>Failed events retried automatically. Never lose a conversion.</p>
-            </div>
-            <div className="rounded-2xl border p-8 bg-white" style={{ borderColor: BORDER, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
-              <p className="text-lg font-semibold mb-2" style={{ color: TEXT_PRIMARY }}>Truth Score™</p>
-              <p className="text-sm mb-3" style={{ color: TEXT_SECONDARY }}>Know exactly how accurate your data is.</p>
-              <p className="text-sm font-medium">Score: 91/100 <span className="inline-block w-3 h-3 rounded-full ml-1 align-middle" style={{ background: LIME }} /></p>
-            </div>
-            <div className="rounded-2xl border p-8 bg-white" style={{ borderColor: BORDER, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
-              <p className="text-lg font-semibold mb-2" style={{ color: TEXT_PRIMARY }}>80+ Templates</p>
-              <p className="text-sm" style={{ color: TEXT_SECONDARY }}>Ready-made GTM and sGTM templates for every platform.</p>
+            <div>
+              <p className="text-4xl font-extrabold mb-2" style={{ color: "#0f172a" }}>
+                5 min
+              </p>
+              <p className="text-sm mb-2" style={{ color: "#475569" }}>
+                average setup time from signup to first server-side event
+              </p>
+              <span className="text-xs font-semibold tracking-widest" style={{ color: "#2563eb" }}>
+                QUICK SETUP
+              </span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ——— Section 6: How It Works ——— */}
-      <section id="how-it-works" className="py-24 px-6 md:px-10">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl font-bold mb-16 text-center" style={{ color: TEXT_PRIMARY }}>Live in 5 minutes.</h2>
-          <div className="flex flex-col md:flex-row md:items-start gap-8 md:gap-4 mb-12">
-            <div className="flex-1 text-center md:text-left">
-              <p className="text-sm font-semibold mb-1" style={{ color: TEXT_MUTED }}>Step 01</p>
-              <h3 className="text-lg font-bold mb-1" style={{ color: TEXT_PRIMARY }}>Connect</h3>
-              <p className="text-sm" style={{ color: TEXT_SECONDARY }}>Enter your Pixel ID and access token</p>
-            </div>
-            <div className="hidden md:block flex-shrink-0 w-8 h-px self-center" style={{ background: BORDER }} />
-            <div className="flex-1 text-center md:text-left">
-              <p className="text-sm font-semibold mb-1" style={{ color: TEXT_MUTED }}>Step 02</p>
-              <h3 className="text-lg font-bold mb-1" style={{ color: TEXT_PRIMARY }}>Install</h3>
-              <p className="text-sm" style={{ color: TEXT_SECONDARY }}>Paste one script tag on your site</p>
-            </div>
-            <div className="hidden md:block flex-shrink-0 w-8 h-px self-center" style={{ background: BORDER }} />
-            <div className="flex-1 text-center md:text-left">
-              <p className="text-sm font-semibold mb-1" style={{ color: TEXT_MUTED }}>Step 03</p>
-              <h3 className="text-lg font-bold mb-1" style={{ color: TEXT_PRIMARY }}>Track</h3>
-              <p className="text-sm" style={{ color: TEXT_SECONDARY }}>Events flow server-side immediately</p>
-            </div>
+      {/* Section 3: Features grid */}
+      <section className="py-24" style={{ backgroundColor: "#f8fafc" }}>
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-extrabold mb-4" style={{ color: "#0f172a" }}>
+              Everything you need.
+            </h2>
+            <p className="text-lg" style={{ color: "#475569" }}>
+              Built by performance marketers who were tired of broken tracking.
+            </p>
           </div>
-          <div className="relative rounded-2xl p-6 bg-[#0a0a0a] font-mono text-sm text-white overflow-x-auto" style={{ borderLeft: `4px solid ${LIME}` }}>
-            <button
-              onClick={copySnippet}
-              className="absolute top-4 right-4 text-xs font-medium px-3 py-1.5 rounded hover:opacity-90 transition-opacity"
-              style={{ background: LIME, color: TEXT_PRIMARY }}
-            >
-              {copied ? "Copied" : "Copy"}
-            </button>
-            <pre className="pr-24">{SNIPPET}</pre>
-          </div>
-        </div>
-      </section>
-
-      {/* ——— Section 7: Platform Grid ——— */}
-      <section className="py-24 px-6 md:px-10">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-4xl font-bold mb-16 text-center" style={{ color: TEXT_PRIMARY }}>Works with every major platform.</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {PLATFORMS.map((p, i) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {FEATURES.map((f, i) => (
               <div
                 key={i}
-                className="rounded-2xl border p-6 bg-white transition-colors hover:border-[#aaff00]"
-                style={{ borderColor: BORDER, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}
+                className="rounded-xl border p-6 hover:shadow-md transition-shadow bg-white"
+                style={{ borderColor: "#f1f5f9", boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04)" }}
               >
-                <h3 className="font-bold text-lg mb-1" style={{ color: TEXT_PRIMARY }}>{p.name}</h3>
-                <p className="text-sm mb-3" style={{ color: TEXT_SECONDARY }}>{p.desc}</p>
-                <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium" style={{ background: LIME, color: TEXT_PRIMARY }}>Connected</span>
+                <span className="text-xs font-bold tracking-widest" style={{ color: "#2563eb" }}>
+                  {f.tag}
+                </span>
+                <h3 className="text-lg font-bold mt-2 mb-2" style={{ color: "#0f172a" }}>
+                  {f.title}
+                </h3>
+                <p className="text-sm leading-relaxed" style={{ color: "#475569" }}>
+                  {f.desc}
+                </p>
+                <div className="mt-4 flex items-center justify-between">
+                  <span className="text-xl">{f.icon}</span>
+                  <span className="text-xs font-semibold" style={{ color: "#16a34a" }}>
+                    ACTIVE
+                  </span>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ——— Section 8: AI Section ——— */}
-      <section className="py-24 px-6 md:px-10">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium mb-4" style={{ background: LIME, color: TEXT_PRIMARY }}>AI Built In</span>
-            <h2 className="text-4xl font-bold mb-4" style={{ color: TEXT_PRIMARY }}>Your tracking has gaps. AI finds them.</h2>
-            <p className="text-lg mb-8" style={{ color: TEXT_SECONDARY }}>
-              TrackHive analyzes every event, detects missing conversions, and writes the fix code for you.
-            </p>
-            <ul className="space-y-3 text-sm" style={{ color: TEXT_SECONDARY }}>
-              {["Scans events and finds missing ones", "Detects anomalies in real-time", "Generates fix code automatically", "Cleans UTM parameters", "Attribution Truth Score™"].map((item, i) => (
-                <li key={i} className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: LIME }} />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="rounded-2xl border p-6 bg-white shadow-lg font-mono text-sm" style={{ borderColor: BORDER }}>
-            <div className="flex items-center gap-2 mb-4">
-              <span className="flex gap-1">
-                <span className="w-2 h-2 rounded-full bg-[#e5e5e5]" />
-                <span className="w-2 h-2 rounded-full bg-[#e5e5e5]" />
-                <span className="w-2 h-2 rounded-full bg-[#e5e5e5]" />
+      {/* Section 4: Integrations logos */}
+      <section className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <p className="text-sm font-semibold uppercase tracking-widest mb-8" style={{ color: "#94a3b8" }}>
+            Works with every major platform
+          </p>
+          <div className="flex items-center justify-center gap-10 flex-wrap">
+            {INTEGRATIONS.map((p) => (
+              <span
+                key={p}
+                className="font-semibold text-lg transition-colors"
+                style={{ color: "#94a3b8" }}
+              >
+                {p}
               </span>
-              <span style={{ color: TEXT_SECONDARY }}>AI Analysis</span>
-            </div>
-            <p className="mb-4" style={{ color: TEXT_MUTED }}>Scanning 847 events...</p>
-            <p className="mb-2" style={{ color: TEXT_PRIMARY }}>Health Score  82 / 100</p>
-            <div className="h-2 rounded-full overflow-hidden mb-4" style={{ background: BORDER }}>
-              <div className="h-full rounded-full" style={{ width: "82%", background: LIME }} />
-            </div>
-            <p className="mb-2" style={{ color: TEXT_PRIMARY }}>Issues found (2):</p>
-            <p className="mb-1" style={{ color: TEXT_SECONDARY }}>→ InitiateCheckout missing</p>
-            <p className="mb-4" style={{ color: TEXT_SECONDARY }}>→ event_id not set</p>
-            <p className="mb-4" style={{ color: TEXT_PRIMARY }}>Fix ready to apply ↗</p>
-            <button
-              className="w-full py-3 rounded-xl font-bold text-sm transition-opacity hover:opacity-90"
-              style={{ background: LIME, color: TEXT_PRIMARY }}
-            >
-              Apply Fix
-            </button>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ——— Section 9: Pricing ——— */}
-      <section id="pricing" className="py-24 px-6 md:px-10">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-4xl font-bold mb-2 text-center" style={{ color: TEXT_PRIMARY }}>Simple pricing.</h2>
-          <p className="text-center mb-16" style={{ color: TEXT_SECONDARY }}>Start free. Upgrade when ready.</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
-            {/* FREE */}
-            <div className="rounded-2xl border p-8 flex flex-col bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5" style={{ borderColor: BORDER, boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
-              <h3 className="text-lg font-bold mb-1" style={{ color: TEXT_PRIMARY }}>FREE</h3>
-              <p className="text-4xl font-bold mb-6" style={{ color: TEXT_PRIMARY }}>$0</p>
-              <ul className="space-y-3 text-sm flex-1 mb-8" style={{ color: TEXT_SECONDARY }}>
-                <li>✓ 500 events/mo</li>
-                <li>✓ Meta CAPI</li>
-                <li>✓ Google Enhanced</li>
-                <li>✓ 3 AI analyses/mo</li>
-                <li style={{ color: TEXT_MUTED }}>✗ TikTok/Snapchat</li>
-              </ul>
-              <Link href="/dashboard/signup" className="block w-full py-3 rounded-full text-center font-medium bg-[#0a0a0a] text-white hover:opacity-90 transition-opacity">
-                Get started
-              </Link>
-            </div>
-            {/* PRO */}
+      {/* Section 5: Pricing preview */}
+      <section className="py-24" style={{ backgroundColor: "#f8fafc" }}>
+        <div className="max-w-5xl mx-auto px-6 text-center">
+          <h2 className="text-4xl font-extrabold mb-4" style={{ color: "#0f172a" }}>
+            Simple pricing.
+          </h2>
+          <p className="text-lg mb-16" style={{ color: "#475569" }}>
+            No hidden fees. Cancel anytime.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Free */}
             <div
-              className="rounded-2xl border-2 p-8 flex flex-col bg-white relative"
-              style={{ borderColor: LIME, boxShadow: "0 4px 12px rgba(0,0,0,0.06)" }}
+              className="rounded-2xl border p-8 text-left bg-white"
+              style={{ borderColor: "#e2e8f0" }}
             >
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full text-xs font-medium" style={{ background: LIME, color: TEXT_PRIMARY }}>
-                Most popular
-              </span>
-              <h3 className="text-lg font-bold mb-1" style={{ color: TEXT_PRIMARY }}>PRO</h3>
-              <p className="text-4xl font-bold mb-6" style={{ color: TEXT_PRIMARY }}>$10<span className="text-lg font-normal" style={{ color: TEXT_SECONDARY }}>/mo</span></p>
-              <ul className="space-y-3 text-sm flex-1 mb-8" style={{ color: TEXT_SECONDARY }}>
-                <li>✓ 50,000 events/mo</li>
-                <li>✓ All 5 platforms</li>
-                <li>✓ Unlimited AI</li>
-                <li>✓ Cookie Extender</li>
-                <li>✓ Reverse Proxy</li>
-                <li>✓ Anomaly Detection</li>
+              <p className="font-bold text-lg mb-1" style={{ color: "#0f172a" }}>
+                Free
+              </p>
+              <p className="text-4xl font-extrabold mb-1" style={{ color: "#0f172a" }}>
+                $0<span className="text-base font-normal" style={{ color: "#94a3b8" }}>/mo</span>
+              </p>
+              <p className="text-sm mb-6" style={{ color: "#475569" }}>
+                Perfect to get started
+              </p>
+              <ul className="space-y-3 text-sm mb-8" style={{ color: "#475569" }}>
+                <li>✅ 1,000 events/month</li>
+                <li>✅ Meta CAPI</li>
+                <li>✅ 1 pixel</li>
+                <li>✅ Basic analytics</li>
               </ul>
               <Link
                 href="/dashboard/signup"
-                className="block w-full py-3 rounded-full text-center font-bold bg-[#aaff00] text-[#0a0a0a] hover:opacity-90 transition-opacity"
+                className="block text-center font-semibold py-2.5 rounded-lg transition-colors"
+                style={{ backgroundColor: "#f1f5f9", color: "#1e293b" }}
               >
-                Start free trial
+                Start for free
               </Link>
             </div>
-            {/* AGENCY */}
-            <div className="rounded-2xl border p-8 flex flex-col bg-white" style={{ borderColor: BORDER, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
-              <h3 className="text-lg font-bold mb-1" style={{ color: TEXT_PRIMARY }}>AGENCY</h3>
-              <p className="text-4xl font-bold mb-6" style={{ color: TEXT_PRIMARY }}>$25<span className="text-lg font-normal" style={{ color: TEXT_SECONDARY }}>/mo</span></p>
-              <ul className="space-y-3 text-sm flex-1 mb-8" style={{ color: TEXT_SECONDARY }}>
-                <li>✓ Unlimited events</li>
-                <li>✓ Everything in Pro</li>
-                <li>✓ 80+ GTM Templates</li>
-                <li>✓ 10 workspaces</li>
-              </ul>
-              <a
-                href="mailto:hassan@itshassanahmed.com"
-                className="block w-full py-3 rounded-full text-center font-medium bg-[#0a0a0a] text-white hover:opacity-90 transition-opacity"
+            {/* Pro — highlighted */}
+            <div
+              className="rounded-2xl p-8 text-left shadow-xl relative"
+              style={{ backgroundColor: "#2563eb", boxShadow: "0 25px 50px -12px rgba(37, 99, 235, 0.25)" }}
+            >
+              <span
+                className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-bold px-3 py-1 rounded-full"
+                style={{ backgroundColor: "#fbbf24", color: "#78350f" }}
               >
-                Contact us
-              </a>
-            </div>
-          </div>
-          <p className="text-center text-sm mt-8" style={{ color: TEXT_MUTED }}>
-            All plans include 7-day free trial · No credit card required
-          </p>
-        </div>
-      </section>
-
-      {/* ——— Section 10: FAQ ——— */}
-      <section className="py-24 px-6 md:px-10">
-        <div className="max-w-2xl mx-auto">
-          <h2 className="text-4xl font-bold mb-12 text-center" style={{ color: TEXT_PRIMARY }}>Questions.</h2>
-          <div className="bg-white">
-            {FAQ_ITEMS.map((faq, i) => (
-              <div
-                key={i}
-                className="border-b py-5 cursor-pointer"
-                style={{ borderColor: BORDER }}
-                onClick={() => setFaqOpen(faqOpen === i ? null : i)}
-              >
-                <div className="flex items-center justify-between gap-4">
-                  <span className="font-semibold" style={{ color: TEXT_PRIMARY }}>{faq.q}</span>
-                  <span className="text-lg font-bold shrink-0 transition-transform" style={{ color: faqOpen === i ? LIME : TEXT_MUTED }}>
-                    {faqOpen === i ? "−" : "+"}
-                  </span>
-                </div>
-                {faqOpen === i && <p className="mt-3 text-sm" style={{ color: TEXT_SECONDARY }}>{faq.a}</p>}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ——— Section 11: Final CTA ——— */}
-      <section className="py-32 px-6 text-center bg-[#fafafa]">
-        <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: TEXT_PRIMARY }}>Start tracking smarter.</h2>
-        <p className="text-lg mb-10" style={{ color: TEXT_SECONDARY }}>Free forever. 7-day Pro trial. Setup in 5 minutes.</p>
-        <Link
-          href="/dashboard/signup"
-          className="inline-block px-10 py-4 rounded-full font-bold text-lg bg-[#0a0a0a] text-white hover:opacity-90 transition-opacity"
-        >
-          Get started for free
-        </Link>
-      </section>
-
-      {/* ——— Section 12: Footer ——— */}
-      <footer className="py-8 px-6 md:px-10 border-t bg-white" style={{ borderColor: BORDER }}>
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-lg">
-                <span style={{ color: LIME }}>⚡</span>
-                <span style={{ color: TEXT_PRIMARY }}> TrackHive</span>
+                MOST POPULAR
               </span>
-              <span className="text-sm" style={{ color: TEXT_MUTED }}>Built by Hassan Ahmed</span>
+              <p className="font-bold text-lg mb-1 text-white">Pro</p>
+              <p className="text-4xl font-extrabold mb-1 text-white">
+                $10<span className="text-base font-normal text-blue-200">/mo</span>
+              </p>
+              <p className="text-sm mb-6 text-blue-200">For growing businesses</p>
+              <ul className="space-y-3 text-sm mb-8 text-blue-100">
+                <li>✅ 50,000 events/month</li>
+                <li>✅ All platforms</li>
+                <li>✅ 3 pixels</li>
+                <li>✅ AI Analysis</li>
+                <li>✅ Email alerts</li>
+                <li>✅ Priority support</li>
+              </ul>
+              <Link
+                href="/dashboard/signup"
+                className="block text-center bg-white font-semibold py-2.5 rounded-lg transition-colors hover:bg-blue-50 text-blue-600"
+              >
+                Start for free
+              </Link>
             </div>
-            <div className="flex flex-wrap justify-center gap-4 text-sm" style={{ color: TEXT_MUTED }}>
-              <Link href="/trackhive#features" className="hover:opacity-80 transition-opacity">Features</Link>
-              <Link href="/trackhive#pricing" className="hover:opacity-80 transition-opacity">Pricing</Link>
-              <Link href="/dashboard/templates" className="hover:opacity-80 transition-opacity">Templates</Link>
-              <Link href="/privacy-policy" className="hover:opacity-80 transition-opacity">Privacy</Link>
-              <Link href="/tos" className="hover:opacity-80 transition-opacity">Terms</Link>
+            {/* Agency */}
+            <div
+              className="rounded-2xl border p-8 text-left bg-white"
+              style={{ borderColor: "#e2e8f0" }}
+            >
+              <p className="font-bold text-lg mb-1" style={{ color: "#0f172a" }}>
+                Agency
+              </p>
+              <p className="text-4xl font-extrabold mb-1" style={{ color: "#0f172a" }}>
+                $25<span className="text-base font-normal" style={{ color: "#94a3b8" }}>/mo</span>
+              </p>
+              <p className="text-sm mb-6" style={{ color: "#475569" }}>
+                For agencies and teams
+              </p>
+              <ul className="space-y-3 text-sm mb-8" style={{ color: "#475569" }}>
+                <li>✅ Unlimited events</li>
+                <li>✅ All platforms</li>
+                <li>✅ 10 pixels</li>
+                <li>✅ Everything in Pro</li>
+                <li>✅ White label</li>
+                <li>✅ Dedicated support</li>
+              </ul>
+              <Link
+                href="/dashboard/signup"
+                className="block text-center font-semibold py-2.5 rounded-lg transition-colors"
+                style={{ backgroundColor: "#f1f5f9", color: "#1e293b" }}
+              >
+                Start for free
+              </Link>
             </div>
           </div>
-          <p className="text-center text-sm" style={{ color: TEXT_MUTED }}>
-            © 2025 TrackHive · itshassanahmed.com
+        </div>
+      </section>
+
+      {/* Section 6: Final CTA */}
+      <section className="py-24" style={{ backgroundColor: "#2563eb" }}>
+        <div className="max-w-3xl mx-auto px-6 text-center">
+          <h2 className="text-4xl font-extrabold text-white mb-4">
+            Start tracking smarter today.
+          </h2>
+          <p className="text-lg mb-10 text-blue-200">
+            Join hundreds of marketers recovering lost conversions with TrackHive.
+          </p>
+          <Link
+            href="/dashboard/signup"
+            className="inline-block bg-white hover:bg-blue-50 font-bold px-10 py-4 rounded-xl text-lg transition-colors shadow-lg"
+            style={{ color: "#2563eb" }}
+          >
+            Start for free →
+          </Link>
+          <p className="text-blue-300 text-sm mt-4">
+            No credit card required • Free forever plan
           </p>
         </div>
-      </footer>
+      </section>
+
+      <TrackHiveFooter />
     </div>
   )
 }

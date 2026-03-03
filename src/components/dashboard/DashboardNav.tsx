@@ -128,7 +128,7 @@ export default function DashboardNav() {
               <button
                 type="button"
                 onClick={() => toggleSection(section.title)}
-                className="mb-1.5 flex w-full items-center gap-1.5 px-2 py-0.5 text-left text-[10px] font-semibold tracking-wide text-[#a1a1aa] transition-colors hover:text-[#71717a]"
+                className="mb-1.5 flex w-full items-center gap-1.5 px-2 py-0.5 text-left text-[10px] font-semibold tracking-wide text-slate-500 transition-colors hover:text-slate-700"
               >
                 {isOpen ? (
                   <ChevronDown className="h-3 w-3 shrink-0" />
@@ -146,13 +146,13 @@ export default function DashboardNav() {
                       <Link
                         key={href}
                         href={href}
-                        className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-[12px] transition-colors ${
+                        className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors ${
                           isActive
-                            ? 'bg-[#eceef2] font-semibold text-[#27272a]'
-                            : 'text-[#3f3f46] hover:bg-[#eef0f3] hover:text-[#27272a]'
+                            ? 'bg-blue-50 font-semibold text-blue-700'
+                            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                         }`}
                       >
-                        {Icon && <Icon className="h-3.5 w-3.5 shrink-0 text-[#52525b]" />}
+                        {Icon && <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? 'text-blue-600' : 'text-slate-500'}`} />}
                         <span className="truncate">{label}</span>
                       </Link>
                     )

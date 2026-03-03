@@ -84,14 +84,14 @@ export default function DeduplicationPage() {
           {barData.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={barData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" />
-                <XAxis dataKey="name" tick={{ fill: '#a1a1aa', fontSize: 11 }} />
-                <YAxis tick={{ fill: '#a1a1aa', fontSize: 11 }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                <XAxis dataKey="name" tick={{ fill: '#94a3b8', fontSize: 11 }} />
+                <YAxis tick={{ fill: '#94a3b8', fontSize: 11 }} />
                 <RechartsTooltip
-                  contentStyle={{ backgroundColor: '#27272a', border: '1px solid #3f3f46', borderRadius: 8 }}
-                  labelStyle={{ color: '#fff' }}
+                  contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 8 }}
+                  labelStyle={{ color: '#0f172a' }}
                 />
-                <Bar dataKey="count" fill="#22c55e" radius={[4, 4, 0, 0]} name="Duplicates" />
+                <Bar dataKey="count" fill="#2563eb" radius={[4, 4, 0, 0]} name="Duplicates" />
               </BarChart>
             </ResponsiveContainer>
           ) : (
@@ -106,24 +106,24 @@ export default function DeduplicationPage() {
           {(data?.daily_trend?.length ?? 0) > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data?.daily_trend ?? []} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                 <XAxis
                   dataKey="date"
-                  tick={{ fill: '#a1a1aa', fontSize: 11 }}
+                  tick={{ fill: '#94a3b8', fontSize: 11 }}
                   tickFormatter={(v) => (v || '').slice(5)}
                 />
-                <YAxis tick={{ fill: '#a1a1aa', fontSize: 11 }} />
+                <YAxis tick={{ fill: '#94a3b8', fontSize: 11 }} />
                 <RechartsTooltip
-                  contentStyle={{ backgroundColor: '#27272a', border: '1px solid #3f3f46', borderRadius: 8 }}
-                  labelStyle={{ color: '#fff' }}
+                  contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 8 }}
+                  labelStyle={{ color: '#0f172a' }}
                   labelFormatter={(label) => label}
                 />
                 <Line
                   type="monotone"
                   dataKey="duplicates"
-                  stroke="#22c55e"
+                  stroke="#2563eb"
                   strokeWidth={2}
-                  dot={{ fill: '#22c55e' }}
+                  dot={{ fill: '#2563eb' }}
                   name="Duplicates"
                 />
               </LineChart>

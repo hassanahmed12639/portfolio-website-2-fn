@@ -29,12 +29,21 @@ export async function middleware(request: NextRequest) {
   const isSignup = pathname === '/dashboard/signup'
   const isAuthPage = isLogin || isSignup
 
+  const isAdminRoute = pathname.startsWith('/admin')
+  const isAdminLogin = pathname === '/admin/login'
+  const isAdminLogout = pathname === '/admin/logout'
+  const isAdminProtected = isAdminRoute && !isAdminLogin && !isAdminLogout
+
   if (isDashboardRoute && !isAuthPage && !session) {
     return NextResponse.redirect(new URL('/dashboard/login', request.url))
   }
 
   if (isAuthPage && session) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
+  }
+
+  if (isAdminProtected && !session) {
+    return NextResponse.redirect(new URL('/admin/login', request.url))
   }
 
   return response

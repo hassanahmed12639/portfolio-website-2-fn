@@ -64,7 +64,7 @@ function QualityGauge({ score, label }: { score: number; label: string }) {
   const circumference = 2 * Math.PI * 36
   const strokeDash = (normalized / 100) * circumference
   const strokeColor =
-    score >= 80 ? '#10b981' : score >= 60 ? '#3b82f6' : score >= 40 ? '#f59e0b' : '#ef4444'
+    score >= 80 ? '#2563eb' : score >= 60 ? '#3b82f6' : score >= 40 ? '#f59e0b' : '#ef4444'
   return (
     <div className="flex flex-col items-center">
       <svg width="100" height="100" className="-rotate-90">
@@ -285,7 +285,7 @@ export default function LivePage() {
             type="button"
             onClick={() => setFilter(f.id)}
             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-              filter === f.id ? 'bg-[var(--dash-success)] text-white' : 'bg-[var(--dash-surface-hover)] text-[var(--dash-muted)] hover:bg-[var(--dash-surface-hover)] hover:text-[var(--dash-text)]'
+              filter === f.id ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-100 hover:text-slate-900'
             }`}
           >
             {f.label}
@@ -294,8 +294,8 @@ export default function LivePage() {
       </div>
 
       <div className="flex gap-6 flex-1 min-h-0">
-        <div className="flex-1 min-w-0 rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden flex flex-col">
-          <div className="px-4 py-2 border-b border-[var(--dash-border)] text-xs text-[var(--dash-muted)] font-mono">
+        <div className="flex-1 min-w-0 rounded-xl bg-white border border-slate-100 overflow-hidden flex flex-col">
+          <div className="bg-slate-50 border-b border-slate-100 px-4 py-3 text-xs text-slate-500 font-mono">
             Live feed (newest at top)
           </div>
           <div className="flex-1 overflow-auto p-2 font-mono text-sm">
@@ -306,27 +306,27 @@ export default function LivePage() {
                 {filteredEvents.map((ev) => (
                   <div
                     key={ev.id}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-md hover:bg-[var(--dash-surface-hover)]/50 transition-all duration-300 ${
+                    className={`flex items-center gap-4 px-4 py-3 border-b border-slate-50 hover:bg-slate-50 transition-colors ${
                       lastAddedId === ev.id ? 'animate-slide-down' : ''
                     }`}
                   >
                     <StatusDot event={ev} />
-                    <span className="text-[var(--dash-muted)] w-14 shrink-0">{formatTimeAgo(ev.created_at)}</span>
-                    <span className="text-[var(--dash-text)] shrink-0 w-24">{ev.event_name}</span>
-                    <span className="text-[var(--dash-muted)] shrink-0 w-14">
+                    <span className="text-xs text-slate-400 w-14 shrink-0">{formatTimeAgo(ev.created_at)}</span>
+                    <span className="text-sm font-medium text-slate-900 shrink-0 w-24">{ev.event_name}</span>
+                    <span className="text-xs text-slate-400 shrink-0 w-14">
                       {ev.event_name === 'Purchase' && ev.value != null ? `$${Number(ev.value).toFixed(2)}` : '—'}
                     </span>
                     <QualityBar score={ev.data_quality_score ?? 0} />
-                    <span className="text-[var(--dash-muted)] w-12 shrink-0">{ev.data_quality_score ?? 0}/100</span>
-                    <span className="text-[var(--dash-muted)] shrink-0">{ev.data_quality_label ?? '—'}</span>
-                    <span className="text-[var(--dash-muted)] shrink-0 capitalize">{ev.platform}</span>
+                    <span className="text-xs text-slate-400 w-12 shrink-0">{ev.data_quality_score ?? 0}/100</span>
+                    <span className="text-xs text-slate-400 shrink-0">{ev.data_quality_label ?? '—'}</span>
+                    <span className="text-xs text-slate-400 shrink-0 capitalize">{ev.platform}</span>
                     {ev.status === 'failed' && (
-                      <span className="shrink-0 px-2 py-0.5 rounded text-xs font-medium bg-red-950 text-red-400 border border-red-800">
+                      <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-100">
                         FAILED
                       </span>
                     )}
                     {ev.status === 'deduplicated' && (
-                      <span className="shrink-0 px-2 py-0.5 rounded text-xs font-medium bg-amber-950 text-amber-400 border border-amber-800">
+                      <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-100">
                         Deduplicated
                       </span>
                     )}
@@ -337,7 +337,7 @@ export default function LivePage() {
           </div>
         </div>
 
-        <div className="w-48 shrink-0 rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4 flex flex-col items-center">
+        <div className="w-48 shrink-0 rounded-xl bg-white border border-slate-200 p-4 flex flex-col items-center shadow-sm">
           <p className="text-xs text-[var(--dash-muted)] mb-3 text-center">Current Session Quality</p>
           <QualityGauge score={sessionScore} label={sessionLabel} />
           <p className="text-xs text-[var(--dash-muted)] mt-3 text-center">Based on last {GAUGE_EVENTS} events</p>
