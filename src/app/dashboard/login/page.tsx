@@ -53,15 +53,15 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-zinc-950">
+    <div className="dashboard-shell min-h-screen flex flex-col md:flex-row bg-[var(--dash-bg)]">
       <div className="flex-1 flex items-center justify-center px-4 py-8 md:py-12">
         <div className="w-full max-w-sm">
-          <h1 className="text-2xl font-semibold text-white mb-1">TrackHive</h1>
-          <p className="text-zinc-400 text-sm mb-8">Sign in to your account</p>
+          <h1 className="text-2xl font-semibold text-[var(--dash-text)] mb-1">TrackHive</h1>
+          <p className="text-[var(--dash-muted)] text-sm mb-8">Sign in to your account</p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-zinc-300 mb-1.5">
+              <label htmlFor="email" className="block text-sm font-medium text-[var(--dash-text)] mb-1.5">
                 Email
               </label>
               <input
@@ -71,13 +71,13 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 autoComplete="email"
-                className="w-full px-4 py-2.5 rounded-lg bg-zinc-900 border border-zinc-800 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600 focus:border-transparent"
+                className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)] focus:border-transparent transition-colors"
                 placeholder="you@example.com"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-zinc-300 mb-1.5">
+              <label htmlFor="password" className="block text-sm font-medium text-[var(--dash-text)] mb-1.5">
                 Password
               </label>
               <input
@@ -87,13 +87,13 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 autoComplete="current-password"
-                className="w-full px-4 py-2.5 rounded-lg bg-zinc-900 border border-zinc-800 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600 focus:border-transparent"
+                className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)] focus:border-transparent transition-colors"
                 placeholder="••••••••"
               />
             </div>
 
             {error && (
-              <p className="text-sm text-red-400 bg-red-950/50 border border-red-900/50 rounded-lg px-4 py-2.5">
+              <p className="text-sm text-[var(--dash-danger)] bg-[var(--dash-danger-soft)] border border-[var(--dash-danger-border)] rounded-lg px-4 py-2.5">
                 {error}
               </p>
             )}
@@ -101,15 +101,15 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 rounded-lg bg-white text-zinc-900 font-medium hover:bg-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-full py-2.5 rounded-lg bg-[var(--dash-primary)] text-white font-medium hover:bg-[var(--dash-primary-strong)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {loading ? 'Signing in…' : 'Sign In'}
             </button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-zinc-400">
+          <p className="mt-6 text-center text-sm text-[var(--dash-muted)]">
             Don&apos;t have an account?{' '}
-            <Link href="/dashboard/signup" className="text-white hover:underline">
+            <Link href="/dashboard/signup" className="text-[var(--dash-primary)] hover:underline font-medium">
               Create account
             </Link>
           </p>
@@ -117,17 +117,17 @@ export default function LoginPage() {
           <div className="mt-6">
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-zinc-800" />
+                <div className="w-full border-t border-[var(--dash-border)]" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-zinc-950 text-zinc-500">or</span>
+                <span className="px-2 bg-[var(--dash-bg)] text-[var(--dash-muted)]">or</span>
               </div>
             </div>
             <button
               type="button"
               onClick={handleGoogleSignIn}
               disabled={googleLoading}
-              className="w-full flex items-center justify-center gap-3 py-2.5 rounded-lg bg-white border border-zinc-200 text-zinc-800 font-medium hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-zinc-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-full flex items-center justify-center gap-3 py-2.5 rounded-lg bg-[var(--dash-surface)] border border-[var(--dash-border)] text-[var(--dash-text)] font-medium hover:bg-[var(--dash-bg)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-border)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               <GoogleIcon />
               {googleLoading ? 'Signing in…' : 'Continue with Google'}
@@ -136,7 +136,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      <div className="hidden md:flex flex-1 relative min-h-[320px] md:min-h-screen bg-zinc-900 items-center justify-center overflow-hidden">
+      <div className="hidden md:flex flex-1 relative min-h-[320px] md:min-h-screen bg-gradient-to-b from-[var(--dash-primary-soft)] to-[var(--dash-primary-soft-strong)] items-center justify-center overflow-hidden rounded-l-2xl">
         <LoginRadar />
       </div>
     </div>
@@ -165,3 +165,7 @@ function GoogleIcon() {
     </svg>
   )
 }
+
+
+
+

@@ -68,9 +68,9 @@ const ANOMALY_LABELS: Record<string, string> = {
 function SeverityBadge({ severity }: { severity: string }) {
   const c =
     severity === 'high'
-      ? 'bg-red-500/20 text-red-400 border-red-500/50'
+      ? 'bg-[var(--dash-danger)]/20 text-red-400 border-red-500/50'
       : severity === 'medium'
-        ? 'bg-amber-500/20 text-amber-400 border-amber-500/50'
+        ? 'bg-[var(--dash-warning)]/20 text-amber-400 border-amber-500/50'
         : 'bg-yellow-500/20 text-yellow-400 border-yellow-500/50'
   return (
     <span className={`text-xs font-medium px-2 py-0.5 rounded border ${c}`}>
@@ -89,17 +89,17 @@ function FixModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" onClick={onClose}>
       <div
-        className="rounded-xl bg-zinc-900 border border-zinc-700 shadow-xl max-w-lg w-full max-h-[80vh] overflow-auto"
+        className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] shadow-xl max-w-lg w-full max-h-[80vh] overflow-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-4 border-b border-zinc-800 flex items-center justify-between">
-          <h3 className="font-semibold text-white">
+        <div className="p-4 border-b border-[var(--dash-border)] flex items-center justify-between">
+          <h3 className="font-semibold text-[var(--dash-text)]">
             Fix: {ANOMALY_LABELS[anomaly.type] ?? anomaly.type}
           </h3>
           <button
             type="button"
             onClick={onClose}
-            className="text-zinc-400 hover:text-white p-1"
+            className="text-[var(--dash-muted)] hover:text-[var(--dash-text)] p-1"
             aria-label="Close"
           >
             ×
@@ -107,14 +107,14 @@ function FixModal({
         </div>
         <div className="p-4 space-y-4">
           {anomaly.fix_description ? (
-            <p className="text-zinc-300 text-sm">{anomaly.fix_description}</p>
+            <p className="text-[var(--dash-muted)] text-sm">{anomaly.fix_description}</p>
           ) : (
-            <p className="text-zinc-500 text-sm">
+            <p className="text-[var(--dash-muted)] text-sm">
               No AI fix available. Add OPENROUTER_API_KEY for generated fixes.
             </p>
           )}
           {anomaly.code_snippet && (
-            <pre className="text-xs bg-zinc-950 rounded-lg p-4 overflow-auto text-zinc-300 border border-zinc-800">
+            <pre className="text-xs bg-[var(--dash-surface-hover)] rounded-lg p-4 overflow-auto text-[var(--dash-muted)] border border-[var(--dash-border)]">
               {anomaly.code_snippet}
             </pre>
           )}
@@ -220,16 +220,16 @@ export default function AnomaliesClient() {
 
   return (
     <div className="p-6 md:p-8">
-      <h1 className="text-xl font-semibold text-white mb-6">Anomaly Detection & Event Validation</h1>
+      <h1 className="text-xl font-semibold text-[var(--dash-text)] mb-6">Anomaly Detection & Event Validation</h1>
 
-      <div className="flex gap-2 mb-6 border-b border-zinc-800 pb-2">
+      <div className="flex gap-2 mb-6 border-b border-[var(--dash-border)] pb-2">
         <button
           type="button"
           onClick={() => setTab('monitor')}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             tab === 'monitor'
-              ? 'bg-zinc-700 text-white'
-              : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
+              ? 'bg-[var(--dash-surface-hover)] text-[var(--dash-text)]'
+              : 'text-[var(--dash-muted)] hover:text-[var(--dash-text)] hover:bg-[var(--dash-surface-hover)]'
           }`}
         >
           Anomaly Monitor
@@ -239,8 +239,8 @@ export default function AnomaliesClient() {
           onClick={() => setTab('validator')}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             tab === 'validator'
-              ? 'bg-zinc-700 text-white'
-              : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
+              ? 'bg-[var(--dash-surface-hover)] text-[var(--dash-text)]'
+              : 'text-[var(--dash-muted)] hover:text-[var(--dash-text)] hover:bg-[var(--dash-surface-hover)]'
           }`}
         >
           Event Validator
@@ -253,75 +253,75 @@ export default function AnomaliesClient() {
             <div
               className={`rounded-xl border p-4 ${
                 eventDropAlert
-                  ? 'bg-red-500/10 border-red-500/50'
-                  : 'bg-zinc-900 border-zinc-800'
+                  ? 'bg-[var(--dash-danger)]/10 border-red-500/50'
+                  : 'bg-[var(--dash-surface)] border-[var(--dash-border)]'
               }`}
             >
-              <p className="text-sm text-zinc-400 mb-1">Event Drop Alert</p>
-              <p className={`text-lg font-semibold ${eventDropAlert ? 'text-red-400' : 'text-white'}`}>
+              <p className="text-sm text-[var(--dash-muted)] mb-1">Event Drop Alert</p>
+              <p className={`text-lg font-semibold ${eventDropAlert ? 'text-red-400' : 'text-[var(--dash-text)]'}`}>
                 {eventDropAlert ? 'Low' : 'OK'}
               </p>
-              <p className="text-xs text-zinc-500 mt-1">Today vs daily average</p>
+              <p className="text-xs text-[var(--dash-muted)] mt-1">Today vs daily average</p>
             </div>
             <div
               className={`rounded-xl border p-4 ${
                 duplicateAlert
-                  ? 'bg-red-500/10 border-red-500/50'
-                  : 'bg-zinc-900 border-zinc-800'
+                  ? 'bg-[var(--dash-danger)]/10 border-red-500/50'
+                  : 'bg-[var(--dash-surface)] border-[var(--dash-border)]'
               }`}
             >
-              <p className="text-sm text-zinc-400 mb-1">Duplicate Events</p>
-              <p className={`text-lg font-semibold ${duplicateAlert ? 'text-red-400' : 'text-white'}`}>
+              <p className="text-sm text-[var(--dash-muted)] mb-1">Duplicate Events</p>
+              <p className={`text-lg font-semibold ${duplicateAlert ? 'text-red-400' : 'text-[var(--dash-text)]'}`}>
                 {duplicateAlert ? 'Detected' : 'OK'}
               </p>
-              <p className="text-xs text-zinc-500 mt-1">3+ same in 1 min</p>
+              <p className="text-xs text-[var(--dash-muted)] mt-1">3+ same in 1 min</p>
             </div>
             <div
               className={`rounded-xl border p-4 ${
                 failedAlert
-                  ? 'bg-red-500/10 border-red-500/50'
-                  : 'bg-zinc-900 border-zinc-800'
+                  ? 'bg-[var(--dash-danger)]/10 border-red-500/50'
+                  : 'bg-[var(--dash-surface)] border-[var(--dash-border)]'
               }`}
             >
-              <p className="text-sm text-zinc-400 mb-1">Failed API Calls</p>
-              <p className={`text-lg font-semibold ${failedAlert ? 'text-red-400' : 'text-white'}`}>
+              <p className="text-sm text-[var(--dash-muted)] mb-1">Failed API Calls</p>
+              <p className={`text-lg font-semibold ${failedAlert ? 'text-red-400' : 'text-[var(--dash-text)]'}`}>
                 {failedAlert ? 'Yes' : 'None'}
               </p>
-              <p className="text-xs text-zinc-500 mt-1">Last hour</p>
+              <p className="text-xs text-[var(--dash-muted)] mt-1">Last hour</p>
             </div>
             <div
               className={`rounded-xl border p-4 ${
                 valueAlert
-                  ? 'bg-red-500/10 border-red-500/50'
-                  : 'bg-zinc-900 border-zinc-800'
+                  ? 'bg-[var(--dash-danger)]/10 border-red-500/50'
+                  : 'bg-[var(--dash-surface)] border-[var(--dash-border)]'
               }`}
             >
-              <p className="text-sm text-zinc-400 mb-1">Value Anomaly</p>
-              <p className={`text-lg font-semibold ${valueAlert ? 'text-red-400' : 'text-white'}`}>
+              <p className="text-sm text-[var(--dash-muted)] mb-1">Value Anomaly</p>
+              <p className={`text-lg font-semibold ${valueAlert ? 'text-red-400' : 'text-[var(--dash-text)]'}`}>
                 {valueAlert ? 'Found' : 'OK'}
               </p>
-              <p className="text-xs text-zinc-500 mt-1">Purchase value 0/null</p>
+              <p className="text-xs text-[var(--dash-muted)] mt-1">Purchase value 0/null</p>
             </div>
           </div>
 
-          <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden mb-6">
-            <h2 className="px-4 py-3 border-b border-zinc-800 text-sm font-medium text-zinc-300">
+          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden mb-6">
+            <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">
               Anomaly Timeline
             </h2>
             {loading ? (
-              <div className="py-8 text-center text-zinc-500 text-sm">Loading...</div>
+              <div className="py-8 text-center text-[var(--dash-muted)] text-sm">Loading...</div>
             ) : anomalies.length === 0 ? (
-              <div className="py-8 text-center text-zinc-500 text-sm">No anomalies detected.</div>
+              <div className="py-8 text-center text-[var(--dash-muted)] text-sm">No anomalies detected.</div>
             ) : (
-              <ul className="divide-y divide-zinc-800">
+              <ul className="divide-y divide-[var(--dash-border)]">
                 {[...anomalies].reverse().map((a) => (
                   <li key={a.id} className="px-4 py-3 flex flex-wrap items-center gap-3">
                     <SeverityBadge severity={a.severity} />
-                    <span className="text-zinc-400 text-sm">
+                    <span className="text-[var(--dash-muted)] text-sm">
                       {ANOMALY_LABELS[a.type] ?? a.type}
                     </span>
-                    <span className="text-zinc-300 text-sm flex-1 min-w-0">{a.description}</span>
-                    <span className="text-zinc-500 text-xs shrink-0">
+                    <span className="text-[var(--dash-muted)] text-sm flex-1 min-w-0">{a.description}</span>
+                    <span className="text-[var(--dash-muted)] text-xs shrink-0">
                       {new Date(a.timestamp).toLocaleString()}
                     </span>
                     <button
@@ -337,8 +337,8 @@ export default function AnomaliesClient() {
             )}
           </div>
 
-          <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-            <h2 className="text-sm font-medium text-zinc-300 mb-4">Events per hour (last 24h)</h2>
+          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+            <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">Events per hour (last 24h)</h2>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
@@ -364,35 +364,35 @@ export default function AnomaliesClient() {
                 </BarChart>
               </ResponsiveContainer>
             </div>
-            <p className="text-xs text-zinc-500 mt-2">Bars in red are 50% below average. Auto-refresh 30s.</p>
+            <p className="text-xs text-[var(--dash-muted)] mt-2">Bars in red are 50% below average. Auto-refresh 30s.</p>
           </div>
         </>
       )}
 
       {tab === 'validator' && (
         <div className="space-y-6">
-          <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-            <h2 className="text-sm font-medium text-zinc-300 mb-2">Validate an event (JSON)</h2>
+          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+            <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-2">Validate an event (JSON)</h2>
             <textarea
               value={validateInput}
               onChange={(e) => setValidateInput(e.target.value)}
               placeholder='{"event_name":"Purchase","event_time":1234567890,"value":99,"currency":"USD",...}'
-              className="w-full h-24 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-200 px-3 py-2 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-zinc-500 placeholder:text-zinc-500"
+              className="w-full h-24 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] px-3 py-2 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-[var(--dash-primary)] placeholder:text-[var(--dash-muted)]"
             />
             <button
               type="button"
               onClick={runValidate}
               disabled={validateLoading}
-              className="mt-2 px-4 py-2 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-white text-sm font-medium disabled:opacity-50"
+              className="mt-2 px-4 py-2 rounded-lg bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-border)] text-white text-sm font-medium disabled:opacity-50"
             >
               {validateLoading ? 'Validating...' : 'Validate'}
             </button>
             {validateResult && (
-              <div className="mt-4 p-4 rounded-lg bg-zinc-950 border border-zinc-800">
-                <p className="text-sm text-zinc-400 mb-2">
+              <div className="mt-4 p-4 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)]">
+                <p className="text-sm text-[var(--dash-muted)] mb-2">
                   Score: {validateResult.score} —{' '}
                   {validateResult.valid ? (
-                    <span className="text-emerald-400">Valid</span>
+                    <span className="text-[var(--dash-success)]">Valid</span>
                   ) : (
                     <span className="text-red-400">Has issues</span>
                   )}
@@ -401,16 +401,16 @@ export default function AnomaliesClient() {
                   {validateResult.checks.map((c) => (
                     <li key={c.field} className="flex items-center gap-2 text-sm">
                       {c.passed ? (
-                        <span className="text-emerald-400">✅</span>
+                        <span className="text-[var(--dash-success)]">✅</span>
                       ) : (
                         <span className="text-red-400">❌</span>
                       )}
-                      <span className={c.passed ? 'text-zinc-300' : 'text-zinc-400'}>
+                      <span className={c.passed ? 'text-[var(--dash-muted)]' : 'text-[var(--dash-muted)]'}>
                         {c.label}
                       </span>
                       {!c.passed && (
                         <span
-                          className="text-zinc-500 text-xs cursor-help"
+                          className="text-[var(--dash-muted)] text-xs cursor-help"
                           title={c.howToFix}
                         >
                           (hover for fix)
@@ -423,16 +423,16 @@ export default function AnomaliesClient() {
             )}
           </div>
 
-          <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-            <h2 className="px-4 py-3 border-b border-zinc-800 text-sm font-medium text-zinc-300">
+          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+            <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">
               Live feed — recent events (auto-refresh 30s)
             </h2>
             {eventsLoading && !events.length ? (
-              <div className="py-8 text-center text-zinc-500 text-sm">Loading events...</div>
+              <div className="py-8 text-center text-[var(--dash-muted)] text-sm">Loading events...</div>
             ) : !events.length ? (
-              <div className="py-8 text-center text-zinc-500 text-sm">No events yet.</div>
+              <div className="py-8 text-center text-[var(--dash-muted)] text-sm">No events yet.</div>
             ) : (
-              <ul className="divide-y divide-zinc-800">
+              <ul className="divide-y divide-[var(--dash-border)]">
                 {events.map((row) => {
                   const score = row.validation_score ?? 100
                   const checks = (row.validation_checks ?? []) as ValidationCheck[]
@@ -446,7 +446,7 @@ export default function AnomaliesClient() {
                     <li key={row.id} className="px-4 py-3">
                       <div className="flex items-center gap-3 flex-wrap">
                         {status === 'valid' && (
-                          <span className="text-emerald-400" title="Valid">✅</span>
+                          <span className="text-[var(--dash-success)]" title="Valid">✅</span>
                         )}
                         {status === 'warning' && (
                           <span className="text-amber-400" title="Warning">⚠️</span>
@@ -454,11 +454,11 @@ export default function AnomaliesClient() {
                         {status === 'error' && (
                           <span className="text-red-400" title="Error">❌</span>
                         )}
-                        <span className="font-medium text-white">{row.event_name}</span>
-                        <span className="text-zinc-500 text-sm">
+                        <span className="font-medium text-[var(--dash-text)]">{row.event_name}</span>
+                        <span className="text-[var(--dash-muted)] text-sm">
                           {new Date(row.created_at).toLocaleString()}
                         </span>
-                        <span className="text-zinc-400 text-sm">Score: {score}</span>
+                        <span className="text-[var(--dash-muted)] text-sm">Score: {score}</span>
                       </div>
                       <div className="flex flex-wrap gap-2 mt-2">
                         {checks.length > 0 ? (
@@ -469,15 +469,15 @@ export default function AnomaliesClient() {
                               title={!c.passed ? c.howToFix : undefined}
                             >
                               {c.passed ? (
-                                <span className="text-emerald-500">✅</span>
+                                <span className="text-[var(--dash-success)]">✅</span>
                               ) : (
                                 <span className="text-red-500">❌</span>
                               )}
-                              <span className="text-zinc-500">{c.label}</span>
+                              <span className="text-[var(--dash-muted)]">{c.label}</span>
                             </span>
                           ))
                         ) : (
-                          <span className="text-zinc-500 text-xs">No checks stored</span>
+                          <span className="text-[var(--dash-muted)] text-xs">No checks stored</span>
                         )}
                       </div>
                     </li>
@@ -495,3 +495,7 @@ export default function AnomaliesClient() {
     </div>
   )
 }
+
+
+
+

@@ -174,7 +174,7 @@ function ContactContent() {
           filter:"blur(80px)", borderRadius:"50%", pointerEvents:"none"
         }}/>
         <p style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', fontSize:13, letterSpacing:4, color:LIME, textTransform:"uppercase", marginBottom:16, fontWeight:600 }}>
-          Let's Work Together
+          Let&apos;s Work Together
         </p>
         <h1 style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', fontSize:"clamp(36px,6vw,72px)", fontWeight:300, lineHeight:1.05, letterSpacing:"-1px" }}>
           Ready to{" "}
@@ -195,7 +195,7 @@ function ContactContent() {
           </span>
         </h1>
         <p style={{ color:"#777", fontSize:16, maxWidth:480, margin:"20px auto 0", lineHeight:1.7 }}>
-          Whether you have a project in mind or just want to explore — I'm here. Drop a message or book a call directly.
+          Whether you have a project in mind or just want to explore — I&apos;m here. Drop a message or book a call directly.
         </p>
       </div>
 
@@ -245,7 +245,7 @@ function ContactContent() {
           <div style={{ background:`linear-gradient(135deg, ${LIME}22 0%, #0a0a0a 100%)`, border:`1px solid ${LIME}33`, borderRadius:20, padding:28 }}>
             <div style={{ fontSize:28, marginBottom:8 }}>🚀</div>
             <p style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', fontSize:18, fontWeight:600, marginBottom:8 }}>Free Campaign Audit</p>
-            <p style={{ fontSize:13, color:"#999", lineHeight:1.6, marginBottom:16 }}>Book a free 45-min audit call and I'll review your existing campaigns live — no strings attached.</p>
+            <p style={{ fontSize:13, color:"#999", lineHeight:1.6, marginBottom:16 }}>Book a free 45-min audit call and I&apos;ll review your existing campaigns live — no strings attached.</p>
             <button className="lime-btn" style={{ padding:"10px 22px", fontSize:13 }} type="button" onClick={()=>{ setActiveTab("calendar"); setSelectedType("audit"); }}>
               Claim Free Audit →
             </button>
@@ -259,7 +259,7 @@ function ContactContent() {
                 <div style={{ textAlign:"center", padding:"40px 0" }}>
                   <div style={{ fontSize:56, marginBottom:16 }}>✅</div>
                   <h3 style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', fontSize:24, marginBottom:8 }}>Message Sent!</h3>
-                  <p style={{ color:"#777", fontSize:14 }}>I'll get back to you within 24 hours.</p>
+                  <p style={{ color:"#777", fontSize:14 }}>I&apos;ll get back to you within 24 hours.</p>
                   <button className="lime-btn" style={{ marginTop:24 }} type="button" onClick={()=>{ setFormSent(false); setForm({ name:"",email:"",company:"",budget:"",message:"" }); }}>Send Another</button>
                 </div>
               ) : (

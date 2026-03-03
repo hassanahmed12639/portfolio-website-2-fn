@@ -415,9 +415,30 @@ export async function POST(request: NextRequest) {
     let originalPayload: Record<string, unknown> = {}
 
     if (integration.platform === 'meta') {
-      const pixelId = integration.pixel_id
-      const accessToken = integration.access_token
-      if (pixelId && accessToken) {
+      // Multi-Pixel: fetch from pixels table, fallback to integration
+      const { data: additionalPixels } = await supabaseService
+        .from('pixels')
+        .select('pixel_id, access_token, name')
+        .eq('user_id', userId)
+        .eq('platform', 'meta')
+        .eq('is_active', true)
+
+      const pixelsToFire: { pixel_id: string; access_token: string; name: string }[] =
+        (additionalPixels || []).map((p) => ({
+          pixel_id: p.pixel_id,
+          access_token: p.access_token,
+          name: p.name || 'Pixel',
+        }))
+
+      if (pixelsToFire.length === 0 && integration.pixel_id && integration.access_token) {
+        pixelsToFire.push({
+          pixel_id: integration.pixel_id,
+          access_token: integration.access_token,
+          name: 'Primary',
+        })
+      }
+
+      if (pixelsToFire.length > 0) {
         const hashedEmail = enrichmentData?.hashes?.email_hash ?? (email ? sha256(email) : undefined)
         const hashedPhone = enrichmentData?.hashes?.phone_hash ?? (phone ? sha256(phone.replace(/\D/g, '')) : undefined)
 
@@ -464,56 +485,52 @@ export async function POST(request: NextRequest) {
         originalPayload = metaRequestBody
 
         const metaHeaders = buildHeaders('meta', headerSettings, ip, userAgent, event_source_url_final)
-        const res = await fetch(
-          `https://graph.facebook.com/v19.0/${pixelId}/events?access_token=${encodeURIComponent(accessToken)}`,
-          {
-            method: 'POST',
-            headers: metaHeaders,
-            body: JSON.stringify(metaRequestBody),
-          }
-        )
-        if (res.ok) {
-          status = 'success'
-          platformsFired.push('meta')
-        } else {
-          const metaResponseBody = await res.text()
-          const metaErrorMessage = `${res.status}: ${metaResponseBody.slice(0, 300)}`
-          console.log('[Meta CAPI] Failed:', metaErrorMessage)
-          if (status === 'failed' && integration.platform === 'meta') {
-            const userId = profile.id
-            console.log('[RetryQueue] Attempting to add to queue for user:', userId)
-            const nextRetry = calculateNextRetry(1)
-            console.log('[RetryQueue] Next retry at:', nextRetry)
+        let lastMetaError: string | null = null
 
-            const { error: retryError } = await supabaseService.from('retry_queue').insert({
-              user_id: userId,
-              event_id: event_id ?? null,
-              payload: {
-                event_name,
-                email: email ?? null,
-                phone: phone ?? null,
-                value: value ?? null,
-                currency: currency ?? 'USD',
-                event_id: event_id ?? null,
-                event_source_url: event_source_url_final ?? null,
-                fbp: fbp ?? null,
-                fbc: fbc ?? null,
-                fbclid: fbclid ?? null,
-              },
-              platform: 'meta',
-              attempt: 1,
-              max_attempts: 4,
-              next_retry_at: nextRetry.toISOString(),
-              last_error: metaErrorMessage ?? 'Meta CAPI call failed',
-              status: 'pending',
-            })
-
-            if (retryError) {
-              console.error('[RetryQueue] Insert error:', retryError)
-            } else {
-              console.log('[RetryQueue] Successfully added to queue')
+        for (const px of pixelsToFire) {
+          const res = await fetch(
+            `https://graph.facebook.com/v19.0/${px.pixel_id}/events?access_token=${encodeURIComponent(px.access_token)}`,
+            {
+              method: 'POST',
+              headers: metaHeaders,
+              body: JSON.stringify(metaRequestBody),
             }
+          )
+          if (res.ok) {
+            status = 'success'
+            platformsFired.push('meta')
+            console.log(`[MultiPixel] Fired to ${px.name} (${px.pixel_id}): ${res.status}`)
+          } else {
+            const metaResponseBody = await res.text()
+            lastMetaError = `${res.status}: ${metaResponseBody.slice(0, 300)}`
+            console.log(`[MultiPixel] Failed ${px.name} (${px.pixel_id}):`, lastMetaError)
           }
+        }
+
+        if (status === 'failed' && lastMetaError) {
+          const nextRetry = calculateNextRetry(1)
+          await supabaseService.from('retry_queue').insert({
+            user_id: profile.id,
+            event_id: event_id ?? null,
+            payload: {
+              event_name,
+              email: email ?? null,
+              phone: phone ?? null,
+              value: value ?? null,
+              currency: currency ?? 'USD',
+              event_id: event_id ?? null,
+              event_source_url: event_source_url_final ?? null,
+              fbp: fbp ?? null,
+              fbc: fbc ?? null,
+              fbclid: fbclid ?? null,
+            },
+            platform: 'meta',
+            attempt: 1,
+            max_attempts: 4,
+            next_retry_at: nextRetry.toISOString(),
+            last_error: lastMetaError,
+            status: 'pending',
+          })
         }
       }
     } else if (integration.platform === 'google') {

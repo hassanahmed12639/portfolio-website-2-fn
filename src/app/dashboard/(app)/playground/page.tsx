@@ -233,15 +233,15 @@ export default function PlaygroundPage() {
 
   return (
     <div className="p-6 md:p-8 min-h-screen">
-      <h1 className="text-xl font-semibold text-white mb-2">Event Playground</h1>
-      <p className="text-zinc-400 text-sm mb-6">Test events visually before going live. Test events do not count toward your quota.</p>
+      <h1 className="text-xl font-semibold text-[var(--dash-text)] mb-2">Event Playground</h1>
+      <p className="text-[var(--dash-muted)] text-sm mb-6">Test events visually before going live. Test events do not count toward your quota.</p>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* Left — Event Builder */}
         <div className="space-y-6">
-          <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-            <div className="px-4 py-3 border-b border-zinc-800">
-              <h2 className="text-sm font-medium text-zinc-300">Choose Event Type</h2>
+          <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+            <div className="px-4 py-3 border-b border-[var(--dash-border)]">
+              <h2 className="text-sm font-medium text-[var(--dash-muted)]">Choose Event Type</h2>
             </div>
             <div className="p-4">
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -252,8 +252,8 @@ export default function PlaygroundPage() {
                     onClick={() => setEventType(t.id)}
                     className={`px-3 py-2.5 rounded-lg border text-left text-sm transition-colors ${
                       eventType === t.id
-                        ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300'
-                        : 'bg-zinc-800/50 border-zinc-700 text-zinc-300 hover:bg-zinc-800'
+                        ? 'bg-[var(--dash-success-soft)] border-[var(--dash-success-border)] text-[var(--dash-success)]'
+                        : 'bg-[var(--dash-surface-hover)]/50 border-[var(--dash-border)] text-[var(--dash-muted)] hover:bg-[var(--dash-surface-hover)]'
                     }`}
                   >
                     <span className="mr-1.5">{t.icon}</span>
@@ -265,8 +265,8 @@ export default function PlaygroundPage() {
                   onClick={() => setEventType('Custom')}
                   className={`px-3 py-2.5 rounded-lg border text-left text-sm transition-colors ${
                     eventType === 'Custom'
-                      ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300'
-                      : 'bg-zinc-800/50 border-zinc-700 text-zinc-300 hover:bg-zinc-800'
+                      ? 'bg-[var(--dash-success-soft)] border-[var(--dash-success-border)] text-[var(--dash-success)]'
+                      : 'bg-[var(--dash-surface-hover)]/50 border-[var(--dash-border)] text-[var(--dash-muted)] hover:bg-[var(--dash-surface-hover)]'
                   }`}
                 >
                   Custom
@@ -278,32 +278,32 @@ export default function PlaygroundPage() {
                   value={customEventName}
                   onChange={(e) => setCustomEventName(e.target.value)}
                   placeholder="Event name"
-                  className="mt-3 w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 placeholder-zinc-500 text-sm"
+                  className="mt-3 w-full px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] text-sm"
                 />
               )}
             </div>
           </section>
 
-          <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-            <div className="px-4 py-3 border-b border-zinc-800 flex flex-wrap items-center justify-between gap-2">
-              <h2 className="text-sm font-medium text-zinc-300">Event Parameters</h2>
+          <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+            <div className="px-4 py-3 border-b border-[var(--dash-border)] flex flex-wrap items-center justify-between gap-2">
+              <h2 className="text-sm font-medium text-[var(--dash-muted)]">Event Parameters</h2>
               {validationResult && (
                 <div className="flex items-center gap-4 text-xs">
                   <span
                     className={`font-medium ${
-                      validationResult.score >= 80 ? 'text-emerald-400' : validationResult.score >= 50 ? 'text-amber-400' : 'text-red-400'
+                      validationResult.score >= 80 ? 'text-[var(--dash-success)]' : validationResult.score >= 50 ? 'text-amber-400' : 'text-red-400'
                     }`}
                   >
                     Payload Score: {validationResult.score}/100
                   </span>
-                  <span className="text-zinc-400">Est. Match Rate: {validationResult.estimatedMatchRate}%</span>
+                  <span className="text-[var(--dash-muted)]">Est. Match Rate: {validationResult.estimatedMatchRate}%</span>
                 </div>
               )}
             </div>
             <div className="p-4 space-y-3">
               {showField('value') && (
                 <div>
-                  <label className="block text-xs text-zinc-500 mb-1 flex items-center gap-1.5">
+                  <label className="block text-xs text-[var(--dash-muted)] mb-1 flex items-center gap-1.5">
                     value
                     {getFieldSeverity(validationResult, 'value') && (
                       <span
@@ -321,14 +321,14 @@ export default function PlaygroundPage() {
                     type="number"
                     value={params.value}
                     onChange={(e) => updateParam('value', e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm"
+                    className="w-full px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] text-sm"
                     placeholder="0"
                   />
                 </div>
               )}
               {showField('currency') && (
                 <div>
-                  <label className="block text-xs text-zinc-500 mb-1 flex items-center gap-1.5">
+                  <label className="block text-xs text-[var(--dash-muted)] mb-1 flex items-center gap-1.5">
                     currency
                     {getFieldSeverity(validationResult, 'currency') && (
                       <span
@@ -341,7 +341,7 @@ export default function PlaygroundPage() {
                   <select
                     value={params.currency}
                     onChange={(e) => updateParam('currency', e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm"
+                    className="w-full px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] text-sm"
                   >
                     {CURRENCIES.map((c) => (
                       <option key={c} value={c}>{c}</option>
@@ -351,7 +351,7 @@ export default function PlaygroundPage() {
               )}
               {showField('email') && (
                 <div>
-                  <label className="block text-xs text-zinc-500 mb-1 flex items-center gap-1.5">
+                  <label className="block text-xs text-[var(--dash-muted)] mb-1 flex items-center gap-1.5">
                     email
                     {getFieldSeverity(validationResult, 'email') && (
                       <span
@@ -365,14 +365,14 @@ export default function PlaygroundPage() {
                     type="email"
                     value={params.email}
                     onChange={(e) => updateParam('email', e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm"
+                    className="w-full px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] text-sm"
                     placeholder="user@example.com"
                   />
                 </div>
               )}
               {showField('phone') && (
                 <div>
-                  <label className="block text-xs text-zinc-500 mb-1 flex items-center gap-1.5">
+                  <label className="block text-xs text-[var(--dash-muted)] mb-1 flex items-center gap-1.5">
                     phone
                     {getFieldSeverity(validationResult, 'phone') && (
                       <span
@@ -386,81 +386,81 @@ export default function PlaygroundPage() {
                     type="text"
                     value={params.phone}
                     onChange={(e) => updateParam('phone', e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm"
+                    className="w-full px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] text-sm"
                     placeholder="+1234567890"
                   />
                 </div>
               )}
               {showField('order_id') && (
                 <div>
-                  <label className="block text-xs text-zinc-500 mb-1">order_id</label>
+                  <label className="block text-xs text-[var(--dash-muted)] mb-1">order_id</label>
                   <input
                     type="text"
                     value={params.order_id}
                     onChange={(e) => updateParam('order_id', e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm"
+                    className="w-full px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] text-sm"
                   />
                 </div>
               )}
               {showField('form_name') && (
                 <div>
-                  <label className="block text-xs text-zinc-500 mb-1">form_name</label>
+                  <label className="block text-xs text-[var(--dash-muted)] mb-1">form_name</label>
                   <input
                     type="text"
                     value={params.form_name}
                     onChange={(e) => updateParam('form_name', e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm"
+                    className="w-full px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] text-sm"
                   />
                 </div>
               )}
               {showField('page_url') && (
                 <div>
-                  <label className="block text-xs text-zinc-500 mb-1">page_url</label>
+                  <label className="block text-xs text-[var(--dash-muted)] mb-1">page_url</label>
                   <input
                     type="url"
                     value={params.page_url}
                     onChange={(e) => updateParam('page_url', e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm"
+                    className="w-full px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] text-sm"
                     placeholder="https://..."
                   />
                 </div>
               )}
               {showField('page_title') && (
                 <div>
-                  <label className="block text-xs text-zinc-500 mb-1">page_title</label>
+                  <label className="block text-xs text-[var(--dash-muted)] mb-1">page_title</label>
                   <input
                     type="text"
                     value={params.page_title}
                     onChange={(e) => updateParam('page_title', e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm"
+                    className="w-full px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] text-sm"
                   />
                 </div>
               )}
               {showField('product_id') && (
                 <div>
-                  <label className="block text-xs text-zinc-500 mb-1">product_id</label>
+                  <label className="block text-xs text-[var(--dash-muted)] mb-1">product_id</label>
                   <input
                     type="text"
                     value={params.product_id}
                     onChange={(e) => updateParam('product_id', e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm"
+                    className="w-full px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] text-sm"
                   />
                 </div>
               )}
               {showField('product_name') && (
                 <div>
-                  <label className="block text-xs text-zinc-500 mb-1">product_name</label>
+                  <label className="block text-xs text-[var(--dash-muted)] mb-1">product_name</label>
                   <input
                     type="text"
                     value={params.product_name}
                     onChange={(e) => updateParam('product_name', e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm"
+                    className="w-full px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] text-sm"
                   />
                 </div>
               )}
               {showField('event_id') && (
                 <div>
-                  <label className="block text-xs text-zinc-500 mb-1 flex items-center gap-1.5">
+                  <label className="block text-xs text-[var(--dash-muted)] mb-1 flex items-center gap-1.5">
                     event_id
                     {getFieldSeverity(validationResult, 'event_id') && (
                       <span
@@ -474,13 +474,13 @@ export default function PlaygroundPage() {
                     type="text"
                     value={params.event_id}
                     onChange={(e) => updateParam('event_id', e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm font-mono"
+                    className="w-full px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] text-sm font-mono"
                   />
                 </div>
               )}
               {showField('event_source_url') && (
                 <div>
-                  <label className="block text-xs text-zinc-500 mb-1 flex items-center gap-1.5">
+                  <label className="block text-xs text-[var(--dash-muted)] mb-1 flex items-center gap-1.5">
                     event_source_url
                     {getFieldSeverity(validationResult, 'event_source_url') && (
                       <span
@@ -494,28 +494,28 @@ export default function PlaygroundPage() {
                     type="url"
                     value={params.event_source_url}
                     onChange={(e) => updateParam('event_source_url', e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm"
+                    className="w-full px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] text-sm"
                     placeholder="https://..."
                   />
                 </div>
               )}
 
               <div className="flex flex-wrap gap-4 pt-2">
-                <label className="flex items-center gap-2 text-sm text-zinc-400 cursor-pointer">
+                <label className="flex items-center gap-2 text-sm text-[var(--dash-muted)] cursor-pointer">
                   <input
                     type="checkbox"
                     checked={includeTestEmail}
                     onChange={(e) => setIncludeTestEmail(e.target.checked)}
-                    className="rounded border-zinc-600 bg-zinc-800 text-emerald-500 focus:ring-emerald-500"
+                    className="rounded border-[var(--dash-border-strong)] bg-[var(--dash-surface-hover)] [accent-color:var(--dash-success)] focus:ring-[var(--dash-success)]"
                   />
                   Include test email (test@test.com)
                 </label>
-                <label className="flex items-center gap-2 text-sm text-zinc-400 cursor-pointer">
+                <label className="flex items-center gap-2 text-sm text-[var(--dash-muted)] cursor-pointer">
                   <input
                     type="checkbox"
                     checked={autoGenerateEventId}
                     onChange={(e) => setAutoGenerateEventId(e.target.checked)}
-                    className="rounded border-zinc-600 bg-zinc-800 text-emerald-500 focus:ring-emerald-500"
+                    className="rounded border-[var(--dash-border-strong)] bg-[var(--dash-surface-hover)] [accent-color:var(--dash-success)] focus:ring-[var(--dash-success)]"
                   />
                   Auto-generate event_id
                 </label>
@@ -524,7 +524,7 @@ export default function PlaygroundPage() {
           </section>
 
           {sendConfirm?.show && (
-            <div className="rounded-xl border border-amber-500/40 bg-amber-500/10 p-4 flex flex-wrap items-center justify-between gap-3">
+            <div className="rounded-xl border border-amber-500/40 bg-[var(--dash-warning)]/10 p-4 flex flex-wrap items-center justify-between gap-3">
               <p className="text-amber-200 text-sm">
                 {sendConfirm.errors > 0 && sendConfirm.warnings > 0
                   ? `${sendConfirm.errors} errors, ${sendConfirm.warnings} warnings found`
@@ -536,7 +536,7 @@ export default function PlaygroundPage() {
               <div className="flex flex-wrap gap-2">
                 <Link
                   href="/dashboard/validator"
-                  className="px-3 py-2 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-sm transition-colors"
+                  className="px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-border)] text-[var(--dash-text)] text-sm transition-colors"
                 >
                   Fix in Validator
                 </Link>
@@ -548,7 +548,7 @@ export default function PlaygroundPage() {
                     setPendingSendTarget(null)
                   }}
                   disabled={sending}
-                  className="px-3 py-2 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-sm font-medium disabled:opacity-50 transition-colors"
+                  className="px-3 py-2 rounded-lg bg-amber-600 hover:bg-[var(--dash-warning)] text-white text-sm font-medium disabled:opacity-50 transition-colors"
                 >
                   Send anyway
                 </button>
@@ -558,7 +558,7 @@ export default function PlaygroundPage() {
                     setSendConfirm(null)
                     setPendingSendTarget(null)
                   }}
-                  className="px-3 py-2 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-sm transition-colors"
+                  className="px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-border)] text-[var(--dash-text)] text-sm transition-colors"
                 >
                   Cancel
                 </button>
@@ -566,17 +566,17 @@ export default function PlaygroundPage() {
             </div>
           )}
 
-          <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-            <div className="px-4 py-3 border-b border-zinc-800">
-              <h2 className="text-sm font-medium text-zinc-300">Send Controls</h2>
+          <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+            <div className="px-4 py-3 border-b border-[var(--dash-border)]">
+              <h2 className="text-sm font-medium text-[var(--dash-muted)]">Send Controls</h2>
             </div>
             <div className="p-4 space-y-3">
               <div>
-                <label className="block text-xs text-zinc-500 mb-1">Send to</label>
+                <label className="block text-xs text-[var(--dash-muted)] mb-1">Send to</label>
                 <select
                   value={sendTarget}
                   onChange={(e) => setSendTarget(e.target.value as 'both' | 'meta' | 'google')}
-                  className="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm"
+                  className="w-full px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] text-sm"
                 >
                   <option value="both">Both</option>
                   <option value="meta">Meta only</option>
@@ -588,7 +588,7 @@ export default function PlaygroundPage() {
                   type="button"
                   onClick={() => sendTestEvent('both')}
                   disabled={sending}
-                  className="flex-1 min-w-[140px] px-4 py-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm disabled:opacity-50 transition-colors"
+                  className="flex-1 min-w-[140px] px-4 py-3 rounded-lg bg-[var(--dash-success)] hover:bg-[var(--dash-success-strong)] text-white font-medium text-sm disabled:opacity-50 transition-colors"
                 >
                   {sending ? 'Sending…' : 'Send Test Event'}
                 </button>
@@ -596,7 +596,7 @@ export default function PlaygroundPage() {
                   type="button"
                   onClick={() => sendTestEvent('meta')}
                   disabled={sending}
-                  className="px-4 py-3 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-sm disabled:opacity-50 transition-colors"
+                  className="px-4 py-3 rounded-lg bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-border)] text-[var(--dash-text)] text-sm disabled:opacity-50 transition-colors"
                 >
                   Send to Meta only
                 </button>
@@ -604,7 +604,7 @@ export default function PlaygroundPage() {
                   type="button"
                   onClick={() => sendTestEvent('google')}
                   disabled={sending}
-                  className="px-4 py-3 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-sm disabled:opacity-50 transition-colors"
+                  className="px-4 py-3 rounded-lg bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-border)] text-[var(--dash-text)] text-sm disabled:opacity-50 transition-colors"
                 >
                   Send to Google only
                 </button>
@@ -614,15 +614,15 @@ export default function PlaygroundPage() {
         </div>
 
         {/* Right — Results */}
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden flex flex-col min-h-[400px]">
-          <div className="flex border-b border-zinc-800">
+        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden flex flex-col min-h-[400px]">
+          <div className="flex border-b border-[var(--dash-border)]">
             {(['response', 'payload', 'platform', 'history'] as const).map((tab) => (
               <button
                 key={tab}
                 type="button"
                 onClick={() => setResultTab(tab)}
                 className={`px-4 py-3 text-sm font-medium capitalize transition-colors ${
-                  resultTab === tab ? 'text-white border-b-2 border-emerald-500 bg-zinc-800/50' : 'text-zinc-400 hover:text-zinc-200'
+                  resultTab === tab ? 'text-[var(--dash-text)] border-b-2 border-[var(--dash-success)] bg-[var(--dash-surface-hover)]/50' : 'text-[var(--dash-muted)] hover:text-[var(--dash-text)]'
                 }`}
               >
                 {tab === 'response' ? 'Response' : tab === 'payload' ? 'Payload Preview' : tab === 'platform' ? 'Platform Preview' : 'Event History'}
@@ -636,27 +636,27 @@ export default function PlaygroundPage() {
                   <>
                     <div
                       className={`rounded-lg border p-4 ${
-                        success ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-red-500/10 border-red-500/30'
+                        success ? 'bg-[var(--dash-success-soft)] border-[var(--dash-success-border)]' : 'bg-[var(--dash-danger)]/10 border-red-500/30'
                       }`}
                     >
-                      <pre className="text-xs text-zinc-300 whitespace-pre-wrap font-mono">
+                      <pre className="text-xs text-[var(--dash-muted)] whitespace-pre-wrap font-mono">
                         {JSON.stringify(lastResponse, null, 2)}
                       </pre>
                     </div>
                     {typeof lastResponse === 'object' && lastResponse !== null && (
                       <>
                         {'platforms_fired' in lastResponse && (
-                          <p className="text-sm text-zinc-400">
+                          <p className="text-sm text-[var(--dash-muted)]">
                             Platforms fired: {(lastResponse as { platforms_fired?: string[] }).platforms_fired?.join(', ') ?? '—'}
                           </p>
                         )}
                         {'event_id' in lastResponse && (
-                          <p className="text-sm text-zinc-400">
+                          <p className="text-sm text-[var(--dash-muted)]">
                             event_id: {String((lastResponse as { event_id?: string }).event_id ?? '—')}
                           </p>
                         )}
                         {'timestamp' in lastResponse && (
-                          <p className="text-sm text-zinc-400">
+                          <p className="text-sm text-[var(--dash-muted)]">
                             timestamp: {(lastResponse as { timestamp?: number }).timestamp ?? '—'}
                           </p>
                         )}
@@ -665,28 +665,28 @@ export default function PlaygroundPage() {
                     <button
                       type="button"
                       onClick={() => navigator.clipboard.writeText(JSON.stringify(lastResponse, null, 2))}
-                      className="px-3 py-1.5 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-sm"
+                      className="px-3 py-1.5 rounded-lg bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-border)] text-[var(--dash-text)] text-sm"
                     >
                       Copy Response
                     </button>
                   </>
                 ) : (
-                  <p className="text-zinc-500 text-sm">Send a test event to see the API response here.</p>
+                  <p className="text-[var(--dash-muted)] text-sm">Send a test event to see the API response here.</p>
                 )}
               </div>
             )}
 
             {resultTab === 'payload' && (
               <div className="space-y-3">
-                <div className="rounded-lg border border-zinc-700 bg-zinc-950 p-4">
-                  <pre className="text-xs text-zinc-300 whitespace-pre-wrap font-mono">
+                <div className="rounded-lg border border-[var(--dash-border)] bg-[var(--dash-surface-hover)] p-4">
+                  <pre className="text-xs text-[var(--dash-muted)] whitespace-pre-wrap font-mono">
                     {JSON.stringify(payloadPreview, null, 2)}
                   </pre>
                 </div>
                 <button
                   type="button"
                   onClick={() => navigator.clipboard.writeText(JSON.stringify(payloadPreview, null, 2))}
-                  className="px-3 py-1.5 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-sm"
+                  className="px-3 py-1.5 rounded-lg bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-border)] text-[var(--dash-text)] text-sm"
                 >
                   Copy Payload
                 </button>
@@ -695,25 +695,25 @@ export default function PlaygroundPage() {
 
             {resultTab === 'platform' && (
               <div className="space-y-6">
-                <div className="rounded-lg border border-zinc-700 p-4 space-y-2">
-                  <h3 className="text-sm font-medium text-white">Meta</h3>
-                  <ul className="text-sm text-zinc-400 space-y-1">
+                <div className="rounded-lg border border-[var(--dash-border)] p-4 space-y-2">
+                  <h3 className="text-sm font-medium text-[var(--dash-text)]">Meta</h3>
+                  <ul className="text-sm text-[var(--dash-muted)] space-y-1">
                     <li>Event name mapping ✅</li>
                     <li>Required fields check ✅</li>
                     <li>Optional fields check ✅</li>
                     <li>Match rate estimate: {params.email || params.phone ? 'High' : '—'}</li>
                   </ul>
-                  <p className="text-xs text-zinc-500 pt-1">
+                  <p className="text-xs text-[var(--dash-muted)] pt-1">
                     Meta will use this for: Conversion optimization, Audience building
                   </p>
                 </div>
-                <div className="rounded-lg border border-zinc-700 p-4 space-y-2">
-                  <h3 className="text-sm font-medium text-white">Google</h3>
-                  <ul className="text-sm text-zinc-400 space-y-1">
+                <div className="rounded-lg border border-[var(--dash-border)] p-4 space-y-2">
+                  <h3 className="text-sm font-medium text-[var(--dash-text)]">Google</h3>
+                  <ul className="text-sm text-[var(--dash-muted)] space-y-1">
                     <li>Conversion mapping ✅</li>
                     <li>Hashing status ✅</li>
                   </ul>
-                  <p className="text-xs text-zinc-500 pt-1">
+                  <p className="text-xs text-[var(--dash-muted)] pt-1">
                     Google will use this for: Smart bidding, Enhanced conversions
                   </p>
                 </div>
@@ -723,23 +723,23 @@ export default function PlaygroundPage() {
             {resultTab === 'history' && (
               <div className="space-y-3">
                 {history.length === 0 ? (
-                  <p className="text-zinc-500 text-sm">No test events sent this session.</p>
+                  <p className="text-[var(--dash-muted)] text-sm">No test events sent this session.</p>
                 ) : (
                   <>
                     <ul className="space-y-2">
                       {history.map((item) => (
                         <li
                           key={item.id}
-                          className="flex items-center justify-between gap-2 py-2 border-b border-zinc-800"
+                          className="flex items-center justify-between gap-2 py-2 border-b border-[var(--dash-border)]"
                         >
                           <div>
-                            <span className="text-zinc-200 font-medium">{item.event_name}</span>
-                            <span className="text-zinc-500 text-xs ml-2">
+                            <span className="text-[var(--dash-text)] font-medium">{item.event_name}</span>
+                            <span className="text-[var(--dash-muted)] text-xs ml-2">
                               {new Date(item.time).toLocaleTimeString()}
                             </span>
                             <span
                               className={`ml-2 text-xs ${
-                                item.status === 'success' ? 'text-emerald-400' : 'text-red-400'
+                                item.status === 'success' ? 'text-[var(--dash-success)]' : 'text-red-400'
                               }`}
                             >
                               {item.status}
@@ -777,7 +777,7 @@ export default function PlaygroundPage() {
                                 setSending(false)
                               }
                             }}
-                            className="px-2 py-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-300 text-xs"
+                            className="px-2 py-1 rounded bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-border)] text-[var(--dash-muted)] text-xs"
                           >
                             Replay
                           </button>
@@ -787,7 +787,7 @@ export default function PlaygroundPage() {
                     <button
                       type="button"
                       onClick={() => setHistory([])}
-                      className="px-3 py-1.5 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-sm"
+                      className="px-3 py-1.5 rounded-lg bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-border)] text-[var(--dash-text)] text-sm"
                     >
                       Clear History
                     </button>
@@ -801,20 +801,20 @@ export default function PlaygroundPage() {
 
       {/* Bottom — Quality Score */}
       {qualityScore !== null && (
-        <div className="mt-6 rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-          <div className="px-4 py-3 border-b border-zinc-800 flex items-center gap-4">
-            <span className="text-sm font-medium text-zinc-300">Event Quality Score</span>
+        <div className="mt-6 rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+          <div className="px-4 py-3 border-b border-[var(--dash-border)] flex items-center gap-4">
+            <span className="text-sm font-medium text-[var(--dash-muted)]">Event Quality Score</span>
             <span
               className={`text-2xl font-bold ${
-                qualityScore >= 80 ? 'text-emerald-400' : qualityScore >= 50 ? 'text-amber-400' : 'text-red-400'
+                qualityScore >= 80 ? 'text-[var(--dash-success)]' : qualityScore >= 50 ? 'text-amber-400' : 'text-red-400'
               }`}
             >
               {qualityScore}/100
             </span>
           </div>
           <div className="p-4">
-            <p className="text-xs text-zinc-500 mb-2">Breakdown: email/phone +30 • value (purchase) +20 • event_id +20 • source URL +15 • currency +15</p>
-            <ul className="text-sm text-zinc-400 space-y-1">
+            <p className="text-xs text-[var(--dash-muted)] mb-2">Breakdown: email/phone +30 • value (purchase) +20 • event_id +20 • source URL +15 • currency +15</p>
+            <ul className="text-sm text-[var(--dash-muted)] space-y-1">
               {qualityTips(qualityScore).map((tip, i) => (
                 <li key={i}>{tip}</li>
               ))}
@@ -825,3 +825,7 @@ export default function PlaygroundPage() {
     </div>
   )
 }
+
+
+
+

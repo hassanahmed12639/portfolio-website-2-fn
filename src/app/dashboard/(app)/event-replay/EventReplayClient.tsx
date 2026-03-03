@@ -41,27 +41,27 @@ function formatDate(iso: string): string {
 function StatusBadge({ status }: { status: string }) {
   if (status === 'recovered') {
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-emerald-500/20 text-emerald-400">
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-[var(--dash-success-soft)] text-[var(--dash-success)]">
         Recovered
       </span>
     )
   }
   if (status === 'failed') {
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-red-500/20 text-red-400">
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-[var(--dash-danger)]/20 text-red-400">
         Failed
       </span>
     )
   }
   if (status === 'retrying') {
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-amber-500/20 text-amber-400">
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-[var(--dash-warning)]/20 text-amber-400">
         Retrying
       </span>
     )
   }
   return (
-    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-zinc-600 text-zinc-400">
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-[var(--dash-surface-hover)] text-[var(--dash-muted)]">
       {status}
     </span>
   )
@@ -171,23 +171,23 @@ export default function EventReplayClient() {
 
   return (
     <div className="p-6 md:p-8">
-      <h1 className="text-xl font-semibold text-white mb-2">Event Replay</h1>
-      <p className="text-zinc-400 text-sm mb-6">
+      <h1 className="text-xl font-semibold text-[var(--dash-text)] mb-2">Event Replay</h1>
+      <p className="text-[var(--dash-muted)] text-sm mb-6">
         Replay failed events and check which channels are missing server-side tracking.
       </p>
 
-      <div className="flex gap-1 p-1 rounded-lg bg-zinc-900 border border-zinc-800 w-fit mb-8">
+      <div className="flex gap-1 p-1 rounded-lg bg-[var(--dash-surface)] border border-[var(--dash-border)] w-fit mb-8">
         <button
           type="button"
           onClick={() => setTab('failed')}
-          className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${tab === 'failed' ? 'bg-zinc-700 text-white' : 'text-zinc-400 hover:text-white'}`}
+          className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${tab === 'failed' ? 'bg-[var(--dash-surface-hover)] text-[var(--dash-text)]' : 'text-[var(--dash-muted)] hover:text-[var(--dash-text)]'}`}
         >
           Failed Events Replay
         </button>
         <button
           type="button"
           onClick={() => setTab('capi')}
-          className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${tab === 'capi' ? 'bg-zinc-700 text-white' : 'text-zinc-400 hover:text-white'}`}
+          className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${tab === 'capi' ? 'bg-[var(--dash-surface-hover)] text-[var(--dash-text)]' : 'text-[var(--dash-muted)] hover:text-[var(--dash-text)]'}`}
         >
           Missing CAPI Detector
         </button>
@@ -197,21 +197,21 @@ export default function EventReplayClient() {
         <>
           {summary && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-                <p className="text-sm text-zinc-400 mb-1">Total failed events</p>
-                <p className="text-xl font-semibold text-white">{summary.totalFailed}</p>
+              <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+                <p className="text-sm text-[var(--dash-muted)] mb-1">Total failed events</p>
+                <p className="text-xl font-semibold text-[var(--dash-text)]">{summary.totalFailed}</p>
               </div>
-              <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-                <p className="text-sm text-zinc-400 mb-1">Total recovered</p>
-                <p className="text-xl font-semibold text-white">{summary.totalRecovered}</p>
+              <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+                <p className="text-sm text-[var(--dash-muted)] mb-1">Total recovered</p>
+                <p className="text-xl font-semibold text-[var(--dash-text)]">{summary.totalRecovered}</p>
               </div>
-              <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-                <p className="text-sm text-zinc-400 mb-1">Recovery rate</p>
-                <p className="text-xl font-semibold text-white">{summary.recoveryRate}%</p>
+              <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+                <p className="text-sm text-[var(--dash-muted)] mb-1">Recovery rate</p>
+                <p className="text-xl font-semibold text-[var(--dash-text)]">{summary.recoveryRate}%</p>
               </div>
-              <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-                <p className="text-sm text-zinc-400 mb-1">Revenue at risk</p>
-                <p className="text-xl font-semibold text-white">${summary.revenueAtRisk.toFixed(2)}</p>
+              <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+                <p className="text-sm text-[var(--dash-muted)] mb-1">Revenue at risk</p>
+                <p className="text-xl font-semibold text-[var(--dash-text)]">${summary.revenueAtRisk.toFixed(2)}</p>
               </div>
             </div>
           )}
@@ -221,24 +221,24 @@ export default function EventReplayClient() {
               type="button"
               onClick={handleReplayAll}
               disabled={replayAllLoading || failedOnly.length === 0}
-              className="rounded-lg bg-white text-zinc-900 px-4 py-2 text-sm font-medium hover:bg-zinc-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="rounded-lg bg-[var(--dash-surface)] text-[var(--dash-text)] px-4 py-2 text-sm font-medium hover:bg-[var(--dash-surface-hover)] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {replayAllLoading ? 'Replaying…' : 'Replay All'}
             </button>
           </div>
 
-          <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
+          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
             {loading && !events.length ? (
-              <div className="py-16 text-center text-zinc-400">Loading…</div>
+              <div className="py-16 text-center text-[var(--dash-muted)]">Loading…</div>
             ) : !failedOnly.length && events.length > 0 ? (
-              <div className="py-16 text-center text-zinc-400">No failed events to replay.</div>
+              <div className="py-16 text-center text-[var(--dash-muted)]">No failed events to replay.</div>
             ) : !events.length ? (
-              <div className="py-16 text-center text-zinc-400">No failed or recovered events.</div>
+              <div className="py-16 text-center text-[var(--dash-muted)]">No failed or recovered events.</div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-zinc-800 text-left text-zinc-400">
+                    <tr className="border-b border-[var(--dash-border)] text-left text-[var(--dash-muted)]">
                       <th className="px-4 py-3 font-medium">Event name</th>
                       <th className="px-4 py-3 font-medium">Platform</th>
                       <th className="px-4 py-3 font-medium">Failed at</th>
@@ -250,12 +250,12 @@ export default function EventReplayClient() {
                   </thead>
                   <tbody>
                     {failedOnly.map((row) => (
-                      <tr key={row.id} className="border-b border-zinc-800/80 hover:bg-zinc-800/30">
-                        <td className="px-4 py-3 text-white">{row.event_name}</td>
-                        <td className="px-4 py-3 text-zinc-300">{PLATFORM_LABEL[row.platform] ?? row.platform}</td>
-                        <td className="px-4 py-3 text-zinc-500">{formatDate(row.created_at)}</td>
-                        <td className="px-4 py-3 text-zinc-300">{row.retry_count ?? 0}</td>
-                        <td className="px-4 py-3 text-zinc-500 max-w-[200px] truncate" title={row.validation_issues?.join(', ')}>
+                      <tr key={row.id} className="border-b border-[var(--dash-border)]/80 hover:bg-[var(--dash-surface-hover)]/30">
+                        <td className="px-4 py-3 text-[var(--dash-text)]">{row.event_name}</td>
+                        <td className="px-4 py-3 text-[var(--dash-muted)]">{PLATFORM_LABEL[row.platform] ?? row.platform}</td>
+                        <td className="px-4 py-3 text-[var(--dash-muted)]">{formatDate(row.created_at)}</td>
+                        <td className="px-4 py-3 text-[var(--dash-muted)]">{row.retry_count ?? 0}</td>
+                        <td className="px-4 py-3 text-[var(--dash-muted)] max-w-[200px] truncate" title={row.validation_issues?.join(', ')}>
                           {row.validation_issues?.length ? row.validation_issues.join(', ') : '—'}
                         </td>
                         <td className="px-4 py-3">
@@ -267,7 +267,7 @@ export default function EventReplayClient() {
                               type="button"
                               onClick={() => handleReplay(row.id)}
                               disabled={replayingId !== null}
-                              className="text-sm font-medium text-emerald-400 hover:text-emerald-300 disabled:opacity-50"
+                              className="text-sm font-medium text-[var(--dash-success)] hover:opacity-80 disabled:opacity-50"
                             >
                               {replayingId === row.id ? '…' : 'Replay'}
                             </button>
@@ -291,13 +291,13 @@ export default function EventReplayClient() {
               placeholder="Enter site URL to check coverage"
               value={capiUrl}
               onChange={(e) => setCapiUrl(e.target.value)}
-              className="flex-1 min-w-[200px] rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
+              className="flex-1 min-w-[200px] rounded-lg border border-[var(--dash-border)] bg-[var(--dash-surface)] px-4 py-2 text-[var(--dash-text)] placeholder:text-[var(--dash-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--dash-primary)]"
             />
             <button
               type="button"
               onClick={handleCapiCheck}
               disabled={capiScanLoading || !capiUrl.trim()}
-              className="rounded-lg bg-white text-zinc-900 px-4 py-2 text-sm font-medium hover:bg-zinc-200 disabled:opacity-50"
+              className="rounded-lg bg-[var(--dash-surface)] text-[var(--dash-text)] px-4 py-2 text-sm font-medium hover:bg-[var(--dash-surface-hover)] disabled:opacity-50"
             >
               {capiScanLoading ? 'Checking…' : 'Check coverage'}
             </button>
@@ -305,35 +305,35 @@ export default function EventReplayClient() {
 
           <div className="space-y-6 max-w-2xl">
             {/* Meta CAPI */}
-            <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-              <div className="px-4 py-3 border-b border-zinc-800">
-                <h2 className="text-sm font-medium text-zinc-300">Meta CAPI</h2>
+            <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+              <div className="px-4 py-3 border-b border-[var(--dash-border)]">
+                <h2 className="text-sm font-medium text-[var(--dash-muted)]">Meta CAPI</h2>
               </div>
               <ul className="p-4 space-y-2 text-sm">
                 <li className="flex items-center justify-between">
-                  <span className="text-zinc-400">Browser Pixel</span>
+                  <span className="text-[var(--dash-muted)]">Browser Pixel</span>
                   {capiScan ? (
-                    <span className={capiScan.pixels?.metaPixel ? 'text-emerald-400' : 'text-red-400'}>
+                    <span className={capiScan.pixels?.metaPixel ? 'text-[var(--dash-success)]' : 'text-red-400'}>
                       {capiScan.pixels?.metaPixel ? '✅ Detected' : '❌ Not detected'}
                     </span>
                   ) : (
-                    <span className="text-zinc-500">—</span>
+                    <span className="text-[var(--dash-muted)]">—</span>
                   )}
                 </li>
                 <li className="flex items-center justify-between">
-                  <span className="text-zinc-400">Server CAPI</span>
-                  <span className={metaServerCapi ? 'text-emerald-400' : 'text-red-400'}>
+                  <span className="text-[var(--dash-muted)]">Server CAPI</span>
+                  <span className={metaServerCapi ? 'text-[var(--dash-success)]' : 'text-red-400'}>
                     {metaServerCapi ? '✅ Active' : '❌ Missing'}
                   </span>
                 </li>
                 <li className="flex items-center justify-between">
-                  <span className="text-zinc-400">Match Rate</span>
-                  <span className="text-zinc-500">84% / Unknown</span>
+                  <span className="text-[var(--dash-muted)]">Match Rate</span>
+                  <span className="text-[var(--dash-muted)]">84% / Unknown</span>
                 </li>
                 <li className="flex items-center justify-between pt-2">
-                  <span className="text-zinc-400">Status</span>
+                  <span className="text-[var(--dash-muted)]">Status</span>
                   {metaServerCapi && (capiScan?.pixels?.metaPixel && capiScan?.capi?.metaCapi) ? (
-                    <span className="text-emerald-400">🟢 Full Coverage</span>
+                    <span className="text-[var(--dash-success)]">🟢 Full Coverage</span>
                   ) : !metaServerCapi || !capiScan?.capi?.metaCapi ? (
                     <span className="text-red-400">🔴 Missing Server Events</span>
                   ) : (
@@ -345,7 +345,7 @@ export default function EventReplayClient() {
                 <div className="px-4 pb-4">
                   <Link
                     href="/dashboard/integrations"
-                    className="inline-block rounded-lg bg-zinc-700 text-white px-3 py-1.5 text-sm font-medium hover:bg-zinc-600"
+                    className="inline-block rounded-lg bg-[var(--dash-surface-hover)] text-[var(--dash-text)] px-3 py-1.5 text-sm font-medium hover:bg-[var(--dash-border)]"
                   >
                     Fix Now
                   </Link>
@@ -354,31 +354,31 @@ export default function EventReplayClient() {
             </div>
 
             {/* Google Ads */}
-            <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-              <div className="px-4 py-3 border-b border-zinc-800">
-                <h2 className="text-sm font-medium text-zinc-300">Google Ads</h2>
+            <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+              <div className="px-4 py-3 border-b border-[var(--dash-border)]">
+                <h2 className="text-sm font-medium text-[var(--dash-muted)]">Google Ads</h2>
               </div>
               <ul className="p-4 space-y-2 text-sm">
                 <li className="flex items-center justify-between">
-                  <span className="text-zinc-400">Browser Tag</span>
+                  <span className="text-[var(--dash-muted)]">Browser Tag</span>
                   {capiScan ? (
-                    <span className={capiScan.pixels?.googleAds ? 'text-emerald-400' : 'text-red-400'}>
+                    <span className={capiScan.pixels?.googleAds ? 'text-[var(--dash-success)]' : 'text-red-400'}>
                       {capiScan.pixels?.googleAds ? '✅ Detected' : '❌ Not detected'}
                     </span>
                   ) : (
-                    <span className="text-zinc-500">—</span>
+                    <span className="text-[var(--dash-muted)]">—</span>
                   )}
                 </li>
                 <li className="flex items-center justify-between">
-                  <span className="text-zinc-400">Enhanced Conversions</span>
-                  <span className={googleEnhanced ? 'text-emerald-400' : 'text-red-400'}>
+                  <span className="text-[var(--dash-muted)]">Enhanced Conversions</span>
+                  <span className={googleEnhanced ? 'text-[var(--dash-success)]' : 'text-red-400'}>
                     {googleEnhanced ? '✅ Active' : '❌ Missing'}
                   </span>
                 </li>
                 <li className="flex items-center justify-between pt-2">
-                  <span className="text-zinc-400">Status</span>
+                  <span className="text-[var(--dash-muted)]">Status</span>
                   {googleIntegration?.tag_id && googleEnhanced ? (
-                    <span className="text-emerald-400">🟢 Full Coverage</span>
+                    <span className="text-[var(--dash-success)]">🟢 Full Coverage</span>
                   ) : (
                     <span className="text-red-400">🔴 Missing Enhanced Conv.</span>
                   )}
@@ -388,7 +388,7 @@ export default function EventReplayClient() {
                 <div className="px-4 pb-4">
                   <Link
                     href="/dashboard/integrations"
-                    className="inline-block rounded-lg bg-zinc-700 text-white px-3 py-1.5 text-sm font-medium hover:bg-zinc-600"
+                    className="inline-block rounded-lg bg-[var(--dash-surface-hover)] text-[var(--dash-text)] px-3 py-1.5 text-sm font-medium hover:bg-[var(--dash-border)]"
                   >
                     Fix Now
                   </Link>
@@ -397,42 +397,42 @@ export default function EventReplayClient() {
             </div>
 
             {/* TikTok */}
-            <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-              <div className="px-4 py-3 border-b border-zinc-800">
-                <h2 className="text-sm font-medium text-zinc-300">TikTok</h2>
+            <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+              <div className="px-4 py-3 border-b border-[var(--dash-border)]">
+                <h2 className="text-sm font-medium text-[var(--dash-muted)]">TikTok</h2>
               </div>
               <ul className="p-4 space-y-2 text-sm">
                 <li className="flex items-center justify-between">
-                  <span className="text-zinc-400">Browser Pixel</span>
+                  <span className="text-[var(--dash-muted)]">Browser Pixel</span>
                   {capiScan ? (
-                    <span className={tiktokPixel ? 'text-emerald-400' : 'text-red-400'}>
+                    <span className={tiktokPixel ? 'text-[var(--dash-success)]' : 'text-red-400'}>
                       {tiktokPixel ? '✅ Detected' : '❌ Not detected'}
                     </span>
                   ) : (
-                    <span className="text-zinc-500">—</span>
+                    <span className="text-[var(--dash-muted)]">—</span>
                   )}
                 </li>
                 <li className="flex items-center justify-between">
-                  <span className="text-zinc-400">Server Events</span>
+                  <span className="text-[var(--dash-muted)]">Server Events</span>
                   <span className="text-red-400">❌ Missing</span>
                 </li>
                 <li className="flex items-center justify-between pt-2">
-                  <span className="text-zinc-400">Status</span>
+                  <span className="text-[var(--dash-muted)]">Status</span>
                   <span className="text-red-400">🔴 Not configured (Upgrade to Pro)</span>
                 </li>
               </ul>
             </div>
           </div>
 
-          <div className="mt-8 rounded-xl bg-zinc-900 border border-zinc-800 p-4 space-y-2">
-            <p className="text-sm text-zinc-300">
-              Channels with full coverage: <span className="text-white font-medium">{channelsWithFullCoverage}/{totalChannels}</span>
+          <div className="mt-8 rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4 space-y-2">
+            <p className="text-sm text-[var(--dash-muted)]">
+              Channels with full coverage: <span className="text-[var(--dash-text)] font-medium">{channelsWithFullCoverage}/{totalChannels}</span>
             </p>
-            <p className="text-sm text-zinc-300">
-              Estimated data loss: <span className="text-white font-medium">{dataLossPct}% of conversions</span>
+            <p className="text-sm text-[var(--dash-muted)]">
+              Estimated data loss: <span className="text-[var(--dash-text)] font-medium">{dataLossPct}% of conversions</span>
             </p>
-            <p className="text-sm text-zinc-300">
-              Revenue at risk: <span className="text-white font-medium">${revenueAtRisk.toFixed(2)}</span>
+            <p className="text-sm text-[var(--dash-muted)]">
+              Revenue at risk: <span className="text-[var(--dash-text)] font-medium">${revenueAtRisk.toFixed(2)}</span>
             </p>
           </div>
         </>
@@ -440,3 +440,7 @@ export default function EventReplayClient() {
     </div>
   )
 }
+
+
+
+

@@ -29,13 +29,13 @@ function StatusBadge({ status }: { status: string }) {
     )
   if (status === 'retrying')
     return (
-      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-950 text-blue-400 border border-blue-800">
+      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[var(--dash-primary-soft)] text-[var(--dash-primary)] border border-[var(--dash-primary)]">
         Retrying
       </span>
     )
   if (status === 'success')
     return (
-      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-950 text-emerald-400 border border-emerald-800">
+      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[var(--dash-success-badge-bg)] text-[var(--dash-success-badge-text)] border border-[var(--dash-success)]">
         Recovered ✅
       </span>
     )
@@ -45,16 +45,16 @@ function StatusBadge({ status }: { status: string }) {
         Failed ❌
       </span>
     )
-  return <span className="text-zinc-400 text-xs">{status}</span>
+  return <span className="text-[var(--dash-muted)] text-xs">{status}</span>
 }
 
 function RetryTimeline({ job }: { job: JobRow }) {
   const eventName = (job.payload?.event_name as string) ?? 'Event'
   const labels = [getRetryLabel(1), getRetryLabel(2), getRetryLabel(3), getRetryLabel(4)]
   return (
-    <div className="rounded-lg bg-zinc-900 border border-zinc-800 p-4 text-sm">
-      <p className="font-medium text-white mb-3">{eventName}</p>
-      <ul className="space-y-1.5 text-zinc-400">
+    <div className="rounded-lg bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4 text-sm">
+      <p className="font-medium text-[var(--dash-text)] mb-3">{eventName}</p>
+      <ul className="space-y-1.5 text-[var(--dash-muted)]">
         {[1, 2, 3, 4].map((attempt) => {
           const isPast = attempt < job.attempt
           const isCurrent = attempt === job.attempt
@@ -62,14 +62,14 @@ function RetryTimeline({ job }: { job: JobRow }) {
           const exhaustedAtThis = job.status === 'exhausted' && attempt === job.attempt
           return (
             <li key={attempt} className="flex items-center gap-2 flex-wrap">
-              <span className="text-zinc-600">├──</span>
-              <span className="text-zinc-500">Attempt {attempt}:</span>
+              <span className="text-[var(--dash-muted)]">├──</span>
+              <span className="text-[var(--dash-muted)]">Attempt {attempt}:</span>
               {isPast && <span>Failed — {job.last_error?.slice(0, 50)}{job.last_error && job.last_error.length > 50 ? '…' : ''}</span>}
               {isCurrent && job.status === 'pending' && (
                 <span className="text-amber-400">Scheduled in {formatRelative(job.next_retry_at)}</span>
               )}
               {isCurrent && job.status === 'retrying' && (
-                <span className="text-blue-400">Retrying now</span>
+                <span className="text-[var(--dash-primary)]">Retrying now</span>
               )}
               {isFuture && <span>Will retry in ~{labels[attempt - 1]} if needed</span>}
               {exhaustedAtThis && (
@@ -126,14 +126,14 @@ export default function RetryQueuePage() {
   return (
     <div className="p-6 md:p-8">
       <div className="flex items-center gap-3 mb-6">
-        <h1 className="text-xl font-semibold text-white">Retry Queue</h1>
+        <h1 className="text-xl font-semibold text-[var(--dash-text)]">Retry Queue</h1>
         <button
           type="button"
           onClick={() => {
             setLoading(true)
             fetchQueue()
           }}
-          className="p-2 rounded-lg bg-zinc-800 text-zinc-400 hover:text-white transition-colors"
+          className="p-2 rounded-lg bg-[var(--dash-surface-hover)] text-[var(--dash-muted)] hover:text-[var(--dash-text)] transition-colors"
           title="Refresh"
         >
           <RefreshCw className="w-4 h-4" />
@@ -141,36 +141,36 @@ export default function RetryQueuePage() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-          <p className="text-sm text-zinc-400 mb-1">Pending</p>
+        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+          <p className="text-sm text-[var(--dash-muted)] mb-1">Pending</p>
           <p className="text-xl font-semibold text-amber-400">{stats.pending}</p>
         </div>
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-          <p className="text-sm text-zinc-400 mb-1">Retrying</p>
-          <p className="text-xl font-semibold text-blue-400">{stats.retrying}</p>
+        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+          <p className="text-sm text-[var(--dash-muted)] mb-1">Retrying</p>
+          <p className="text-xl font-semibold text-[var(--dash-primary)]">{stats.retrying}</p>
         </div>
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-          <p className="text-sm text-zinc-400 mb-1">Recovered</p>
-          <p className="text-xl font-semibold text-emerald-400">{stats.recovered}</p>
+        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+          <p className="text-sm text-[var(--dash-muted)] mb-1">Recovered</p>
+          <p className="text-xl font-semibold text-[var(--dash-success)]">{stats.recovered}</p>
         </div>
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-          <p className="text-sm text-zinc-400 mb-1">Exhausted</p>
+        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+          <p className="text-sm text-[var(--dash-muted)] mb-1">Exhausted</p>
           <p className="text-xl font-semibold text-red-400">{stats.exhausted}</p>
         </div>
       </div>
 
       <section className="mb-8">
-        <h2 className="text-lg font-medium text-white mb-4">Queue</h2>
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
+        <h2 className="text-lg font-medium text-[var(--dash-text)] mb-4">Queue</h2>
+        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
           {loading && !jobs.length ? (
-            <div className="py-12 text-center text-zinc-400">Loading...</div>
+            <div className="py-12 text-center text-[var(--dash-muted)]">Loading...</div>
           ) : !jobs.length ? (
-            <div className="py-12 text-center text-zinc-400">No retry jobs</div>
+            <div className="py-12 text-center text-[var(--dash-muted)]">No retry jobs</div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-zinc-800 text-left text-zinc-400">
+                  <tr className="border-b border-[var(--dash-border)] text-left text-[var(--dash-muted)]">
                     <th className="px-4 py-3 font-medium">Event Name</th>
                     <th className="px-4 py-3 font-medium">Platform</th>
                     <th className="px-4 py-3 font-medium">Attempt</th>
@@ -182,20 +182,20 @@ export default function RetryQueuePage() {
                 </thead>
                 <tbody>
                   {jobs.map((job) => (
-                    <tr key={job.id} className="border-b border-zinc-800/80 hover:bg-zinc-800/30">
-                      <td className="px-4 py-3 text-white">
+                    <tr key={job.id} className="border-b border-[var(--dash-border)]/80 hover:bg-[var(--dash-surface-hover)]/30">
+                      <td className="px-4 py-3 text-[var(--dash-text)]">
                         {String((job.payload as Record<string, unknown>)?.event_name ?? '—')}
                       </td>
-                      <td className="px-4 py-3 text-zinc-300">{job.platform}</td>
-                      <td className="px-4 py-3 text-zinc-300">
+                      <td className="px-4 py-3 text-[var(--dash-muted)]">{job.platform}</td>
+                      <td className="px-4 py-3 text-[var(--dash-muted)]">
                         {job.attempt} / {job.max_attempts}
                       </td>
-                      <td className="px-4 py-3 text-zinc-400">
+                      <td className="px-4 py-3 text-[var(--dash-muted)]">
                         {job.status === 'pending' || job.status === 'retrying'
                           ? formatRelative(job.next_retry_at)
                           : '—'}
                       </td>
-                      <td className="px-4 py-3 text-zinc-500 max-w-[200px] truncate" title={job.last_error ?? ''}>
+                      <td className="px-4 py-3 text-[var(--dash-muted)] max-w-[200px] truncate" title={job.last_error ?? ''}>
                         {job.last_error ?? '—'}
                       </td>
                       <td className="px-4 py-3">
@@ -207,7 +207,7 @@ export default function RetryQueuePage() {
                             type="button"
                             onClick={() => handleRequeue(job.id)}
                             disabled={requeueId === job.id}
-                            className="px-3 py-1.5 rounded-lg bg-zinc-700 text-white text-xs font-medium hover:bg-zinc-600 disabled:opacity-50"
+                            className="px-3 py-1.5 rounded-lg bg-[var(--dash-surface-hover)] text-[var(--dash-text)] text-xs font-medium hover:bg-[var(--dash-border)] disabled:opacity-50"
                           >
                             {requeueId === job.id ? '…' : 'Retry Now'}
                           </button>
@@ -224,7 +224,7 @@ export default function RetryQueuePage() {
 
       {pendingJobs.length > 0 && (
         <section className="mb-8">
-          <h2 className="text-lg font-medium text-white mb-4">Retry Timeline</h2>
+          <h2 className="text-lg font-medium text-[var(--dash-text)] mb-4">Retry Timeline</h2>
           <div className="grid gap-4 md:grid-cols-2">
             {pendingJobs.slice(0, 6).map((job) => (
               <RetryTimeline key={job.id} job={job} />
@@ -235,3 +235,7 @@ export default function RetryQueuePage() {
     </div>
   )
 }
+
+
+
+

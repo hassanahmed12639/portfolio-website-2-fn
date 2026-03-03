@@ -137,7 +137,7 @@ export default function PrivacyClient() {
   if (loading || !settings) {
     return (
       <div className="p-6 md:p-8">
-        <p className="text-zinc-400">Loading privacy settings…</p>
+        <p className="text-[var(--dash-muted)]">Loading privacy settings…</p>
       </div>
     )
   }
@@ -164,13 +164,13 @@ export default function PrivacyClient() {
 
   return (
     <div className="p-6 md:p-8 max-w-4xl">
-      <h1 className="text-xl font-semibold text-white mb-2">Privacy Configuration</h1>
-      <p className="text-zinc-400 text-sm mb-8">
+      <h1 className="text-xl font-semibold text-[var(--dash-text)] mb-2">Privacy Configuration</h1>
+      <p className="text-[var(--dash-muted)] text-sm mb-8">
         Control compliance modes, data retention, and how event data is stored and forwarded.
       </p>
 
       {saveError && (
-        <div className="mb-6 p-3 rounded-lg bg-red-900/30 border border-red-800 text-red-300 text-sm flex items-center justify-between gap-4">
+        <div className="mb-6 p-3 rounded-lg bg-red-900/30 border border-red-800 text-[var(--dash-danger-strong)] text-sm flex items-center justify-between gap-4">
           <span>{saveError}</span>
           <button
             type="button"
@@ -184,102 +184,102 @@ export default function PrivacyClient() {
 
       {/* Section 1 — Compliance Mode */}
       <section className="mb-10">
-        <h2 className="text-sm font-medium text-zinc-400 uppercase tracking-wider mb-4">
+        <h2 className="text-sm font-medium text-[var(--dash-muted)] uppercase tracking-wider mb-4">
           Compliance Mode
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div
             className={`rounded-xl border p-5 transition-colors ${
               settings.gdpr_mode
-                ? 'border-emerald-600/50 bg-zinc-900'
-                : 'border-zinc-800 bg-zinc-900/50'
+                ? 'border-[var(--dash-success-border)] bg-[var(--dash-surface)]'
+                : 'border-[var(--dash-border)] bg-[var(--dash-surface)]/50'
             }`}
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="font-medium text-white">GDPR Mode</span>
+              <span className="font-medium text-[var(--dash-text)]">GDPR Mode</span>
               {settings.gdpr_mode && (
-                <span className="text-xs font-medium px-2 py-0.5 rounded bg-emerald-600/30 text-emerald-400">
+                <span className="text-xs font-medium px-2 py-0.5 rounded bg-[var(--dash-success)]/30 text-[var(--dash-success)]">
                   EU Compliant
                 </span>
               )}
             </div>
-            <p className="text-sm text-zinc-400 mb-4">
+            <p className="text-sm text-[var(--dash-muted)] mb-4">
               Enables EU compliance features including IP anonymization, consent checking, and data
               minimization
             </p>
             <Switch
               checked={settings.gdpr_mode}
               onCheckedChange={(v) => updateSetting({ gdpr_mode: v })}
-              className="data-[state=checked]:bg-emerald-600"
+              className="data-[state=checked]:bg-[var(--dash-success)]"
             />
           </div>
           <div
             className={`rounded-xl border p-5 transition-colors ${
               settings.ccpa_mode
-                ? 'border-emerald-600/50 bg-zinc-900'
-                : 'border-zinc-800 bg-zinc-900/50'
+                ? 'border-[var(--dash-success-border)] bg-[var(--dash-surface)]'
+                : 'border-[var(--dash-border)] bg-[var(--dash-surface)]/50'
             }`}
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="font-medium text-white">CCPA Mode</span>
+              <span className="font-medium text-[var(--dash-text)]">CCPA Mode</span>
               {settings.ccpa_mode && (
-                <span className="text-xs font-medium px-2 py-0.5 rounded bg-emerald-600/30 text-emerald-400">
+                <span className="text-xs font-medium px-2 py-0.5 rounded bg-[var(--dash-success)]/30 text-[var(--dash-success)]">
                   CCPA Compliant
                 </span>
               )}
             </div>
-            <p className="text-sm text-zinc-400 mb-4">
+            <p className="text-sm text-[var(--dash-muted)] mb-4">
               Enables California privacy compliance including opt-out support and data deletion
               rights
             </p>
             <Switch
               checked={settings.ccpa_mode}
               onCheckedChange={(v) => updateSetting({ ccpa_mode: v })}
-              className="data-[state=checked]:bg-emerald-600"
+              className="data-[state=checked]:bg-[var(--dash-success)]"
             />
           </div>
         </div>
         {saving && (
-          <p className="text-xs text-zinc-500 mt-2">Saving…</p>
+          <p className="text-xs text-[var(--dash-muted)] mt-2">Saving…</p>
         )}
       </section>
 
       {/* Section 2 — Data Privacy Settings */}
       <section className="mb-10">
-        <h2 className="text-sm font-medium text-zinc-400 uppercase tracking-wider mb-4">
+        <h2 className="text-sm font-medium text-[var(--dash-muted)] uppercase tracking-wider mb-4">
           Data Privacy Settings
         </h2>
-        <div className="space-y-4 rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
+        <div className="space-y-4 rounded-xl border border-[var(--dash-border)] bg-[var(--dash-surface)]/50 p-5">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="font-medium text-white">IP Anonymization</p>
-              <p className="text-sm text-zinc-400">
+              <p className="font-medium text-[var(--dash-text)]">IP Anonymization</p>
+              <p className="text-sm text-[var(--dash-muted)]">
                 Remove last octet of IP addresses (192.168.1.100 → 192.168.1.0)
               </p>
             </div>
             <Switch
               checked={settings.ip_anonymization}
               onCheckedChange={(v) => updateSetting({ ip_anonymization: v })}
-              className="shrink-0 data-[state=checked]:bg-emerald-600"
+              className="shrink-0 data-[state=checked]:bg-[var(--dash-success)]"
             />
           </div>
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="font-medium text-white">PII Auto-Masking</p>
-              <p className="text-sm text-zinc-400">
+              <p className="font-medium text-[var(--dash-text)]">PII Auto-Masking</p>
+              <p className="text-sm text-[var(--dash-muted)]">
                 Automatically hash emails and phone numbers before storing
               </p>
             </div>
             <Switch
               checked={settings.pii_masking}
               onCheckedChange={(v) => updateSetting({ pii_masking: v })}
-              className="shrink-0 data-[state=checked]:bg-emerald-600"
+              className="shrink-0 data-[state=checked]:bg-[var(--dash-success)]"
             />
           </div>
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="font-medium text-white">Consent Mode</p>
-              <p className="text-sm text-zinc-400">
+              <p className="font-medium text-[var(--dash-text)]">Consent Mode</p>
+              <p className="text-sm text-[var(--dash-muted)]">
                 Respect user consent signals. Events from users who rejected cookies will be logged
                 but not forwarded to Meta/Google
               </p>
@@ -287,20 +287,20 @@ export default function PrivacyClient() {
             <Switch
               checked={settings.consent_mode}
               onCheckedChange={(v) => updateSetting({ consent_mode: v })}
-              className="shrink-0 data-[state=checked]:bg-emerald-600"
+              className="shrink-0 data-[state=checked]:bg-[var(--dash-success)]"
             />
           </div>
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="font-medium text-white">Data Minimization</p>
-              <p className="text-sm text-zinc-400">
+              <p className="font-medium text-[var(--dash-text)]">Data Minimization</p>
+              <p className="text-sm text-[var(--dash-muted)]">
                 Only collect data necessary for tracking. Strip unnecessary parameters
               </p>
             </div>
             <Switch
               checked={settings.data_minimization ?? false}
               onCheckedChange={(v) => updateSetting({ data_minimization: v })}
-              className="shrink-0 data-[state=checked]:bg-emerald-600"
+              className="shrink-0 data-[state=checked]:bg-[var(--dash-success)]"
             />
           </div>
         </div>
@@ -308,15 +308,15 @@ export default function PrivacyClient() {
 
       {/* Section 3 — Data Retention */}
       <section className="mb-10">
-        <h2 className="text-sm font-medium text-zinc-400 uppercase tracking-wider mb-4">
+        <h2 className="text-sm font-medium text-[var(--dash-muted)] uppercase tracking-wider mb-4">
           Data Retention
         </h2>
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5 space-y-5">
+        <div className="rounded-xl border border-[var(--dash-border)] bg-[var(--dash-surface)]/50 p-5 space-y-5">
           <div>
-            <p className="text-sm text-zinc-300 mb-2">
-              Data retention period: <strong className="text-white">{settings.data_retention_days} days</strong>
+            <p className="text-sm text-[var(--dash-muted)] mb-2">
+              Data retention period: <strong className="text-[var(--dash-text)]">{settings.data_retention_days} days</strong>
             </p>
-            <p className="text-sm text-zinc-400 mb-3">
+            <p className="text-sm text-[var(--dash-muted)] mb-3">
               Events older than {settings.data_retention_days} days will be automatically deleted
             </p>
             <div className="flex flex-wrap gap-2">
@@ -327,8 +327,8 @@ export default function PrivacyClient() {
                   onClick={() => updateSetting({ data_retention_days: d })}
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                     settings.data_retention_days === d
-                      ? 'bg-emerald-600 text-white'
-                      : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                      ? 'bg-[var(--dash-success)] text-white'
+                      : 'bg-[var(--dash-surface-hover)] text-[var(--dash-muted)] hover:bg-[var(--dash-surface-hover)]'
                   }`}
                 >
                   {d}d
@@ -341,22 +341,22 @@ export default function PrivacyClient() {
               </p>
             )}
           </div>
-          <div className="flex items-center justify-between pt-2 border-t border-zinc-800">
+          <div className="flex items-center justify-between pt-2 border-t border-[var(--dash-border)]">
             <div>
-              <p className="font-medium text-white">Enable automatic deletion</p>
-              <p className="text-sm text-zinc-400">Delete events older than retention period</p>
+              <p className="font-medium text-[var(--dash-text)]">Enable automatic deletion</p>
+              <p className="text-sm text-[var(--dash-muted)]">Delete events older than retention period</p>
             </div>
             <Switch
               checked={settings.auto_delete_enabled}
               onCheckedChange={(v) => updateSetting({ auto_delete_enabled: v })}
-              className="data-[state=checked]:bg-emerald-600"
+              className="data-[state=checked]:bg-[var(--dash-success)]"
             />
           </div>
           <div>
             <Button
               variant="destructive"
               onClick={() => setDeleteModalOpen(true)}
-              className="bg-red-600 hover:bg-red-700 text-white"
+              className="bg-[var(--dash-danger)] hover:bg-[var(--dash-danger-strong)] text-white"
             >
               Delete All Data Now
             </Button>
@@ -368,7 +368,7 @@ export default function PrivacyClient() {
         <Button
           onClick={saveAllPrivacySettings}
           disabled={saving}
-          className="bg-emerald-600 hover:bg-emerald-700 text-white"
+          className="bg-[var(--dash-success)] hover:bg-[var(--dash-success-strong)] text-white"
         >
           {saving ? 'Saving…' : 'Save All Privacy Settings'}
         </Button>
@@ -376,27 +376,27 @@ export default function PrivacyClient() {
 
       {/* Section 4 — Compliance Status */}
       <section className="mb-8">
-        <h2 className="text-sm font-medium text-zinc-400 uppercase tracking-wider mb-4">
+        <h2 className="text-sm font-medium text-[var(--dash-muted)] uppercase tracking-wider mb-4">
           Compliance Status
         </h2>
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
+        <div className="rounded-xl border border-[var(--dash-border)] bg-[var(--dash-surface)]/50 p-5">
           <div className="flex items-center gap-4 mb-4">
-            <span className="text-sm text-zinc-400">Overall score</span>
-            <div className="flex-1 h-3 rounded-full bg-zinc-800 overflow-hidden">
+            <span className="text-sm text-[var(--dash-muted)]">Overall score</span>
+            <div className="flex-1 h-3 rounded-full bg-[var(--dash-surface-hover)] overflow-hidden">
               <div
                 className={`h-full rounded-full transition-all ${
-                  complianceScore >= 80 ? 'bg-emerald-500' : complianceScore >= 50 ? 'bg-amber-500' : 'bg-red-500'
+                  complianceScore >= 80 ? 'bg-[var(--dash-success)]' : complianceScore >= 50 ? 'bg-[var(--dash-warning)]' : 'bg-[var(--dash-danger)]'
                 }`}
                 style={{ width: `${complianceScore}%` }}
               />
             </div>
-            <span className="text-sm font-medium text-white w-10">{complianceScore}/100</span>
+            <span className="text-sm font-medium text-[var(--dash-text)] w-10">{complianceScore}/100</span>
           </div>
           <ul className="space-y-2">
             {complianceItems.map((item, i) => (
               <li key={i} className="flex items-center gap-2 text-sm">
                 {item.ok ? (
-                  <span className="text-emerald-500">✅</span>
+                  <span className="text-[var(--dash-success)]">✅</span>
                 ) : (
                   <span className="text-amber-500">⚠️</span>
                 )}
@@ -409,7 +409,7 @@ export default function PrivacyClient() {
                     {item.label} (click to enable)
                   </button>
                 ) : (
-                  <span className={item.ok ? 'text-zinc-300' : 'text-zinc-400'}>{item.label}</span>
+                  <span className={item.ok ? 'text-[var(--dash-muted)]' : 'text-[var(--dash-muted)]'}>{item.label}</span>
                 )}
               </li>
             ))}
@@ -420,17 +420,17 @@ export default function PrivacyClient() {
       {/* Delete confirmation modal */}
       {deleteModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70">
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6 max-w-md w-full shadow-xl">
-            <h3 className="text-lg font-semibold text-white mb-2">Delete all events data?</h3>
-            <p className="text-sm text-zinc-400 mb-4">
+          <div className="rounded-xl border border-[var(--dash-border)] bg-[var(--dash-surface)] p-6 max-w-md w-full shadow-xl">
+            <h3 className="text-lg font-semibold text-[var(--dash-text)] mb-2">Delete all events data?</h3>
+            <p className="text-sm text-[var(--dash-muted)] mb-4">
               Are you sure? This will permanently delete all your events data. This cannot be undone.
             </p>
-            <p className="text-sm text-zinc-400 mb-2">Type DELETE to confirm:</p>
+            <p className="text-sm text-[var(--dash-muted)] mb-2">Type DELETE to confirm:</p>
             <Input
               value={deleteConfirm}
               onChange={(e) => setDeleteConfirm(e.target.value)}
               placeholder="DELETE"
-              className="mb-4 bg-zinc-800 border-zinc-700 text-white"
+              className="mb-4 bg-[var(--dash-surface-hover)] border-[var(--dash-border)] text-[var(--dash-text)]"
               autoFocus
             />
             {deleteResult && !deleteResult.success && (
@@ -445,7 +445,7 @@ export default function PrivacyClient() {
                   setDeleteResult(null)
                 }}
                 disabled={deleteSubmitting}
-                className="border-zinc-600 text-zinc-300"
+                className="border-[var(--dash-border-strong)] text-[var(--dash-muted)]"
               >
                 Cancel
               </Button>
@@ -453,7 +453,7 @@ export default function PrivacyClient() {
                 variant="destructive"
                 onClick={handleDeleteAll}
                 disabled={deleteConfirm !== 'DELETE' || deleteSubmitting}
-                className="bg-red-600 hover:bg-red-700 text-white"
+                className="bg-[var(--dash-danger)] hover:bg-[var(--dash-danger-strong)] text-white"
               >
                 {deleteSubmitting ? 'Deleting…' : 'Confirm'}
               </Button>
@@ -464,3 +464,7 @@ export default function PrivacyClient() {
     </div>
   )
 }
+
+
+
+

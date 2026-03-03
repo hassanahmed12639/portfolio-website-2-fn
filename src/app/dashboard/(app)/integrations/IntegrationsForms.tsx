@@ -11,6 +11,7 @@ type Ga4Integration = { tag_id: string | null; access_token: string | null } | n
 export default function IntegrationsForms({
   meta,
   metaFbclidCount = 0,
+  activePixelsCount = 0,
   google,
   tiktok,
   snapchat,
@@ -18,6 +19,7 @@ export default function IntegrationsForms({
 }: {
   meta: MetaIntegration
   metaFbclidCount?: number
+  activePixelsCount?: number
   google: GoogleIntegration
   tiktok: PixelTokenIntegration
   snapchat: PixelTokenIntegration
@@ -415,18 +417,18 @@ export default function IntegrationsForms({
 
   return (
     <div className="space-y-8 overflow-y-auto">
-      <section className="rounded-xl bg-zinc-900 border border-zinc-800 p-6">
+      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
         <div className="flex items-center gap-2 mb-4">
-          <h2 className="text-lg font-semibold text-white">Meta CAPI</h2>
+          <h2 className="text-lg font-semibold text-[var(--dash-text)]">Meta CAPI</h2>
           {metaConnected && (
-            <span className="px-2 py-0.5 rounded text-xs font-medium bg-emerald-950 text-emerald-400 border border-emerald-800">
+            <span className="px-2 py-0.5 rounded text-xs font-medium bg-[var(--dash-success-badge-bg)] text-[var(--dash-success-badge-text)] border border-[var(--dash-success)]">
               Connected
             </span>
           )}
         </div>
         <form onSubmit={handleMetaSave} className="space-y-4 max-w-md">
           <div>
-            <label htmlFor="meta-pixel-id" className="block text-sm font-medium text-zinc-300 mb-1.5">
+            <label htmlFor="meta-pixel-id" className="block text-sm font-medium text-[var(--dash-muted)] mb-1.5">
               Pixel ID
             </label>
             <input
@@ -435,11 +437,11 @@ export default function IntegrationsForms({
               value={metaPixelId}
               onChange={(e) => setMetaPixelId(e.target.value)}
               placeholder="123456789012345"
-              className="w-full px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+              className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]"
             />
           </div>
           <div>
-            <label htmlFor="meta-access-token" className="block text-sm font-medium text-zinc-300 mb-1.5">
+            <label htmlFor="meta-access-token" className="block text-sm font-medium text-[var(--dash-muted)] mb-1.5">
               Access Token
             </label>
             <input
@@ -448,11 +450,11 @@ export default function IntegrationsForms({
               value={metaAccessToken}
               onChange={(e) => setMetaAccessToken(e.target.value)}
               placeholder="••••••••"
-              className="w-full px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+              className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]"
             />
           </div>
           <div>
-            <label htmlFor="meta-test-event-code" className="block text-sm font-medium text-zinc-300 mb-1.5">
+            <label htmlFor="meta-test-event-code" className="block text-sm font-medium text-[var(--dash-muted)] mb-1.5">
               Test Event Code (optional)
             </label>
             <input
@@ -461,12 +463,12 @@ export default function IntegrationsForms({
               placeholder="TEST86916"
               value={metaTestEventCode}
               onChange={(e) => setMetaTestEventCode(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+              className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]"
             />
-            <p className="mt-1 text-xs text-zinc-500">Only needed during testing. Remove before going live.</p>
+            <p className="mt-1 text-xs text-[var(--dash-muted)]">Only needed during testing. Remove before going live.</p>
           </div>
           {metaSaveMsg && (
-            <p className={metaSaveMsg.type === 'success' ? 'text-emerald-400 text-sm' : 'text-red-400 text-sm'}>
+            <p className={metaSaveMsg.type === 'success' ? 'text-[var(--dash-success)] text-sm' : 'text-red-400 text-sm'}>
               {metaSaveMsg.text}
             </p>
           )}
@@ -474,7 +476,7 @@ export default function IntegrationsForms({
             <button
               type="submit"
               disabled={metaSaving}
-              className="px-4 py-2 rounded-lg bg-white text-zinc-900 font-medium hover:bg-zinc-200 disabled:opacity-50 text-sm"
+              className="px-4 py-2 rounded-lg bg-[var(--dash-surface)] text-[var(--dash-text)] font-medium hover:bg-[var(--dash-surface-hover)] disabled:opacity-50 text-sm"
             >
               {metaSaving ? 'Saving…' : 'Save & Test'}
             </button>
@@ -482,61 +484,61 @@ export default function IntegrationsForms({
               type="button"
               onClick={handleMetaTest}
               disabled={metaTesting || !metaPixelId.trim() || !metaAccessToken.trim()}
-              className="px-4 py-2 rounded-lg bg-zinc-700 text-white font-medium hover:bg-zinc-600 disabled:opacity-50 text-sm"
+              className="px-4 py-2 rounded-lg bg-[var(--dash-surface-hover)] text-[var(--dash-text)] font-medium hover:bg-[var(--dash-border)] disabled:opacity-50 text-sm"
             >
               {metaTesting ? 'Sending…' : 'Test only'}
             </button>
           </div>
           {metaTestMsg && (
-            <p className={metaTestMsg.type === 'success' ? 'text-emerald-400 text-sm' : 'text-red-400 text-sm'}>
+            <p className={metaTestMsg.type === 'success' ? 'text-[var(--dash-success)] text-sm' : 'text-red-400 text-sm'}>
               {metaTestMsg.text}
             </p>
           )}
         </form>
 
-        <div className="mt-6 pt-6 border-t border-zinc-800">
-          <h3 className="text-sm font-medium text-zinc-300 mb-3">Meta Signal Status</h3>
+        <div className="mt-6 pt-6 border-t border-[var(--dash-border)]">
+          <h3 className="text-sm font-medium text-[var(--dash-muted)] mb-3">Meta Signal Status</h3>
           <div className="space-y-3">
             <div className="flex items-start gap-3">
-              <span className="flex h-2 w-2 rounded-full bg-emerald-500 mt-1.5 shrink-0" aria-hidden />
+              <span className="flex h-2 w-2 rounded-full bg-[var(--dash-success)] mt-1.5 shrink-0" aria-hidden />
               <div>
-                <p className="text-sm font-medium text-white">fbp (Browser ID)</p>
-                <p className="text-xs text-zinc-400">Auto-captured — unique visitor ID sent to Meta</p>
+                <p className="text-sm font-medium text-[var(--dash-text)]">fbp (Browser ID)</p>
+                <p className="text-xs text-[var(--dash-muted)]">Auto-captured — unique visitor ID sent to Meta</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <span className="flex h-2 w-2 rounded-full bg-emerald-500 mt-1.5 shrink-0" aria-hidden />
+              <span className="flex h-2 w-2 rounded-full bg-[var(--dash-success)] mt-1.5 shrink-0" aria-hidden />
               <div>
-                <p className="text-sm font-medium text-white">fbc (Click Cookie)</p>
-                <p className="text-xs text-zinc-400">Auto-captured — set when visitor clicks Meta ad</p>
+                <p className="text-sm font-medium text-[var(--dash-text)]">fbc (Click Cookie)</p>
+                <p className="text-xs text-[var(--dash-muted)]">Auto-captured — set when visitor clicks Meta ad</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <span className="flex h-2 w-2 rounded-full bg-emerald-500 mt-1.5 shrink-0" aria-hidden />
+              <span className="flex h-2 w-2 rounded-full bg-[var(--dash-success)] mt-1.5 shrink-0" aria-hidden />
               <div>
-                <p className="text-sm font-medium text-white">fbclid (Ad Click ID)</p>
-                <p className="text-xs text-zinc-400">
+                <p className="text-sm font-medium text-[var(--dash-text)]">fbclid (Ad Click ID)</p>
+                <p className="text-xs text-[var(--dash-muted)]">
                   {metaFbclidCount} events confirmed from Meta ad clicks this month
                 </p>
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <span className="flex h-2 w-2 rounded-full bg-emerald-500 mt-1.5 shrink-0" aria-hidden />
+              <span className="flex h-2 w-2 rounded-full bg-[var(--dash-success)] mt-1.5 shrink-0" aria-hidden />
               <div className="flex-1">
-                <p className="text-sm font-medium text-white">Match Rate</p>
-                <p className="text-xs text-zinc-400 flex items-center gap-2 flex-wrap mt-1">
+                <p className="text-sm font-medium text-[var(--dash-text)]">Match Rate</p>
+                <p className="text-xs text-[var(--dash-muted)] flex items-center gap-2 flex-wrap mt-1">
                   {matchRate?.error ? (
                     'Unable to load'
                   ) : typeof matchRate?.estimated_match_rate === 'number' ? (
                     <>
-                      <span className="inline-flex h-2 w-24 rounded-full bg-zinc-800 overflow-hidden">
+                      <span className="inline-flex h-2 w-24 rounded-full bg-[var(--dash-surface-hover)] overflow-hidden">
                         <span
-                          className="block h-full bg-emerald-500 rounded-full"
+                          className="block h-full bg-[var(--dash-success)] rounded-full"
                           style={{ width: `${matchRate.estimated_match_rate}%` }}
                         />
                       </span>
-                      <span className="font-medium text-white">{matchRate.estimated_match_rate}%</span>
-                      <span className="text-zinc-500">{matchRate.label ?? ''}</span>
+                      <span className="font-medium text-[var(--dash-text)]">{matchRate.estimated_match_rate}%</span>
+                      <span className="text-[var(--dash-muted)]">{matchRate.label ?? ''}</span>
                     </>
                   ) : (
                     'No Meta events yet'
@@ -544,7 +546,7 @@ export default function IntegrationsForms({
                 </p>
                 <Link
                   href="/dashboard/data-quality"
-                  className="text-xs text-zinc-500 hover:text-zinc-300 mt-1 inline-block"
+                  className="text-xs text-[var(--dash-muted)] hover:text-[var(--dash-muted)] mt-1 inline-block"
                 >
                   View full report →
                 </Link>
@@ -552,20 +554,38 @@ export default function IntegrationsForms({
             </div>
           </div>
         </div>
+
+        <div className="mt-4 pt-4 border-t border-[var(--dash-border)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-[var(--dash-text)]">Multi-Pixel</p>
+              <p className="text-xs text-[var(--dash-muted)]">Send events to multiple pixels</p>
+            </div>
+            <Link
+              href="/dashboard/pixels"
+              className="text-xs text-[var(--dash-success)] hover:text-[var(--dash-success-strong)] font-medium transition-colors"
+            >
+              Manage pixels →
+            </Link>
+          </div>
+          <p className="text-xs text-[var(--dash-muted)] mt-1">
+            {activePixelsCount} active pixel{activePixelsCount !== 1 ? 's' : ''} configured
+          </p>
+        </div>
       </section>
 
-      <section className="rounded-xl bg-zinc-900 border border-zinc-800 p-6">
+      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
         <div className="flex items-center gap-2 mb-4">
-          <h2 className="text-lg font-semibold text-white">Google Enhanced Conversions</h2>
+          <h2 className="text-lg font-semibold text-[var(--dash-text)]">Google Enhanced Conversions</h2>
           {googleConnected && (
-            <span className="px-2 py-0.5 rounded text-xs font-medium bg-emerald-950 text-emerald-400 border border-emerald-800">
+            <span className="px-2 py-0.5 rounded text-xs font-medium bg-[var(--dash-success-badge-bg)] text-[var(--dash-success-badge-text)] border border-[var(--dash-success)]">
               Connected
             </span>
           )}
         </div>
         <form onSubmit={handleGoogleSave} className="space-y-4 max-w-md">
           <div>
-            <label htmlFor="google-tag-id" className="block text-sm font-medium text-zinc-300 mb-1.5">
+            <label htmlFor="google-tag-id" className="block text-sm font-medium text-[var(--dash-muted)] mb-1.5">
               Google Ads Tag ID
             </label>
             <input
@@ -574,12 +594,12 @@ export default function IntegrationsForms({
               value={googleTagId}
               onChange={(e) => setGoogleTagId(e.target.value)}
               placeholder="AW-XXXXXXXXX"
-              className="w-full px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+              className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]"
             />
-            <p className="mt-1 text-xs text-zinc-500">Format: AW-XXXXXXXXX</p>
+            <p className="mt-1 text-xs text-[var(--dash-muted)]">Format: AW-XXXXXXXXX</p>
           </div>
           {googleSaveMsg && (
-            <p className={googleSaveMsg.type === 'success' ? 'text-emerald-400 text-sm' : 'text-red-400 text-sm'}>
+            <p className={googleSaveMsg.type === 'success' ? 'text-[var(--dash-success)] text-sm' : 'text-red-400 text-sm'}>
               {googleSaveMsg.text}
             </p>
           )}
@@ -587,7 +607,7 @@ export default function IntegrationsForms({
             <button
               type="submit"
               disabled={googleSaving}
-              className="px-4 py-2 rounded-lg bg-white text-zinc-900 font-medium hover:bg-zinc-200 disabled:opacity-50 text-sm"
+              className="px-4 py-2 rounded-lg bg-[var(--dash-surface)] text-[var(--dash-text)] font-medium hover:bg-[var(--dash-surface-hover)] disabled:opacity-50 text-sm"
             >
               {googleSaving ? 'Saving…' : 'Save & Test'}
             </button>
@@ -595,32 +615,32 @@ export default function IntegrationsForms({
               type="button"
               onClick={handleGoogleTest}
               disabled={googleTesting}
-              className="px-4 py-2 rounded-lg bg-zinc-700 text-white font-medium hover:bg-zinc-600 disabled:opacity-50 text-sm"
+              className="px-4 py-2 rounded-lg bg-[var(--dash-surface-hover)] text-[var(--dash-text)] font-medium hover:bg-[var(--dash-border)] disabled:opacity-50 text-sm"
             >
               Test only
             </button>
           </div>
           {googleTestMsg && (
-            <p className={googleTestMsg.type === 'success' ? 'text-emerald-400 text-sm' : 'text-red-400 text-sm'}>
+            <p className={googleTestMsg.type === 'success' ? 'text-[var(--dash-success)] text-sm' : 'text-red-400 text-sm'}>
               {googleTestMsg.text}
             </p>
           )}
         </form>
       </section>
 
-      <section className="rounded-xl bg-zinc-900 border border-zinc-800 p-6">
+      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
         <div className="flex items-center gap-2 mb-4">
           <span className="text-xl" aria-hidden>🎵</span>
-          <h2 className="text-lg font-semibold text-white">TikTok Events API</h2>
+          <h2 className="text-lg font-semibold text-[var(--dash-text)]">TikTok Events API</h2>
           {tiktokConnected && (
-            <span className="px-2 py-0.5 rounded text-xs font-medium bg-emerald-950 text-emerald-400 border border-emerald-800">
+            <span className="px-2 py-0.5 rounded text-xs font-medium bg-[var(--dash-success-badge-bg)] text-[var(--dash-success-badge-text)] border border-[var(--dash-success)]">
               Connected
             </span>
           )}
         </div>
         <form onSubmit={handleTiktokSave} className="space-y-4 max-w-md">
           <div>
-            <label htmlFor="tiktok-pixel-id" className="block text-sm font-medium text-zinc-300 mb-1.5">
+            <label htmlFor="tiktok-pixel-id" className="block text-sm font-medium text-[var(--dash-muted)] mb-1.5">
               TikTok Pixel ID
             </label>
             <input
@@ -629,11 +649,11 @@ export default function IntegrationsForms({
               value={tiktokPixelId}
               onChange={(e) => setTiktokPixelId(e.target.value)}
               placeholder="CXXXXXXXX"
-              className="w-full px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+              className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]"
             />
           </div>
           <div>
-            <label htmlFor="tiktok-access-token" className="block text-sm font-medium text-zinc-300 mb-1.5">
+            <label htmlFor="tiktok-access-token" className="block text-sm font-medium text-[var(--dash-muted)] mb-1.5">
               TikTok Access Token
             </label>
             <input
@@ -642,19 +662,19 @@ export default function IntegrationsForms({
               value={tiktokAccessToken}
               onChange={(e) => setTiktokAccessToken(e.target.value)}
               placeholder="••••••••"
-              className="w-full px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+              className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]"
             />
             <a
               href="https://ads.tiktok.com/help/article?aid=10028"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-1 block text-xs text-zinc-500 hover:text-zinc-400"
+              className="mt-1 block text-xs text-[var(--dash-muted)] hover:text-[var(--dash-muted)]"
             >
               Get your token from TikTok Events Manager → Management → Generate Access Token
             </a>
           </div>
           {tiktokSaveMsg && (
-            <p className={tiktokSaveMsg.type === 'success' ? 'text-emerald-400 text-sm' : 'text-red-400 text-sm'}>
+            <p className={tiktokSaveMsg.type === 'success' ? 'text-[var(--dash-success)] text-sm' : 'text-red-400 text-sm'}>
               {tiktokSaveMsg.text}
             </p>
           )}
@@ -662,7 +682,7 @@ export default function IntegrationsForms({
             <button
               type="submit"
               disabled={tiktokSaving}
-              className="px-4 py-2 rounded-lg bg-white text-zinc-900 font-medium hover:bg-zinc-200 disabled:opacity-50 text-sm"
+              className="px-4 py-2 rounded-lg bg-[var(--dash-surface)] text-[var(--dash-text)] font-medium hover:bg-[var(--dash-surface-hover)] disabled:opacity-50 text-sm"
             >
               {tiktokSaving ? 'Saving…' : 'Save & Test'}
             </button>
@@ -670,32 +690,32 @@ export default function IntegrationsForms({
               type="button"
               onClick={handleTiktokTest}
               disabled={tiktokTesting || !tiktokPixelId.trim() || !tiktokAccessToken.trim()}
-              className="px-4 py-2 rounded-lg bg-zinc-700 text-white font-medium hover:bg-zinc-600 disabled:opacity-50 text-sm"
+              className="px-4 py-2 rounded-lg bg-[var(--dash-surface-hover)] text-[var(--dash-text)] font-medium hover:bg-[var(--dash-border)] disabled:opacity-50 text-sm"
             >
               {tiktokTesting ? 'Sending…' : 'Test only'}
             </button>
           </div>
           {tiktokTestMsg && (
-            <p className={tiktokTestMsg.type === 'success' ? 'text-emerald-400 text-sm' : 'text-red-400 text-sm'}>
+            <p className={tiktokTestMsg.type === 'success' ? 'text-[var(--dash-success)] text-sm' : 'text-red-400 text-sm'}>
               {tiktokTestMsg.text}
             </p>
           )}
         </form>
       </section>
 
-      <section className="rounded-xl bg-zinc-900 border border-zinc-800 p-6">
+      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
         <div className="flex items-center gap-2 mb-4">
           <span className="text-xl" aria-hidden>👻</span>
-          <h2 className="text-lg font-semibold text-white">Snapchat CAPI</h2>
+          <h2 className="text-lg font-semibold text-[var(--dash-text)]">Snapchat CAPI</h2>
           {snapConnected && (
-            <span className="px-2 py-0.5 rounded text-xs font-medium bg-emerald-950 text-emerald-400 border border-emerald-800">
+            <span className="px-2 py-0.5 rounded text-xs font-medium bg-[var(--dash-success-badge-bg)] text-[var(--dash-success-badge-text)] border border-[var(--dash-success)]">
               Connected
             </span>
           )}
         </div>
         <form onSubmit={handleSnapSave} className="space-y-4 max-w-md">
           <div>
-            <label htmlFor="snap-pixel-id" className="block text-sm font-medium text-zinc-300 mb-1.5">
+            <label htmlFor="snap-pixel-id" className="block text-sm font-medium text-[var(--dash-muted)] mb-1.5">
               Snap Pixel ID
             </label>
             <input
@@ -704,11 +724,11 @@ export default function IntegrationsForms({
               value={snapPixelId}
               onChange={(e) => setSnapPixelId(e.target.value)}
               placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-              className="w-full px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+              className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]"
             />
           </div>
           <div>
-            <label htmlFor="snap-access-token" className="block text-sm font-medium text-zinc-300 mb-1.5">
+            <label htmlFor="snap-access-token" className="block text-sm font-medium text-[var(--dash-muted)] mb-1.5">
               Snapchat Access Token
             </label>
             <input
@@ -717,19 +737,19 @@ export default function IntegrationsForms({
               value={snapAccessToken}
               onChange={(e) => setSnapAccessToken(e.target.value)}
               placeholder="••••••••"
-              className="w-full px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+              className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]"
             />
             <a
               href="https://businesshelp.snapchat.com/s/article/pixel-setup"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-1 block text-xs text-zinc-500 hover:text-zinc-400"
+              className="mt-1 block text-xs text-[var(--dash-muted)] hover:text-[var(--dash-muted)]"
             >
               Get from Snapchat Ads Manager → Assets → Snap Pixel → Settings
             </a>
           </div>
           {snapSaveMsg && (
-            <p className={snapSaveMsg.type === 'success' ? 'text-emerald-400 text-sm' : 'text-red-400 text-sm'}>
+            <p className={snapSaveMsg.type === 'success' ? 'text-[var(--dash-success)] text-sm' : 'text-red-400 text-sm'}>
               {snapSaveMsg.text}
             </p>
           )}
@@ -737,7 +757,7 @@ export default function IntegrationsForms({
             <button
               type="submit"
               disabled={snapSaving}
-              className="px-4 py-2 rounded-lg bg-white text-zinc-900 font-medium hover:bg-zinc-200 disabled:opacity-50 text-sm"
+              className="px-4 py-2 rounded-lg bg-[var(--dash-surface)] text-[var(--dash-text)] font-medium hover:bg-[var(--dash-surface-hover)] disabled:opacity-50 text-sm"
             >
               {snapSaving ? 'Saving…' : 'Save & Test'}
             </button>
@@ -745,32 +765,32 @@ export default function IntegrationsForms({
               type="button"
               onClick={handleSnapTest}
               disabled={snapTesting || !snapPixelId.trim() || !snapAccessToken.trim()}
-              className="px-4 py-2 rounded-lg bg-zinc-700 text-white font-medium hover:bg-zinc-600 disabled:opacity-50 text-sm"
+              className="px-4 py-2 rounded-lg bg-[var(--dash-surface-hover)] text-[var(--dash-text)] font-medium hover:bg-[var(--dash-border)] disabled:opacity-50 text-sm"
             >
               {snapTesting ? 'Sending…' : 'Test only'}
             </button>
           </div>
           {snapTestMsg && (
-            <p className={snapTestMsg.type === 'success' ? 'text-emerald-400 text-sm' : 'text-red-400 text-sm'}>
+            <p className={snapTestMsg.type === 'success' ? 'text-[var(--dash-success)] text-sm' : 'text-red-400 text-sm'}>
               {snapTestMsg.text}
             </p>
           )}
         </form>
       </section>
 
-      <section className="rounded-xl bg-zinc-900 border border-zinc-800 p-6">
+      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
         <div className="flex items-center gap-2 mb-4">
           <span className="text-xl" aria-hidden>📊</span>
-          <h2 className="text-lg font-semibold text-white">GA4 (Google Analytics 4)</h2>
+          <h2 className="text-lg font-semibold text-[var(--dash-text)]">GA4 (Google Analytics 4)</h2>
           {ga4Connected && (
-            <span className="px-2 py-0.5 rounded text-xs font-medium bg-emerald-950 text-emerald-400 border border-emerald-800">
+            <span className="px-2 py-0.5 rounded text-xs font-medium bg-[var(--dash-success-badge-bg)] text-[var(--dash-success-badge-text)] border border-[var(--dash-success)]">
               Connected
             </span>
           )}
         </div>
         <form onSubmit={handleGa4Save} className="space-y-4 max-w-md">
           <div>
-            <label htmlFor="ga4-measurement-id" className="block text-sm font-medium text-zinc-300 mb-1.5">
+            <label htmlFor="ga4-measurement-id" className="block text-sm font-medium text-[var(--dash-muted)] mb-1.5">
               GA4 Measurement ID
             </label>
             <input
@@ -779,12 +799,12 @@ export default function IntegrationsForms({
               value={ga4MeasurementId}
               onChange={(e) => setGa4MeasurementId(e.target.value)}
               placeholder="G-XXXXXXXXXX"
-              className="w-full px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+              className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]"
             />
-            <p className="mt-1 text-xs text-zinc-500">Format: G-XXXXXXXXXX</p>
+            <p className="mt-1 text-xs text-[var(--dash-muted)]">Format: G-XXXXXXXXXX</p>
           </div>
           <div>
-            <label htmlFor="ga4-api-secret" className="block text-sm font-medium text-zinc-300 mb-1.5">
+            <label htmlFor="ga4-api-secret" className="block text-sm font-medium text-[var(--dash-muted)] mb-1.5">
               GA4 API Secret
             </label>
             <input
@@ -793,19 +813,19 @@ export default function IntegrationsForms({
               value={ga4ApiSecret}
               onChange={(e) => setGa4ApiSecret(e.target.value)}
               placeholder="••••••••"
-              className="w-full px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+              className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]"
             />
             <a
               href="https://support.google.com/analytics/answer/9539598"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-1 block text-xs text-zinc-500 hover:text-zinc-400"
+              className="mt-1 block text-xs text-[var(--dash-muted)] hover:text-[var(--dash-muted)]"
             >
               Get from GA4 → Admin → Data Streams → Measurement Protocol API secrets
             </a>
           </div>
           {ga4SaveMsg && (
-            <p className={ga4SaveMsg.type === 'success' ? 'text-emerald-400 text-sm' : 'text-red-400 text-sm'}>
+            <p className={ga4SaveMsg.type === 'success' ? 'text-[var(--dash-success)] text-sm' : 'text-red-400 text-sm'}>
               {ga4SaveMsg.text}
             </p>
           )}
@@ -813,7 +833,7 @@ export default function IntegrationsForms({
             <button
               type="submit"
               disabled={ga4Saving}
-              className="px-4 py-2 rounded-lg bg-white text-zinc-900 font-medium hover:bg-zinc-200 disabled:opacity-50 text-sm"
+              className="px-4 py-2 rounded-lg bg-[var(--dash-surface)] text-[var(--dash-text)] font-medium hover:bg-[var(--dash-surface-hover)] disabled:opacity-50 text-sm"
             >
               {ga4Saving ? 'Saving…' : 'Save & Test'}
             </button>
@@ -821,13 +841,13 @@ export default function IntegrationsForms({
               type="button"
               onClick={handleGa4Test}
               disabled={ga4Testing || !ga4MeasurementId.trim() || !ga4ApiSecret.trim()}
-              className="px-4 py-2 rounded-lg bg-zinc-700 text-white font-medium hover:bg-zinc-600 disabled:opacity-50 text-sm"
+              className="px-4 py-2 rounded-lg bg-[var(--dash-surface-hover)] text-[var(--dash-text)] font-medium hover:bg-[var(--dash-border)] disabled:opacity-50 text-sm"
             >
               {ga4Testing ? 'Sending…' : 'Test only'}
             </button>
           </div>
           {ga4TestMsg && (
-            <p className={ga4TestMsg.type === 'success' ? 'text-emerald-400 text-sm' : 'text-red-400 text-sm'}>
+            <p className={ga4TestMsg.type === 'success' ? 'text-[var(--dash-success)] text-sm' : 'text-red-400 text-sm'}>
               {ga4TestMsg.text}
             </p>
           )}
@@ -836,3 +856,7 @@ export default function IntegrationsForms({
     </div>
   )
 }
+
+
+
+

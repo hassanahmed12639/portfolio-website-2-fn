@@ -10,9 +10,9 @@ type MatchRateRes = {
 }
 
 function dotClass(rate: number) {
-  if (rate >= 80) return 'bg-emerald-500'
-  if (rate >= 60) return 'bg-amber-500'
-  return 'bg-red-500'
+  if (rate >= 80) return 'bg-[var(--dash-success)]'
+  if (rate >= 60) return 'bg-[var(--dash-warning)]'
+  return 'bg-[var(--dash-danger)]'
 }
 
 export default function MatchRateSummary({ avgScore }: { avgScore: number }) {
@@ -38,23 +38,23 @@ export default function MatchRateSummary({ avgScore }: { avgScore: number }) {
           : null
 
   return (
-    <p className="text-sm text-zinc-400 mt-3 flex items-center gap-2 flex-wrap">
+    <p className="text-sm text-[var(--dash-muted)] mt-3 flex items-center gap-2 flex-wrap">
       <span className={`h-2 w-2 rounded-full shrink-0 ${dot}`} aria-hidden />
       {data?.error || data?.message === 'No events yet' ? (
-        <span>Est. Match Rate: <span className="text-white font-medium">{rate}%</span></span>
+        <span>Est. Match Rate: <span className="text-[var(--dash-text)] font-medium">{rate}%</span></span>
       ) : (
         <>
           <span>
-            Est. Match Rate: <span className="text-white font-medium">{rate}%</span>
+            Est. Match Rate: <span className="text-[var(--dash-text)] font-medium">{rate}%</span>
           </span>
           {trend && (
             <span
               className={
                 data?.trend_direction === 'up'
-                  ? 'text-emerald-400'
+                  ? 'text-[var(--dash-success)]'
                   : data?.trend_direction === 'down'
-                    ? 'text-red-400'
-                    : 'text-zinc-500'
+                    ? 'text-[var(--dash-danger)]'
+                    : 'text-[var(--dash-muted)]'
               }
             >
               {trend}
@@ -65,3 +65,7 @@ export default function MatchRateSummary({ avgScore }: { avgScore: number }) {
     </p>
   )
 }
+
+
+
+

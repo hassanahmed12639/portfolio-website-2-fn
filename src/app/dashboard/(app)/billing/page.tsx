@@ -56,23 +56,23 @@ export default async function BillingPage() {
 
   return (
     <div className="p-6 md:p-8">
-      <h1 className="text-xl font-semibold text-white mb-2">Billing</h1>
-      <p className="text-zinc-400 text-sm mb-6">
+      <h1 className="text-xl font-semibold text-[var(--dash-text)] mb-2">Billing</h1>
+      <p className="text-[var(--dash-muted)] text-sm mb-6">
         Manage your plan, usage, and billing.
       </p>
 
       {/* Trial banner: free user who never started trial */}
       {neverStartedTrial && (
-        <div className="mb-6 rounded-xl bg-emerald-500/20 border border-emerald-500/50 p-4 flex flex-wrap items-center justify-between gap-4">
+        <div className="mb-6 rounded-xl bg-[var(--dash-success-soft)] border border-[var(--dash-success-border)] p-4 flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p className="font-medium text-white">
+            <p className="font-medium text-[var(--dash-text)]">
               🎉 Try TrackHive Pro FREE for 7 days — No credit card required
             </p>
-            <p className="text-sm text-zinc-300 mt-0.5">
+            <p className="text-sm text-[var(--dash-muted)] mt-0.5">
               Full Pro access: 50k events, all platforms, all features.
             </p>
           </div>
-          <StartTrialButton className="shrink-0 px-4 py-2 rounded-lg font-medium bg-emerald-500 text-emerald-950 hover:bg-emerald-400 transition-colors">
+          <StartTrialButton className="shrink-0 px-4 py-2 rounded-lg font-medium bg-[var(--dash-success)] text-white hover:bg-[var(--dash-success-strong)] transition-colors">
             Start Free Trial
           </StartTrialButton>
         </div>
@@ -80,13 +80,13 @@ export default async function BillingPage() {
 
       {/* Trial countdown: currently on trial */}
       {isOnTrial && (
-        <div className="mb-6 rounded-xl bg-amber-500/20 border border-amber-500/50 p-4 flex flex-wrap items-center justify-between gap-4">
-          <p className="font-medium text-white">
+        <div className="mb-6 rounded-xl bg-[var(--dash-warning)]/20 border border-amber-500/50 p-4 flex flex-wrap items-center justify-between gap-4">
+          <p className="font-medium text-[var(--dash-text)]">
             ⏳ Your free trial ends in {trialDaysLeft} day{trialDaysLeft !== 1 ? 's' : ''} — Upgrade to keep access
           </p>
           <Link
             href="/dashboard/billing"
-            className="shrink-0 px-4 py-2 rounded-lg font-medium bg-amber-500 text-amber-950 hover:bg-amber-400 transition-colors"
+            className="shrink-0 px-4 py-2 rounded-lg font-medium bg-[var(--dash-warning)] text-amber-950 hover:bg-amber-400 transition-colors"
           >
             Upgrade Now
           </Link>
@@ -95,29 +95,29 @@ export default async function BillingPage() {
 
       {/* Current usage */}
       <div className="mb-8 space-y-4">
-        <h2 className="text-sm font-medium text-zinc-400 uppercase tracking-wider">
+        <h2 className="text-sm font-medium text-[var(--dash-muted)] uppercase tracking-wider">
           Current usage
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-            <p className="text-sm text-zinc-400 mb-1">Events this period</p>
-            <p className="text-2xl font-semibold text-white">
+          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+            <p className="text-sm text-[var(--dash-muted)] mb-1">Events this period</p>
+            <p className="text-2xl font-semibold text-[var(--dash-text)]">
               {isUnlimited(eventsLimit)
                 ? eventsUsed.toLocaleString()
                 : `${eventsUsed} / ${eventsLimit}`}
             </p>
           </div>
-          <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-            <p className="text-sm text-zinc-400 mb-1">Scans used</p>
-            <p className="text-2xl font-semibold text-white">
+          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+            <p className="text-sm text-[var(--dash-muted)] mb-1">Scans used</p>
+            <p className="text-2xl font-semibold text-[var(--dash-text)]">
               {isUnlimited(scansLimit)
                 ? scansUsed
                 : `${scansUsed} / ${scansLimit}`}
             </p>
           </div>
-          <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-            <p className="text-sm text-zinc-400 mb-1">AI analyses used</p>
-            <p className="text-2xl font-semibold text-white">
+          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+            <p className="text-sm text-[var(--dash-muted)] mb-1">AI analyses used</p>
+            <p className="text-2xl font-semibold text-[var(--dash-text)]">
               {isUnlimited(aiLimit) ? aiUsed : `${aiUsed} / ${aiLimit}`}
             </p>
           </div>
@@ -125,19 +125,19 @@ export default async function BillingPage() {
         {!isUnlimited(eventsLimit) && eventsLimit > 0 && (
           <div>
             <div className="flex justify-between text-sm mb-2">
-              <span className="text-zinc-400">Events progress</span>
+              <span className="text-[var(--dash-muted)]">Events progress</span>
               <span
                 className={
-                  usageWarn ? 'text-amber-400' : 'text-zinc-300'
+                  usageWarn ? 'text-amber-400' : 'text-[var(--dash-muted)]'
                 }
               >
                 {eventsUsed} / {eventsLimit} ({Math.round(usagePct)}%)
               </span>
             </div>
-            <div className="h-2 rounded-full bg-zinc-800 overflow-hidden">
+            <div className="h-2 rounded-full bg-[var(--dash-surface-hover)] overflow-hidden">
               <div
                 className={`h-full rounded-full transition-all ${
-                  usageWarn ? 'bg-amber-500' : 'bg-zinc-600'
+                  usageWarn ? 'bg-[var(--dash-warning)]' : 'bg-[var(--dash-surface-hover)]'
                 }`}
                 style={{ width: `${usagePct}%` }}
               />
@@ -145,10 +145,10 @@ export default async function BillingPage() {
           </div>
         )}
         <div className="flex items-center gap-2">
-          <span className="text-xs font-medium px-2 py-1 rounded bg-zinc-700 text-zinc-200 capitalize">
+          <span className="text-xs font-medium px-2 py-1 rounded bg-[var(--dash-surface-hover)] text-[var(--dash-text)] capitalize">
             {currentPlanLabel}
             {isOnTrial && trialExpiresAt && (
-              <span className="ml-1 text-zinc-400">
+              <span className="ml-1 text-[var(--dash-muted)]">
                 · Expires {trialExpiresAt.toLocaleDateString()}
               </span>
             )}
@@ -159,79 +159,79 @@ export default async function BillingPage() {
       {/* Plan cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
         {/* FREE */}
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-6 flex flex-col">
+        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6 flex flex-col">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-white">Free</h2>
+            <h2 className="text-lg font-semibold text-[var(--dash-text)]">Free</h2>
             {currentPlanLabel === 'free' && !profile?.trial_started_at && (
-              <span className="text-xs font-medium px-2 py-1 rounded bg-zinc-700 text-zinc-200">
+              <span className="text-xs font-medium px-2 py-1 rounded bg-[var(--dash-surface-hover)] text-[var(--dash-text)]">
                 Current Plan
               </span>
             )}
           </div>
-          <p className="text-2xl font-bold text-white mb-1">
-            $0<span className="text-base font-normal text-zinc-400">/mo</span>
+          <p className="text-2xl font-bold text-[var(--dash-text)] mb-1">
+            $0<span className="text-base font-normal text-[var(--dash-muted)]">/mo</span>
           </p>
-          <p className="text-sm text-zinc-400 mb-4">500 events/month</p>
-          <ul className="space-y-2 text-sm text-zinc-300 mb-6 flex-1">
+          <p className="text-sm text-[var(--dash-muted)] mb-4">500 events/month</p>
+          <ul className="space-y-2 text-sm text-[var(--dash-muted)] mb-6 flex-1">
             <li>1 domain</li>
             <li>Meta CAPI ✅</li>
             <li>Google Enhanced ✅</li>
             <li>AI Analysis: 3/month</li>
             <li>Scanner: 3/month</li>
-            <li className="text-zinc-500">TikTok / Snapchat / GA4 ❌</li>
-            <li className="text-zinc-500">Advanced features ❌</li>
+            <li className="text-[var(--dash-muted)]">TikTok / Snapchat / GA4 ❌</li>
+            <li className="text-[var(--dash-muted)]">Advanced features ❌</li>
           </ul>
         </div>
 
         {/* TRIAL — only if never used trial */}
         {neverStartedTrial && (
-          <div className="rounded-xl bg-zinc-900 border border-emerald-500/50 p-6 flex flex-col">
-            <span className="text-xs font-medium px-2 py-1 rounded bg-emerald-500/20 text-emerald-400 w-fit mb-4">
+          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-success-border)] p-6 flex flex-col">
+            <span className="text-xs font-medium px-2 py-1 rounded bg-[var(--dash-success-soft)] text-[var(--dash-success)] w-fit mb-4">
               7 Days Free
             </span>
-            <h2 className="text-lg font-semibold text-white mb-4">Trial</h2>
-            <p className="text-sm text-zinc-400 mb-4">
+            <h2 className="text-lg font-semibold text-[var(--dash-text)] mb-4">Trial</h2>
+            <p className="text-sm text-[var(--dash-muted)] mb-4">
               Full Pro access. No credit card needed.
             </p>
-            <ul className="space-y-2 text-sm text-zinc-300 mb-6 flex-1">
+            <ul className="space-y-2 text-sm text-[var(--dash-muted)] mb-6 flex-1">
               <li>50,000 events</li>
               <li>3 domains</li>
               <li>All 5 platforms ✅</li>
               <li>All features ✅</li>
             </ul>
-            <StartTrialButton className="w-full py-2.5 rounded-lg font-medium bg-emerald-500 text-emerald-950 hover:bg-emerald-400 transition-colors">
+            <StartTrialButton className="w-full py-2.5 rounded-lg font-medium bg-[var(--dash-success)] text-white hover:bg-[var(--dash-success-strong)] transition-colors">
               Start Free Trial
             </StartTrialButton>
           </div>
         )}
 
         {/* PRO */}
-        <div className="rounded-xl bg-zinc-900 border-2 border-emerald-500 p-6 flex flex-col relative">
-          <div className="absolute -top-2.5 left-4 px-2 py-0.5 rounded text-xs font-medium bg-emerald-500 text-emerald-950">
+        <div className="rounded-xl bg-[var(--dash-surface)] border-2 border-[var(--dash-success)] p-6 flex flex-col relative">
+          <div className="absolute -top-2.5 left-4 px-2 py-0.5 rounded text-xs font-medium bg-[var(--dash-success)] text-white">
             Most Popular
           </div>
-          <h2 className="text-lg font-semibold text-white mb-4 mt-1">Pro</h2>
-          <p className="text-2xl font-bold text-white mb-1">
-            $10<span className="text-base font-normal text-zinc-400">/mo</span>
+          <h2 className="text-lg font-semibold text-[var(--dash-text)] mb-4 mt-1">Pro</h2>
+          <p className="text-2xl font-bold text-[var(--dash-text)] mb-1">
+            $10<span className="text-base font-normal text-[var(--dash-muted)]">/mo</span>
           </p>
-          <p className="text-sm text-zinc-400 mb-4">50,000 events/month</p>
-          <ul className="space-y-2 text-sm text-zinc-300 mb-6 flex-1">
+          <p className="text-sm text-[var(--dash-muted)] mb-4">50,000 events/month</p>
+          <ul className="space-y-2 text-sm text-[var(--dash-muted)] mb-6 flex-1">
             <li>3 domains</li>
             <li>All 5 platforms ✅</li>
             <li>All features ✅</li>
-            <li className="text-zinc-500">GTM Templates ❌</li>
+            <li className="text-[var(--dash-muted)]">GTM Templates ❌</li>
           </ul>
           <UpgradeProButton />
         </div>
 
         {/* AGENCY */}
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-6 flex flex-col">
-          <h2 className="text-lg font-semibold text-white mb-4">Agency</h2>
-          <p className="text-2xl font-bold text-white mb-1">
-            $25<span className="text-base font-normal text-zinc-400">/mo</span>
+        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6 flex flex-col">
+          <h2 className="text-lg font-semibold text-[var(--dash-text)] mb-4">Agency</h2>
+          <p className="text-2xl font-bold text-[var(--dash-text)] mb-1">
+            $25<span className="text-base font-normal text-[var(--dash-muted)]">/mo</span>
           </p>
-          <p className="text-sm text-zinc-400 mb-4">Unlimited events</p>
-          <ul className="space-y-2 text-sm text-zinc-300 mb-6 flex-1">
+          <p className="text-sm text-[var(--dash-muted)] mb-4">Unlimited events</p>
+          <ul className="space-y-2 text-sm text-[var(--dash-muted)] mb-6 flex-1">
             <li>10 domains</li>
             <li>Everything in Pro ✅</li>
             <li>GTM Templates ✅ (80+ templates)</li>
@@ -240,7 +240,7 @@ export default async function BillingPage() {
           </ul>
           <a
             href="mailto:hassan@itshassanahmed.com"
-            className="block w-full py-2.5 rounded-lg font-medium text-center border border-zinc-600 text-zinc-200 hover:bg-zinc-800 transition-colors"
+            className="block w-full py-2.5 rounded-lg font-medium text-center border border-[var(--dash-border-strong)] text-[var(--dash-text)] hover:bg-[var(--dash-surface-hover)] transition-colors"
           >
             Contact Hassan
           </a>
@@ -248,23 +248,23 @@ export default async function BillingPage() {
       </div>
 
       {/* Feature comparison table */}
-      <h2 className="text-sm font-medium text-zinc-400 uppercase tracking-wider mb-4">
+      <h2 className="text-sm font-medium text-[var(--dash-muted)] uppercase tracking-wider mb-4">
         Feature comparison
       </h2>
-      <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-x-auto">
+      <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-zinc-800">
-              <th className="text-left px-4 py-3 font-medium text-zinc-300">
+            <tr className="border-b border-[var(--dash-border)]">
+              <th className="text-left px-4 py-3 font-medium text-[var(--dash-muted)]">
                 Feature
               </th>
-              <th className="text-left px-4 py-3 font-medium text-zinc-300">
+              <th className="text-left px-4 py-3 font-medium text-[var(--dash-muted)]">
                 Free
               </th>
-              <th className="text-left px-4 py-3 font-medium text-zinc-300">
+              <th className="text-left px-4 py-3 font-medium text-[var(--dash-muted)]">
                 Pro
               </th>
-              <th className="text-left px-4 py-3 font-medium text-zinc-300">
+              <th className="text-left px-4 py-3 font-medium text-[var(--dash-muted)]">
                 Agency
               </th>
             </tr>
@@ -292,27 +292,27 @@ export default async function BillingPage() {
                 ['gtm_templates', 'GTM Templates'],
               ] as const
             ).map(([key, label]) => (
-              <tr key={key} className="border-b border-zinc-800/80">
-                <td className="px-4 py-3 text-zinc-300">{label}</td>
+              <tr key={key} className="border-b border-[var(--dash-border)]/80">
+                <td className="px-4 py-3 text-[var(--dash-muted)]">{label}</td>
                 <td className="px-4 py-3">
                   {PLANS.free.features[key] ? (
-                    <span className="text-emerald-400">✓</span>
+                    <span className="text-[var(--dash-success)]">✓</span>
                   ) : (
-                    <span className="text-zinc-500">—</span>
+                    <span className="text-[var(--dash-muted)]">—</span>
                   )}
                 </td>
                 <td className="px-4 py-3">
                   {PLANS.pro.features[key] ? (
-                    <span className="text-emerald-400">✓</span>
+                    <span className="text-[var(--dash-success)]">✓</span>
                   ) : (
-                    <span className="text-zinc-500">—</span>
+                    <span className="text-[var(--dash-muted)]">—</span>
                   )}
                 </td>
                 <td className="px-4 py-3">
                   {PLANS.agency.features[key] ? (
-                    <span className="text-emerald-400">✓</span>
+                    <span className="text-[var(--dash-success)]">✓</span>
                   ) : (
-                    <span className="text-zinc-500">—</span>
+                    <span className="text-[var(--dash-muted)]">—</span>
                   )}
                 </td>
               </tr>
@@ -323,3 +323,7 @@ export default async function BillingPage() {
     </div>
   )
 }
+
+
+
+

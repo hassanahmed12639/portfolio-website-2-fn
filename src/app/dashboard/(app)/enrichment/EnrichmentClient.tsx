@@ -131,14 +131,14 @@ export default function EnrichmentClient() {
   return (
     <div className="space-y-8">
       {/* Section 1 — Enrichment Settings */}
-      <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-        <div className="px-4 py-3 border-b border-zinc-800 flex items-center justify-between">
-          <h2 className="text-sm font-medium text-zinc-300">Enrichment Settings</h2>
+      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+        <div className="px-4 py-3 border-b border-[var(--dash-border)] flex items-center justify-between">
+          <h2 className="text-sm font-medium text-[var(--dash-muted)]">Enrichment Settings</h2>
           <button
             type="button"
             onClick={saveSettings}
             disabled={saving}
-            className="px-4 py-2 rounded-lg bg-zinc-700 hover:bg-zinc-600 disabled:opacity-50 text-zinc-200 text-sm font-medium transition-colors"
+            className="px-4 py-2 rounded-lg bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-border)] disabled:opacity-50 text-[var(--dash-text)] text-sm font-medium transition-colors"
           >
             {saving ? 'Saving…' : 'Save Settings'}
           </button>
@@ -153,16 +153,16 @@ export default function EnrichmentClient() {
             { key: 'phone_hash_enabled' as const, label: 'Phone Hashing (auto hash phone SHA256)' },
           ].map(({ key, label }) => (
             <label key={key} className="flex items-center justify-between gap-4 cursor-pointer">
-              <span className="text-sm text-zinc-300">{label}</span>
+              <span className="text-sm text-[var(--dash-muted)]">{label}</span>
               <button
                 type="button"
                 role="switch"
                 aria-checked={settings[key]}
                 onClick={() => setSettings((s) => ({ ...s, [key]: !s[key] }))}
-                className={`relative w-10 h-5 rounded-full transition-colors ${settings[key] ? 'bg-emerald-600' : 'bg-zinc-700'}`}
+                className={`relative w-10 h-5 rounded-full transition-colors ${settings[key] ? 'bg-[var(--dash-success)]' : 'bg-[var(--dash-surface-hover)]'}`}
               >
                 <span
-                  className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white transition-transform ${settings[key] ? 'translate-x-5' : 'translate-x-0'}`}
+                  className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-[var(--dash-surface)] transition-transform ${settings[key] ? 'translate-x-5' : 'translate-x-0'}`}
                 />
               </button>
             </label>
@@ -171,32 +171,32 @@ export default function EnrichmentClient() {
       </section>
 
       {/* Section 2 — Enrichment Stats */}
-      <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-        <div className="px-4 py-3 border-b border-zinc-800">
-          <h2 className="text-sm font-medium text-zinc-300">Enrichment Stats</h2>
+      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+        <div className="px-4 py-3 border-b border-[var(--dash-border)]">
+          <h2 className="text-sm font-medium text-[var(--dash-muted)]">Enrichment Stats</h2>
         </div>
         <div className="p-4">
           {loading ? (
-            <p className="text-zinc-500 text-sm">Loading…</p>
+            <p className="text-[var(--dash-muted)] text-sm">Loading…</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-              <div className="rounded-lg border border-zinc-800 bg-zinc-950/50 p-4">
-                <p className="text-xs text-zinc-500 uppercase tracking-wider">Events Enriched Today</p>
-                <p className="text-2xl font-semibold text-white mt-1">{stats?.eventsEnrichedToday ?? 0}</p>
+              <div className="rounded-lg border border-[var(--dash-border)] bg-[var(--dash-bg)] p-4">
+                <p className="text-xs text-[var(--dash-muted)] uppercase tracking-wider">Events Enriched Today</p>
+                <p className="text-2xl font-semibold text-[var(--dash-text)] mt-1">{stats?.eventsEnrichedToday ?? 0}</p>
               </div>
-              <div className="rounded-lg border border-zinc-800 bg-zinc-950/50 p-4">
-                <p className="text-xs text-zinc-500 uppercase tracking-wider">Countries Detected</p>
-                <p className="text-2xl font-semibold text-white mt-1">{stats?.countriesDetected ?? 0}</p>
+              <div className="rounded-lg border border-[var(--dash-border)] bg-[var(--dash-bg)] p-4">
+                <p className="text-xs text-[var(--dash-muted)] uppercase tracking-wider">Countries Detected</p>
+                <p className="text-2xl font-semibold text-[var(--dash-text)] mt-1">{stats?.countriesDetected ?? 0}</p>
               </div>
-              <div className="rounded-lg border border-zinc-800 bg-zinc-950/50 p-4">
-                <p className="text-xs text-zinc-500 uppercase tracking-wider">New vs Returning</p>
-                <p className="text-sm text-zinc-400 mt-1">
+              <div className="rounded-lg border border-[var(--dash-border)] bg-[var(--dash-bg)] p-4">
+                <p className="text-xs text-[var(--dash-muted)] uppercase tracking-wider">New vs Returning</p>
+                <p className="text-sm text-[var(--dash-muted)] mt-1">
                   New {stats?.newCount ?? 0} / Returning {stats?.returningCount ?? 0}
                 </p>
               </div>
-              <div className="rounded-lg border border-zinc-800 bg-zinc-950/50 p-4">
-                <p className="text-xs text-zinc-500 uppercase tracking-wider">Device Breakdown</p>
-                <p className="text-sm text-zinc-400 mt-1">
+              <div className="rounded-lg border border-[var(--dash-border)] bg-[var(--dash-bg)] p-4">
+                <p className="text-xs text-[var(--dash-muted)] uppercase tracking-wider">Device Breakdown</p>
+                <p className="text-sm text-[var(--dash-muted)] mt-1">
                   Mobile {stats?.mobilePct ?? 0}% / Desktop {stats?.desktopPct ?? 0}% / Tablet {stats?.tabletPct ?? 0}%
                 </p>
               </div>
@@ -204,8 +204,8 @@ export default function EnrichmentClient() {
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="rounded-lg border border-zinc-800 bg-zinc-950/50 p-4">
-              <p className="text-xs text-zinc-500 uppercase tracking-wider mb-3">New vs Returning</p>
+            <div className="rounded-lg border border-[var(--dash-border)] bg-[var(--dash-bg)] p-4">
+              <p className="text-xs text-[var(--dash-muted)] uppercase tracking-wider mb-3">New vs Returning</p>
               {pieData.length > 0 ? (
                 <ResponsiveContainer width="100%" height={200}>
                   <PieChart>
@@ -228,11 +228,11 @@ export default function EnrichmentClient() {
                   </PieChart>
                 </ResponsiveContainer>
               ) : (
-                <p className="text-zinc-500 text-sm">No data today</p>
+                <p className="text-[var(--dash-muted)] text-sm">No data today</p>
               )}
             </div>
-            <div className="rounded-lg border border-zinc-800 bg-zinc-950/50 p-4">
-              <p className="text-xs text-zinc-500 uppercase tracking-wider mb-3">Device breakdown</p>
+            <div className="rounded-lg border border-[var(--dash-border)] bg-[var(--dash-bg)] p-4">
+              <p className="text-xs text-[var(--dash-muted)] uppercase tracking-wider mb-3">Device breakdown</p>
               {deviceData.length > 0 ? (
                 <ResponsiveContainer width="100%" height={200}>
                   <PieChart>
@@ -256,7 +256,7 @@ export default function EnrichmentClient() {
                   </PieChart>
                 </ResponsiveContainer>
               ) : (
-                <p className="text-zinc-500 text-sm">No data today</p>
+                <p className="text-[var(--dash-muted)] text-sm">No data today</p>
               )}
             </div>
           </div>
@@ -264,17 +264,17 @@ export default function EnrichmentClient() {
       </section>
 
       {/* Section 3 — Recent Enriched Events */}
-      <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-        <div className="px-4 py-3 border-b border-zinc-800">
-          <h2 className="text-sm font-medium text-zinc-300">Recent Enriched Events</h2>
+      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+        <div className="px-4 py-3 border-b border-[var(--dash-border)]">
+          <h2 className="text-sm font-medium text-[var(--dash-muted)]">Recent Enriched Events</h2>
         </div>
         <div className="overflow-x-auto">
           {loading ? (
-            <div className="p-4 text-zinc-500 text-sm">Loading…</div>
+            <div className="p-4 text-[var(--dash-muted)] text-sm">Loading…</div>
           ) : (
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-zinc-800 text-left text-zinc-400">
+                <tr className="border-b border-[var(--dash-border)] text-left text-[var(--dash-muted)]">
                   <th className="px-4 py-3 font-medium">Event</th>
                   <th className="px-4 py-3 font-medium">Country</th>
                   <th className="px-4 py-3 font-medium">City</th>
@@ -286,31 +286,31 @@ export default function EnrichmentClient() {
               <tbody>
                 {events.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-4 py-6 text-center text-zinc-500">
+                    <td colSpan={6} className="px-4 py-6 text-center text-[var(--dash-muted)]">
                       No enriched events yet. Events will appear here once enrichment is running.
                     </td>
                   </tr>
                 ) : (
                   events.map((ev) => (
-                    <tr key={ev.id} className="border-b border-zinc-800/80">
-                      <td className="px-4 py-3 text-zinc-300">{ev.event_name}</td>
+                    <tr key={ev.id} className="border-b border-[var(--dash-border)]/80">
+                      <td className="px-4 py-3 text-[var(--dash-muted)]">{ev.event_name}</td>
                       <td className="px-4 py-3">
                         <span className="inline-flex items-center gap-1.5">
                           <span>{ev.country ? countryCodeToFlag(ev.enriched_data?.geo?.countryCode ?? '') : '—'}</span>
-                          <span className="text-zinc-300">{ev.country || '—'}</span>
+                          <span className="text-[var(--dash-muted)]">{ev.country || '—'}</span>
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-zinc-400">{ev.city || '—'}</td>
+                      <td className="px-4 py-3 text-[var(--dash-muted)]">{ev.city || '—'}</td>
                       <td className="px-4 py-3">
-                        <span className="text-zinc-400 capitalize">{ev.device_type || '—'}</span>
+                        <span className="text-[var(--dash-muted)] capitalize">{ev.device_type || '—'}</span>
                       </td>
                       <td className="px-4 py-3">
                         {ev.customer_type ? (
                           <span
                             className={`text-xs font-medium px-2 py-0.5 rounded ${
                               ev.customer_type === 'returning'
-                                ? 'bg-blue-500/20 text-blue-400'
-                                : 'bg-emerald-500/20 text-emerald-400'
+                                ? 'bg-[var(--dash-primary-soft)] text-[var(--dash-primary)]'
+                                : 'bg-[var(--dash-success-soft)] text-[var(--dash-success)]'
                             }`}
                           >
                             {ev.customer_type === 'returning' ? 'Returning' : 'New'}
@@ -323,10 +323,10 @@ export default function EnrichmentClient() {
                         <span
                           className={`font-medium ${
                             enrichmentScore(ev.enriched_data) >= 80
-                              ? 'text-emerald-400'
+                              ? 'text-[var(--dash-success)]'
                               : enrichmentScore(ev.enriched_data) >= 50
                                 ? 'text-amber-400'
-                                : 'text-zinc-500'
+                                : 'text-[var(--dash-muted)]'
                           }`}
                         >
                           {enrichmentScore(ev.enriched_data)}%
@@ -343,3 +343,7 @@ export default function EnrichmentClient() {
     </div>
   )
 }
+
+
+
+

@@ -32,8 +32,8 @@ export default async function ReverseProxyPage() {
         userPlan={effectivePlan}
         trialExpired={trialExpired}
       >
-        <h1 className="text-xl font-semibold text-white mb-2">Reverse Proxy</h1>
-        <p className="text-zinc-400 text-sm mb-8">
+        <h1 className="text-xl font-semibold text-[var(--dash-text)] mb-2">Reverse Proxy</h1>
+        <p className="text-[var(--dash-muted)] text-sm mb-8">
           Serve tracking scripts from your own domain so ad blockers do not block them.
         </p>
         <ReverseProxyClient apiKey={apiKey} />
@@ -41,3 +41,7 @@ export default async function ReverseProxyPage() {
     </div>
   )
 }
+
+
+
+

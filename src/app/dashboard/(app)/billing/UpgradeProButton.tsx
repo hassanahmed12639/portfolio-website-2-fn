@@ -9,9 +9,13 @@ export function UpgradeProButton() {
           'Stripe coming soon — contact hassan@itshassanahmed.com to upgrade manually'
         )
       }
-      className="w-full py-2.5 rounded-lg font-medium border border-zinc-500 text-zinc-200 hover:bg-zinc-800 transition-colors"
+      className="w-full py-2.5 rounded-lg font-medium border border-[var(--dash-border-strong)] text-[var(--dash-text)] hover:bg-[var(--dash-surface-hover)] transition-colors"
     >
       Upgrade to Pro — $10/mo
     </button>
   )
 }
+
+
+
+

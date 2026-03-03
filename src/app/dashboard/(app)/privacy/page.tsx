@@ -10,3 +10,7 @@ export default async function PrivacyPage() {
   }
   return <PrivacyClient />
 }
+
+
+
+

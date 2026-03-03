@@ -44,7 +44,7 @@ export default function LoginRadar() {
     const applyRadarSweep = (rotation: number) => {
       sweepGradient.style.transform = `rotate(${rotation}deg)`
       circleFills.forEach((fill) => {
-        fill.style.background = `conic-gradient(from 0deg at 50% 50%, rgba(200, 230, 100, 0.10) 0deg, rgba(200, 230, 100, 0.10) ${rotation}deg, transparent ${rotation}deg, transparent 360deg)`
+        fill.style.background = `conic-gradient(from 0deg at 50% 50%, rgba(37, 99, 235, 0.12) 0deg, rgba(37, 99, 235, 0.12) ${rotation}deg, transparent ${rotation}deg, transparent 360deg)`
       })
     }
 
@@ -90,7 +90,7 @@ export default function LoginRadar() {
   return (
     <div className="login-radar-container h-full w-full flex flex-col items-center justify-center gap-6">
       <h2
-        className="login-radar-heading text-center font-bold text-white px-4 tracking-tight leading-tight max-w-[480px] text-xl sm:text-2xl md:text-3xl"
+        className="login-radar-heading text-center font-bold text-[var(--dash-text)] px-4 tracking-tight leading-tight max-w-[480px] text-xl sm:text-2xl md:text-3xl"
         style={{ fontFamily: '"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif' }}
       >
         Missing 50% of your conversions? Fix your tracking now.
@@ -202,7 +202,7 @@ export default function LoginRadar() {
           position: absolute;
           width: 8px;
           height: 8px;
-          background: #a1a1aa;
+          background: #64748b;
           border-radius: 50%;
           top: 50%;
           left: 50%;
@@ -240,7 +240,7 @@ export default function LoginRadar() {
           position: absolute;
           border-radius: 50%;
           background: transparent !important;
-          border: 2px solid rgba(161, 161, 170, 0.8) !important;
+          border: 2px solid rgba(148, 163, 184, 0.8) !important;
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
@@ -302,8 +302,8 @@ export default function LoginRadar() {
         }
 
         .radar-dot.radar-dot-icon.detected .radar-dot-icon-img {
-          filter: drop-shadow(0 0 12px rgba(200, 230, 100, 0.9))
-            drop-shadow(0 0 24px rgba(200, 230, 100, 0.5));
+          filter: drop-shadow(0 0 12px rgba(37, 99, 235, 0.6))
+            drop-shadow(0 0 24px rgba(37, 99, 235, 0.4));
         }
 
         .radar-dot.radar-dot-icon.active .radar-dot-icon-img {
@@ -313,9 +313,9 @@ export default function LoginRadar() {
         }
 
         .radar-dot.detected {
-          background: rgba(200, 230, 100, 0.9) !important;
-          border-color: #c8e664 !important;
-          box-shadow: 0 0 20px rgba(200, 230, 100, 0.6), 0 0 40px rgba(200, 230, 100, 0.3),
+          background: rgba(37, 99, 235, 0.9) !important;
+          border-color: #2563eb !important;
+          box-shadow: 0 0 20px rgba(37, 99, 235, 0.5), 0 0 40px rgba(37, 99, 235, 0.25),
             inset 0 0 15px rgba(255, 255, 255, 0.5) !important;
         }
 
@@ -363,3 +363,7 @@ export default function LoginRadar() {
     </div>
   )
 }
+
+
+
+

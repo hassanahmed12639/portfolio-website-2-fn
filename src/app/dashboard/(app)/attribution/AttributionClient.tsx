@@ -38,7 +38,7 @@ function TruthScoreRing({ score, size = 120 }: { score: number; size?: number })
   const stroke = (clamped / 100) * circ
   const color =
     clamped >= 80
-      ? 'stroke-emerald-500'
+      ? 'stroke-[var(--dash-success)]'
       : clamped >= 50
         ? 'stroke-amber-500'
         : 'stroke-red-500'
@@ -52,7 +52,7 @@ function TruthScoreRing({ score, size = 120 }: { score: number; size?: number })
           fill="none"
           stroke="currentColor"
           strokeWidth="10"
-          className="text-zinc-800"
+          className="text-[var(--dash-text)]"
         />
         <circle
           cx={size / 2}
@@ -67,16 +67,16 @@ function TruthScoreRing({ score, size = 120 }: { score: number; size?: number })
           style={{ transition: 'stroke-dashoffset 0.6s ease-out' }}
         />
       </svg>
-      <span className="absolute text-2xl font-bold text-white">{Math.round(clamped)}</span>
+      <span className="absolute text-2xl font-bold text-[var(--dash-text)]">{Math.round(clamped)}</span>
     </div>
   )
 }
 
 function ConfidenceBadge({ level }: { level: 'High' | 'Medium' | 'Low' }) {
   const config = {
-    High: { label: 'High Confidence', className: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50' },
-    Medium: { label: 'Medium Confidence', className: 'bg-amber-500/20 text-amber-400 border-amber-500/50' },
-    Low: { label: 'Attribution Mismatch', className: 'bg-red-500/20 text-red-400 border-red-500/50' },
+    High: { label: 'High Confidence', className: 'bg-[var(--dash-success-soft)] text-[var(--dash-success)] border-[var(--dash-success-border)]' },
+    Medium: { label: 'Medium Confidence', className: 'bg-[var(--dash-warning)]/20 text-amber-400 border-amber-500/50' },
+    Low: { label: 'Attribution Mismatch', className: 'bg-[var(--dash-danger)]/20 text-red-400 border-red-500/50' },
   }
   const { label, className } = config[level]
   return (
@@ -90,7 +90,7 @@ function ScoreBadge({ score }: { score: number }) {
   const level = score >= 80 ? 'High' : score >= 50 ? 'Medium' : 'Low'
   return (
     <span className="inline-flex items-center gap-1">
-      <span className="font-semibold text-white">{score}</span>
+      <span className="font-semibold text-[var(--dash-text)]">{score}</span>
       <ConfidenceBadge level={level} />
     </span>
   )
@@ -130,28 +130,28 @@ function FixSnippetModal({
       onClick={onClose}
     >
       <div
-        className="rounded-xl bg-zinc-900 border border-zinc-700 shadow-xl max-w-lg w-full max-h-[80vh] overflow-auto"
+        className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] shadow-xl max-w-lg w-full max-h-[80vh] overflow-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-4 border-b border-zinc-800 flex items-center justify-between">
-          <h3 className="font-semibold text-white">{issue.issue}</h3>
+        <div className="p-4 border-b border-[var(--dash-border)] flex items-center justify-between">
+          <h3 className="font-semibold text-[var(--dash-text)]">{issue.issue}</h3>
           <button
             type="button"
             onClick={onClose}
-            className="text-zinc-400 hover:text-white p-1 text-xl leading-none"
+            className="text-[var(--dash-muted)] hover:text-[var(--dash-text)] p-1 text-xl leading-none"
             aria-label="Close"
           >
             ×
           </button>
         </div>
         <div className="p-4 space-y-3">
-          <p className="text-zinc-300 text-sm">
-            <span className="text-zinc-500">Impact:</span> {issue.impact}
+          <p className="text-[var(--dash-muted)] text-sm">
+            <span className="text-[var(--dash-muted)]">Impact:</span> {issue.impact}
           </p>
-          <p className="text-zinc-300 text-sm">
-            <span className="text-zinc-500">Fix:</span> {issue.fix}
+          <p className="text-[var(--dash-muted)] text-sm">
+            <span className="text-[var(--dash-muted)]">Fix:</span> {issue.fix}
           </p>
-          <pre className="text-xs bg-zinc-950 rounded-lg p-4 overflow-auto text-zinc-300 border border-zinc-800 whitespace-pre-wrap">
+          <pre className="text-xs bg-[var(--dash-surface-hover)] rounded-lg p-4 overflow-auto text-[var(--dash-muted)] border border-[var(--dash-border)] whitespace-pre-wrap">
             {issue.fix}
           </pre>
         </div>
@@ -264,16 +264,16 @@ export default function AttributionClient() {
 
   return (
     <div className="p-6 md:p-8">
-      <h1 className="text-xl font-semibold text-white mb-6">Attribution Truth Score</h1>
+      <h1 className="text-xl font-semibold text-[var(--dash-text)] mb-6">Attribution Truth Score</h1>
 
-      <div className="flex gap-1 p-1 rounded-lg bg-zinc-900 border border-zinc-800 w-fit mb-6">
+      <div className="flex gap-1 p-1 rounded-lg bg-[var(--dash-surface)] border border-[var(--dash-border)] w-fit mb-6">
         {TABS.map((t) => (
           <button
             key={t.id}
             type="button"
             onClick={() => setTab(t.id)}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-              tab === t.id ? 'bg-zinc-700 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
+              tab === t.id ? 'bg-[var(--dash-surface-hover)] text-[var(--dash-text)]' : 'text-[var(--dash-muted)] hover:text-[var(--dash-text)] hover:bg-[var(--dash-surface-hover)]'
             }`}
           >
             {t.label}
@@ -284,8 +284,8 @@ export default function AttributionClient() {
       {tab === 'overview' && (
         <div className="space-y-6">
           {overviewLoading && (
-            <p className="text-zinc-400 text-sm flex items-center gap-2">
-              <span className="inline-block w-4 h-4 border-2 border-zinc-500 border-t-white rounded-full animate-spin" />
+            <p className="text-[var(--dash-muted)] text-sm flex items-center gap-2">
+              <span className="inline-block w-4 h-4 border-2 border-[var(--dash-border-strong)] border-t-[var(--dash-primary)] rounded-full animate-spin" />
               Calculating truth scores…
             </p>
           )}
@@ -298,33 +298,33 @@ export default function AttributionClient() {
           {!overviewLoading && !overviewError && (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4 flex flex-col items-center">
-                  <p className="text-sm text-zinc-400 mb-2">Average Truth Score</p>
+                <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4 flex flex-col items-center">
+                  <p className="text-sm text-[var(--dash-muted)] mb-2">Average Truth Score</p>
                   <TruthScoreRing score={avgScore} size={100} />
                 </div>
-                <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-                  <p className="text-sm text-zinc-400 mb-1">Total Conversions Analyzed</p>
-                  <p className="text-2xl font-semibold text-white">{conversions.length}</p>
+                <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+                  <p className="text-sm text-[var(--dash-muted)] mb-1">Total Conversions Analyzed</p>
+                  <p className="text-2xl font-semibold text-[var(--dash-text)]">{conversions.length}</p>
                 </div>
-                <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-                  <p className="text-sm text-zinc-400 mb-1">High Confidence (80+)</p>
-                  <p className="text-2xl font-semibold text-emerald-400">{highConfidence}</p>
+                <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+                  <p className="text-sm text-[var(--dash-muted)] mb-1">High Confidence (80+)</p>
+                  <p className="text-2xl font-semibold text-[var(--dash-success)]">{highConfidence}</p>
                 </div>
-                <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-                  <p className="text-sm text-zinc-400 mb-1">Attribution Mismatches</p>
+                <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+                  <p className="text-sm text-[var(--dash-muted)] mb-1">Attribution Mismatches</p>
                   <p className="text-2xl font-semibold text-red-400">{mismatches}</p>
                 </div>
               </div>
 
-              <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-                <h2 className="px-4 py-3 border-b border-zinc-800 text-sm font-medium text-zinc-300">
+              <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+                <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">
                   Conversion Truth Score Table
                 </h2>
                 {conversions.length > 0 ? (
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="border-b border-zinc-800 text-left text-zinc-400">
+                        <tr className="border-b border-[var(--dash-border)] text-left text-[var(--dash-muted)]">
                           <th className="px-4 py-3 font-medium">Event name</th>
                           <th className="px-4 py-3 font-medium">Timestamp</th>
                           <th className="px-4 py-3 font-medium">Value</th>
@@ -339,15 +339,15 @@ export default function AttributionClient() {
                         {conversions.slice(0, 50).map((row) => (
                           <tr
                             key={row.conversion_id}
-                            className="border-b border-zinc-800/80 hover:bg-zinc-800/30"
+                            className="border-b border-[var(--dash-border)]/80 hover:bg-[var(--dash-surface-hover)]/30"
                           >
-                            <td className="px-4 py-3 text-white">{row.event_name}</td>
-                            <td className="px-4 py-3 text-zinc-400">
+                            <td className="px-4 py-3 text-[var(--dash-text)]">{row.event_name}</td>
+                            <td className="px-4 py-3 text-[var(--dash-muted)]">
                               {new Date(row.created_at).toLocaleString()}
                             </td>
-                            <td className="px-4 py-3 text-zinc-300">{row.value ?? '—'}</td>
-                            <td className="px-4 py-3 text-zinc-300">{row.meta_score}</td>
-                            <td className="px-4 py-3 text-zinc-300">{row.google_score}</td>
+                            <td className="px-4 py-3 text-[var(--dash-muted)]">{row.value ?? '—'}</td>
+                            <td className="px-4 py-3 text-[var(--dash-muted)]">{row.meta_score}</td>
+                            <td className="px-4 py-3 text-[var(--dash-muted)]">{row.google_score}</td>
                             <td className="px-4 py-3">
                               <ScoreBadge score={row.truth_score} />
                             </td>
@@ -355,7 +355,7 @@ export default function AttributionClient() {
                               <ConfidenceBadge level={row.confidence} />
                             </td>
                             <td className="px-4 py-3">
-                              <span className="text-zinc-500 text-xs">Details</span>
+                              <span className="text-[var(--dash-muted)] text-xs">Details</span>
                             </td>
                           </tr>
                         ))}
@@ -363,14 +363,14 @@ export default function AttributionClient() {
                     </table>
                   </div>
                 ) : (
-                  <p className="px-4 py-8 text-zinc-500 text-center">
+                  <p className="px-4 py-8 text-[var(--dash-muted)] text-center">
                     No conversions yet. Send events to see truth scores.
                   </p>
                 )}
               </div>
 
-              <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-                <h2 className="text-sm font-medium text-zinc-300 mb-4">
+              <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+                <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">
                   Platform Comparison (Meta vs Google vs Server logged)
                 </h2>
                 <div className="h-64">
@@ -395,7 +395,7 @@ export default function AttributionClient() {
                   </ResponsiveContainer>
                 </div>
                 {total > 0 && (
-                  <p className="text-zinc-500 text-sm mt-2">
+                  <p className="text-[var(--dash-muted)] text-sm mt-2">
                     Discrepancy (server vs total): {discrepancyPct}%
                   </p>
                 )}
@@ -407,70 +407,70 @@ export default function AttributionClient() {
 
       {tab === 'calculator' && (
         <div className="space-y-6 max-w-xl">
-          <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-6 flex flex-col items-center">
-            <p className="text-sm text-zinc-400 mb-4">Live Truth Score</p>
+          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6 flex flex-col items-center">
+            <p className="text-sm text-[var(--dash-muted)] mb-4">Live Truth Score</p>
             <TruthScoreRing score={clampedCalculatorScore} size={140} />
-            <p className="mt-4 text-zinc-300 text-sm text-center">{calculatorMeaning}</p>
+            <p className="mt-4 text-[var(--dash-muted)] text-sm text-center">{calculatorMeaning}</p>
           </div>
 
-          <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-            <h2 className="px-4 py-3 border-b border-zinc-800 text-sm font-medium text-zinc-300">
+          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+            <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">
               Score breakdown
             </h2>
-            <ul className="divide-y divide-zinc-800 text-sm">
+            <ul className="divide-y divide-[var(--dash-border)] text-sm">
               <li className="px-4 py-2 flex justify-between">
-                <span className="text-zinc-400">Server-side fired</span>
-                <span className={serverSide ? 'text-emerald-400' : 'text-zinc-500'}>
+                <span className="text-[var(--dash-muted)]">Server-side fired</span>
+                <span className={serverSide ? 'text-[var(--dash-success)]' : 'text-[var(--dash-muted)]'}>
                   {serverSide ? '+25' : '0'}
                 </span>
               </li>
               <li className="px-4 py-2 flex justify-between">
-                <span className="text-zinc-400">Browser-side fired</span>
-                <span className={browserSide ? 'text-emerald-400' : 'text-zinc-500'}>
+                <span className="text-[var(--dash-muted)]">Browser-side fired</span>
+                <span className={browserSide ? 'text-[var(--dash-success)]' : 'text-[var(--dash-muted)]'}>
                   {browserSide ? '+10' : '0'}
                 </span>
               </li>
               <li className="px-4 py-2 flex justify-between">
-                <span className="text-zinc-400">Email/phone</span>
-                <span className={hasEmail ? 'text-emerald-400' : 'text-zinc-500'}>
+                <span className="text-[var(--dash-muted)]">Email/phone</span>
+                <span className={hasEmail ? 'text-[var(--dash-success)]' : 'text-[var(--dash-muted)]'}>
                   {hasEmail ? '+20' : '0'}
                 </span>
               </li>
               <li className="px-4 py-2 flex justify-between">
-                <span className="text-zinc-400">Event ID (dedup)</span>
-                <span className={hasEventId ? 'text-emerald-400' : 'text-zinc-500'}>
+                <span className="text-[var(--dash-muted)]">Event ID (dedup)</span>
+                <span className={hasEventId ? 'text-[var(--dash-success)]' : 'text-[var(--dash-muted)]'}>
                   {hasEventId ? '+15' : '0'}
                 </span>
               </li>
               <li className="px-4 py-2 flex justify-between">
-                <span className="text-zinc-400">UTM parameters</span>
-                <span className={hasUtm ? 'text-emerald-400' : 'text-zinc-500'}>
+                <span className="text-[var(--dash-muted)]">UTM parameters</span>
+                <span className={hasUtm ? 'text-[var(--dash-success)]' : 'text-[var(--dash-muted)]'}>
                   {hasUtm ? '+10' : '0'}
                 </span>
               </li>
               <li className="px-4 py-2 flex justify-between">
-                <span className="text-zinc-400">Value</span>
-                <span className={hasValue ? 'text-emerald-400' : 'text-zinc-500'}>
+                <span className="text-[var(--dash-muted)]">Value</span>
+                <span className={hasValue ? 'text-[var(--dash-success)]' : 'text-[var(--dash-muted)]'}>
                   {hasValue ? '+10' : '0'}
                 </span>
               </li>
               <li className="px-4 py-2 flex justify-between">
-                <span className="text-zinc-400">Deduplicated</span>
-                <span className={deduplicated ? 'text-emerald-400' : 'text-zinc-500'}>
+                <span className="text-[var(--dash-muted)]">Deduplicated</span>
+                <span className={deduplicated ? 'text-[var(--dash-success)]' : 'text-[var(--dash-muted)]'}>
                   {deduplicated ? '+5' : '0'}
                 </span>
               </li>
               <li className="px-4 py-2 flex justify-between">
-                <span className="text-zinc-400">Source URL</span>
-                <span className={hasSourceUrl ? 'text-emerald-400' : 'text-zinc-500'}>
+                <span className="text-[var(--dash-muted)]">Source URL</span>
+                <span className={hasSourceUrl ? 'text-[var(--dash-success)]' : 'text-[var(--dash-muted)]'}>
                   {hasSourceUrl ? '+5' : '0'}
                 </span>
               </li>
             </ul>
           </div>
 
-          <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4 space-y-3">
-            <h2 className="text-sm font-medium text-zinc-300">Toggle factors</h2>
+          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4 space-y-3">
+            <h2 className="text-sm font-medium text-[var(--dash-muted)]">Toggle factors</h2>
             {[
               { label: 'Was event fired server-side?', value: serverSide, set: setServerSide },
               { label: 'Was event fired browser-side?', value: browserSide, set: setBrowserSide },
@@ -482,16 +482,16 @@ export default function AttributionClient() {
               { label: 'Source URL present?', value: hasSourceUrl, set: setHasSourceUrl },
             ].map(({ label, value, set }) => (
               <div key={label} className="flex items-center justify-between">
-                <span className="text-zinc-300 text-sm">{label}</span>
+                <span className="text-[var(--dash-muted)] text-sm">{label}</span>
                 <button
                   type="button"
                   onClick={() => set(!value)}
                   className={`w-11 h-6 rounded-full transition-colors relative ${
-                    value ? 'bg-emerald-600' : 'bg-zinc-700'
+                    value ? 'bg-[var(--dash-success)]' : 'bg-[var(--dash-surface-hover)]'
                   }`}
                 >
                   <span
-                    className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all duration-200 ${
+                    className={`absolute top-1 w-4 h-4 rounded-full bg-[var(--dash-surface)] transition-all duration-200 ${
                       value ? 'left-[22px]' : 'left-1'
                     }`}
                   />
@@ -504,18 +504,18 @@ export default function AttributionClient() {
 
       {tab === 'ai' && (
         <div className="space-y-6">
-          <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
+          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
             <button
               type="button"
               onClick={runAnalyze}
               disabled={analyzeLoading}
-              className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-sm transition-colors"
+              className="px-4 py-2 rounded-lg bg-[var(--dash-success)] hover:bg-[var(--dash-success-strong)] disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-sm transition-colors"
             >
               {analyzeLoading ? 'Analyzing…' : 'Analyze My Attribution'}
             </button>
             {analyzeLoading && (
-              <p className="mt-3 text-zinc-400 text-sm flex items-center gap-2">
-                <span className="inline-block w-4 h-4 border-2 border-zinc-500 border-t-white rounded-full animate-spin" />
+              <p className="mt-3 text-[var(--dash-muted)] text-sm flex items-center gap-2">
+                <span className="inline-block w-4 h-4 border-2 border-[var(--dash-border-strong)] border-t-[var(--dash-primary)] rounded-full animate-spin" />
                 AI is analyzing your attribution…
               </p>
             )}
@@ -528,20 +528,20 @@ export default function AttributionClient() {
           {analyzeResult && (
             <div className="space-y-6">
               {analyzeResult.summary && (
-                <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-                  <h2 className="text-sm font-medium text-zinc-300 mb-2">Summary</h2>
-                  <p className="text-zinc-200">{analyzeResult.summary}</p>
+                <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+                  <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-2">Summary</h2>
+                  <p className="text-[var(--dash-text)]">{analyzeResult.summary}</p>
                 </div>
               )}
               {analyzeResult.overall_truth_score != null && (
-                <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-6 flex flex-col items-center">
-                  <h2 className="text-sm font-medium text-zinc-400 mb-3">Overall Truth Score</h2>
+                <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6 flex flex-col items-center">
+                  <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-3">Overall Truth Score</h2>
                   <TruthScoreRing score={analyzeResult.overall_truth_score} />
                 </div>
               )}
               {analyzeResult.estimated_revenue_at_risk != null && (
-                <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-                  <h2 className="text-sm font-medium text-zinc-300 mb-1">
+                <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+                  <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-1">
                     Estimated revenue at risk
                   </h2>
                   <p className="text-xl font-semibold text-amber-400">
@@ -552,40 +552,40 @@ export default function AttributionClient() {
               {analyzeResult.platform_breakdown && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {analyzeResult.platform_breakdown.meta && (
-                    <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-                      <h2 className="text-sm font-medium text-zinc-300 mb-2">Meta</h2>
-                      <p className="text-2xl font-semibold text-white">
+                    <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+                      <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-2">Meta</h2>
+                      <p className="text-2xl font-semibold text-[var(--dash-text)]">
                         {analyzeResult.platform_breakdown.meta.score ?? '—'}
                       </p>
                       {analyzeResult.platform_breakdown.meta.issues?.length ? (
-                        <ul className="mt-2 text-sm text-zinc-400 list-disc list-inside">
+                        <ul className="mt-2 text-sm text-[var(--dash-muted)] list-disc list-inside">
                           {analyzeResult.platform_breakdown.meta.issues.map((i, idx) => (
                             <li key={idx}>{i}</li>
                           ))}
                         </ul>
                       ) : null}
                       {analyzeResult.platform_breakdown.meta.recommendation && (
-                        <p className="mt-2 text-sm text-emerald-400">
+                        <p className="mt-2 text-sm text-[var(--dash-success)]">
                           {analyzeResult.platform_breakdown.meta.recommendation}
                         </p>
                       )}
                     </div>
                   )}
                   {analyzeResult.platform_breakdown.google && (
-                    <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-                      <h2 className="text-sm font-medium text-zinc-300 mb-2">Google</h2>
-                      <p className="text-2xl font-semibold text-white">
+                    <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+                      <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-2">Google</h2>
+                      <p className="text-2xl font-semibold text-[var(--dash-text)]">
                         {analyzeResult.platform_breakdown.google.score ?? '—'}
                       </p>
                       {analyzeResult.platform_breakdown.google.issues?.length ? (
-                        <ul className="mt-2 text-sm text-zinc-400 list-disc list-inside">
+                        <ul className="mt-2 text-sm text-[var(--dash-muted)] list-disc list-inside">
                           {analyzeResult.platform_breakdown.google.issues.map((i, idx) => (
                             <li key={idx}>{i}</li>
                           ))}
                         </ul>
                       ) : null}
                       {analyzeResult.platform_breakdown.google.recommendation && (
-                        <p className="mt-2 text-sm text-emerald-400">
+                        <p className="mt-2 text-sm text-[var(--dash-success)]">
                           {analyzeResult.platform_breakdown.google.recommendation}
                         </p>
                       )}
@@ -594,20 +594,20 @@ export default function AttributionClient() {
                 </div>
               )}
               {analyzeResult.data_quality && (
-                <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-                  <h2 className="text-sm font-medium text-zinc-300 mb-2">Data quality</h2>
-                  <p className="text-2xl font-semibold text-white">
+                <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+                  <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-2">Data quality</h2>
+                  <p className="text-2xl font-semibold text-[var(--dash-text)]">
                     {analyzeResult.data_quality.score ?? '—'}
                   </p>
                   {analyzeResult.data_quality.missing_signals?.length ? (
-                    <ul className="mt-2 text-sm text-zinc-400 list-disc list-inside">
+                    <ul className="mt-2 text-sm text-[var(--dash-muted)] list-disc list-inside">
                       {analyzeResult.data_quality.missing_signals.map((s, idx) => (
                         <li key={idx}>{s}</li>
                       ))}
                     </ul>
                   ) : null}
                   {analyzeResult.data_quality.recommendations?.length ? (
-                    <ul className="mt-2 text-sm text-emerald-400 list-disc list-inside">
+                    <ul className="mt-2 text-sm text-[var(--dash-success)] list-disc list-inside">
                       {analyzeResult.data_quality.recommendations.map((r, idx) => (
                         <li key={idx}>{r}</li>
                       ))}
@@ -616,32 +616,32 @@ export default function AttributionClient() {
                 </div>
               )}
               {analyzeResult.attribution_issues && analyzeResult.attribution_issues.length > 0 && (
-                <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-                  <h2 className="px-4 py-3 border-b border-zinc-800 text-sm font-medium text-zinc-300">
+                <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+                  <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">
                     Attribution issues
                   </h2>
-                  <ul className="divide-y divide-zinc-800">
+                  <ul className="divide-y divide-[var(--dash-border)]">
                     {analyzeResult.attribution_issues.map((item, i) => (
                       <li key={i} className="px-4 py-3">
                         <div className="flex flex-wrap items-start justify-between gap-2">
-                          <span className="font-medium text-white">{item.issue}</span>
+                          <span className="font-medium text-[var(--dash-text)]">{item.issue}</span>
                           <span
                             className={`text-xs font-medium px-2 py-0.5 rounded border ${
                               item.priority === 'high'
-                                ? 'bg-red-500/20 text-red-400 border-red-500/50'
+                                ? 'bg-[var(--dash-danger)]/20 text-red-400 border-red-500/50'
                                 : item.priority === 'medium'
-                                  ? 'bg-amber-500/20 text-amber-400 border-amber-500/50'
-                                  : 'bg-zinc-500/20 text-zinc-400 border-zinc-500/50'
+                                  ? 'bg-[var(--dash-warning)]/20 text-amber-400 border-amber-500/50'
+                                  : 'bg-[var(--dash-surface-hover)] text-[var(--dash-muted)] border-[var(--dash-border-strong)]'
                             }`}
                           >
                             {item.priority}
                           </span>
                         </div>
-                        <p className="text-zinc-400 text-sm mt-1">
-                          <span className="text-zinc-500">Impact:</span> {item.impact}
+                        <p className="text-[var(--dash-muted)] text-sm mt-1">
+                          <span className="text-[var(--dash-muted)]">Impact:</span> {item.impact}
                         </p>
-                        <p className="text-zinc-400 text-sm mt-0.5">
-                          <span className="text-zinc-500">Fix:</span> {item.fix}
+                        <p className="text-[var(--dash-muted)] text-sm mt-0.5">
+                          <span className="text-[var(--dash-muted)]">Fix:</span> {item.fix}
                         </p>
                         <button
                           type="button"
@@ -653,7 +653,7 @@ export default function AttributionClient() {
                               priority: item.priority,
                             })
                           }
-                          className="mt-2 px-3 py-1.5 rounded-md bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-sm font-medium transition-colors"
+                          className="mt-2 px-3 py-1.5 rounded-md bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-border)] text-[var(--dash-text)] text-sm font-medium transition-colors"
                         >
                           Show code snippet
                         </button>
@@ -675,3 +675,7 @@ export default function AttributionClient() {
     </div>
   )
 }
+
+
+
+

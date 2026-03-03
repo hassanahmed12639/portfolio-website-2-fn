@@ -19,9 +19,13 @@ export default function CopyButton({ text }: { text: string }) {
     <button
       type="button"
       onClick={handleCopy}
-      className="shrink-0 px-3 py-1.5 rounded-md bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-sm font-medium transition-colors"
+      className="shrink-0 px-3 py-1.5 rounded-md bg-[var(--dash-success)] hover:bg-[var(--dash-success-strong)] text-white text-sm font-medium transition-colors"
     >
       {copied ? 'Copied' : 'Copy'}
     </button>
   )
 }
+
+
+
+

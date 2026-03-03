@@ -45,7 +45,7 @@ export function FeatureGate({
           <button
             type="button"
             onClick={() => setShowModal(true)}
-            className="px-4 py-2 rounded-lg font-medium bg-emerald-500 text-emerald-950 hover:bg-emerald-400 transition-colors"
+            className="px-4 py-2 rounded-lg font-medium bg-[var(--dash-success)] text-white hover:bg-[var(--dash-success-strong)] transition-colors"
           >
             Start Free Trial
           </button>

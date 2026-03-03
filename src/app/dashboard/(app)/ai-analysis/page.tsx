@@ -36,7 +36,7 @@ function CopyBtn({ text, label = 'Copy' }: { text: string; label?: string }) {
     <button
       type="button"
       onClick={handleCopy}
-      className="shrink-0 px-3 py-1.5 rounded-md bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-sm font-medium transition-colors"
+      className="shrink-0 px-3 py-1.5 rounded-md bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-border)] text-[var(--dash-text)] text-sm font-medium transition-colors"
     >
       {copied ? 'Copied' : label}
     </button>
@@ -48,7 +48,7 @@ function HealthRing({ score }: { score: number }) {
   const r = 56
   const circ = 2 * Math.PI * r
   const stroke = (clamped / 100) * circ
-  const color = clamped >= 70 ? 'stroke-emerald-500' : clamped >= 40 ? 'stroke-amber-500' : 'stroke-red-500'
+  const color = clamped >= 70 ? 'stroke-[var(--dash-success)]' : clamped >= 40 ? 'stroke-amber-500' : 'stroke-red-500'
   return (
     <div className="relative inline-flex items-center justify-center">
       <svg className="w-36 h-36 -rotate-90" viewBox="0 0 120 120">
@@ -59,7 +59,7 @@ function HealthRing({ score }: { score: number }) {
           fill="none"
           stroke="currentColor"
           strokeWidth="10"
-          className="text-zinc-800"
+          className="text-[var(--dash-text)]"
         />
         <circle
           cx="60"
@@ -74,7 +74,7 @@ function HealthRing({ score }: { score: number }) {
           style={{ transition: 'stroke-dashoffset 0.6s ease-out' }}
         />
       </svg>
-      <span className="absolute text-2xl font-bold text-white">{clamped}</span>
+      <span className="absolute text-2xl font-bold text-[var(--dash-text)]">{clamped}</span>
     </div>
   )
 }
@@ -89,10 +89,10 @@ function ReportView({ report }: { report: AnalyzeReport }) {
   const priorityBadge = (p: string) => {
     const c =
       p === 'high'
-        ? 'bg-red-500/20 text-red-400 border-red-500/40'
+        ? 'bg-[var(--dash-danger)]/20 text-red-400 border-red-500/40'
         : p === 'medium'
-          ? 'bg-amber-500/20 text-amber-400 border-amber-500/40'
-          : 'bg-zinc-500/20 text-zinc-400 border-zinc-500/40'
+          ? 'bg-[var(--dash-warning)]/20 text-amber-400 border-amber-500/40'
+          : 'bg-[var(--dash-surface-hover)] text-[var(--dash-muted)] border-[var(--dash-border-strong)]'
     return (
       <span className={`text-xs font-medium px-2 py-0.5 rounded border ${c}`}>
         {p}
@@ -102,25 +102,25 @@ function ReportView({ report }: { report: AnalyzeReport }) {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-6 flex flex-col items-center">
-        <h2 className="text-sm font-medium text-zinc-400 mb-3">Overall Tracking Health Score</h2>
+      <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6 flex flex-col items-center">
+        <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-3">Overall Tracking Health Score</h2>
         <HealthRing score={report.health_score ?? 0} />
         {report.summary && (
-          <p className="mt-4 text-zinc-300 text-sm text-center max-w-xl">{report.summary}</p>
+          <p className="mt-4 text-[var(--dash-muted)] text-sm text-center max-w-xl">{report.summary}</p>
         )}
       </div>
 
       {missing.length > 0 && (
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-          <h2 className="px-4 py-3 border-b border-zinc-800 text-sm font-medium text-zinc-300">
+        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+          <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">
             Missing Funnel Events
           </h2>
-          <ul className="divide-y divide-zinc-800">
+          <ul className="divide-y divide-[var(--dash-border)]">
             {missing.map((m, i) => (
               <li key={i} className="px-4 py-3 flex flex-wrap items-center gap-2">
-                <span className="text-white font-medium">{m.event}</span>
+                <span className="text-[var(--dash-text)] font-medium">{m.event}</span>
                 {priorityBadge(m.priority)}
-                <span className="text-zinc-400 text-sm">{m.reason}</span>
+                <span className="text-[var(--dash-muted)] text-sm">{m.reason}</span>
               </li>
             ))}
           </ul>
@@ -128,16 +128,16 @@ function ReportView({ report }: { report: AnalyzeReport }) {
       )}
 
       {duplicates.length > 0 && (
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-          <h2 className="px-4 py-3 border-b border-zinc-800 text-sm font-medium text-zinc-300">
+        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+          <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">
             Duplicate Events Detected
           </h2>
-          <ul className="divide-y divide-zinc-800">
+          <ul className="divide-y divide-[var(--dash-border)]">
             {duplicates.map((d, i) => (
               <li key={i} className="px-4 py-3">
-                <span className="text-white font-medium">{d.event}</span>
-                <span className="text-zinc-400 text-sm ml-2">× {d.count}</span>
-                <p className="text-zinc-500 text-sm mt-1">{d.fix}</p>
+                <span className="text-[var(--dash-text)] font-medium">{d.event}</span>
+                <span className="text-[var(--dash-muted)] text-sm ml-2">× {d.count}</span>
+                <p className="text-[var(--dash-muted)] text-sm mt-1">{d.fix}</p>
               </li>
             ))}
           </ul>
@@ -145,16 +145,16 @@ function ReportView({ report }: { report: AnalyzeReport }) {
       )}
 
       {missingValue.length > 0 && (
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-          <h2 className="px-4 py-3 border-b border-zinc-800 text-sm font-medium text-zinc-300">
+        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+          <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">
             Events Missing Value
           </h2>
-          <ul className="divide-y divide-zinc-800">
+          <ul className="divide-y divide-[var(--dash-border)]">
             {missingValue.map((e, i) => (
               <li key={i} className="px-4 py-3">
-                <span className="text-white font-medium">{e.event}</span>
-                <span className="text-zinc-400 text-sm ml-2">× {e.count}</span>
-                <p className="text-zinc-500 text-sm mt-1">{e.impact}</p>
+                <span className="text-[var(--dash-text)] font-medium">{e.event}</span>
+                <span className="text-[var(--dash-muted)] text-sm ml-2">× {e.count}</span>
+                <p className="text-[var(--dash-muted)] text-sm mt-1">{e.impact}</p>
               </li>
             ))}
           </ul>
@@ -162,15 +162,15 @@ function ReportView({ report }: { report: AnalyzeReport }) {
       )}
 
       {funnel.length > 0 && (
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-          <h2 className="px-4 py-3 border-b border-zinc-800 text-sm font-medium text-zinc-300">
+        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+          <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">
             Funnel Drop-off Analysis
           </h2>
-          <ul className="divide-y divide-zinc-800">
+          <ul className="divide-y divide-[var(--dash-border)]">
             {funnel.map((f, i) => (
               <li key={i} className="px-4 py-3 flex justify-between items-center">
-                <span className="text-white">{f.stage}</span>
-                <span className="text-zinc-400">
+                <span className="text-[var(--dash-text)]">{f.stage}</span>
+                <span className="text-[var(--dash-muted)]">
                   {f.count} · {f.dropoff_percent}% drop-off
                 </span>
               </li>
@@ -180,20 +180,20 @@ function ReportView({ report }: { report: AnalyzeReport }) {
       )}
 
       {recs.length > 0 && (
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-          <h2 className="px-4 py-3 border-b border-zinc-800 text-sm font-medium text-zinc-300">
+        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+          <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">
             AI Recommendations
           </h2>
-          <ol className="divide-y divide-zinc-800 list-decimal list-inside">
+          <ol className="divide-y divide-[var(--dash-border)] list-decimal list-inside">
             {recs.map((r, i) => (
               <li key={i} className="px-4 py-3">
                 <div className="flex flex-wrap items-start justify-between gap-2">
-                  <span className="font-medium text-white">{r.title}</span>
+                  <span className="font-medium text-[var(--dash-text)]">{r.title}</span>
                   {r.code_snippet && <CopyBtn text={r.code_snippet} />}
                 </div>
-                <p className="text-zinc-400 text-sm mt-1">{r.description}</p>
+                <p className="text-[var(--dash-muted)] text-sm mt-1">{r.description}</p>
                 {r.code_snippet && (
-                  <pre className="mt-2 p-3 rounded-lg bg-zinc-950 text-xs text-zinc-400 overflow-x-auto">
+                  <pre className="mt-2 p-3 rounded-lg bg-[var(--dash-surface-hover)] text-xs text-[var(--dash-muted)] overflow-x-auto">
                     {r.code_snippet}
                   </pre>
                 )}
@@ -204,13 +204,13 @@ function ReportView({ report }: { report: AnalyzeReport }) {
       )}
 
       {quickWin && (
-        <div className="rounded-xl border-2 border-emerald-500/50 bg-emerald-950/30 p-4">
-          <h2 className="text-sm font-medium text-emerald-400 mb-2">Quick Win</h2>
-          <p className="font-medium text-white">{quickWin.title}</p>
-          <p className="text-zinc-300 text-sm mt-1">{quickWin.description}</p>
+        <div className="rounded-xl border-2 border-[var(--dash-success-border)] bg-[var(--dash-success-soft)]/50 p-4">
+          <h2 className="text-sm font-medium text-[var(--dash-success)] mb-2">Quick Win</h2>
+          <p className="font-medium text-[var(--dash-text)]">{quickWin.title}</p>
+          <p className="text-[var(--dash-muted)] text-sm mt-1">{quickWin.description}</p>
           {quickWin.code_snippet && (
             <div className="mt-3 flex items-start gap-2">
-              <pre className="flex-1 p-3 rounded-lg bg-zinc-900 text-xs text-zinc-300 overflow-x-auto">
+              <pre className="flex-1 p-3 rounded-lg bg-[var(--dash-surface)] text-xs text-[var(--dash-muted)] overflow-x-auto">
                 {quickWin.code_snippet}
               </pre>
               <CopyBtn text={quickWin.code_snippet} />
@@ -309,9 +309,9 @@ export default function AiAnalysisPage() {
 
   return (
     <div className="p-6 md:p-8">
-      <h1 className="text-xl font-semibold text-white mb-6">AI Event Analysis</h1>
+      <h1 className="text-xl font-semibold text-[var(--dash-text)] mb-6">AI Event Analysis</h1>
 
-      <div className="flex gap-1 p-1 rounded-lg bg-zinc-900 border border-zinc-800 w-fit mb-6">
+      <div className="flex gap-1 p-1 rounded-lg bg-[var(--dash-surface)] border border-[var(--dash-border)] w-fit mb-6">
         {TABS.map((t) => (
           <button
             key={t.id}
@@ -319,8 +319,8 @@ export default function AiAnalysisPage() {
             onClick={() => setTab(t.id)}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               tab === t.id
-                ? 'bg-zinc-700 text-white'
-                : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
+                ? 'bg-[var(--dash-surface-hover)] text-[var(--dash-text)]'
+                : 'text-[var(--dash-muted)] hover:text-[var(--dash-text)] hover:bg-[var(--dash-surface-hover)]'
             }`}
           >
             {t.label}
@@ -330,18 +330,18 @@ export default function AiAnalysisPage() {
 
       {tab === 'events' && (
         <div className="space-y-6">
-          <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
+          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
             <button
               type="button"
               onClick={runEventAnalysis}
               disabled={analyzeLoading}
-              className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-sm transition-colors"
+              className="px-4 py-2 rounded-lg bg-[var(--dash-success)] hover:bg-[var(--dash-success-strong)] disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-sm transition-colors"
             >
               {analyzeLoading ? 'Analyzing…' : 'Analyze My Events'}
             </button>
             {analyzeLoading && (
-              <p className="mt-3 text-zinc-400 text-sm flex items-center gap-2">
-                <span className="inline-block w-4 h-4 border-2 border-zinc-500 border-t-white rounded-full animate-spin" />
+              <p className="mt-3 text-[var(--dash-muted)] text-sm flex items-center gap-2">
+                <span className="inline-block w-4 h-4 border-2 border-[var(--dash-border-strong)] border-t-[var(--dash-primary)] rounded-full animate-spin" />
                 AI is analyzing your tracking data...
               </p>
             )}
@@ -357,24 +357,24 @@ export default function AiAnalysisPage() {
 
       {tab === 'upload' && (
         <div className="space-y-6">
-          <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4 space-y-3">
+          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4 space-y-3">
             <input
               type="file"
               accept=".json,.csv,.txt"
               onChange={(e) => setUploadFile(e.target.files?.[0] ?? null)}
-              className="block w-full text-sm text-zinc-400 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-zinc-700 file:text-zinc-200 file:text-sm"
+              className="block w-full text-sm text-[var(--dash-muted)] file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-[var(--dash-surface-hover)] file:text-[var(--dash-text)] file:text-sm"
             />
             <button
               type="button"
               onClick={runUploadAnalysis}
               disabled={analyzeLoading || !uploadFile}
-              className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-sm transition-colors"
+              className="px-4 py-2 rounded-lg bg-[var(--dash-success)] hover:bg-[var(--dash-success-strong)] disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-sm transition-colors"
             >
               {analyzeLoading ? 'Analyzing…' : 'Analyze Uploaded Log'}
             </button>
             {analyzeLoading && (
-              <p className="text-zinc-400 text-sm flex items-center gap-2">
-                <span className="inline-block w-4 h-4 border-2 border-zinc-500 border-t-white rounded-full animate-spin" />
+              <p className="text-[var(--dash-muted)] text-sm flex items-center gap-2">
+                <span className="inline-block w-4 h-4 border-2 border-[var(--dash-border-strong)] border-t-[var(--dash-primary)] rounded-full animate-spin" />
                 AI is analyzing your tracking data...
               </p>
             )}
@@ -390,20 +390,20 @@ export default function AiAnalysisPage() {
 
       {tab === 'utm' && (
         <div className="space-y-6">
-          <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4 space-y-3">
-            <label className="block text-sm text-zinc-400">Paste your full URL with UTMs</label>
+          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4 space-y-3">
+            <label className="block text-sm text-[var(--dash-muted)]">Paste your full URL with UTMs</label>
             <textarea
               value={utmUrl}
               onChange={(e) => setUtmUrl(e.target.value)}
               placeholder="https://example.com/page?utm_source=google&utm_medium=cpc&..."
               rows={3}
-              className="w-full rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-200 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-zinc-500 placeholder:text-zinc-500 resize-none"
+              className="w-full rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--dash-primary)] placeholder:text-[var(--dash-muted)] resize-none"
             />
             <button
               type="button"
               onClick={runUtmCleaner}
               disabled={utmLoading || !utmUrl.trim()}
-              className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-sm transition-colors"
+              className="px-4 py-2 rounded-lg bg-[var(--dash-success)] hover:bg-[var(--dash-success-strong)] disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-sm transition-colors"
             >
               {utmLoading ? 'Analyzing…' : 'Clean & Analyze'}
             </button>
@@ -414,16 +414,16 @@ export default function AiAnalysisPage() {
             </p>
           )}
           {utmResult && (
-            <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden space-y-4 p-4">
+            <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden space-y-4 p-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <p className="text-xs text-zinc-500 mb-1">Original</p>
-                  <p className="text-sm text-zinc-400 break-all font-mono">{utmResult.original_url ?? utmUrl}</p>
+                  <p className="text-xs text-[var(--dash-muted)] mb-1">Original</p>
+                  <p className="text-sm text-[var(--dash-muted)] break-all font-mono">{utmResult.original_url ?? utmUrl}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-zinc-500 mb-1">Cleaned URL</p>
+                  <p className="text-xs text-[var(--dash-muted)] mb-1">Cleaned URL</p>
                   <div className="flex items-start gap-2">
-                    <p className="text-sm text-emerald-400 break-all font-mono flex-1">
+                    <p className="text-sm text-[var(--dash-success)] break-all font-mono flex-1">
                       {utmResult.cleaned_url ?? '—'}
                     </p>
                     {utmResult.cleaned_url && (
@@ -434,8 +434,8 @@ export default function AiAnalysisPage() {
               </div>
               {utmResult.issues && utmResult.issues.length > 0 && (
                 <div>
-                  <p className="text-sm font-medium text-zinc-300 mb-2">Issues found</p>
-                  <ul className="list-disc list-inside text-sm text-zinc-400 space-y-1">
+                  <p className="text-sm font-medium text-[var(--dash-muted)] mb-2">Issues found</p>
+                  <ul className="list-disc list-inside text-sm text-[var(--dash-muted)] space-y-1">
                     {utmResult.issues.map((issue, i) => (
                       <li key={i}>{issue}</li>
                     ))}
@@ -444,8 +444,8 @@ export default function AiAnalysisPage() {
               )}
               {utmResult.recommendations && utmResult.recommendations.length > 0 && (
                 <div>
-                  <p className="text-sm font-medium text-zinc-300 mb-2">Recommendations</p>
-                  <ul className="list-disc list-inside text-sm text-zinc-400 space-y-1">
+                  <p className="text-sm font-medium text-[var(--dash-muted)] mb-2">Recommendations</p>
+                  <ul className="list-disc list-inside text-sm text-[var(--dash-muted)] space-y-1">
                     {utmResult.recommendations.map((rec, i) => (
                       <li key={i}>{rec}</li>
                     ))}
@@ -459,3 +459,7 @@ export default function AiAnalysisPage() {
     </div>
   )
 }
+
+
+
+

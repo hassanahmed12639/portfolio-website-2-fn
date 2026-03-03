@@ -25,13 +25,13 @@ function thresholdPlaceholder(condition: string): string {
 }
 
 function triggerBadge(lastTriggeredAt: string | null | undefined) {
-  if (!lastTriggeredAt) return { label: 'Never', className: 'text-zinc-500' }
+  if (!lastTriggeredAt) return { label: 'Never', className: 'text-[var(--dash-muted)]' }
   const last = new Date(lastTriggeredAt)
   const diffMs = Date.now() - last.getTime()
   const diffHours = diffMs / 3600000
-  if (diffHours < 1) return { label: 'Triggered recently', className: 'bg-red-500/20 text-red-400' }
-  if (diffHours < 24) return { label: 'Triggered in last 24h', className: 'bg-amber-500/20 text-amber-400' }
-  return { label: 'Healthy', className: 'bg-emerald-500/20 text-emerald-400' }
+  if (diffHours < 1) return { label: 'Triggered recently', className: 'bg-[var(--dash-danger)]/20 text-red-400' }
+  if (diffHours < 24) return { label: 'Triggered in last 24h', className: 'bg-[var(--dash-warning)]/20 text-amber-400' }
+  return { label: 'Healthy', className: 'bg-[var(--dash-success-soft)] text-[var(--dash-success)]' }
 }
 
 export default function AlertsPage() {
@@ -150,42 +150,42 @@ export default function AlertsPage() {
   return (
     <div className="p-6 md:p-8 space-y-8">
       <div>
-        <h1 className="text-xl font-semibold text-white flex items-center gap-2">
+        <h1 className="text-xl font-semibold text-[var(--dash-text)] flex items-center gap-2">
           <Bell className="w-5 h-5" />
           Email Alerts
         </h1>
-        <p className="text-zinc-400 mt-1">Get notified when your tracking quality drops</p>
+        <p className="text-[var(--dash-muted)] mt-1">Get notified when your tracking quality drops</p>
       </div>
 
       {toast && (
         <div
           className={`fixed top-4 right-4 z-50 px-4 py-2 rounded-lg text-sm font-medium ${
-            toast.type === 'success' ? 'bg-emerald-600 text-white' : 'bg-red-600 text-white'
+            toast.type === 'success' ? 'bg-[var(--dash-success)] text-white' : 'bg-[var(--dash-danger)] text-white'
           }`}
         >
           {toast.message}
         </div>
       )}
 
-      <section className="rounded-xl bg-zinc-900 border border-zinc-800 p-6">
-        <h2 className="text-sm font-medium text-zinc-300 mb-4">Create New Alert Rule</h2>
+      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
+        <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">Create New Alert Rule</h2>
         <form onSubmit={createRule} className="space-y-4 max-w-lg">
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1">Alert Name</label>
+            <label className="block text-xs font-medium text-[var(--dash-muted)] mb-1">Alert Name</label>
             <input
               type="text"
               value={form.name}
               onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-success)]"
               placeholder="e.g. Low score alert"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1">Condition</label>
+            <label className="block text-xs font-medium text-[var(--dash-muted)] mb-1">Condition</label>
             <select
               value={form.condition}
               onChange={(e) => setForm((f) => ({ ...f, condition: e.target.value as AlertRule['condition'] }))}
-              className="w-full px-3 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-success)]"
             >
               {CONDITION_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>
@@ -195,51 +195,51 @@ export default function AlertsPage() {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1">Threshold</label>
+            <label className="block text-xs font-medium text-[var(--dash-muted)] mb-1">Threshold</label>
             <input
               type="number"
               value={form.threshold}
               onChange={(e) => setForm((f) => ({ ...f, threshold: Number(e.target.value) || 0 }))}
               placeholder={thresholdPlaceholder(form.condition)}
-              className="w-full px-3 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-success)]"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1">Notify Email</label>
+            <label className="block text-xs font-medium text-[var(--dash-muted)] mb-1">Notify Email</label>
             <input
               type="email"
               value={form.notifyEmail}
               onChange={(e) => setForm((f) => ({ ...f, notifyEmail: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-success)]"
               placeholder="you@example.com"
               required
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1">Don&apos;t re-alert for X minutes</label>
+            <label className="block text-xs font-medium text-[var(--dash-muted)] mb-1">Don&apos;t re-alert for X minutes</label>
             <input
               type="number"
               value={form.cooldownMinutes}
               onChange={(e) => setForm((f) => ({ ...f, cooldownMinutes: Number(e.target.value) || 60 }))}
               min={1}
-              className="w-full px-3 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-success)]"
             />
           </div>
           <button
             type="submit"
-            className="px-4 py-2 rounded-lg bg-emerald-600 text-white font-medium hover:bg-emerald-500 transition-colors"
+            className="px-4 py-2 rounded-lg bg-[var(--dash-success)] text-white font-medium hover:bg-[var(--dash-success-strong)] transition-colors"
           >
             Create Alert Rule
           </button>
         </form>
       </section>
 
-      <section className="rounded-xl bg-zinc-900 border border-zinc-800 p-6">
-        <h2 className="text-sm font-medium text-zinc-300 mb-4">Active Alert Rules</h2>
+      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
+        <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">Active Alert Rules</h2>
         {loadingRules ? (
-          <p className="text-zinc-500 animate-pulse">Loading rules...</p>
+          <p className="text-[var(--dash-muted)] animate-pulse">Loading rules...</p>
         ) : rules.length === 0 ? (
-          <p className="text-zinc-500">No alert rules yet. Create one above.</p>
+          <p className="text-[var(--dash-muted)]">No alert rules yet. Create one above.</p>
         ) : (
           <div className="space-y-4">
             {rules.map((rule) => {
@@ -247,26 +247,26 @@ export default function AlertsPage() {
               return (
                 <div
                   key={rule.id}
-                  className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-lg bg-zinc-800/50 border border-zinc-700"
+                  className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-lg bg-[var(--dash-surface-hover)]/50 border border-[var(--dash-border)]"
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-medium text-white">🔔 {rule.name}</span>
+                      <span className="font-medium text-[var(--dash-text)]">🔔 {rule.name}</span>
                       <button
                         type="button"
                         onClick={() => toggleRule(rule)}
-                        className={`text-xs px-2 py-1 rounded ${rule.enabled ? 'bg-emerald-500/20 text-emerald-400' : 'bg-zinc-600 text-zinc-400'}`}
+                        className={`text-xs px-2 py-1 rounded ${rule.enabled ? 'bg-[var(--dash-success-soft)] text-[var(--dash-success)]' : 'bg-[var(--dash-surface-hover)] text-[var(--dash-muted)]'}`}
                       >
                         {rule.enabled ? 'On' : 'Off'}
                       </button>
                     </div>
-                    <p className="text-sm text-zinc-400 mt-1">
+                    <p className="text-sm text-[var(--dash-muted)] mt-1">
                       Condition: {conditionLabel(rule.condition)} {rule.threshold}
                     </p>
-                    <p className="text-sm text-zinc-500">
+                    <p className="text-sm text-[var(--dash-muted)]">
                       Notify: {rule.notifyEmail} | Cooldown: {rule.cooldownMinutes} min
                     </p>
-                    <p className="text-xs text-zinc-500 mt-1">
+                    <p className="text-xs text-[var(--dash-muted)] mt-1">
                       Last triggered: {rule.lastTriggeredAt ? new Date(rule.lastTriggeredAt).toLocaleString() : 'Never'}
                       {badge.label !== 'Never' && (
                         <span className={`ml-2 px-2 py-0.5 rounded text-xs ${badge.className}`}>{badge.label}</span>
@@ -276,7 +276,7 @@ export default function AlertsPage() {
                   <button
                     type="button"
                     onClick={() => deleteRule(rule.id)}
-                    className="text-sm text-red-400 hover:text-red-300"
+                    className="text-sm text-red-400 hover:text-[var(--dash-danger-strong)]"
                   >
                     Delete
                   </button>
@@ -287,17 +287,17 @@ export default function AlertsPage() {
         )}
       </section>
 
-      <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-        <h2 className="px-4 py-3 border-b border-zinc-800 text-sm font-medium text-zinc-300">Alert History</h2>
+      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+        <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">Alert History</h2>
         {loadingLogs ? (
-          <p className="p-4 text-zinc-500 animate-pulse">Loading logs...</p>
+          <p className="p-4 text-[var(--dash-muted)] animate-pulse">Loading logs...</p>
         ) : logs.length === 0 ? (
-          <p className="p-4 text-zinc-500">No alert emails sent yet.</p>
+          <p className="p-4 text-[var(--dash-muted)]">No alert emails sent yet.</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-zinc-800 text-left text-zinc-400">
+                <tr className="border-b border-[var(--dash-border)] text-left text-[var(--dash-muted)]">
                   <th className="px-4 py-3 font-medium">Time</th>
                   <th className="px-4 py-3 font-medium">Rule</th>
                   <th className="px-4 py-3 font-medium">Condition</th>
@@ -308,23 +308,23 @@ export default function AlertsPage() {
               </thead>
               <tbody>
                 {[...logs].reverse().map((log) => (
-                  <tr key={log.id} className="border-b border-zinc-800/80 hover:bg-zinc-800/30">
-                    <td className="px-4 py-3 text-zinc-300">
+                  <tr key={log.id} className="border-b border-[var(--dash-border)]/80 hover:bg-[var(--dash-surface-hover)]/30">
+                    <td className="px-4 py-3 text-[var(--dash-muted)]">
                       {new Date(log.triggeredAt).toLocaleString()}
                     </td>
-                    <td className="px-4 py-3 text-white">{log.ruleName}</td>
-                    <td className="px-4 py-3 text-zinc-300">{log.condition}</td>
-                    <td className="px-4 py-3 text-zinc-300">{log.value}</td>
-                    <td className="px-4 py-3 text-zinc-300">{log.threshold}</td>
+                    <td className="px-4 py-3 text-[var(--dash-text)]">{log.ruleName}</td>
+                    <td className="px-4 py-3 text-[var(--dash-muted)]">{log.condition}</td>
+                    <td className="px-4 py-3 text-[var(--dash-muted)]">{log.value}</td>
+                    <td className="px-4 py-3 text-[var(--dash-muted)]">{log.threshold}</td>
                     <td className="px-4 py-3">
                       {log.status === 'sent' && (
-                        <span className="px-2 py-0.5 rounded text-xs bg-emerald-500/20 text-emerald-400">sent</span>
+                        <span className="px-2 py-0.5 rounded text-xs bg-[var(--dash-success-soft)] text-[var(--dash-success)]">sent</span>
                       )}
                       {log.status === 'failed' && (
-                        <span className="px-2 py-0.5 rounded text-xs bg-red-500/20 text-red-400">failed</span>
+                        <span className="px-2 py-0.5 rounded text-xs bg-[var(--dash-danger)]/20 text-red-400">failed</span>
                       )}
                       {log.status === 'suppressed' && (
-                        <span className="px-2 py-0.5 rounded text-xs bg-zinc-500/20 text-zinc-400">suppressed</span>
+                        <span className="px-2 py-0.5 rounded text-xs bg-[var(--dash-surface-hover)] text-[var(--dash-muted)]">suppressed</span>
                       )}
                     </td>
                   </tr>
@@ -335,9 +335,9 @@ export default function AlertsPage() {
         )}
       </section>
 
-      <section className="rounded-xl bg-zinc-900 border border-zinc-800 p-6">
-        <h2 className="text-sm font-medium text-zinc-300 mb-4">Send Test Alert</h2>
-        <p className="text-zinc-400 text-sm mb-3">
+      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
+        <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">Send Test Alert</h2>
+        <p className="text-[var(--dash-muted)] text-sm mb-3">
           Send a test email to verify your Resend setup. Use the email below or from your first enabled rule.
         </p>
         <div className="flex flex-wrap items-center gap-3">
@@ -346,12 +346,12 @@ export default function AlertsPage() {
             value={testEmail}
             onChange={(e) => setTestEmail(e.target.value)}
             placeholder={rules.find((r) => r.enabled)?.notifyEmail || 'you@example.com'}
-            className="px-3 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 w-64"
+            className="px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-success)] w-64"
           />
           <button
             type="button"
             onClick={sendTest}
-            className="px-4 py-2 rounded-lg bg-emerald-600 text-white font-medium hover:bg-emerald-500 transition-colors"
+            className="px-4 py-2 rounded-lg bg-[var(--dash-success)] text-white font-medium hover:bg-[var(--dash-success-strong)] transition-colors"
           >
             Send Test Email
           </button>
@@ -360,3 +360,7 @@ export default function AlertsPage() {
     </div>
   )
 }
+
+
+
+

@@ -66,11 +66,11 @@ function ScoreRing({ score }: { score: number }) {
   const circ = 2 * Math.PI * r
   const stroke = (clamped / 100) * circ
   const color =
-    clamped >= 80 ? 'stroke-emerald-500' : clamped >= 60 ? 'stroke-blue-500' : clamped >= 40 ? 'stroke-amber-500' : 'stroke-red-500'
+    clamped >= 80 ? 'stroke-[var(--dash-success)]' : clamped >= 60 ? 'stroke-blue-500' : clamped >= 40 ? 'stroke-amber-500' : 'stroke-red-500'
   return (
     <div className="relative inline-flex items-center justify-center">
       <svg className="w-40 h-40 -rotate-90" viewBox="0 0 120 120">
-        <circle cx="60" cy="60" r={r} fill="none" strokeWidth="10" className="stroke-zinc-800" />
+        <circle cx="60" cy="60" r={r} fill="none" strokeWidth="10" className="stroke-[var(--dash-border)]" />
         <circle
           cx="60"
           cy="60"
@@ -84,7 +84,7 @@ function ScoreRing({ score }: { score: number }) {
           style={{ transition: 'stroke-dashoffset 0.6s ease-out' }}
         />
       </svg>
-      <span className="absolute text-3xl font-bold text-white">{clamped}</span>
+      <span className="absolute text-3xl font-bold text-[var(--dash-text)]">{clamped}</span>
     </div>
   )
 }
@@ -97,9 +97,9 @@ function gaugeColor(rate: number) {
 }
 
 function barColor(pct: number) {
-  if (pct >= 80) return 'bg-emerald-500'
-  if (pct >= 50) return 'bg-amber-500'
-  return 'bg-red-500'
+  if (pct >= 80) return 'bg-[var(--dash-success)]'
+  if (pct >= 50) return 'bg-[var(--dash-warning)]'
+  return 'bg-[var(--dash-danger)]'
 }
 
 function formatLastUpdated(iso: string | undefined) {
@@ -117,6 +117,7 @@ export default function DataQualityPage() {
   const [matchRate, setMatchRate] = useState<MatchRateResponse | null>(null)
   const [matchRateLoading, setMatchRateLoading] = useState(true)
   const [matchRateRefreshing, setMatchRateRefreshing] = useState(false)
+  const estimatedMatchRate = matchRate?.estimated_match_rate ?? 0
 
   useEffect(() => {
     fetch('/api/dashboard/data-quality')
@@ -142,10 +143,55 @@ export default function DataQualityPage() {
     fetchMatchRate()
   }, [])
 
+  useEffect(() => {
+    if (!data) return
+    const errorCount = data.errorCount ?? 0
+    const eventVolume = data.total ?? 0
+    fetch('/api/alerts')
+      .then((r) => r.json())
+      .then(async (rules: import('@/lib/email-alerts').AlertRule[]) => {
+        const { checkAlertRules } = await import('@/lib/email-alerts')
+        const triggered = checkAlertRules(rules, {
+          avgScore: data.avgScore,
+          matchRate: estimatedMatchRate,
+          errorCount,
+          eventVolume,
+        })
+        for (const rule of triggered) {
+          const value =
+            rule.condition === 'score_below'
+              ? data.avgScore
+              : rule.condition === 'match_rate_below'
+                ? estimatedMatchRate
+                : rule.condition === 'error_spike'
+                  ? errorCount
+                  : eventVolume
+          await fetch('/api/alerts/send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              ruleId: rule.id,
+              ruleName: rule.name,
+              condition: rule.condition,
+              value,
+              threshold: rule.threshold,
+              email: rule.notifyEmail,
+            }),
+          })
+          await fetch('/api/alerts', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ...rule, lastTriggeredAt: new Date().toISOString() }),
+          })
+        }
+      })
+      .catch(() => {})
+  }, [data, estimatedMatchRate])
+
   if (loading) {
     return (
       <div className="p-6 md:p-8">
-        <p className="text-zinc-400 animate-pulse">Loading data quality...</p>
+        <p className="text-[var(--dash-muted)] animate-pulse">Loading data quality...</p>
       </div>
     )
   }
@@ -153,7 +199,7 @@ export default function DataQualityPage() {
   if (!data) {
     return (
       <div className="p-6 md:p-8">
-        <p className="text-zinc-400">Failed to load data quality.</p>
+        <p className="text-[var(--dash-muted)]">Failed to load data quality.</p>
       </div>
     )
   }
@@ -180,53 +226,7 @@ export default function DataQualityPage() {
   }
 
   const rate = matchRate?.estimated_match_rate ?? 0
-  const estimatedMatchRate = matchRate?.estimated_match_rate ?? 0
   const trendDir = matchRate?.trend_direction ?? 'stable'
-
-  useEffect(() => {
-    if (data?.avgScore === undefined || data?.avgScore === null) return
-    const errorCount = data?.errorCount ?? 0
-    const eventVolume = data?.total ?? 0
-    fetch('/api/alerts')
-      .then((r) => r.json())
-      .then(async (rules: import('@/lib/email-alerts').AlertRule[]) => {
-        const { checkAlertRules } = await import('@/lib/email-alerts')
-        const triggered = checkAlertRules(rules, {
-          avgScore: data!.avgScore,
-          matchRate: estimatedMatchRate,
-          errorCount,
-          eventVolume,
-        })
-        for (const rule of triggered) {
-          const value =
-            rule.condition === 'score_below'
-              ? data!.avgScore
-              : rule.condition === 'match_rate_below'
-                ? estimatedMatchRate
-                : rule.condition === 'error_spike'
-                  ? errorCount
-                  : eventVolume
-          await fetch('/api/alerts/send', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              ruleId: rule.id,
-              ruleName: rule.name,
-              condition: rule.condition,
-              value,
-              threshold: rule.threshold,
-              email: rule.notifyEmail,
-            }),
-          })
-          await fetch('/api/alerts', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ...rule, lastTriggeredAt: new Date().toISOString() }),
-          })
-        }
-      })
-      .catch(() => {})
-  }, [data?.avgScore, estimatedMatchRate, data?.errorCount, data?.total])
   const trendVal = Math.abs(matchRate?.trend ?? 0)
   const coverage = matchRate?.coverage
   const coverageOrder = ['email', 'phone', 'fbp', 'fbc', 'name', 'location', 'fbclid'] as const
@@ -240,21 +240,21 @@ export default function DataQualityPage() {
 
   return (
     <div className="p-6 md:p-8 space-y-8">
-      <h1 className="text-xl font-semibold text-white">Data Quality</h1>
+      <h1 className="text-xl font-semibold text-[var(--dash-text)]">Data Quality</h1>
 
-      <section className="rounded-xl bg-zinc-900 border border-zinc-800 p-6">
+      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
         <div className="flex items-center justify-between gap-4 mb-4">
-          <h2 className="text-sm font-medium text-zinc-300">Meta Match Rate</h2>
+          <h2 className="text-sm font-medium text-[var(--dash-muted)]">Meta Match Rate</h2>
           {matchRateLoading && !matchRate ? (
-            <span className="text-xs text-zinc-500">Loading…</span>
+            <span className="text-xs text-[var(--dash-muted)]">Loading…</span>
           ) : (
             <span
               className={`text-xs font-medium ${
                 trendDir === 'up'
-                  ? 'text-emerald-400'
+                  ? 'text-[var(--dash-success)]'
                   : trendDir === 'down'
                     ? 'text-red-400'
-                    : 'text-zinc-500'
+                    : 'text-[var(--dash-muted)]'
               }`}
             >
               {trendDir === 'up' && `↑ +${trendVal}% this week`}
@@ -264,11 +264,11 @@ export default function DataQualityPage() {
           )}
         </div>
         {matchRateLoading && !matchRate ? (
-          <p className="text-zinc-400 animate-pulse py-8">Loading match rate...</p>
+          <p className="text-[var(--dash-muted)] animate-pulse py-8">Loading match rate...</p>
         ) : matchRate?.error ? (
-          <p className="text-zinc-400 py-4">Unable to load match rate.</p>
+          <p className="text-[var(--dash-muted)] py-4">Unable to load match rate.</p>
         ) : matchRate?.message === 'No events yet' ? (
-          <p className="text-zinc-400 py-4">No Meta events yet. Send events to see your estimated match rate.</p>
+          <p className="text-[var(--dash-muted)] py-4">No Meta events yet. Send events to see your estimated match rate.</p>
         ) : (
           <>
             <div className="flex flex-col items-center py-4">
@@ -286,7 +286,7 @@ export default function DataQualityPage() {
                   <RadialBar background dataKey="value" max={100} cornerRadius={6} />
                 </RadialBarChart>
               </ResponsiveContainer>
-              <p className="text-4xl font-semibold text-white -mt-6">{rate}%</p>
+              <p className="text-4xl font-semibold text-[var(--dash-text)] -mt-6">{rate}%</p>
               <p
                 className="text-sm font-medium"
                 style={{ color: gaugeColor(rate) }}
@@ -295,11 +295,11 @@ export default function DataQualityPage() {
               </p>
             </div>
             {matchRate?.recommendation && (
-              <blockquote className="text-sm text-zinc-400 border-l-2 border-zinc-700 pl-4 my-4 italic">
+              <blockquote className="text-sm text-[var(--dash-muted)] border-l-2 border-[var(--dash-border)] pl-4 my-4 italic">
                 &ldquo;{matchRate.recommendation}&rdquo;
               </blockquote>
             )}
-            <p className="text-xs text-zinc-500 mb-6">
+            <p className="text-xs text-[var(--dash-muted)] mb-6">
               Based on {matchRate?.total_events ?? 0} events · Updated {formatLastUpdated(matchRate?.last_updated)}
             </p>
 
@@ -324,10 +324,10 @@ export default function DataQualityPage() {
                   return (
                     <div key={key}>
                       <div className="flex justify-between text-xs mb-1">
-                        <span className="text-zinc-400">{displayLabel}</span>
-                        <span className="text-zinc-300">{pct}%</span>
+                        <span className="text-[var(--dash-muted)]">{displayLabel}</span>
+                        <span className="text-[var(--dash-muted)]">{pct}%</span>
                       </div>
-                      <div className="h-2 rounded-full bg-zinc-800 overflow-hidden">
+                      <div className="h-2 rounded-full bg-[var(--dash-surface-hover)] overflow-hidden">
                         <span
                           className={`block h-full rounded-full ${barColor(pct)}`}
                           style={{ width: `${pct}%` }}
@@ -340,10 +340,10 @@ export default function DataQualityPage() {
             )}
 
             {matchRate?.recommendation && lowestCoverage && (
-              <div className="rounded-lg bg-zinc-800/50 border border-zinc-700 p-4">
-                <p className="text-sm font-medium text-zinc-300 mb-1">💡 How to improve your match rate</p>
-                <p className="text-sm text-zinc-400">{matchRate.recommendation}</p>
-                <p className="text-sm text-zinc-500 mt-2">
+              <div className="rounded-lg bg-[var(--dash-surface-hover)]/50 border border-[var(--dash-border)] p-4">
+                <p className="text-sm font-medium text-[var(--dash-muted)] mb-1">💡 How to improve your match rate</p>
+                <p className="text-sm text-[var(--dash-muted)]">{matchRate.recommendation}</p>
+                <p className="text-sm text-[var(--dash-muted)] mt-2">
                   Currently only {lowestCoverage.pct}% of events include{' '}
                   {lowestCoverage.key === 'fbclid'
                     ? 'ad click (fbclid)'
@@ -359,7 +359,7 @@ export default function DataQualityPage() {
               type="button"
               onClick={() => fetchMatchRate(true)}
               disabled={matchRateRefreshing}
-              className="mt-4 text-sm text-zinc-400 hover:text-white disabled:opacity-50"
+              className="mt-4 text-sm text-[var(--dash-muted)] hover:text-[var(--dash-text)] disabled:opacity-50"
             >
               {matchRateRefreshing ? 'Refreshing…' : '🔄 Refresh'}
             </button>
@@ -367,16 +367,16 @@ export default function DataQualityPage() {
         )}
       </section>
 
-      <section className="rounded-xl bg-zinc-900 border border-zinc-800 p-6">
-        <h2 className="text-sm font-medium text-zinc-300 mb-4">Score overview</h2>
+      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
+        <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">Score overview</h2>
         <div className="flex flex-wrap gap-8 items-start">
           <div className="flex flex-col items-center gap-2">
             <ScoreRing score={data.avgScore} />
-            <p className="text-lg font-medium text-white">{data.avgScore}/100</p>
-            <p className="text-sm text-zinc-400">{qualityLabel}</p>
+            <p className="text-lg font-medium text-[var(--dash-text)]">{data.avgScore}/100</p>
+            <p className="text-sm text-[var(--dash-muted)]">{qualityLabel}</p>
           </div>
           <div className="flex-1 min-w-[240px] h-48">
-            <p className="text-sm text-zinc-400 mb-2">Score trend (last 7 days)</p>
+            <p className="text-sm text-[var(--dash-muted)] mb-2">Score trend (last 7 days)</p>
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data.trendData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" />
@@ -392,23 +392,23 @@ export default function DataQualityPage() {
               </LineChart>
             </ResponsiveContainer>
           </div>
-          <div className="rounded-lg bg-zinc-800/50 border border-zinc-700 px-4 py-3">
-            <p className="text-sm text-zinc-400">Industry average: {INDUSTRY_AVG}/100</p>
-            <p className={`font-medium ${aboveIndustry ? 'text-emerald-400' : 'text-amber-400'}`}>
+          <div className="rounded-lg bg-[var(--dash-surface-hover)]/50 border border-[var(--dash-border)] px-4 py-3">
+            <p className="text-sm text-[var(--dash-muted)]">Industry average: {INDUSTRY_AVG}/100</p>
+            <p className={`font-medium ${aboveIndustry ? 'text-[var(--dash-success)]' : 'text-amber-400'}`}>
               {aboveIndustry ? "You're above average!" : 'Room to improve.'}
             </p>
           </div>
         </div>
       </section>
 
-      <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-        <h2 className="px-4 py-3 border-b border-zinc-800 text-sm font-medium text-zinc-300">
+      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+        <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">
           Field coverage
         </h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-zinc-800 text-left text-zinc-400">
+              <tr className="border-b border-[var(--dash-border)] text-left text-[var(--dash-muted)]">
                 <th className="px-4 py-3 font-medium">Field</th>
                 <th className="px-4 py-3 font-medium">Coverage</th>
                 <th className="px-4 py-3 font-medium">Impact</th>
@@ -420,12 +420,12 @@ export default function DataQualityPage() {
                 const status =
                   row.coverage >= 80 ? 'Great' : row.coverage >= 50 ? 'Improve' : 'Missing'
                 return (
-                  <tr key={row.field} className="border-b border-zinc-800/80 hover:bg-zinc-800/30">
-                    <td className="px-4 py-3 text-white">{FIELD_LABELS[row.field] ?? row.field}</td>
-                    <td className="px-4 py-3 text-zinc-300">{row.coverage}%</td>
-                    <td className="px-4 py-3 text-zinc-300">+{row.points} pts</td>
+                  <tr key={row.field} className="border-b border-[var(--dash-border)]/80 hover:bg-[var(--dash-surface-hover)]/30">
+                    <td className="px-4 py-3 text-[var(--dash-text)]">{FIELD_LABELS[row.field] ?? row.field}</td>
+                    <td className="px-4 py-3 text-[var(--dash-muted)]">{row.coverage}%</td>
+                    <td className="px-4 py-3 text-[var(--dash-muted)]">+{row.points} pts</td>
                     <td className="px-4 py-3">
-                      {status === 'Great' && <span className="text-emerald-400">✅ Great</span>}
+                      {status === 'Great' && <span className="text-[var(--dash-success)]">✅ Great</span>}
                       {status === 'Improve' && <span className="text-amber-400">⚠️ Improve</span>}
                       {status === 'Missing' && <span className="text-red-400">❌ Missing</span>}
                     </td>
@@ -437,20 +437,20 @@ export default function DataQualityPage() {
         </div>
       </section>
 
-      <section className="rounded-xl bg-zinc-900 border border-zinc-800 p-6">
-        <h2 className="text-sm font-medium text-zinc-300 mb-3">Recommendations</h2>
-        <ul className="space-y-2 text-sm text-zinc-300">
+      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
+        <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-3">Recommendations</h2>
+        <ul className="space-y-2 text-sm text-[var(--dash-muted)]">
           {recommendations.map((rec, i) => (
             <li key={i} className="flex gap-2">
-              <span className="text-emerald-500 shrink-0">•</span>
+              <span className="text-[var(--dash-success)] shrink-0">•</span>
               {rec}
             </li>
           ))}
         </ul>
       </section>
 
-      <section className="rounded-xl bg-zinc-900 border border-zinc-800 p-6">
-        <h2 className="text-sm font-medium text-zinc-300 mb-4">Event quality timeline (last 30 days)</h2>
+      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
+        <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">Event quality timeline (last 30 days)</h2>
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data.dailyQuality} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
@@ -477,3 +477,7 @@ export default function DataQualityPage() {
     </div>
   )
 }
+
+
+
+

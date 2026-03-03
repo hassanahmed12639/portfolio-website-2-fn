@@ -97,7 +97,7 @@ export default function BentoGridSection() {
             Proven Results Across Industries
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            From fashion to tech, we've helped brands scale their advertising and drive real growth
+            From fashion to tech, we&apos;ve helped brands scale their advertising and drive real growth
           </p>
         </motion.div>
 
@@ -130,7 +130,7 @@ export default function BentoGridSection() {
               {/* Top Badge */}
               <div>
                 <span className="inline-block px-3 py-1.5 bg-white/15 backdrop-blur-sm rounded-full text-xs font-medium text-white border border-white/20">
-                  Industries I've Worked With
+                  Industries I&apos;ve Worked With
                 </span>
               </div>
               
@@ -140,7 +140,7 @@ export default function BentoGridSection() {
                   Scaling Brands<br />Across Industries
                 </h3>
                 <p className="text-sm text-white/80 mb-5 max-w-[320px]">
-                  From fashion to tech, I've helped 50+ brands achieve exceptional growth through performance marketing.
+                  From fashion to tech, I&apos;ve helped 50+ brands achieve exceptional growth through performance marketing.
                 </p>
                 
                 {/* Industry Tags */}

@@ -71,7 +71,7 @@ const PIXEL_LABELS: { key: keyof Report['pixels']; label: string }[] = [
 
 function ScoreCircle({ score }: { score: number }) {
   const color =
-    score >= 80 ? 'text-emerald-400 stroke-emerald-400' : score >= 50 ? 'text-amber-400 stroke-amber-400' : 'text-red-400 stroke-red-400'
+    score >= 80 ? 'text-[var(--dash-success)] stroke-[var(--dash-success)]' : score >= 50 ? 'text-amber-400 stroke-amber-400' : 'text-red-400 stroke-red-400'
   const circumference = 2 * Math.PI * 45
   const offset = circumference - (score / 100) * circumference
   return (
@@ -84,7 +84,7 @@ function ScoreCircle({ score }: { score: number }) {
           fill="none"
           stroke="currentColor"
           strokeWidth="8"
-          className="text-zinc-700"
+          className="text-[var(--dash-text)]"
         />
         <circle
           cx="50"
@@ -105,14 +105,14 @@ function ScoreCircle({ score }: { score: number }) {
 
 function SkeletonSection({ title }: { title: string }) {
   return (
-    <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-      <div className="px-4 py-3 border-b border-zinc-800">
-        <h2 className="text-sm font-medium text-zinc-300">{title}</h2>
+    <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+      <div className="px-4 py-3 border-b border-[var(--dash-border)]">
+        <h2 className="text-sm font-medium text-[var(--dash-muted)]">{title}</h2>
       </div>
       <div className="p-4 space-y-3">
-        <div className="h-4 bg-zinc-800 rounded w-3/4 animate-pulse" />
-        <div className="h-4 bg-zinc-800 rounded w-1/2 animate-pulse" />
-        <div className="h-4 bg-zinc-800 rounded w-5/6 animate-pulse" />
+        <div className="h-4 bg-[var(--dash-surface-hover)] rounded w-3/4 animate-pulse" />
+        <div className="h-4 bg-[var(--dash-surface-hover)] rounded w-1/2 animate-pulse" />
+        <div className="h-4 bg-[var(--dash-surface-hover)] rounded w-5/6 animate-pulse" />
       </div>
     </section>
   )
@@ -235,8 +235,8 @@ export default function ScannerPage() {
 
   return (
     <div className="p-6 md:p-8">
-      <h1 className="text-xl font-semibold text-white mb-2">Website Scanner</h1>
-      <p className="text-zinc-400 text-sm mb-8">
+      <h1 className="text-xl font-semibold text-[var(--dash-text)] mb-2">Website Scanner</h1>
+      <p className="text-[var(--dash-muted)] text-sm mb-8">
         Enter any website URL to get a full tracking health report.
       </p>
 
@@ -247,13 +247,13 @@ export default function ScannerPage() {
             placeholder="Enter your website URL"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            className="flex-1 rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-3 text-white placeholder-zinc-500 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500"
+            className="flex-1 rounded-lg border border-[var(--dash-border)] bg-[var(--dash-surface)] px-4 py-3 text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:border-[var(--dash-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--dash-primary)]"
             disabled={loading}
           />
           <button
             type="submit"
             disabled={loading || !url.trim()}
-            className="rounded-lg bg-white text-zinc-900 px-6 py-3 font-medium hover:bg-zinc-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="rounded-lg bg-[var(--dash-surface)] text-[var(--dash-text)] px-6 py-3 font-medium hover:bg-[var(--dash-surface-hover)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Scan Website
           </button>
@@ -261,23 +261,23 @@ export default function ScannerPage() {
       </form>
 
       {error && (
-        <div className="mb-8 rounded-xl bg-red-950/50 border border-red-800 p-4 text-red-300 text-sm">
+        <div className="mb-8 rounded-xl bg-[var(--dash-danger-soft)] border border-red-800 p-4 text-[var(--dash-danger-strong)] text-sm">
           {error}
         </div>
       )}
 
       {loading && (
         <div className="space-y-6 mb-10">
-          <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden p-4">
-            <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden p-4">
+            <div className="h-2 bg-[var(--dash-surface-hover)] rounded-full overflow-hidden">
               <div
-                className="h-full bg-zinc-500 rounded-full transition-all duration-500"
+                className="h-full bg-[var(--dash-muted)] rounded-full transition-all duration-500"
                 style={{
                   width: `${((stepIndex + 1) / SCAN_STEPS.length) * 100}%`,
                 }}
               />
             </div>
-            <p className="mt-3 text-sm text-zinc-400">{SCAN_STEPS[stepIndex]}</p>
+            <p className="mt-3 text-sm text-[var(--dash-muted)]">{SCAN_STEPS[stepIndex]}</p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {['Overall Health', 'Pixels Detected', 'CAPI Status', 'Missing Events', 'Page Speed', 'Recommendations'].map(
@@ -292,131 +292,131 @@ export default function ScannerPage() {
       {!loading && report && (
         <div className="space-y-6">
           {/* Section 1 — Overall Health Score */}
-          <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-            <div className="px-4 py-3 border-b border-zinc-800">
-              <h2 className="text-sm font-medium text-zinc-300">Overall Health Score</h2>
+          <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+            <div className="px-4 py-3 border-b border-[var(--dash-border)]">
+              <h2 className="text-sm font-medium text-[var(--dash-muted)]">Overall Health Score</h2>
             </div>
             <div className="p-6 flex flex-col sm:flex-row items-center gap-6">
               <ScoreCircle score={report.score} />
               <div>
-                <p className="text-zinc-300 text-sm">{report.summary}</p>
-                <p className="mt-1 text-zinc-500 text-xs">Scanned: {report.url}</p>
+                <p className="text-[var(--dash-muted)] text-sm">{report.summary}</p>
+                <p className="mt-1 text-[var(--dash-muted)] text-xs">Scanned: {report.url}</p>
               </div>
             </div>
           </section>
 
           {/* Section 2 — Pixels Detected */}
-          <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-            <div className="px-4 py-3 border-b border-zinc-800">
-              <h2 className="text-sm font-medium text-zinc-300">Pixels Detected</h2>
+          <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+            <div className="px-4 py-3 border-b border-[var(--dash-border)]">
+              <h2 className="text-sm font-medium text-[var(--dash-muted)]">Pixels Detected</h2>
             </div>
             <ul className="p-4 space-y-2">
               {PIXEL_LABELS.map(({ key, label }) => (
                 <li key={key} className="flex items-center gap-3 text-sm">
                   {report.pixels[key] ? (
-                    <span className="text-emerald-400">✅</span>
+                    <span className="text-[var(--dash-success)]">✅</span>
                   ) : (
                     <span className="text-red-400">❌</span>
                   )}
-                  <span className={report.pixels[key] ? 'text-zinc-200' : 'text-zinc-500'}>{label}</span>
+                  <span className={report.pixels[key] ? 'text-[var(--dash-text)]' : 'text-[var(--dash-muted)]'}>{label}</span>
                 </li>
               ))}
             </ul>
           </section>
 
           {/* Section 3 — CAPI Status */}
-          <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-            <div className="px-4 py-3 border-b border-zinc-800">
-              <h2 className="text-sm font-medium text-zinc-300">CAPI Status</h2>
+          <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+            <div className="px-4 py-3 border-b border-[var(--dash-border)]">
+              <h2 className="text-sm font-medium text-[var(--dash-muted)]">CAPI Status</h2>
             </div>
             <ul className="p-4 space-y-3">
               <li className="flex items-center justify-between">
-                <span className="text-zinc-300">Meta CAPI active</span>
+                <span className="text-[var(--dash-muted)]">Meta CAPI active</span>
                 {report.capi.metaCapi ? (
-                  <span className="text-emerald-400 text-sm">Detected</span>
+                  <span className="text-[var(--dash-success)] text-sm">Detected</span>
                 ) : (
-                  <span className="text-red-400 text-sm bg-red-950/50 px-2 py-0.5 rounded">Not detected — Fix this</span>
+                  <span className="text-red-400 text-sm bg-[var(--dash-danger-soft)] px-2 py-0.5 rounded">Not detected — Fix this</span>
                 )}
               </li>
               <li className="flex items-center justify-between">
-                <span className="text-zinc-300">Google Enhanced Conversions</span>
+                <span className="text-[var(--dash-muted)]">Google Enhanced Conversions</span>
                 {report.capi.googleEnhanced ? (
-                  <span className="text-emerald-400 text-sm">Detected</span>
+                  <span className="text-[var(--dash-success)] text-sm">Detected</span>
                 ) : (
-                  <span className="text-red-400 text-sm bg-red-950/50 px-2 py-0.5 rounded">Not detected — Fix this</span>
+                  <span className="text-red-400 text-sm bg-[var(--dash-danger-soft)] px-2 py-0.5 rounded">Not detected — Fix this</span>
                 )}
               </li>
             </ul>
           </section>
 
           {/* Section 4 — Missing Events */}
-          <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-            <div className="px-4 py-3 border-b border-zinc-800">
-              <h2 className="text-sm font-medium text-zinc-300">Recommended Events</h2>
+          <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+            <div className="px-4 py-3 border-b border-[var(--dash-border)]">
+              <h2 className="text-sm font-medium text-[var(--dash-muted)]">Recommended Events</h2>
             </div>
             <ul className="p-4 space-y-4">
               {report.recommendedEvents.map((ev) => (
-                <li key={ev.name} className="border-b border-zinc-800 last:border-0 pb-4 last:pb-0">
+                <li key={ev.name} className="border-b border-[var(--dash-border)] last:border-0 pb-4 last:pb-0">
                   <div className="flex items-start justify-between gap-2">
-                    <span className="font-medium text-zinc-200">{ev.name}</span>
+                    <span className="font-medium text-[var(--dash-text)]">{ev.name}</span>
                     <span
                       className={`shrink-0 text-xs px-2 py-0.5 rounded ${
                         ev.priority === 'High'
-                          ? 'bg-amber-500/20 text-amber-400'
+                          ? 'bg-[var(--dash-warning)]/20 text-amber-400'
                           : ev.priority === 'Medium'
-                            ? 'bg-zinc-600 text-zinc-300'
-                            : 'bg-zinc-700 text-zinc-400'
+                            ? 'bg-[var(--dash-surface-hover)] text-[var(--dash-muted)]'
+                            : 'bg-[var(--dash-surface-hover)] text-[var(--dash-muted)]'
                       }`}
                     >
                       {ev.priority}
                     </span>
                   </div>
-                  <p className="mt-1 text-sm text-zinc-500">{ev.why}</p>
+                  <p className="mt-1 text-sm text-[var(--dash-muted)]">{ev.why}</p>
                 </li>
               ))}
             </ul>
           </section>
 
           {/* Section 5 — Page Speed & JS Health */}
-          <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-            <div className="px-4 py-3 border-b border-zinc-800">
-              <h2 className="text-sm font-medium text-zinc-300">Page Speed & JS Health</h2>
+          <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+            <div className="px-4 py-3 border-b border-[var(--dash-border)]">
+              <h2 className="text-sm font-medium text-[var(--dash-muted)]">Page Speed & JS Health</h2>
             </div>
             <div className="p-4 space-y-3">
-              <p className="text-sm text-zinc-400">
-                Total script tags: <span className="text-zinc-200">{report.scripts.totalScripts}</span>
+              <p className="text-sm text-[var(--dash-muted)]">
+                Total script tags: <span className="text-[var(--dash-text)]">{report.scripts.totalScripts}</span>
               </p>
-              <p className="text-sm text-zinc-400">
+              <p className="text-sm text-[var(--dash-muted)]">
                 Blocking scripts (no async/defer):{' '}
-                <span className="text-zinc-200">{report.scripts.blockingScripts}</span>
+                <span className="text-[var(--dash-text)]">{report.scripts.blockingScripts}</span>
               </p>
               {report.scripts.blockingWarning && (
                 <p className="text-sm text-amber-400">
                   Warning: More than 5 blocking scripts may slow down the page.
                 </p>
               )}
-              <p className="text-sm text-zinc-400">
-                Tracking overhead: <span className="text-zinc-200 capitalize">{report.scripts.trackingOverhead}</span>
+              <p className="text-sm text-[var(--dash-muted)]">
+                Tracking overhead: <span className="text-[var(--dash-text)] capitalize">{report.scripts.trackingOverhead}</span>
               </p>
             </div>
           </section>
 
           {/* Section 6 — Quick Recommendations */}
-          <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-            <div className="px-4 py-3 border-b border-zinc-800">
-              <h2 className="text-sm font-medium text-zinc-300">Quick Recommendations</h2>
+          <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+            <div className="px-4 py-3 border-b border-[var(--dash-border)]">
+              <h2 className="text-sm font-medium text-[var(--dash-muted)]">Quick Recommendations</h2>
             </div>
             <ol className="p-4 list-decimal list-inside space-y-3">
               {report.recommendations.map((rec, i) => (
                 <li key={i} className="text-sm">
-                  <span className="text-zinc-300">{rec.text}</span>
+                  <span className="text-[var(--dash-muted)]">{rec.text}</span>
                   <span
                     className={`ml-2 text-xs px-2 py-0.5 rounded ${
                       rec.priority === 'Critical'
-                        ? 'bg-red-500/20 text-red-400'
+                        ? 'bg-[var(--dash-danger)]/20 text-red-400'
                         : rec.priority === 'Important'
-                          ? 'bg-amber-500/20 text-amber-400'
-                          : 'bg-zinc-600 text-zinc-400'
+                          ? 'bg-[var(--dash-warning)]/20 text-amber-400'
+                          : 'bg-[var(--dash-surface-hover)] text-[var(--dash-muted)]'
                     }`}
                   >
                     {rec.priority}
@@ -427,10 +427,10 @@ export default function ScannerPage() {
           </section>
 
           {/* Smart Events Auto-Detection */}
-          <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-            <div className="px-4 py-3 border-b border-zinc-800">
-              <h2 className="text-sm font-medium text-zinc-300">Smart Events Auto-Detection</h2>
-              <p className="text-xs text-zinc-500 mt-0.5">Detected actions on website — enable and generate code</p>
+          <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+            <div className="px-4 py-3 border-b border-[var(--dash-border)]">
+              <h2 className="text-sm font-medium text-[var(--dash-muted)]">Smart Events Auto-Detection</h2>
+              <p className="text-xs text-[var(--dash-muted)] mt-0.5">Detected actions on website — enable and generate code</p>
             </div>
             <div className="p-4">
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -439,14 +439,14 @@ export default function ScannerPage() {
                   const enabled = enabledSet.has(ev.event)
                   const priorityClass =
                     ev.priority === 'critical'
-                      ? 'bg-red-500/20 text-red-400'
+                      ? 'bg-[var(--dash-danger)]/20 text-red-400'
                       : ev.priority === 'recommended'
-                        ? 'bg-amber-500/20 text-amber-400'
-                        : 'bg-zinc-600 text-zinc-400'
+                        ? 'bg-[var(--dash-warning)]/20 text-amber-400'
+                        : 'bg-[var(--dash-surface-hover)] text-[var(--dash-muted)]'
                   return (
                     <div
                       key={ev.event}
-                      className="rounded-lg border border-zinc-800 bg-zinc-800/50 p-4 flex flex-col gap-3"
+                      className="rounded-lg border border-[var(--dash-border)] bg-[var(--dash-surface-hover)]/50 p-4 flex flex-col gap-3"
                     >
                       <div className="flex items-start justify-between gap-2">
                         <span className="text-2xl" aria-hidden>{icon}</span>
@@ -456,33 +456,33 @@ export default function ScannerPage() {
                           {ev.priority}
                         </span>
                       </div>
-                      <h3 className="font-medium text-zinc-200">{ev.event}</h3>
-                      <p className="text-xs text-zinc-500">{ev.reason}</p>
+                      <h3 className="font-medium text-[var(--dash-text)]">{ev.event}</h3>
+                      <p className="text-xs text-[var(--dash-muted)]">{ev.reason}</p>
                       <div className="flex flex-wrap gap-1">
                         {ev.platforms?.map((p) => (
                           <span
                             key={p}
-                            className="text-xs px-2 py-0.5 rounded bg-zinc-700 text-zinc-300 capitalize"
+                            className="text-xs px-2 py-0.5 rounded bg-[var(--dash-surface-hover)] text-[var(--dash-muted)] capitalize"
                           >
                             {p}
                           </span>
                         ))}
                       </div>
-                      <div className="flex items-center justify-between gap-2 mt-auto pt-2 border-t border-zinc-700">
+                      <div className="flex items-center justify-between gap-2 mt-auto pt-2 border-t border-[var(--dash-border)]">
                         <button
                           type="button"
                           onClick={() => toggleEvent(ev.event)}
-                          className="rounded-md bg-emerald-600 text-white px-3 py-1.5 text-xs font-medium hover:bg-emerald-500 transition-colors"
+                          className="rounded-md bg-[var(--dash-success)] text-white px-3 py-1.5 text-xs font-medium hover:bg-[var(--dash-success-strong)] transition-colors"
                         >
                           {enabled ? 'Enabled' : 'Enable with one click'}
                         </button>
                         <label className="flex items-center gap-2 cursor-pointer">
-                          <span className="text-xs text-zinc-400">On</span>
+                          <span className="text-xs text-[var(--dash-muted)]">On</span>
                           <input
                             type="checkbox"
                             checked={enabled}
                             onChange={() => toggleEvent(ev.event)}
-                            className="rounded border-zinc-600 bg-zinc-800 text-emerald-500 focus:ring-emerald-500"
+                            className="rounded border-[var(--dash-border-strong)] bg-[var(--dash-surface-hover)] [accent-color:var(--dash-success)] focus:ring-[var(--dash-success)]"
                           />
                         </label>
                       </div>
@@ -491,13 +491,13 @@ export default function ScannerPage() {
                 })}
               </div>
               {smartEvents.length === 0 && (
-                <p className="text-sm text-zinc-500 py-4">No events detected. Run a scan to see suggestions.</p>
+                <p className="text-sm text-[var(--dash-muted)] py-4">No events detected. Run a scan to see suggestions.</p>
               )}
               <div className="mt-6 flex flex-wrap gap-3">
                 <button
                   type="button"
                   onClick={enableAllRecommended}
-                  className="rounded-lg bg-zinc-700 text-zinc-200 px-4 py-2.5 text-sm font-medium hover:bg-zinc-600 transition-colors"
+                  className="rounded-lg bg-[var(--dash-surface-hover)] text-[var(--dash-text)] px-4 py-2.5 text-sm font-medium hover:bg-[var(--dash-border)] transition-colors"
                 >
                   Enable All Recommended Events
                 </button>
@@ -505,7 +505,7 @@ export default function ScannerPage() {
                   type="button"
                   onClick={() => openCodeModal('gtm')}
                   disabled={generatingCode}
-                  className="rounded-lg bg-zinc-700 text-zinc-200 px-4 py-2.5 text-sm font-medium hover:bg-zinc-600 disabled:opacity-50 transition-colors"
+                  className="rounded-lg bg-[var(--dash-surface-hover)] text-[var(--dash-text)] px-4 py-2.5 text-sm font-medium hover:bg-[var(--dash-border)] disabled:opacity-50 transition-colors"
                 >
                   Generate GTM Code
                 </button>
@@ -513,7 +513,7 @@ export default function ScannerPage() {
                   type="button"
                   onClick={() => openCodeModal('script')}
                   disabled={generatingCode}
-                  className="rounded-lg bg-zinc-700 text-zinc-200 px-4 py-2.5 text-sm font-medium hover:bg-zinc-600 disabled:opacity-50 transition-colors"
+                  className="rounded-lg bg-[var(--dash-surface-hover)] text-[var(--dash-text)] px-4 py-2.5 text-sm font-medium hover:bg-[var(--dash-border)] disabled:opacity-50 transition-colors"
                 >
                   Generate Script Tag Code
                 </button>
@@ -533,17 +533,17 @@ export default function ScannerPage() {
           aria-label="Generated code"
         >
           <div
-            className="rounded-xl bg-zinc-900 border border-zinc-700 shadow-xl w-full max-w-2xl max-h-[85vh] flex flex-col"
+            className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] shadow-xl w-full max-w-2xl max-h-[85vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="px-4 py-3 border-b border-zinc-800 flex items-center justify-between">
-              <h3 className="text-sm font-medium text-zinc-300">
+            <div className="px-4 py-3 border-b border-[var(--dash-border)] flex items-center justify-between">
+              <h3 className="text-sm font-medium text-[var(--dash-muted)]">
                 {codeModalType === 'gtm' ? 'GTM dataLayer code' : 'TrackHive script code'}
               </h3>
               <button
                 type="button"
                 onClick={() => setCodeModalOpen(false)}
-                className="text-zinc-400 hover:text-white transition-colors"
+                className="text-[var(--dash-muted)] hover:text-[var(--dash-text)] transition-colors"
                 aria-label="Close"
               >
                 ✕
@@ -551,22 +551,22 @@ export default function ScannerPage() {
             </div>
             <div className="p-4 overflow-auto flex-1">
               {generatingCode ? (
-                <div className="flex items-center gap-2 text-zinc-400 text-sm">
-                  <span className="inline-block w-4 h-4 border-2 border-zinc-500 border-t-zinc-300 rounded-full animate-spin" />
+                <div className="flex items-center gap-2 text-[var(--dash-muted)] text-sm">
+                  <span className="inline-block w-4 h-4 border-2 border-[var(--dash-border-strong)] border-t-slate-300 rounded-full animate-spin" />
                   Generating...
                 </div>
               ) : (
-                <pre className="text-xs text-zinc-300 bg-zinc-950 rounded-lg p-4 overflow-x-auto whitespace-pre-wrap font-mono">
+                <pre className="text-xs text-[var(--dash-muted)] bg-[var(--dash-surface-hover)] rounded-lg p-4 overflow-x-auto whitespace-pre-wrap font-mono">
                   {generatedCode}
                 </pre>
               )}
             </div>
-            <div className="px-4 py-3 border-t border-zinc-800 flex gap-2">
+            <div className="px-4 py-3 border-t border-[var(--dash-border)] flex gap-2">
               <button
                 type="button"
                 onClick={copyCode}
                 disabled={generatingCode || !generatedCode}
-                className="rounded-lg bg-zinc-700 text-zinc-200 px-4 py-2 text-sm font-medium hover:bg-zinc-600 disabled:opacity-50 transition-colors"
+                className="rounded-lg bg-[var(--dash-surface-hover)] text-[var(--dash-text)] px-4 py-2 text-sm font-medium hover:bg-[var(--dash-border)] disabled:opacity-50 transition-colors"
               >
                 {copyDone ? 'Copied!' : 'Copy'}
               </button>
@@ -574,7 +574,7 @@ export default function ScannerPage() {
                 type="button"
                 onClick={downloadAsJs}
                 disabled={generatingCode || !generatedCode}
-                className="rounded-lg bg-zinc-700 text-zinc-200 px-4 py-2 text-sm font-medium hover:bg-zinc-600 disabled:opacity-50 transition-colors"
+                className="rounded-lg bg-[var(--dash-surface-hover)] text-[var(--dash-text)] px-4 py-2 text-sm font-medium hover:bg-[var(--dash-border)] disabled:opacity-50 transition-colors"
               >
                 Download as .js file
               </button>
@@ -585,3 +585,7 @@ export default function ScannerPage() {
     </div>
   )
 }
+
+
+
+

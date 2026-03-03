@@ -44,7 +44,7 @@ export default function DeduplicationPage() {
   if (loading) {
     return (
       <div className="p-6 md:p-8">
-        <p className="text-zinc-400 animate-pulse">Loading deduplication data...</p>
+        <p className="text-[var(--dash-muted)] animate-pulse">Loading deduplication data...</p>
       </div>
     )
   }
@@ -55,31 +55,31 @@ export default function DeduplicationPage() {
 
   return (
     <div className="p-6 md:p-8 space-y-8">
-      <h1 className="text-xl font-semibold text-white">Event Deduplication</h1>
+      <h1 className="text-xl font-semibold text-[var(--dash-text)]">Event Deduplication</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-          <p className="text-sm text-zinc-400 mb-1">Total Events</p>
-          <p className="text-2xl font-semibold text-white">{data?.total_events ?? 0}</p>
+        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+          <p className="text-sm text-[var(--dash-muted)] mb-1">Total Events</p>
+          <p className="text-2xl font-semibold text-[var(--dash-text)]">{data?.total_events ?? 0}</p>
         </div>
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-          <p className="text-sm text-zinc-400 mb-1">Duplicates Caught</p>
-          <p className="text-2xl font-semibold text-emerald-400">{data?.total_duplicates ?? 0}</p>
+        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+          <p className="text-sm text-[var(--dash-muted)] mb-1">Duplicates Caught</p>
+          <p className="text-2xl font-semibold text-[var(--dash-success)]">{data?.total_duplicates ?? 0}</p>
         </div>
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-          <p className="text-sm text-zinc-400 mb-1">Dedup Rate</p>
-          <p className="text-2xl font-semibold text-white">{data?.dedup_rate ?? 0}%</p>
+        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+          <p className="text-sm text-[var(--dash-muted)] mb-1">Dedup Rate</p>
+          <p className="text-2xl font-semibold text-[var(--dash-text)]">{data?.dedup_rate ?? 0}%</p>
         </div>
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-          <p className="text-sm text-zinc-400 mb-1">Ad Spend Saved</p>
-          <p className="text-2xl font-semibold text-white">
+        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+          <p className="text-sm text-[var(--dash-muted)] mb-1">Ad Spend Saved</p>
+          <p className="text-2xl font-semibold text-[var(--dash-text)]">
             ${(data?.money_saved ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </p>
         </div>
       </div>
 
-      <section className="rounded-xl bg-zinc-900 border border-zinc-800 p-6">
-        <h2 className="text-sm font-medium text-zinc-300 mb-4">Duplicates by Event Name</h2>
+      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
+        <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">Duplicates by Event Name</h2>
         <div className="h-64">
           {barData.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
@@ -95,13 +95,13 @@ export default function DeduplicationPage() {
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <p className="text-zinc-500 text-sm flex items-center h-full">No duplicate events by type yet.</p>
+            <p className="text-[var(--dash-muted)] text-sm flex items-center h-full">No duplicate events by type yet.</p>
           )}
         </div>
       </section>
 
-      <section className="rounded-xl bg-zinc-900 border border-zinc-800 p-6">
-        <h2 className="text-sm font-medium text-zinc-300 mb-4">Daily Deduplication Trend (last 7 days)</h2>
+      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
+        <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">Daily Deduplication Trend (last 7 days)</h2>
         <div className="h-64">
           {(data?.daily_trend?.length ?? 0) > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
@@ -129,19 +129,19 @@ export default function DeduplicationPage() {
               </LineChart>
             </ResponsiveContainer>
           ) : (
-            <p className="text-zinc-500 text-sm flex items-center h-full">No trend data yet.</p>
+            <p className="text-[var(--dash-muted)] text-sm flex items-center h-full">No trend data yet.</p>
           )}
         </div>
       </section>
 
-      <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-        <h2 className="px-4 py-3 border-b border-zinc-800 text-sm font-medium text-zinc-300">
+      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+        <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">
           Recent Duplicate Events
         </h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-zinc-800 text-left text-zinc-400">
+              <tr className="border-b border-[var(--dash-border)] text-left text-[var(--dash-muted)]">
                 <th className="px-4 py-3 font-medium">Time</th>
                 <th className="px-4 py-3 font-medium">Event Name</th>
                 <th className="px-4 py-3 font-medium">Value</th>
@@ -151,19 +151,19 @@ export default function DeduplicationPage() {
             <tbody>
               {(data?.recent_duplicates?.length ?? 0) === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-4 py-8 text-center text-zinc-500">
+                  <td colSpan={4} className="px-4 py-8 text-center text-[var(--dash-muted)]">
                     No recent duplicates.
                   </td>
                 </tr>
               ) : (
                 (data?.recent_duplicates ?? []).map((row, i) => (
-                  <tr key={i} className="border-b border-zinc-800/80 hover:bg-zinc-800/30">
-                    <td className="px-4 py-3 text-zinc-400">
+                  <tr key={i} className="border-b border-[var(--dash-border)]/80 hover:bg-[var(--dash-surface-hover)]/30">
+                    <td className="px-4 py-3 text-[var(--dash-muted)]">
                       {row.created_at ? new Date(row.created_at).toLocaleString() : '—'}
                     </td>
-                    <td className="px-4 py-3 text-white">{row.event_name ?? '—'}</td>
-                    <td className="px-4 py-3 text-zinc-300">{row.value != null ? row.value : '—'}</td>
-                    <td className="px-4 py-3 text-zinc-400">{row.dedup_reason ?? '—'}</td>
+                    <td className="px-4 py-3 text-[var(--dash-text)]">{row.event_name ?? '—'}</td>
+                    <td className="px-4 py-3 text-[var(--dash-muted)]">{row.value != null ? row.value : '—'}</td>
+                    <td className="px-4 py-3 text-[var(--dash-muted)]">{row.dedup_reason ?? '—'}</td>
                   </tr>
                 ))
               )}
@@ -172,22 +172,22 @@ export default function DeduplicationPage() {
         </div>
       </section>
 
-      <section className="rounded-xl bg-zinc-900 border border-zinc-800 p-6">
-        <h2 className="text-sm font-medium text-zinc-300 mb-3">Deduplication Settings</h2>
-        <div className="rounded-lg bg-zinc-800/50 border border-zinc-700 p-4 space-y-2 text-sm text-zinc-300">
+      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
+        <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-3">Deduplication Settings</h2>
+        <div className="rounded-lg bg-[var(--dash-surface-hover)]/50 border border-[var(--dash-border)] p-4 space-y-2 text-sm text-[var(--dash-muted)]">
           <p>
-            <span className="text-emerald-400">Deduplication: Active</span>
+            <span className="text-[var(--dash-success)]">Deduplication: Active</span>
           </p>
           <p>
-            <span className="text-zinc-400">Window:</span> 24 hours
+            <span className="text-[var(--dash-muted)]">Window:</span> 24 hours
           </p>
           <p>
-            <span className="text-zinc-400">Method:</span> event_id matching
+            <span className="text-[var(--dash-muted)]">Method:</span> event_id matching
           </p>
           <p>
-            <span className="text-zinc-400">Platforms:</span> Meta CAPI
+            <span className="text-[var(--dash-muted)]">Platforms:</span> Meta CAPI
           </p>
-          <p className="text-zinc-500 pt-2">
+          <p className="text-[var(--dash-muted)] pt-2">
             All events with a duplicate event_id within 24 hours are automatically suppressed and not sent to Meta.
           </p>
         </div>
@@ -195,3 +195,7 @@ export default function DeduplicationPage() {
     </div>
   )
 }
+
+
+
+

@@ -31,8 +31,8 @@ export default async function EnrichmentPage() {
         userPlan={effectivePlan}
         trialExpired={trialExpired}
       >
-        <h1 className="text-xl font-semibold text-white mb-2">Real-time Data Enrichment</h1>
-        <p className="text-zinc-400 text-sm mb-8">
+        <h1 className="text-xl font-semibold text-[var(--dash-text)] mb-2">Real-time Data Enrichment</h1>
+        <p className="text-[var(--dash-muted)] text-sm mb-8">
           Automatically enrich every event with geolocation, device type, customer type, LTV, and hashed PII for better attribution.
         </p>
         <EnrichmentClient />
@@ -40,3 +40,7 @@ export default async function EnrichmentPage() {
     </div>
   )
 }
+
+
+
+

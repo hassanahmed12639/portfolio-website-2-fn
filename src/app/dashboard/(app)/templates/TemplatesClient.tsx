@@ -161,44 +161,44 @@ export default function TemplatesClient({
   return (
     <div className="p-6 md:p-8">
       <header className="mb-6">
-        <h1 className="text-xl font-semibold text-white mb-1">
+        <h1 className="text-xl font-semibold text-[var(--dash-text)] mb-1">
           GTM & sGTM Template Library
         </h1>
-        <p className="text-zinc-400 text-sm mb-4">
+        <p className="text-[var(--dash-muted)] text-sm mb-4">
           80+ ready-to-use templates. Download, import, and start tracking in
           minutes.
         </p>
         <div className="flex flex-wrap gap-4 text-sm">
-          <span className="text-zinc-500">
-            <strong className="text-zinc-300">{stats.total}</strong> templates
+          <span className="text-[var(--dash-muted)]">
+            <strong className="text-[var(--dash-muted)]">{stats.total}</strong> templates
             available
           </span>
-          <span className="text-zinc-500">
-            <strong className="text-emerald-400">{stats.free}</strong> Free
+          <span className="text-[var(--dash-muted)]">
+            <strong className="text-[var(--dash-success)]">{stats.free}</strong> Free
           </span>
-          <span className="text-zinc-500">
+          <span className="text-[var(--dash-muted)]">
             <strong className="text-amber-400">{stats.pro}</strong> Pro
           </span>
-          <span className="text-zinc-500">
-            <strong className="text-violet-400">{stats.agency}</strong> Agency
+          <span className="text-[var(--dash-muted)]">
+            <strong className="text-[var(--dash-primary)]">{stats.agency}</strong> Agency
           </span>
         </div>
       </header>
 
       <div className="mb-6 space-y-4">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--dash-muted)]" />
           <input
             type="text"
             placeholder="Search templates..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 rounded-lg bg-zinc-900 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500"
+            className="w-full pl-9 pr-4 py-2.5 rounded-lg bg-[var(--dash-surface)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-success)] focus:border-[var(--dash-success)]"
           />
         </div>
 
         <div className="flex flex-wrap gap-2">
-          <span className="text-zinc-500 text-sm mr-1 self-center">Category:</span>
+          <span className="text-[var(--dash-muted)] text-sm mr-1 self-center">Category:</span>
           {['All', ...CATEGORIES].map((c) => (
             <button
               key={c}
@@ -206,8 +206,8 @@ export default function TemplatesClient({
               onClick={() => setCategory(c)}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                 category === c
-                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50'
-                  : 'bg-zinc-800 text-zinc-300 border border-zinc-700 hover:bg-zinc-700'
+                  ? 'bg-[var(--dash-success-soft)] text-[var(--dash-success)] border border-[var(--dash-success-border)]'
+                  : 'bg-[var(--dash-surface-hover)] text-[var(--dash-muted)] border border-[var(--dash-border)] hover:bg-[var(--dash-surface-hover)]'
               }`}
             >
               {c}
@@ -216,7 +216,7 @@ export default function TemplatesClient({
         </div>
 
         <div className="flex flex-wrap gap-2">
-          <span className="text-zinc-500 text-sm mr-1 self-center">Type:</span>
+          <span className="text-[var(--dash-muted)] text-sm mr-1 self-center">Type:</span>
           {['All', ...TYPES.map((t) => t.value)].map((v) => (
             <button
               key={v}
@@ -224,8 +224,8 @@ export default function TemplatesClient({
               onClick={() => setTypeFilter(v)}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                 typeFilter === v
-                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50'
-                  : 'bg-zinc-800 text-zinc-300 border border-zinc-700 hover:bg-zinc-700'
+                  ? 'bg-[var(--dash-success-soft)] text-[var(--dash-success)] border border-[var(--dash-success-border)]'
+                  : 'bg-[var(--dash-surface-hover)] text-[var(--dash-muted)] border border-[var(--dash-border)] hover:bg-[var(--dash-surface-hover)]'
               }`}
             >
               {TYPE_LABELS[v] || v}
@@ -234,7 +234,7 @@ export default function TemplatesClient({
         </div>
 
         <div className="flex flex-wrap gap-2">
-          <span className="text-zinc-500 text-sm mr-1 self-center">
+          <span className="text-[var(--dash-muted)] text-sm mr-1 self-center">
             Platform:
           </span>
           {['All', ...PLATFORMS].map((p) => (
@@ -244,8 +244,8 @@ export default function TemplatesClient({
               onClick={() => setPlatformFilter(p)}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                 platformFilter === p
-                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50'
-                  : 'bg-zinc-800 text-zinc-300 border border-zinc-700 hover:bg-zinc-700'
+                  ? 'bg-[var(--dash-success-soft)] text-[var(--dash-success)] border border-[var(--dash-success-border)]'
+                  : 'bg-[var(--dash-surface-hover)] text-[var(--dash-muted)] border border-[var(--dash-border)] hover:bg-[var(--dash-surface-hover)]'
               }`}
             >
               {PLATFORM_LABELS[p] || p}
@@ -254,7 +254,7 @@ export default function TemplatesClient({
         </div>
 
         <div className="flex flex-wrap gap-2">
-          <span className="text-zinc-500 text-sm mr-1 self-center">
+          <span className="text-[var(--dash-muted)] text-sm mr-1 self-center">
             Difficulty:
           </span>
           {['All', 'beginner', 'intermediate', 'advanced'].map((d) => (
@@ -264,8 +264,8 @@ export default function TemplatesClient({
               onClick={() => setDifficultyFilter(d)}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium capitalize transition-colors ${
                 difficultyFilter === d
-                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50'
-                  : 'bg-zinc-800 text-zinc-300 border border-zinc-700 hover:bg-zinc-700'
+                  ? 'bg-[var(--dash-success-soft)] text-[var(--dash-success)] border border-[var(--dash-success-border)]'
+                  : 'bg-[var(--dash-surface-hover)] text-[var(--dash-muted)] border border-[var(--dash-border)] hover:bg-[var(--dash-surface-hover)]'
               }`}
             >
               {d}
@@ -274,7 +274,7 @@ export default function TemplatesClient({
         </div>
 
         <div className="flex flex-wrap gap-2">
-          <span className="text-zinc-500 text-sm mr-1 self-center">Plan:</span>
+          <span className="text-[var(--dash-muted)] text-sm mr-1 self-center">Plan:</span>
           {['All', 'free', 'pro', 'agency'].map((p) => (
             <button
               key={p}
@@ -282,8 +282,8 @@ export default function TemplatesClient({
               onClick={() => setPlanFilter(p)}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                 planFilter === p
-                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50'
-                  : 'bg-zinc-800 text-zinc-300 border border-zinc-700 hover:bg-zinc-700'
+                  ? 'bg-[var(--dash-success-soft)] text-[var(--dash-success)] border border-[var(--dash-success-border)]'
+                  : 'bg-[var(--dash-surface-hover)] text-[var(--dash-muted)] border border-[var(--dash-border)] hover:bg-[var(--dash-surface-hover)]'
               }`}
             >
               {p.toUpperCase()}
@@ -298,15 +298,15 @@ export default function TemplatesClient({
           return (
             <div
               key={t.id}
-              className={`relative rounded-xl border bg-zinc-900/80 overflow-hidden ${
+              className={`relative rounded-xl border bg-[var(--dash-surface)]/80 overflow-hidden ${
                 locked
-                  ? 'border-zinc-700 opacity-90'
-                  : 'border-zinc-700 hover:border-zinc-600'
+                  ? 'border-[var(--dash-border)] opacity-90'
+                  : 'border-[var(--dash-border)] hover:border-[var(--dash-border-strong)]'
               }`}
             >
               {locked && (
                 <div
-                  className="absolute inset-0 bg-zinc-950/60 z-10 flex items-center justify-center"
+                  className="absolute inset-0 bg-slate-900/60 z-10 flex items-center justify-center"
                   aria-hidden
                 >
                   <Lock className="w-8 h-8 text-amber-400" />
@@ -314,7 +314,7 @@ export default function TemplatesClient({
               )}
               <div className="p-4">
                 <span
-                  className="inline-block px-2 py-0.5 rounded text-xs font-medium bg-zinc-700 text-zinc-300 mb-2"
+                  className="inline-block px-2 py-0.5 rounded text-xs font-medium bg-[var(--dash-surface-hover)] text-[var(--dash-muted)] mb-2"
                   style={{
                     backgroundColor:
                       t.category === 'E-commerce'
@@ -330,15 +330,15 @@ export default function TemplatesClient({
                 >
                   {t.category}
                 </span>
-                <h3 className="font-semibold text-white mb-1">{t.name}</h3>
-                <p className="text-sm text-zinc-400 line-clamp-2 mb-3">
+                <h3 className="font-semibold text-[var(--dash-text)] mb-1">{t.name}</h3>
+                <p className="text-sm text-[var(--dash-muted)] line-clamp-2 mb-3">
                   {t.description}
                 </p>
                 <div className="flex flex-wrap gap-1 mb-3">
                   {t.platform.slice(0, 4).map((p) => (
                     <span
                       key={p}
-                      className="px-1.5 py-0.5 rounded text-xs bg-zinc-800 text-zinc-400"
+                      className="px-1.5 py-0.5 rounded text-xs bg-[var(--dash-surface-hover)] text-[var(--dash-muted)]"
                     >
                       {PLATFORM_LABELS[p] || p}
                     </span>
@@ -348,10 +348,10 @@ export default function TemplatesClient({
                   <span
                     className={`text-xs font-medium px-2 py-0.5 rounded ${
                       t.difficulty === 'beginner'
-                        ? 'bg-emerald-500/20 text-emerald-400'
+                        ? 'bg-[var(--dash-success-soft)] text-[var(--dash-success)]'
                         : t.difficulty === 'intermediate'
-                          ? 'bg-amber-500/20 text-amber-400'
-                          : 'bg-red-500/20 text-red-400'
+                          ? 'bg-[var(--dash-warning)]/20 text-amber-400'
+                          : 'bg-[var(--dash-danger)]/20 text-red-400'
                     }`}
                   >
                     {t.difficulty}
@@ -359,10 +359,10 @@ export default function TemplatesClient({
                   <span
                     className={`text-xs font-medium px-2 py-0.5 rounded ${
                       t.requiredPlan === 'free'
-                        ? 'bg-zinc-600 text-zinc-200'
+                        ? 'bg-[var(--dash-surface-hover)] text-[var(--dash-text)]'
                         : t.requiredPlan === 'pro'
-                          ? 'bg-amber-500/20 text-amber-400'
-                          : 'bg-violet-500/20 text-violet-400'
+                          ? 'bg-[var(--dash-warning)]/20 text-amber-400'
+                          : 'bg-[var(--dash-primary-soft)] text-[var(--dash-primary)]'
                     }`}
                   >
                     {t.requiredPlan.toUpperCase()}
@@ -372,7 +372,7 @@ export default function TemplatesClient({
                   <button
                     type="button"
                     onClick={() => setPreviewTemplate(t)}
-                    className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-zinc-800 text-zinc-200 hover:bg-zinc-700 transition-colors text-sm font-medium"
+                    className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-[var(--dash-surface-hover)] text-[var(--dash-text)] hover:bg-[var(--dash-surface-hover)] transition-colors text-sm font-medium"
                   >
                     <Eye className="w-4 h-4" />
                     Preview Code
@@ -380,7 +380,7 @@ export default function TemplatesClient({
                   <button
                     type="button"
                     onClick={() => handleDownload(t)}
-                    className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 hover:bg-emerald-500/30 transition-colors text-sm font-medium"
+                    className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-[var(--dash-success-soft)] text-[var(--dash-success)] border border-[var(--dash-success-border)] hover:bg-[var(--dash-success-soft)]/80 transition-colors text-sm font-medium"
                   >
                     <Download className="w-4 h-4" />
                     Download
@@ -393,7 +393,7 @@ export default function TemplatesClient({
       </div>
 
       {filtered.length === 0 && (
-        <p className="text-center text-zinc-500 py-12">
+        <p className="text-center text-[var(--dash-muted)] py-12">
           No templates match your filters. Try adjusting search or filters.
         </p>
       )}
@@ -404,18 +404,18 @@ export default function TemplatesClient({
           onClick={() => setPreviewTemplate(null)}
         >
           <div
-            className="rounded-xl bg-zinc-900 border border-zinc-700 shadow-xl max-w-3xl w-full max-h-[90vh] flex flex-col"
+            className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] shadow-xl max-w-3xl w-full max-h-[90vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-4 border-b border-zinc-700 flex items-center justify-between">
+            <div className="p-4 border-b border-[var(--dash-border)] flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-semibold text-white">
+                <h2 className="text-lg font-semibold text-[var(--dash-text)]">
                   {previewTemplate.name}
                 </h2>
-                <p className="text-sm text-zinc-400 mt-0.5">
+                <p className="text-sm text-[var(--dash-muted)] mt-0.5">
                   {previewTemplate.description}
                 </p>
-                <p className="text-xs text-zinc-500 mt-1">
+                <p className="text-xs text-[var(--dash-muted)] mt-1">
                   Plan: {previewTemplate.requiredPlan.toUpperCase()} • File:{' '}
                   {previewTemplate.fileName}
                 </p>
@@ -423,13 +423,13 @@ export default function TemplatesClient({
               <button
                 type="button"
                 onClick={() => setPreviewTemplate(null)}
-                className="p-2 rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-white"
+                className="p-2 rounded-lg hover:bg-[var(--dash-surface-hover)] text-[var(--dash-muted)] hover:text-[var(--dash-text)]"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
             <div className="flex-1 overflow-auto p-4">
-              <div className="rounded-lg overflow-hidden border border-zinc-700">
+              <div className="rounded-lg overflow-hidden border border-[var(--dash-border)]">
                 <SyntaxHighlighter
                   language="javascript"
                   style={oneDark}
@@ -446,11 +446,11 @@ export default function TemplatesClient({
                 </SyntaxHighlighter>
               </div>
             </div>
-            <div className="p-4 border-t border-zinc-700 flex gap-2">
+            <div className="p-4 border-t border-[var(--dash-border)] flex gap-2">
               <button
                 type="button"
                 onClick={handleCopyCode}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-800 text-zinc-200 hover:bg-zinc-700 transition-colors text-sm font-medium"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--dash-surface-hover)] text-[var(--dash-text)] hover:bg-[var(--dash-surface-hover)] transition-colors text-sm font-medium"
               >
                 <Copy className="w-4 h-4" />
                 {copied ? 'Copied!' : 'Copy Code'}
@@ -458,7 +458,7 @@ export default function TemplatesClient({
               <button
                 type="button"
                 onClick={handleDownloadCode}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-800 text-zinc-200 hover:bg-zinc-700 transition-colors text-sm font-medium"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--dash-surface-hover)] text-[var(--dash-text)] hover:bg-[var(--dash-surface-hover)] transition-colors text-sm font-medium"
               >
                 <FileDown className="w-4 h-4" />
                 Download File
@@ -466,7 +466,7 @@ export default function TemplatesClient({
               <button
                 type="button"
                 onClick={() => setPreviewTemplate(null)}
-                className="ml-auto px-4 py-2 rounded-lg border border-zinc-600 text-zinc-300 hover:bg-zinc-800 transition-colors text-sm font-medium"
+                className="ml-auto px-4 py-2 rounded-lg border border-[var(--dash-border-strong)] text-[var(--dash-muted)] hover:bg-[var(--dash-surface-hover)] transition-colors text-sm font-medium"
               >
                 Close
               </button>
@@ -486,3 +486,8 @@ export default function TemplatesClient({
     </div>
   )
 }
+
+
+
+
+

@@ -85,7 +85,7 @@ function CopyBtn({ text, showCheck = false }: { text: string; showCheck?: boolea
     <button
       type="button"
       onClick={copy}
-      className={`shrink-0 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${copied && showCheck ? 'bg-emerald-600/20 text-emerald-400' : 'bg-zinc-700 hover:bg-zinc-600 text-zinc-200'}`}
+      className={`shrink-0 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${copied && showCheck ? 'bg-[var(--dash-success-soft)] text-[var(--dash-success)]' : 'bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-border)] text-[var(--dash-text)]'}`}
     >
       {copied ? (showCheck ? '✓ Copied' : 'Copied') : 'Copy'}
     </button>
@@ -118,13 +118,13 @@ function StepBlock({
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2">
-        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-zinc-700 text-xs font-medium text-zinc-200">
+        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--dash-surface-hover)] text-xs font-medium text-[var(--dash-text)]">
           {stepNum}
         </span>
-        <span className="text-sm font-medium text-zinc-300">{title}</span>
+        <span className="text-sm font-medium text-[var(--dash-muted)]">{title}</span>
       </div>
       <div className="relative">
-        <pre className="bg-zinc-950 rounded-lg border border-zinc-800 p-4 pr-24 text-sm text-zinc-300 font-mono overflow-x-auto whitespace-pre">
+        <pre className="bg-[var(--dash-surface-hover)] rounded-lg border border-[var(--dash-border)] p-4 pr-24 text-sm text-[var(--dash-muted)] font-mono overflow-x-auto whitespace-pre">
           {displayCode}
         </pre>
         <div className="absolute top-3 right-3">
@@ -236,26 +236,26 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
   return (
     <div className="space-y-8">
       {/* Section 1 — Status & Setup */}
-      <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-        <div className="px-4 py-3 border-b border-zinc-800 flex items-center justify-between flex-wrap gap-2">
-          <h2 className="text-sm font-medium text-zinc-300">Status & Setup</h2>
+      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+        <div className="px-4 py-3 border-b border-[var(--dash-border)] flex items-center justify-between flex-wrap gap-2">
+          <h2 className="text-sm font-medium text-[var(--dash-muted)]">Status & Setup</h2>
           <div className="flex items-center gap-3">
             <span
-              className={`text-xs font-medium px-2 py-1 rounded ${enabled ? 'bg-emerald-500/20 text-emerald-400' : 'bg-zinc-700 text-zinc-400'}`}
+              className={`text-xs font-medium px-2 py-1 rounded ${enabled ? 'bg-[var(--dash-success-soft)] text-[var(--dash-success)]' : 'bg-[var(--dash-surface-hover)] text-[var(--dash-muted)]'}`}
             >
               {enabled ? 'Active' : 'Inactive'}
             </span>
             <label className="flex items-center gap-2 cursor-pointer">
-              <span className="text-sm text-zinc-400">Enable Reverse Proxy</span>
+              <span className="text-sm text-[var(--dash-muted)]">Enable Reverse Proxy</span>
               <button
                 type="button"
                 role="switch"
                 aria-checked={enabled}
                 onClick={() => setEnabled((e) => !e)}
-                className={`relative w-10 h-5 rounded-full transition-colors ${enabled ? 'bg-emerald-600' : 'bg-zinc-700'}`}
+                className={`relative w-10 h-5 rounded-full transition-colors ${enabled ? 'bg-[var(--dash-success)]' : 'bg-[var(--dash-surface-hover)]'}`}
               >
                 <span
-                  className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white transition-transform ${enabled ? 'translate-x-5' : 'translate-x-0'}`}
+                  className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-[var(--dash-surface)] transition-transform ${enabled ? 'translate-x-5' : 'translate-x-0'}`}
                 />
               </button>
             </label>
@@ -263,24 +263,24 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
         </div>
         <div className="p-4 space-y-4">
           <div>
-            <label className="block text-sm text-zinc-400 mb-1">Your website domain</label>
+            <label className="block text-sm text-[var(--dash-muted)] mb-1">Your website domain</label>
             <input
               type="text"
               value={domain}
               onChange={(e) => setDomain(e.target.value)}
               placeholder="theirsite.com"
-              className="w-full max-w-md rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-white placeholder-zinc-500 focus:border-zinc-600 focus:outline-none"
+              className="w-full max-w-md rounded-lg border border-[var(--dash-border)] bg-[var(--dash-surface-hover)] px-3 py-2 text-sm text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:border-[var(--dash-primary)] focus:outline-none"
             />
           </div>
           <button
             type="button"
             onClick={save}
-            className="px-4 py-2 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-sm font-medium transition-colors"
+            className="px-4 py-2 rounded-lg bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-border)] text-[var(--dash-text)] text-sm font-medium transition-colors"
           >
             {saved ? 'Saved' : 'Save'}
           </button>
-          <div className="rounded-lg border border-zinc-800 bg-zinc-950/50 p-3 text-sm text-zinc-400">
-            <p className="text-zinc-300 font-medium mb-1">What is Reverse Proxy?</p>
+          <div className="rounded-lg border border-[var(--dash-border)] bg-[var(--dash-bg)] p-3 text-sm text-[var(--dash-muted)]">
+            <p className="text-[var(--dash-muted)] font-medium mb-1">What is Reverse Proxy?</p>
             <p>
               Tracking scripts loaded from facebook.com or google.com are often blocked by ad blockers.
               With reverse proxy, scripts are served from your own domain (e.g. {baseUrl}/th-proxy/...),
@@ -291,14 +291,14 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
       </section>
 
       {/* Section 2 — Proxy URLs */}
-      <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-        <div className="px-4 py-3 border-b border-zinc-800">
-          <h2 className="text-sm font-medium text-zinc-300">Proxy URLs</h2>
+      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+        <div className="px-4 py-3 border-b border-[var(--dash-border)]">
+          <h2 className="text-sm font-medium text-[var(--dash-muted)]">Proxy URLs</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-zinc-800 text-left text-zinc-400">
+              <tr className="border-b border-[var(--dash-border)] text-left text-[var(--dash-muted)]">
                 <th className="px-4 py-3 font-medium">Purpose</th>
                 <th className="px-4 py-3 font-medium">Original URL</th>
                 <th className="px-4 py-3 font-medium">Your Proxy URL</th>
@@ -309,10 +309,10 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
               {PROXY_ROUTES.map((r) => {
                 const proxyUrl = `https://${baseUrl}/th-proxy/${r.slug}`
                 return (
-                  <tr key={r.slug} className="border-b border-zinc-800/80">
-                    <td className="px-4 py-3 text-zinc-300">{r.purpose}</td>
-                    <td className="px-4 py-3 text-zinc-500 font-mono text-xs">{r.original}</td>
-                    <td className="px-4 py-3 text-zinc-300 font-mono text-xs">{proxyUrl}</td>
+                  <tr key={r.slug} className="border-b border-[var(--dash-border)]/80">
+                    <td className="px-4 py-3 text-[var(--dash-muted)]">{r.purpose}</td>
+                    <td className="px-4 py-3 text-[var(--dash-muted)] font-mono text-xs">{r.original}</td>
+                    <td className="px-4 py-3 text-[var(--dash-muted)] font-mono text-xs">{proxyUrl}</td>
                     <td className="px-4 py-3">
                       <CopyBtn text={proxyUrl} />
                     </td>
@@ -322,26 +322,26 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
             </tbody>
           </table>
         </div>
-        <p className="px-4 py-3 text-sm text-zinc-400 border-t border-zinc-800">
+        <p className="px-4 py-3 text-sm text-[var(--dash-muted)] border-t border-[var(--dash-border)]">
           Add these rewrites to your next.config.js OR contact your developer to set up nginx proxy rules. Full instructions are shown below.
         </p>
       </section>
 
       {/* Section 3 — Implementation */}
-      <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-        <div className="px-4 py-3 border-b border-zinc-800 flex items-center justify-between flex-wrap gap-2">
+      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+        <div className="px-4 py-3 border-b border-[var(--dash-border)] flex items-center justify-between flex-wrap gap-2">
           <div className="flex gap-1">
             <button
               type="button"
               onClick={() => setConfigTab('nginx')}
-              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${configTab === 'nginx' ? 'bg-zinc-700 text-white' : 'text-zinc-400 hover:text-white'}`}
+              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${configTab === 'nginx' ? 'bg-[var(--dash-surface-hover)] text-[var(--dash-text)]' : 'text-[var(--dash-muted)] hover:text-[var(--dash-text)]'}`}
             >
               Nginx Config
             </button>
             <button
               type="button"
               onClick={() => setConfigTab('nextjs')}
-              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${configTab === 'nextjs' ? 'bg-zinc-700 text-white' : 'text-zinc-400 hover:text-white'}`}
+              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${configTab === 'nextjs' ? 'bg-[var(--dash-surface-hover)] text-[var(--dash-text)]' : 'text-[var(--dash-muted)] hover:text-[var(--dash-text)]'}`}
             >
               Next.js Config
             </button>
@@ -349,35 +349,35 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
           <CopyBtn text={configTab === 'nginx' ? NGINX_CONFIG : NEXTJS_CONFIG} />
         </div>
         <div className="p-4">
-          <pre className="bg-zinc-950 rounded-lg border border-zinc-800 p-4 text-sm text-zinc-300 font-mono overflow-x-auto whitespace-pre">
+          <pre className="bg-[var(--dash-surface-hover)] rounded-lg border border-[var(--dash-border)] p-4 text-sm text-[var(--dash-muted)] font-mono overflow-x-auto whitespace-pre">
             {configTab === 'nginx' ? NGINX_CONFIG : NEXTJS_CONFIG}
           </pre>
         </div>
       </section>
 
       {/* Section 4 — Ad Blocker Test */}
-      <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-        <div className="px-4 py-3 border-b border-zinc-800">
-          <h2 className="text-sm font-medium text-zinc-300">Ad Blocker Test</h2>
+      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+        <div className="px-4 py-3 border-b border-[var(--dash-border)]">
+          <h2 className="text-sm font-medium text-[var(--dash-muted)]">Ad Blocker Test</h2>
         </div>
         <div className="p-4 space-y-4">
           <button
             type="button"
             onClick={runAdBlockerTest}
             disabled={testing}
-            className="px-4 py-2 rounded-lg bg-zinc-700 hover:bg-zinc-600 disabled:opacity-50 text-zinc-200 text-sm font-medium transition-colors"
+            className="px-4 py-2 rounded-lg bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-border)] disabled:opacity-50 text-[var(--dash-text)] text-sm font-medium transition-colors"
           >
             {testing ? 'Testing…' : 'Test Ad Blocker Detection'}
           </button>
           {testResult !== null && (
-            <div className="rounded-lg border border-zinc-800 bg-zinc-950/50 p-4 text-sm">
-              <p className="text-zinc-400 mb-2">Result:</p>
-              <p className="text-zinc-300">
+            <div className="rounded-lg border border-[var(--dash-border)] bg-[var(--dash-bg)] p-4 text-sm">
+              <p className="text-[var(--dash-muted)] mb-2">Result:</p>
+              <p className="text-[var(--dash-muted)]">
                 Direct: {testResult.direct ? 'WORKING ✅' : 'BLOCKED ❌'} / Proxy:{' '}
                 {testResult.proxy ? 'WORKING ✅' : 'BLOCKED ❌'}
               </p>
               {!testResult.direct && testResult.proxy && (
-                <p className="mt-2 text-emerald-400">
+                <p className="mt-2 text-[var(--dash-success)]">
                   ~100% improvement in tracking coverage when using proxy on your domain.
                 </p>
               )}
@@ -387,17 +387,17 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
       </section>
 
       {/* Section 5 — How to Use */}
-      <section className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-        <div className="px-4 py-3 border-b border-zinc-800">
-          <h2 className="text-sm font-medium text-zinc-300">How to Use</h2>
+      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+        <div className="px-4 py-3 border-b border-[var(--dash-border)]">
+          <h2 className="text-sm font-medium text-[var(--dash-muted)]">How to Use</h2>
         </div>
-        <div className="flex gap-1 p-3 border-b border-zinc-800 flex-wrap">
+        <div className="flex gap-1 p-3 border-b border-[var(--dash-border)] flex-wrap">
           {(['nextjs', 'wordpress', 'shopify', 'gtm'] as const).map((tab) => (
             <button
               key={tab}
               type="button"
               onClick={() => setGuideTab(tab)}
-              className={`px-3 py-1.5 rounded-md text-sm font-medium capitalize transition-colors ${guideTab === tab ? 'bg-zinc-700 text-white' : 'text-zinc-400 hover:text-white'}`}
+              className={`px-3 py-1.5 rounded-md text-sm font-medium capitalize transition-colors ${guideTab === tab ? 'bg-[var(--dash-surface-hover)] text-[var(--dash-text)]' : 'text-[var(--dash-muted)] hover:text-[var(--dash-text)]'}`}
             >
               {tab === 'gtm' ? 'GTM (Any Platform)' : tab === 'nextjs' ? 'Next.js' : tab === 'wordpress' ? 'WordPress' : 'Shopify'}
             </button>
@@ -431,8 +431,8 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
                 apiKey={apiKey}
               />
               <div className="flex items-center gap-2">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-zinc-700 text-xs font-medium text-zinc-200">3</span>
-                <span className="text-sm text-zinc-300">Redeploy your site and test.</span>
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--dash-surface-hover)] text-xs font-medium text-[var(--dash-text)]">3</span>
+                <span className="text-sm text-[var(--dash-muted)]">Redeploy your site and test.</span>
               </div>
             </>
           )}
@@ -440,8 +440,8 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
           {guideTab === 'wordpress' && (
             <>
               <div className="flex items-center gap-2">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-zinc-700 text-xs font-medium text-zinc-200">1</span>
-                <span className="text-sm text-zinc-300">Install WP Rocket or Nginx Helper plugin OR use functions.php</span>
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--dash-surface-hover)] text-xs font-medium text-[var(--dash-text)]">1</span>
+                <span className="text-sm text-[var(--dash-muted)]">Install WP Rocket or Nginx Helper plugin OR use functions.php</span>
               </div>
               <StepBlock
                 stepNum={2}
@@ -462,8 +462,8 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
                 apiKey={apiKey}
               />
               <div className="flex items-center gap-2">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-zinc-700 text-xs font-medium text-zinc-200">4</span>
-                <span className="text-sm text-zinc-300">Clear cache and test.</span>
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--dash-surface-hover)] text-xs font-medium text-[var(--dash-text)]">4</span>
+                <span className="text-sm text-[var(--dash-muted)]">Clear cache and test.</span>
               </div>
             </>
           )}
@@ -471,12 +471,12 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
           {guideTab === 'shopify' && (
             <>
               <div className="flex items-center gap-2">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-zinc-700 text-xs font-medium text-zinc-200">1</span>
-                <span className="text-sm text-zinc-300">Go to Shopify Admin → Online Store → Themes → Edit Code</span>
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--dash-surface-hover)] text-xs font-medium text-[var(--dash-text)]">1</span>
+                <span className="text-sm text-[var(--dash-muted)]">Go to Shopify Admin → Online Store → Themes → Edit Code</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-zinc-700 text-xs font-medium text-zinc-200">2</span>
-                <span className="text-sm text-zinc-300">Open theme.liquid, find closing &lt;/head&gt; tag</span>
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--dash-surface-hover)] text-xs font-medium text-[var(--dash-text)]">2</span>
+                <span className="text-sm text-[var(--dash-muted)]">Open theme.liquid, find closing &lt;/head&gt; tag</span>
               </div>
               <StepBlock
                 stepNum={3}
@@ -495,8 +495,8 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
                 apiKey={apiKey}
               />
               <div className="flex items-center gap-2">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-zinc-700 text-xs font-medium text-zinc-200">4</span>
-                <span className="text-sm text-zinc-300">Add proxy rules via Shopify Hydrogen or contact developer</span>
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--dash-surface-hover)] text-xs font-medium text-[var(--dash-text)]">4</span>
+                <span className="text-sm text-[var(--dash-muted)]">Add proxy rules via Shopify Hydrogen or contact developer</span>
               </div>
               <StepBlock
                 stepNum={5}
@@ -518,8 +518,8 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
           {guideTab === 'gtm' && (
             <>
               <div className="flex items-center gap-2">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-zinc-700 text-xs font-medium text-zinc-200">1</span>
-                <span className="text-sm text-zinc-300">In GTM create a new Custom HTML tag</span>
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--dash-surface-hover)] text-xs font-medium text-[var(--dash-text)]">1</span>
+                <span className="text-sm text-[var(--dash-muted)]">In GTM create a new Custom HTML tag</span>
               </div>
               <StepBlock
                 stepNum={2}
@@ -530,22 +530,22 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
                 apiKey={apiKey}
               />
               <div className="flex items-center gap-2">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-zinc-700 text-xs font-medium text-zinc-200">3</span>
-                <span className="text-sm text-zinc-300">Set trigger to &quot;All Pages&quot;</span>
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--dash-surface-hover)] text-xs font-medium text-[var(--dash-text)]">3</span>
+                <span className="text-sm text-[var(--dash-muted)]">Set trigger to &quot;All Pages&quot;</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-zinc-700 text-xs font-medium text-zinc-200">4</span>
-                <span className="text-sm text-zinc-300">Publish GTM container</span>
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--dash-surface-hover)] text-xs font-medium text-[var(--dash-text)]">4</span>
+                <span className="text-sm text-[var(--dash-muted)]">Publish GTM container</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-zinc-700 text-xs font-medium text-zinc-200">5</span>
-                <span className="text-sm text-zinc-300">Verify in GTM Preview mode</span>
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--dash-surface-hover)] text-xs font-medium text-[var(--dash-text)]">5</span>
+                <span className="text-sm text-[var(--dash-muted)]">Verify in GTM Preview mode</span>
               </div>
             </>
           )}
 
-          <div className="rounded-lg border border-zinc-800 bg-zinc-950/50 p-3 text-sm text-zinc-400 space-y-1">
-            <p className="text-zinc-300 font-medium">Important notes for all tabs:</p>
+          <div className="rounded-lg border border-[var(--dash-border)] bg-[var(--dash-bg)] p-3 text-sm text-[var(--dash-muted)] space-y-1">
+            <p className="text-[var(--dash-muted)] font-medium">Important notes for all tabs:</p>
             <ul className="list-disc list-inside space-y-0.5 ml-1">
               <li>Replace YOURDOMAIN.com with your actual domain shown in the Proxy URLs table above</li>
               <li>Replace YOUR_API_KEY_HERE with your API key from Setup &amp; Snippet page</li>
@@ -557,3 +557,7 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
     </div>
   )
 }
+
+
+
+

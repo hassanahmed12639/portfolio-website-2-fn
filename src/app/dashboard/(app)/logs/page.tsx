@@ -38,9 +38,9 @@ function QualityBadge({ row }: { row: EventRow }) {
   const breakdown = row.data_quality_breakdown ?? {}
   const badgeClass =
     score >= 80
-      ? 'bg-emerald-950 text-emerald-400 border-emerald-800'
+      ? 'bg-[var(--dash-success-badge-bg)] text-[var(--dash-success-badge-text)] border-[var(--dash-success)]'
       : score >= 60
-        ? 'bg-blue-950 text-blue-400 border-blue-800'
+        ? 'bg-[var(--dash-primary-soft)] text-[var(--dash-primary)] border-[var(--dash-primary)]'
         : score >= 40
           ? 'bg-amber-950 text-amber-400 border-amber-800'
           : 'bg-red-950 text-red-400 border-red-800'
@@ -84,7 +84,7 @@ function RetryBadge({ row, retryMap }: { row: EventRow; retryMap: RetryJobMap })
     return (
       <span
         title="Retry succeeded; event delivered to Meta."
-        className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-950 text-emerald-400 border border-emerald-800 ml-1 cursor-help"
+        className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[var(--dash-success-badge-bg)] text-[var(--dash-success-badge-text)] border border-[var(--dash-success)] ml-1 cursor-help"
       >
         Recovered
       </span>
@@ -236,35 +236,35 @@ export default function LogsPage() {
 
   return (
     <div className="p-6 md:p-8">
-      <div className="rounded-lg bg-zinc-900 border border-zinc-800 px-4 py-3 mb-6 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-zinc-400">
+      <div className="rounded-lg bg-[var(--dash-surface)] border border-[var(--dash-border)] px-4 py-3 mb-6 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-[var(--dash-muted)]">
         <span>
-          This month: <span className="text-white font-medium">{matchRate?.total_events ?? 0}</span> events
+          This month: <span className="text-[var(--dash-text)] font-medium">{matchRate?.total_events ?? 0}</span> events
         </span>
-        <span className="text-zinc-600">|</span>
+        <span className="text-[var(--dash-muted)]">|</span>
         <span>
-          Est. Match Rate: <span className="text-white font-medium">{matchRate?.estimated_match_rate ?? 0}%</span>
+          Est. Match Rate: <span className="text-[var(--dash-text)] font-medium">{matchRate?.estimated_match_rate ?? 0}%</span>
         </span>
-        <span className="text-zinc-600">|</span>
+        <span className="text-[var(--dash-muted)]">|</span>
         <span>
-          Avg Quality: <span className="text-white font-medium">{matchRate?.avg_quality ?? 0}/100</span>
+          Avg Quality: <span className="text-[var(--dash-text)] font-medium">{matchRate?.avg_quality ?? 0}/100</span>
         </span>
-        <span className="text-zinc-600">|</span>
+        <span className="text-[var(--dash-muted)]">|</span>
         <span>
-          Ad Clicks: <span className="text-white font-medium">{matchRate?.coverage?.fbclid ?? 0}%</span>
+          Ad Clicks: <span className="text-[var(--dash-text)] font-medium">{matchRate?.coverage?.fbclid ?? 0}%</span>
         </span>
       </div>
       <div className="flex items-center gap-3 mb-6">
-        <h1 className="text-xl font-semibold text-white">Event logs</h1>
+        <h1 className="text-xl font-semibold text-[var(--dash-text)]">Event logs</h1>
         {newPulse && (
           <span
-            className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse"
+            className="flex h-2 w-2 rounded-full bg-[var(--dash-success)] animate-pulse"
             title="New events"
             aria-hidden
           />
         )}
         {!newPulse && (
           <span
-            className="flex h-2 w-2 rounded-full bg-emerald-500/50"
+            className="flex h-2 w-2 rounded-full bg-[var(--dash-success)]/50"
             title="Live"
             aria-hidden
           />
@@ -275,7 +275,7 @@ export default function LogsPage() {
         <select
           value={platform}
           onChange={(e) => setPlatform(e.target.value)}
-          className="rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-200 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-zinc-500"
+          className="rounded-lg bg-[var(--dash-surface)] border border-[var(--dash-border)] text-[var(--dash-text)] px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--dash-primary)]"
         >
           {PLATFORMS.map((o) => (
             <option key={o.value} value={o.value}>
@@ -286,7 +286,7 @@ export default function LogsPage() {
         <select
           value={eventName}
           onChange={(e) => setEventName(e.target.value)}
-          className="rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-200 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-zinc-500"
+          className="rounded-lg bg-[var(--dash-surface)] border border-[var(--dash-border)] text-[var(--dash-text)] px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--dash-primary)]"
         >
           {EVENT_NAMES.map((o) => (
             <option key={o.value} value={o.value}>
@@ -297,7 +297,7 @@ export default function LogsPage() {
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value)}
-          className="rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-200 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-zinc-500"
+          className="rounded-lg bg-[var(--dash-surface)] border border-[var(--dash-border)] text-[var(--dash-text)] px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--dash-primary)]"
         >
           {STATUSES.map((o) => (
             <option key={o.value} value={o.value}>
@@ -308,7 +308,7 @@ export default function LogsPage() {
         <select
           value={dateRange}
           onChange={(e) => setDateRange(e.target.value)}
-          className="rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-200 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-zinc-500"
+          className="rounded-lg bg-[var(--dash-surface)] border border-[var(--dash-border)] text-[var(--dash-text)] px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--dash-primary)]"
         >
           {DATE_RANGES.map((o) => (
             <option key={o.value} value={o.value}>
@@ -321,45 +321,45 @@ export default function LogsPage() {
           placeholder="Search event name or IP..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-200 px-3 py-2 text-sm min-w-[200px] focus:outline-none focus:ring-1 focus:ring-zinc-500 placeholder:text-zinc-500"
+          className="rounded-lg bg-[var(--dash-surface)] border border-[var(--dash-border)] text-[var(--dash-text)] px-3 py-2 text-sm min-w-[200px] focus:outline-none focus:ring-1 focus:ring-[var(--dash-primary)] placeholder:text-[var(--dash-muted)]"
         />
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-          <p className="text-sm text-zinc-400 mb-1">Total events today</p>
-          <p className="text-xl font-semibold text-white">{totalToday}</p>
+        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+          <p className="text-sm text-[var(--dash-muted)] mb-1">Total events today</p>
+          <p className="text-xl font-semibold text-[var(--dash-text)]">{totalToday}</p>
         </div>
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-          <p className="text-sm text-zinc-400 mb-1">Success rate</p>
-          <p className="text-xl font-semibold text-white">{successRate}%</p>
+        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+          <p className="text-sm text-[var(--dash-muted)] mb-1">Success rate</p>
+          <p className="text-xl font-semibold text-[var(--dash-text)]">{successRate}%</p>
         </div>
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-          <p className="text-sm text-zinc-400 mb-1">Most fired event</p>
-          <p className="text-xl font-semibold text-white truncate" title={mostFired}>
+        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+          <p className="text-sm text-[var(--dash-muted)] mb-1">Most fired event</p>
+          <p className="text-xl font-semibold text-[var(--dash-text)] truncate" title={mostFired}>
             {mostFired}
           </p>
         </div>
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-          <p className="text-sm text-zinc-400 mb-1">Last event</p>
-          <p className="text-xl font-semibold text-white">{lastEventTime}</p>
+        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+          <p className="text-sm text-[var(--dash-muted)] mb-1">Last event</p>
+          <p className="text-xl font-semibold text-[var(--dash-text)]">{lastEventTime}</p>
         </div>
       </div>
 
-      <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
+      <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
         {loading && !events.length ? (
           <div className="py-16 text-center">
-            <p className="text-zinc-400 animate-pulse">Waiting for events...</p>
+            <p className="text-[var(--dash-muted)] animate-pulse">Waiting for events...</p>
           </div>
         ) : !events.length ? (
           <div className="py-16 text-center">
-            <p className="text-zinc-400 animate-pulse">Waiting for events...</p>
+            <p className="text-[var(--dash-muted)] animate-pulse">Waiting for events...</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-zinc-800 text-left text-zinc-400">
+                <tr className="border-b border-[var(--dash-border)] text-left text-[var(--dash-muted)]">
                   <th className="px-4 py-3 font-medium w-8">Status</th>
                   <th className="px-4 py-3 font-medium">Event</th>
                   <th className="px-4 py-3 font-medium">Platform</th>
@@ -376,21 +376,21 @@ export default function LogsPage() {
                   <Fragment key={row.id}>
                     <tr
                       key={row.id}
-                      className="border-b border-zinc-800/80 hover:bg-zinc-800/30"
+                      className="border-b border-[var(--dash-border)]/80 hover:bg-[var(--dash-surface-hover)]/30"
                     >
                       <td className="px-4 py-3">
                         <span className="inline-flex items-center flex-wrap gap-1">
                           <span
                             className={`inline-block h-2 w-2 rounded-full shrink-0 ${
-                              row.status === 'success' ? 'bg-emerald-500' : 'bg-red-500'
+                              row.status === 'success' ? 'bg-[var(--dash-success)]' : 'bg-[var(--dash-danger)]'
                             }`}
                             title={row.status}
                           />
                           <RetryBadge row={row} retryMap={retryMap} />
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-white">{row.event_name}</td>
-                      <td className="px-4 py-3 text-zinc-300">
+                      <td className="px-4 py-3 text-[var(--dash-text)]">{row.event_name}</td>
+                      <td className="px-4 py-3 text-[var(--dash-muted)]">
                         {row.platform === 'meta' ? (
                           <span className="font-serif text-base">𝕗</span>
                         ) : row.platform === 'google' ? (
@@ -401,29 +401,29 @@ export default function LogsPage() {
                       </td>
                       <td className="px-4 py-3">
                         {row.fbclid ? (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-950 text-emerald-400 border border-emerald-800">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[var(--dash-success-badge-bg)] text-[var(--dash-success-badge-text)] border border-[var(--dash-success)]">
                             Ad Click
                           </span>
                         ) : row.fbc ? (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-950 text-blue-400 border border-blue-800">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[var(--dash-primary-soft)] text-[var(--dash-primary)] border border-[var(--dash-primary)]">
                             Returning
                           </span>
                         ) : (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-zinc-800 text-zinc-400">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[var(--dash-surface-hover)] text-[var(--dash-muted)]">
                             Organic
                           </span>
                         )}
                       </td>
-                      <td className="px-4 py-3 text-zinc-300">
+                      <td className="px-4 py-3 text-[var(--dash-muted)]">
                         {row.value != null ? row.value : '—'}
                       </td>
                       <td className="px-4 py-3">
                         <QualityBadge row={row} />
                       </td>
-                      <td className="px-4 py-3 text-zinc-500 font-mono text-xs">
+                      <td className="px-4 py-3 text-[var(--dash-muted)] font-mono text-xs">
                         {row.ip ?? '—'}
                       </td>
-                      <td className="px-4 py-3 text-zinc-500">
+                      <td className="px-4 py-3 text-[var(--dash-muted)]">
                         {formatRelative(row.created_at)}
                       </td>
                       <td className="px-4 py-3">
@@ -432,16 +432,16 @@ export default function LogsPage() {
                           onClick={() =>
                             setExpandedId(expandedId === row.id ? null : row.id)
                           }
-                          className="text-zinc-400 hover:text-white text-xs font-medium"
+                          className="text-[var(--dash-muted)] hover:text-[var(--dash-text)] text-xs font-medium"
                         >
                           {expandedId === row.id ? 'Hide' : 'Details'}
                         </button>
                       </td>
                     </tr>
                     {expandedId === row.id && (
-                      <tr key={`${row.id}-exp`} className="bg-zinc-950">
+                      <tr key={`${row.id}-exp`} className="bg-[var(--dash-bg)]">
                         <td colSpan={10} className="px-4 py-3">
-                          <pre className="text-xs text-zinc-400 overflow-auto rounded bg-zinc-900 p-4 max-h-48">
+                          <pre className="text-xs text-[var(--dash-muted)] overflow-auto rounded bg-[var(--dash-surface)] p-4 max-h-48">
                             {JSON.stringify(row, null, 2)}
                           </pre>
                         </td>
@@ -457,3 +457,7 @@ export default function LogsPage() {
     </div>
   )
 }
+
+
+
+

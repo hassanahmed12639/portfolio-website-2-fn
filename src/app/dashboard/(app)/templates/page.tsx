@@ -19,3 +19,7 @@ export default async function TemplatesPage() {
 
   return <TemplatesClient userPlan={planForTemplates} />
 }
+
+
+
+

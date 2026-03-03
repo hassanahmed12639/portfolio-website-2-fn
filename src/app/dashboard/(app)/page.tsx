@@ -99,66 +99,66 @@ export default async function DashboardOverviewPage() {
   return (
     <div className="p-6 md:p-8">
       <div className="flex items-center justify-between gap-4 mb-6">
-        <h1 className="text-xl font-semibold text-white">Overview</h1>
+        <h1 className="text-xl font-semibold text-[var(--dash-text)]">Overview</h1>
         <Link
           href="/dashboard/live"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 hover:text-white text-sm font-medium transition-colors border border-zinc-700"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--dash-surface)] hover:bg-[var(--dash-bg)] text-[var(--dash-text)] hover:text-[var(--dash-text)] text-sm font-medium transition-colors border border-[var(--dash-border)] shadow-sm"
         >
           <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75 animate-ping" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500" />
+            <span className="absolute inline-flex h-full w-full rounded-full bg-[var(--dash-danger)] opacity-75 animate-ping" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--dash-danger)]" />
           </span>
           LIVE
-          <span className="text-zinc-500">View real-time event stream →</span>
+          <span className="text-[var(--dash-muted)]">View real-time event stream →</span>
         </Link>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-          <p className="text-sm text-zinc-400 mb-1">Events used</p>
-          <p className="text-2xl font-semibold text-white">
+        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] shadow-sm p-4">
+          <p className="text-sm text-[var(--dash-muted)] mb-1">Events used</p>
+          <p className="text-2xl font-semibold text-[var(--dash-text)]">
             {limit != null ? `${eventsUsed} / ${limit}` : eventsUsed}
           </p>
         </div>
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-          <p className="text-sm text-zinc-400 mb-1">Current plan</p>
-          <p className="text-2xl font-semibold text-white capitalize">{plan}</p>
+        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] shadow-sm p-4">
+          <p className="text-sm text-[var(--dash-muted)] mb-1">Current plan</p>
+          <p className="text-2xl font-semibold text-[var(--dash-text)] capitalize">{plan}</p>
         </div>
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-          <p className="text-sm text-zinc-400 mb-1">Events today</p>
-          <p className="text-2xl font-semibold text-white">{eventsToday ?? 0}</p>
+        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] shadow-sm p-4">
+          <p className="text-sm text-[var(--dash-muted)] mb-1">Events today</p>
+          <p className="text-2xl font-semibold text-[var(--dash-text)]">{eventsToday ?? 0}</p>
         </div>
       </div>
 
-      <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4 mb-8">
-        <h2 className="text-sm font-medium text-zinc-300 mb-3">Data Quality (this month)</h2>
+      <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] shadow-sm p-4 mb-8">
+        <h2 className="text-sm font-medium text-[var(--dash-text)] mb-3">Data Quality (this month)</h2>
         <div className="flex flex-wrap items-center gap-6">
           <div>
-            <p className="text-3xl font-semibold text-white">{avgScore}/100</p>
-            <p className="text-sm text-zinc-400">{qualityLabel}</p>
+            <p className="text-3xl font-semibold text-[var(--dash-text)]">{avgScore}/100</p>
+            <p className="text-sm text-[var(--dash-muted)]">{qualityLabel}</p>
           </div>
-          <div className="flex-1 min-w-[200px] flex h-6 rounded overflow-hidden bg-zinc-800">
+          <div className="flex-1 min-w-[200px] flex h-6 rounded overflow-hidden bg-[var(--dash-surface-hover)]">
             {(() => {
               const total = qualityData?.length || 1
               return (
                 <>
                   <span
-                    className="bg-emerald-600 transition-all"
+                    className="bg-[var(--dash-success)] transition-all"
                     style={{ width: `${(distribution.Excellent / total) * 100}%` }}
                     title={`Excellent: ${distribution.Excellent}`}
                   />
                   <span
-                    className="bg-blue-600 transition-all"
+                    className="bg-[var(--dash-success)] transition-all"
                     style={{ width: `${(distribution.Good / total) * 100}%` }}
                     title={`Good: ${distribution.Good}`}
                   />
                   <span
-                    className="bg-amber-500 transition-all"
+                    className="bg-[var(--dash-warning)] transition-all"
                     style={{ width: `${(distribution.Fair / total) * 100}%` }}
                     title={`Fair: ${distribution.Fair}`}
                   />
                   <span
-                    className="bg-red-600 transition-all"
+                    className="bg-[var(--dash-danger)] transition-all"
                     style={{ width: `${(distribution.Poor / total) * 100}%` }}
                     title={`Poor: ${distribution.Poor}`}
                   />
@@ -166,27 +166,27 @@ export default async function DashboardOverviewPage() {
               )
             })()}
           </div>
-          <div className="text-sm text-zinc-400">
+          <div className="text-sm text-[var(--dash-muted)]">
             Excellent: {distribution.Excellent} · Good: {distribution.Good} · Fair: {distribution.Fair} · Poor: {distribution.Poor}
           </div>
         </div>
         {topMissingField && (
-          <p className="text-sm text-zinc-400 mt-3">
-            Top missing field: <span className="text-amber-400 font-medium">{topMissingField}</span> (+{topMissingPoints} pts average gain)
+          <p className="text-sm text-[var(--dash-muted)] mt-3">
+            Top missing field: <span className="text-[var(--dash-warning)] font-medium">{topMissingField}</span> (+{topMissingPoints} pts average gain)
           </p>
         )}
         <MatchRateSummary avgScore={avgScore} />
       </div>
 
-      <div className="rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-        <h2 className="px-4 py-3 border-b border-zinc-800 text-sm font-medium text-zinc-300">
+      <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] shadow-sm overflow-hidden">
+        <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-text)]">
           Recent events
         </h2>
         {recentEvents?.length ? (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-zinc-800 text-left text-zinc-400">
+                <tr className="border-b border-[var(--dash-border)] text-left text-[var(--dash-muted)]">
                   <th className="px-4 py-3 font-medium">Event</th>
                   <th className="px-4 py-3 font-medium">Platform</th>
                   <th className="px-4 py-3 font-medium">Value</th>
@@ -196,22 +196,22 @@ export default async function DashboardOverviewPage() {
               </thead>
               <tbody>
                 {recentEvents.map((row, i) => (
-                  <tr key={i} className="border-b border-zinc-800/80 hover:bg-zinc-800/30">
-                    <td className="px-4 py-3 text-white">{row.event_name}</td>
-                    <td className="px-4 py-3 text-zinc-300 capitalize">{row.platform}</td>
-                    <td className="px-4 py-3 text-zinc-300">{row.value}</td>
+                  <tr key={i} className="border-b border-[var(--dash-border)] hover:bg-[var(--dash-bg)]">
+                    <td className="px-4 py-3 text-[var(--dash-text)]">{row.event_name}</td>
+                    <td className="px-4 py-3 text-[var(--dash-muted)] capitalize">{row.platform}</td>
+                    <td className="px-4 py-3 text-[var(--dash-muted)]">{row.value}</td>
                     <td className="px-4 py-3">
                       <span
                         className={
                           row.status === 'success'
-                            ? 'text-emerald-400'
-                            : 'text-amber-400'
+                            ? 'text-[var(--dash-success)]'
+                            : 'text-[var(--dash-warning)]'
                         }
                       >
                         {row.status}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-zinc-500">
+                    <td className="px-4 py-3 text-[var(--dash-muted)]">
                       {row.created_at
                         ? new Date(row.created_at).toLocaleString()
                         : '—'}
@@ -222,7 +222,7 @@ export default async function DashboardOverviewPage() {
             </table>
           </div>
         ) : (
-          <p className="px-4 py-8 text-zinc-500 text-center">
+          <p className="px-4 py-8 text-[var(--dash-muted)] text-center">
             No events yet. Add the snippet to your site to start tracking.
           </p>
         )}
@@ -230,3 +230,7 @@ export default async function DashboardOverviewPage() {
     </div>
   )
 }
+
+
+
+

@@ -40,20 +40,20 @@ function formatTimeAgo(dateStr: string): string {
 
 function StatusDot({ event }: { event: EventRow }) {
   if (event.status === 'failed') {
-    return <span className="inline-block h-2 w-2 rounded-full bg-red-500 shrink-0" title="Failed" />
+    return <span className="inline-block h-2 w-2 rounded-full bg-[var(--dash-danger)] shrink-0" title="Failed" />
   }
   if (event.status === 'deduplicated') {
-    return <span className="inline-block h-2 w-2 rounded-full bg-amber-500 shrink-0" title="Deduplicated" />
+    return <span className="inline-block h-2 w-2 rounded-full bg-[var(--dash-warning)] shrink-0" title="Deduplicated" />
   }
-  return <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 shrink-0" title="Success" />
+  return <span className="inline-block h-2 w-2 rounded-full bg-[var(--dash-success)] shrink-0" title="Success" />
 }
 
 function QualityBar({ score }: { score: number }) {
   const pct = Math.min(100, Math.max(0, score))
   const fill =
-    score >= 80 ? 'bg-emerald-500' : score >= 60 ? 'bg-blue-500' : score >= 40 ? 'bg-amber-500' : 'bg-red-500'
+    score >= 80 ? 'bg-[var(--dash-success)]' : score >= 60 ? 'bg-[var(--dash-primary)]' : score >= 40 ? 'bg-[var(--dash-warning)]' : 'bg-[var(--dash-danger)]'
   return (
-    <div className="w-20 h-1.5 rounded-full bg-zinc-700 overflow-hidden flex">
+    <div className="w-20 h-1.5 rounded-full bg-[var(--dash-surface-hover)] overflow-hidden flex">
       <span className={`${fill} transition-all`} style={{ width: `${pct}%` }} />
     </div>
   )
@@ -75,7 +75,7 @@ function QualityGauge({ score, label }: { score: number; label: string }) {
           fill="none"
           stroke="currentColor"
           strokeWidth="8"
-          className="text-zinc-800"
+          className="text-[var(--dash-text-soft)]"
         />
         <circle
           cx="50"
@@ -90,8 +90,8 @@ function QualityGauge({ score, label }: { score: number; label: string }) {
           className="transition-all duration-300"
         />
       </svg>
-      <p className="text-2xl font-semibold text-white mt-1">{score}/100</p>
-      <p className="text-sm text-zinc-400">{label}</p>
+      <p className="text-2xl font-semibold text-[var(--dash-text)] mt-1">{score}/100</p>
+      <p className="text-sm text-[var(--dash-muted)]">{label}</p>
     </div>
   )
 }
@@ -237,8 +237,8 @@ export default function LivePage() {
     <div className="p-6 md:p-8 flex flex-col h-full">
       <div className="flex items-start justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-xl font-semibold text-white">Live Event Stream</h1>
-          <p className="text-sm text-zinc-400 mt-0.5">Watch your events fire in real-time</p>
+          <h1 className="text-xl font-semibold text-[var(--dash-text)]">Live Event Stream</h1>
+          <p className="text-sm text-[var(--dash-muted)] mt-0.5">Watch your events fire in real-time</p>
         </div>
         <button
           type="button"
@@ -246,35 +246,35 @@ export default function LivePage() {
           disabled={status === 'SUBSCRIBED'}
           className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
             status === 'SUBSCRIBED'
-              ? 'bg-zinc-800 text-emerald-400 cursor-default'
-              : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-white'
+              ? 'bg-[var(--dash-surface-hover)] text-[var(--dash-success)] cursor-default'
+              : 'bg-[var(--dash-surface-hover)] text-[var(--dash-muted)] hover:bg-[var(--dash-surface-hover)] hover:text-[var(--dash-text)]'
           }`}
           title={statusText}
         >
           <span
             className={`inline-block h-2 w-2 rounded-full shrink-0 ${
-              status === 'SUBSCRIBED' ? 'bg-emerald-500' : status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' ? 'bg-amber-500 animate-pulse' : 'bg-red-500'
+              status === 'SUBSCRIBED' ? 'bg-[var(--dash-success)]' : status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' ? 'bg-[var(--dash-warning)] animate-pulse' : 'bg-[var(--dash-danger)]'
             }`}
           />
           {status === 'SUBSCRIBED' ? 'Connected' : status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' ? 'Reconnecting...' : 'Disconnected'}
         </button>
       </div>
 
-      <div className="flex flex-wrap gap-4 mb-4 p-3 rounded-lg bg-zinc-900 border border-zinc-800 text-sm">
-        <span className="text-zinc-400">
-          Events today: <span className="text-white font-medium">{eventsToday}</span>
+      <div className="flex flex-wrap gap-4 mb-4 p-3 rounded-lg bg-[var(--dash-surface)] border border-[var(--dash-border)] text-sm">
+        <span className="text-[var(--dash-muted)]">
+          Events today: <span className="text-[var(--dash-text)] font-medium">{eventsToday}</span>
         </span>
-        <span className="text-zinc-600">|</span>
-        <span className="text-zinc-400">
-          Last event: <span className="text-white font-medium">{lastEventAgo}</span>
+        <span className="text-[var(--dash-muted)]">|</span>
+        <span className="text-[var(--dash-muted)]">
+          Last event: <span className="text-[var(--dash-text)] font-medium">{lastEventAgo}</span>
         </span>
-        <span className="text-zinc-600">|</span>
-        <span className="text-zinc-400">
-          Success rate: <span className="text-white font-medium">{successRate}%</span>
+        <span className="text-[var(--dash-muted)]">|</span>
+        <span className="text-[var(--dash-muted)]">
+          Success rate: <span className="text-[var(--dash-text)] font-medium">{successRate}%</span>
         </span>
-        <span className="text-zinc-600">|</span>
-        <span className="text-zinc-400">
-          Avg Quality: <span className="text-white font-medium">{avgQuality}/100</span>
+        <span className="text-[var(--dash-muted)]">|</span>
+        <span className="text-[var(--dash-muted)]">
+          Avg Quality: <span className="text-[var(--dash-text)] font-medium">{avgQuality}/100</span>
         </span>
       </div>
 
@@ -285,7 +285,7 @@ export default function LivePage() {
             type="button"
             onClick={() => setFilter(f.id)}
             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-              filter === f.id ? 'bg-zinc-600 text-white' : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-white'
+              filter === f.id ? 'bg-[var(--dash-success)] text-white' : 'bg-[var(--dash-surface-hover)] text-[var(--dash-muted)] hover:bg-[var(--dash-surface-hover)] hover:text-[var(--dash-text)]'
             }`}
           >
             {f.label}
@@ -294,32 +294,32 @@ export default function LivePage() {
       </div>
 
       <div className="flex gap-6 flex-1 min-h-0">
-        <div className="flex-1 min-w-0 rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden flex flex-col">
-          <div className="px-4 py-2 border-b border-zinc-800 text-xs text-zinc-500 font-mono">
+        <div className="flex-1 min-w-0 rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden flex flex-col">
+          <div className="px-4 py-2 border-b border-[var(--dash-border)] text-xs text-[var(--dash-muted)] font-mono">
             Live feed (newest at top)
           </div>
           <div className="flex-1 overflow-auto p-2 font-mono text-sm">
             {filteredEvents.length === 0 ? (
-              <p className="text-zinc-500 py-8 text-center">No events yet. Fire some events to see them here.</p>
+              <p className="text-[var(--dash-muted)] py-8 text-center">No events yet. Fire some events to see them here.</p>
             ) : (
               <div className="space-y-0.5">
                 {filteredEvents.map((ev) => (
                   <div
                     key={ev.id}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-md hover:bg-zinc-800/50 transition-all duration-300 ${
+                    className={`flex items-center gap-3 px-3 py-2 rounded-md hover:bg-[var(--dash-surface-hover)]/50 transition-all duration-300 ${
                       lastAddedId === ev.id ? 'animate-slide-down' : ''
                     }`}
                   >
                     <StatusDot event={ev} />
-                    <span className="text-zinc-500 w-14 shrink-0">{formatTimeAgo(ev.created_at)}</span>
-                    <span className="text-white shrink-0 w-24">{ev.event_name}</span>
-                    <span className="text-zinc-400 shrink-0 w-14">
+                    <span className="text-[var(--dash-muted)] w-14 shrink-0">{formatTimeAgo(ev.created_at)}</span>
+                    <span className="text-[var(--dash-text)] shrink-0 w-24">{ev.event_name}</span>
+                    <span className="text-[var(--dash-muted)] shrink-0 w-14">
                       {ev.event_name === 'Purchase' && ev.value != null ? `$${Number(ev.value).toFixed(2)}` : '—'}
                     </span>
                     <QualityBar score={ev.data_quality_score ?? 0} />
-                    <span className="text-zinc-400 w-12 shrink-0">{ev.data_quality_score ?? 0}/100</span>
-                    <span className="text-zinc-500 shrink-0">{ev.data_quality_label ?? '—'}</span>
-                    <span className="text-zinc-500 shrink-0 capitalize">{ev.platform}</span>
+                    <span className="text-[var(--dash-muted)] w-12 shrink-0">{ev.data_quality_score ?? 0}/100</span>
+                    <span className="text-[var(--dash-muted)] shrink-0">{ev.data_quality_label ?? '—'}</span>
+                    <span className="text-[var(--dash-muted)] shrink-0 capitalize">{ev.platform}</span>
                     {ev.status === 'failed' && (
                       <span className="shrink-0 px-2 py-0.5 rounded text-xs font-medium bg-red-950 text-red-400 border border-red-800">
                         FAILED
@@ -337,12 +337,16 @@ export default function LivePage() {
           </div>
         </div>
 
-        <div className="w-48 shrink-0 rounded-xl bg-zinc-900 border border-zinc-800 p-4 flex flex-col items-center">
-          <p className="text-xs text-zinc-500 mb-3 text-center">Current Session Quality</p>
+        <div className="w-48 shrink-0 rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4 flex flex-col items-center">
+          <p className="text-xs text-[var(--dash-muted)] mb-3 text-center">Current Session Quality</p>
           <QualityGauge score={sessionScore} label={sessionLabel} />
-          <p className="text-xs text-zinc-500 mt-3 text-center">Based on last {GAUGE_EVENTS} events</p>
+          <p className="text-xs text-[var(--dash-muted)] mt-3 text-center">Based on last {GAUGE_EVENTS} events</p>
         </div>
       </div>
     </div>
   )
 }
+
+
+
+

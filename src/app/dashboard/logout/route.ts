@@ -7,3 +7,6 @@ export async function GET(request: NextRequest) {
   const url = new URL(request.url)
   return NextResponse.redirect(new URL('/dashboard/login', url.origin))
 }
+
+
+

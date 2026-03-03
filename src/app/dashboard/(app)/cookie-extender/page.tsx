@@ -44,8 +44,8 @@ export default async function CookieExtenderPage() {
         userPlan={effectivePlan}
         trialExpired={trialExpired}
       >
-        <h1 className="text-xl font-semibold text-white mb-2">Cookie Lifetime Extender</h1>
-        <p className="text-zinc-400 text-sm mb-8">
+        <h1 className="text-xl font-semibold text-[var(--dash-text)] mb-2">Cookie Lifetime Extender</h1>
+        <p className="text-[var(--dash-muted)] text-sm mb-8">
           Extend tracking window with server-side cookies. Browser cookies expire in ~7 days (Safari ITP); server cookies last up to 180 days.
         </p>
         <CookieExtenderClient apiKey={apiKey} initialSettings={initialSettings} />
@@ -53,3 +53,7 @@ export default async function CookieExtenderPage() {
     </div>
   )
 }
+
+
+
+
