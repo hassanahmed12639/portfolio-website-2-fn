@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
+export const dynamic = 'force-dynamic'
+
 function normalizeUrl(url: string): string {
   let u = url.trim()
   if (!/^https?:\/\//i.test(u)) u = 'https://' + u

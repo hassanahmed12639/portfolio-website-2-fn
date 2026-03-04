@@ -13,12 +13,12 @@ type Lead = {
   meta_feedback_sent?: boolean
 }
 
-const SCORE_CONFIG: Record<string, { emoji: string; color: string }> = {
-  new: { emoji: '🔵', color: 'bg-slate-100 text-slate-600' },
-  good: { emoji: '✅', color: 'bg-green-50 text-green-700' },
-  bad: { emoji: '❌', color: 'bg-red-50 text-red-600' },
-  hot: { emoji: '🔥', color: 'bg-orange-50 text-orange-700' },
-  converted: { emoji: '💰', color: 'bg-purple-50 text-purple-700' }
+const SCORE_CONFIG: Record<string, { color: string }> = {
+  new: { color: 'bg-slate-100 text-slate-600' },
+  good: { color: 'bg-green-50 text-green-700' },
+  bad: { color: 'bg-red-50 text-red-600' },
+  hot: { color: 'bg-orange-50 text-orange-700' },
+  converted: { color: 'bg-purple-50 text-purple-700' }
 }
 
 export default function LeadGenDashboard({ profile }: { profile: Record<string, unknown> | null }) {
@@ -43,13 +43,13 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-slate-900">
-            Welcome back{profile?.business_name ? `, ${String(profile.business_name)}` : ''}! 👋
+            Welcome back{profile?.business_name ? `, ${String(profile.business_name)}` : ''}
           </h1>
           <p className="text-sm text-slate-500">Here&apos;s your lead generation overview</p>
         </div>
         <div className="flex items-center gap-2">
           <span className="text-xs bg-orange-50 text-orange-700 border border-orange-100 px-2.5 py-1 rounded-full font-semibold">
-            🎯 Lead Gen
+            Lead Gen
           </span>
           <Link
             href="/dashboard/settings"
@@ -63,13 +63,13 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
       {/* Row 1 — Lead stats */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
         {[
-          { label: 'Total Leads', value: stats?.totalLeads ?? 0, icon: '👤', color: 'bg-white border-slate-100' },
-          { label: '🔥 Hot Leads', value: stats?.hotLeads ?? 0, icon: '🔥', color: 'bg-orange-50 border-orange-100' },
-          { label: '✅ Good Leads', value: stats?.goodLeads ?? 0, icon: '✅', color: 'bg-green-50 border-green-100' },
-          { label: '💰 Converted', value: stats?.convertedLeads ?? 0, icon: '💰', color: 'bg-purple-50 border-purple-100' },
-          { label: 'Meta Signals Sent', value: stats?.metaFeedbackSent ?? 0, icon: '📘', color: 'bg-blue-50 border-blue-100' }
+          { label: 'Total Leads', value: stats?.totalLeads ?? 0, color: 'bg-white border-slate-100' },
+          { label: 'Hot Leads', value: stats?.hotLeads ?? 0, color: 'bg-orange-50 border-orange-100' },
+          { label: 'Good Leads', value: stats?.goodLeads ?? 0, color: 'bg-green-50 border-green-100' },
+          { label: 'Converted', value: stats?.convertedLeads ?? 0, color: 'bg-purple-50 border-purple-100' },
+          { label: 'Meta Signals Sent', value: stats?.metaFeedbackSent ?? 0, color: 'bg-blue-50 border-blue-100' }
         ].map(stat => (
-          <div key={stat.label} className={`${stat.color} rounded-xl border p-4 shadow-sm`}>
+          <div key={stat.label} className={`${stat.color} rounded-2xl border border-slate-200/80 p-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)]`}>
             <p className="text-2xl font-bold text-slate-900">{loading ? '...' : Number(stat.value)}</p>
             <p className="text-xs text-slate-500 mt-1">{stat.label}</p>
           </div>
@@ -77,7 +77,7 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
       </div>
 
       {/* Row 2 — Funnel visualization */}
-      <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-5 mb-6">
+      <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-[0_1px_2px_rgba(15,23,42,0.05)] mb-6">
         <div className="flex items-center justify-between mb-4">
           <p className="font-semibold text-slate-900">Lead Funnel</p>
           <Link href="/dashboard/leads" className="text-xs text-blue-600">Manage leads →</Link>
@@ -104,7 +104,7 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
 
         {/* Recent leads */}
-        <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-[0_1px_2px_rgba(15,23,42,0.05)] overflow-hidden">
           <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
             <p className="font-semibold text-slate-900">Recent Leads</p>
             <Link href="/dashboard/leads" className="text-xs text-blue-600 hover:text-blue-700">View all →</Link>
@@ -116,7 +116,11 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
               </div>
             ) : recentLeads.length === 0 ? (
               <div className="p-6 text-center">
-                <p className="text-3xl mb-2">👤</p>
+                <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <svg className="w-6 h-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
                 <p className="text-sm text-slate-500">No leads yet</p>
                 <p className="text-xs text-slate-400 mt-1">Leads appear when your tracking script captures Lead events</p>
               </div>
@@ -131,11 +135,13 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
                 <div className="flex items-center gap-2">
                   {lead.score && (
                     <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${SCORE_CONFIG[lead.score]?.color ?? 'bg-slate-100 text-slate-600'}`}>
-                      {SCORE_CONFIG[lead.score]?.emoji ?? '•'} {lead.score}
+                      {lead.score}
                     </span>
                   )}
                   {lead.meta_feedback_sent && (
-                    <span className="text-xs text-green-600">📘</span>
+                    <svg className="w-4 h-4 text-green-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                    </svg>
                   )}
                 </div>
               </div>
@@ -144,23 +150,53 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
         </div>
 
         {/* Lead gen quick actions */}
-        <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-5">
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
           <p className="font-semibold text-slate-900 mb-4">Quick Actions</p>
           <div className="space-y-2">
             {[
-              { href: '/dashboard/leads', icon: '👤', label: 'Lead Manager', desc: 'Score and manage your leads' },
-              { href: '/dashboard/playground', icon: '🧪', label: 'Send Test Lead', desc: 'Fire a test Lead event' },
-              { href: '/dashboard/logs', icon: '📋', label: 'Event Logs', desc: 'See all captured events' },
-              { href: '/dashboard/pixels', icon: '📡', label: 'Manage Pixels', desc: 'Configure your tracking pixels' },
-              { href: '/dashboard/live', icon: '🔴', label: 'Live Stream', desc: 'Watch leads come in real-time' },
-              { href: '/dashboard/billing', icon: '💳', label: 'Upgrade Plan', desc: 'Unlock more leads per month' }
+              { href: '/dashboard/leads', icon: 'user', label: 'Lead Manager', desc: 'Score and manage your leads' },
+              { href: '/dashboard/playground', icon: 'flask', label: 'Send Test Lead', desc: 'Fire a test Lead event' },
+              { href: '/dashboard/logs', icon: 'clipboard', label: 'Event Logs', desc: 'See all captured events' },
+              { href: '/dashboard/pixels', icon: 'settings', label: 'Manage Pixels', desc: 'Configure your tracking pixels' },
+              { href: '/dashboard/live', icon: 'live', label: 'Live Stream', desc: 'Watch leads come in real-time' },
+              { href: '/dashboard/billing', icon: 'upgrade', label: 'Upgrade Plan', desc: 'Unlock more leads per month' }
             ].map(action => (
               <Link
                 key={action.href}
                 href={action.href}
                 className="flex items-center gap-3 p-3 bg-slate-50 hover:bg-orange-50 rounded-xl transition-colors group"
               >
-                <span className="text-lg">{action.icon}</span>
+                <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center border border-slate-100 shrink-0">
+                  {action.icon === 'user' && (
+                    <svg className="w-4 h-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  )}
+                  {action.icon === 'flask' && (
+                    <svg className="w-4 h-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                    </svg>
+                  )}
+                  {action.icon === 'clipboard' && (
+                    <svg className="w-4 h-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                  )}
+                  {action.icon === 'settings' && (
+                    <svg className="w-4 h-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  )}
+                  {action.icon === 'live' && (
+                    <span className="w-2.5 h-2.5 bg-red-500 rounded-full" />
+                  )}
+                  {action.icon === 'upgrade' && (
+                    <svg className="w-4 h-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                  )}
+                </div>
                 <div className="flex-1">
                   <p className="text-sm font-semibold text-slate-900">{action.label}</p>
                   <p className="text-xs text-slate-400">{action.desc}</p>
@@ -177,7 +213,7 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
 
         {/* Meta feedback loop */}
         <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl p-5 text-white">
-          <p className="font-bold text-lg mb-1">📘 Meta Feedback Loop</p>
+          <p className="font-bold text-lg mb-1">Meta Feedback Loop</p>
           <p className="text-blue-200 text-sm mb-4">Send lead quality signals back to Meta</p>
           <div className="space-y-2 mb-4">
             {[
@@ -200,7 +236,7 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
 
         {/* Install snippet */}
         <div className="bg-slate-900 rounded-xl p-5 text-white">
-          <p className="font-bold mb-1">🔧 Capture Leads from Your Website</p>
+          <p className="font-bold mb-1">Capture Leads from Your Website</p>
           <p className="text-slate-400 text-sm mb-3">Fire Lead events from your form submissions</p>
           <div className="bg-slate-800 rounded-lg p-3 font-mono text-xs text-green-400 mb-3 overflow-x-auto">
             {`trackhive('track', 'Lead', {

@@ -180,7 +180,7 @@ export default function DocsPage() {
 
                   <section>
                     <h2 className="text-2xl font-bold mb-4" style={{ color: "#0f172a" }}>
-                      Step 5 — You&apos;re live! 🎉
+                      Step 5 — You&apos;re live!
                     </h2>
                     <p style={{ color: "#475569" }}>
                       TrackHive is now sending all your events server-side.

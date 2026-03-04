@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import DashboardNav from '@/components/dashboard/DashboardNav'
+import { DashboardProvider } from '@/contexts/DashboardContext'
 import { Bell, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 
@@ -97,7 +98,9 @@ export default function DashboardShell({ user, trialExpired, profile, children }
           </div>
         )}
         <div className="flex-1 overflow-auto">
-          {children}
+          <DashboardProvider dashboardType={(profile?.dashboard_type === 'leadgen' ? 'leadgen' : 'ecommerce') as 'ecommerce' | 'leadgen'}>
+            {children}
+          </DashboardProvider>
         </div>
       </main>
     </div>

@@ -78,10 +78,14 @@ export default function PricingPage() {
                 Perfect to get started
               </p>
               <ul className="space-y-4 text-sm flex-1 mb-8" style={{ color: "#475569" }}>
-                <li>✅ 1,000 events/month</li>
-                <li>✅ Meta CAPI</li>
-                <li>✅ 1 pixel</li>
-                <li>✅ Basic analytics</li>
+                {['1,000 events/month', 'Meta CAPI', '1 pixel', 'Basic analytics'].map((item) => (
+                  <li key={item} className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-blue-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                    </svg>
+                    {item}
+                  </li>
+                ))}
               </ul>
               <Link
                 href="/dashboard/signup"
@@ -113,13 +117,14 @@ export default function PricingPage() {
               </p>
               <p className="text-sm mb-8 text-blue-200">For growing businesses</p>
               <ul className="space-y-4 text-sm flex-1 mb-8 text-blue-100">
-                <li>✅ 50,000 events/month</li>
-                <li>✅ All platforms (Meta, Google, TikTok, Snapchat)</li>
-                <li>✅ 3 pixels</li>
-                <li>✅ AI Analysis</li>
-                <li>✅ Email alerts</li>
-                <li>✅ Anomaly detection</li>
-                <li>✅ Priority support</li>
+                {['50,000 events/month', 'All platforms (Meta, Google, TikTok, Snapchat)', '3 pixels', 'AI Analysis', 'Email alerts', 'Anomaly detection', 'Priority support'].map((item) => (
+                  <li key={item} className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-blue-200 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                    </svg>
+                    {item}
+                  </li>
+                ))}
               </ul>
               <Link
                 href="/billing"
@@ -149,13 +154,14 @@ export default function PricingPage() {
                 For agencies and teams
               </p>
               <ul className="space-y-4 text-sm flex-1 mb-8" style={{ color: "#475569" }}>
-                <li>✅ Unlimited events</li>
-                <li>✅ All platforms</li>
-                <li>✅ 10 pixels</li>
-                <li>✅ Everything in Pro</li>
-                <li>✅ White label</li>
-                <li>✅ 100+ GTM templates</li>
-                <li>✅ Dedicated support</li>
+                {['Unlimited events', 'All platforms', '10 pixels', 'Everything in Pro', 'White label', '100+ GTM templates', 'Dedicated support'].map((item) => (
+                  <li key={item} className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-blue-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                    </svg>
+                    {item}
+                  </li>
+                ))}
               </ul>
               <Link
                 href="/dashboard/signup"

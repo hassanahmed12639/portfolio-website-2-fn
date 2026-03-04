@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 
+export const dynamic = 'force-dynamic'
+
 const EXPORT_HEADERS = ['event_id', 'event_name', 'platform', 'value', 'currency', 'country', 'city', 'device_type', 'customer_type', 'status', 'created_at']
 
 function convertToCSV(events: Record<string, unknown>[]): string {

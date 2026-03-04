@@ -396,13 +396,14 @@ export default function LogsPage() {
                       </td>
                       <td className="px-4 py-3 text-[var(--dash-text)]">{row.event_name}</td>
                       <td className="px-4 py-3 text-[var(--dash-muted)]">
-                        {row.platform === 'meta' ? (
-                          <span className="font-serif text-base">𝕗</span>
-                        ) : row.platform === 'google' ? (
-                          <span className="font-semibold">G</span>
-                        ) : (
-                          row.platform
-                        )}
+                        {{
+                          meta: 'Facebook',
+                          google: 'Google Ads',
+                          tiktok: 'TikTok',
+                          ga4: 'GA4',
+                          snapchat: 'Snapchat',
+                          pinterest: 'Pinterest',
+                        }[row.platform?.toLowerCase() ?? ''] ?? row.platform ?? '—'}
                       </td>
                       <td className="px-4 py-3">
                         {row.fbclid ? (

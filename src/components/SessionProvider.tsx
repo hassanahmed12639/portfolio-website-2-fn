@@ -18,41 +18,24 @@ export default function SessionProvider({
     const { data: { session }, error } = await supabase.auth.getSession()
     if (error || !session) return
 
-    // If token expires in less than 10 minutes, refresh it
     const expiresAt = session.expires_at ?? 0
-    const now = Math.floor(Date.now() / 1000)
-    const timeUntilExpiry = expiresAt - now
-
+    const timeUntilExpiry = expiresAt - Math.floor(Date.now() / 1000)
     if (timeUntilExpiry < 600) {
-      console.log('[Session] Refreshing token, expires in:', timeUntilExpiry, 'seconds')
-      const { error: refreshError } = await supabase.auth.refreshSession()
-      if (refreshError) {
-        console.error('[Session] Refresh failed:', refreshError.message)
-      } else {
-        console.log('[Session] Token refreshed successfully')
-      }
+      await supabase.auth.refreshSession()
     }
   }, [supabase])
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('[Session] Auth event:', event)
-      if (event === 'SIGNED_OUT') {
-        router.push('/dashboard/login')
-      }
-      if (event === 'TOKEN_REFRESHED') {
-        console.log('[Session] Token refreshed')
-      }
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_OUT') router.push('/dashboard/login')
     })
 
-    refreshSession()
+    // Defer session refresh to avoid blocking initial dashboard paint
+    const t = setTimeout(refreshSession, 200)
     const interval = setInterval(refreshSession, 4 * 60 * 1000)
 
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        console.log('[Session] Tab visible, checking session')
-        refreshSession()
-      }
+      if (document.visibilityState === 'visible') refreshSession()
     }
     document.addEventListener('visibilitychange', handleVisibilityChange)
 
@@ -66,6 +49,7 @@ export default function SessionProvider({
     window.addEventListener('click', handleActivity)
 
     return () => {
+      clearTimeout(t)
       subscription.unsubscribe()
       clearInterval(interval)
       document.removeEventListener('visibilitychange', handleVisibilityChange)

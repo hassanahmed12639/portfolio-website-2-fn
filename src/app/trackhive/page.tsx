@@ -88,19 +88,6 @@ export default function TrackHivePage() {
             </Link>
           </div>
 
-          {/* Floating profile circles - decorative */}
-          <div className="absolute top-20 left-4 md:left-12 w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center border-2 border-white shadow">
-            <span className="text-xs font-bold" style={{ color: "#475569" }}>A</span>
-          </div>
-          <div className="absolute top-24 right-4 md:right-16 w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center border-2 border-white shadow">
-            <span className="text-xs font-bold" style={{ color: "#475569" }}>B</span>
-          </div>
-          <div className="absolute bottom-32 left-8 md:left-24 w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center border-2 border-white shadow">
-            <span className="text-xs font-bold" style={{ color: "#475569" }}>C</span>
-          </div>
-          <div className="absolute bottom-28 right-8 md:right-24 w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center border-2 border-white shadow">
-            <span className="text-xs font-bold" style={{ color: "#475569" }}>D</span>
-          </div>
         </div>
 
         {/* Partner logos */}
@@ -141,7 +128,7 @@ export default function TrackHivePage() {
             {/* Block 1: Dynamic dashboard */}
             <div
               className="rounded-2xl p-6 lg:p-8 border bg-white"
-              style={{ borderColor: "#e2e8f0", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
+              style={{ borderColor: "#e5e7eb", boxShadow: "0 1px 2px rgba(15,23,42,0.06)" }}
             >
               <h3 className="text-xl font-bold mb-3" style={{ color: "#0f172a" }}>
                 Dynamic dashboard
@@ -161,7 +148,7 @@ export default function TrackHivePage() {
             {/* Block 2: Chart / stats */}
             <div
               className="rounded-2xl p-6 lg:p-8 border bg-white"
-              style={{ borderColor: "#e2e8f0", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
+              style={{ borderColor: "#e5e7eb", boxShadow: "0 1px 2px rgba(15,23,42,0.06)" }}
             >
               <div className="flex items-center justify-between mb-4">
                 <span className="text-sm font-medium" style={{ color: "#475569" }}>Match rate</span>
@@ -189,7 +176,7 @@ export default function TrackHivePage() {
             {/* Block 3: Smart notifications */}
             <div
               className="rounded-2xl p-6 lg:p-8 border bg-white"
-              style={{ borderColor: "#e2e8f0", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
+              style={{ borderColor: "#e5e7eb", boxShadow: "0 1px 2px rgba(15,23,42,0.06)" }}
             >
               <h3 className="text-xl font-bold mb-3" style={{ color: "#0f172a" }}>
                 Smart notifications
@@ -206,7 +193,7 @@ export default function TrackHivePage() {
             {/* Block 4: Task / event management */}
             <div
               className="rounded-2xl p-6 lg:p-8 border bg-white"
-              style={{ borderColor: "#e2e8f0", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
+              style={{ borderColor: "#e5e7eb", boxShadow: "0 1px 2px rgba(15,23,42,0.06)" }}
             >
               <h3 className="text-xl font-bold mb-3" style={{ color: "#0f172a" }}>
                 Event replay & retry
@@ -252,7 +239,8 @@ export default function TrackHivePage() {
             {INTEGRATIONS.map((item) => (
               <div
                 key={item.name}
-                className="w-24 h-24 rounded-2xl bg-white flex items-center justify-center p-4 shadow-sm overflow-hidden"
+                className="w-24 h-24 rounded-2xl bg-white flex items-center justify-center p-4 border overflow-hidden"
+                style={{ borderColor: "#e5e7eb", boxShadow: "0 1px 2px rgba(15,23,42,0.05)" }}
               >
                 <img
                   src={item.src}
@@ -283,8 +271,8 @@ export default function TrackHivePage() {
 
         {/* Stats box */}
         <div
-          className="max-w-4xl mx-auto px-6 rounded-2xl p-8 md:p-12"
-          style={{ backgroundColor: "#f1f5f9", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
+          className="max-w-4xl mx-auto px-6 rounded-2xl p-8 md:p-12 border"
+          style={{ backgroundColor: "#f8fafc", borderColor: "#e5e7eb", boxShadow: "0 1px 2px rgba(15,23,42,0.05)" }}
         >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <div>
@@ -313,26 +301,53 @@ export default function TrackHivePage() {
             No hidden fees. Cancel anytime.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="rounded-2xl border p-8 text-left bg-white" style={{ borderColor: "#e2e8f0" }}>
+            <div className="rounded-2xl border p-8 text-left bg-white" style={{ borderColor: "#e5e7eb", boxShadow: "0 1px 2px rgba(15,23,42,0.05)" }}>
               <p className="font-bold text-lg mb-1" style={{ color: "#0f172a" }}>Free</p>
               <p className="text-4xl font-extrabold mb-1" style={{ color: "#0f172a" }}>$0<span className="text-base font-normal" style={{ color: "#94a3b8" }}>/mo</span></p>
               <p className="text-sm mb-6" style={{ color: "#475569" }}>Perfect to get started</p>
-              <ul className="space-y-3 text-sm mb-8" style={{ color: "#475569" }}><li>✅ 1,000 events/month</li><li>✅ Meta CAPI</li><li>✅ 1 pixel</li><li>✅ Basic analytics</li></ul>
+              <ul className="space-y-3 text-sm mb-8" style={{ color: "#475569" }}>
+                {['1,000 events/month', 'Meta CAPI', '1 pixel', 'Basic analytics'].map((item) => (
+                  <li key={item} className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-blue-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                    </svg>
+                    {item}
+                  </li>
+                ))}
+              </ul>
               <Link href="/dashboard/signup" className="block text-center font-semibold py-2.5 rounded-lg transition-colors bg-slate-100" style={{ color: "#1e293b" }}>Start for free</Link>
             </div>
-            <div className="rounded-2xl p-8 text-left shadow-xl relative" style={{ backgroundColor: "#1d4ed8", boxShadow: "0 25px 50px -12px rgba(29,78,216,0.25)" }}>
+            <div className="rounded-2xl p-8 text-left relative border" style={{ backgroundColor: "#1d4ed8", borderColor: "rgba(147,197,253,0.35)", boxShadow: "0 8px 20px rgba(29,78,216,0.2)" }}>
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-bold px-3 py-1 rounded-full bg-amber-400" style={{ color: "#78350f" }}>MOST POPULAR</span>
               <p className="font-bold text-lg mb-1 text-white">Pro</p>
               <p className="text-4xl font-extrabold mb-1 text-white">$10<span className="text-base font-normal text-blue-200">/mo</span></p>
               <p className="text-sm mb-6 text-blue-200">For growing businesses</p>
-              <ul className="space-y-3 text-sm mb-8 text-blue-100"><li>✅ 50,000 events/month</li><li>✅ All platforms</li><li>✅ 3 pixels</li><li>✅ AI Analysis</li><li>✅ Email alerts</li><li>✅ Priority support</li></ul>
+              <ul className="space-y-3 text-sm mb-8 text-blue-100">
+                {['50,000 events/month', 'All platforms', '3 pixels', 'AI Analysis', 'Email alerts', 'Priority support'].map((item) => (
+                  <li key={item} className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-blue-200 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                    </svg>
+                    {item}
+                  </li>
+                ))}
+              </ul>
               <Link href="/billing" className="block text-center bg-white font-semibold py-2.5 rounded-lg transition-colors hover:bg-blue-50 text-blue-600">Upgrade to Pro</Link>
             </div>
-            <div className="rounded-2xl border p-8 text-left bg-white" style={{ borderColor: "#e2e8f0" }}>
+            <div className="rounded-2xl border p-8 text-left bg-white" style={{ borderColor: "#e5e7eb", boxShadow: "0 1px 2px rgba(15,23,42,0.05)" }}>
               <p className="font-bold text-lg mb-1" style={{ color: "#0f172a" }}>Agency</p>
               <p className="text-4xl font-extrabold mb-1" style={{ color: "#0f172a" }}>$25<span className="text-base font-normal" style={{ color: "#94a3b8" }}>/mo</span></p>
               <p className="text-sm mb-6" style={{ color: "#475569" }}>For agencies and teams</p>
-              <ul className="space-y-3 text-sm mb-8" style={{ color: "#475569" }}><li>✅ Unlimited events</li><li>✅ All platforms</li><li>✅ 10 pixels</li><li>✅ Everything in Pro</li><li>✅ White label</li><li>✅ Dedicated support</li></ul>
+              <ul className="space-y-3 text-sm mb-8" style={{ color: "#475569" }}>
+                {['Unlimited events', 'All platforms', '10 pixels', 'Everything in Pro', 'White label', 'Dedicated support'].map((item) => (
+                  <li key={item} className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-blue-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                    </svg>
+                    {item}
+                  </li>
+                ))}
+              </ul>
               <Link href="/dashboard/signup" className="block text-center font-semibold py-2.5 rounded-lg bg-slate-100 transition-colors" style={{ color: "#1e293b" }}>Start for free</Link>
             </div>
           </div>

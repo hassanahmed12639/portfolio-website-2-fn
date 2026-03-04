@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { readFile } from 'fs/promises'
+
+export const dynamic = 'force-dynamic'
 import path from 'path'
 
 const LOGS_PATH = path.join(process.cwd(), 'src', 'data', 'alert-logs.json')

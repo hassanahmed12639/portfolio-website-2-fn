@@ -77,11 +77,8 @@ export async function middleware(req: NextRequest) {
     }
   )
 
-  // IMPORTANT: getSession() refreshes the session and updates cookies on res
-  const {
-    data: { session },
-    error,
-  } = await supabase.auth.getSession()
+  // getSession() reads from cookies (fast); avoid getUser() which makes API calls
+  const { data: { session }, error } = await supabase.auth.getSession()
 
   if (error) {
     console.error('[Middleware] Session error:', error.message)
@@ -99,16 +96,25 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // After auth: redirect to onboarding if dashboard and onboarding not completed
-  if (session && isDashboardRoute && !isAuthPage) {
+  // Returning users: skip onboarding, go straight to dashboard
+  // New users: must complete onboarding before dashboard
+  if (session && (isDashboardRoute || isOnboardingPage) && !isAuthPage) {
     const { data: profile } = await supabase
       .from('profiles')
       .select('onboarding_completed')
       .eq('id', session.user.id)
       .single()
 
-    if (!profile?.onboarding_completed && pathname !== '/onboarding') {
+    const completed = !!profile?.onboarding_completed
+
+    // New user on dashboard → redirect to onboarding
+    if (!completed && isDashboardRoute) {
       return NextResponse.redirect(new URL('/onboarding', req.url))
+    }
+
+    // Returning user on onboarding → redirect to dashboard
+    if (completed && isOnboardingPage) {
+      return NextResponse.redirect(new URL('/dashboard', req.url))
     }
   }
 

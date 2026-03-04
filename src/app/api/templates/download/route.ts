@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 import { getEffectivePlan, type PlanName } from '@/lib/plans'
+
+export const dynamic = 'force-dynamic'
 import {
   TEMPLATES,
   canAccessTemplate,

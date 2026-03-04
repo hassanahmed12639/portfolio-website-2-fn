@@ -96,21 +96,11 @@ export default async function BlogPage() {
           {rest?.map((post) => (
             <Link key={post.id} href={`/blog/${post.slug}`}>
               <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-all hover:-translate-y-0.5 h-full">
-                <div className="bg-gradient-to-br from-slate-100 to-blue-50 h-40 flex items-center justify-center">
-                  <div className="text-4xl">
-                    {post.category === 'Meta CAPI'
-                      ? '📘'
-                      : post.category === 'TikTok'
-                        ? '🎵'
-                        : post.category === 'Google'
-                          ? '🔍'
-                          : post.category === 'Analytics'
-                            ? '📊'
-                            : '⚡'}
-                  </div>
+                <div className="bg-gradient-to-br from-blue-600 to-blue-800 h-40 flex items-center justify-center">
+                  <div className="w-10 h-10 border-2 border-white/30 rounded-xl" />
                 </div>
                 <div className="p-5">
-                  <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
+                  <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">
                     {post.category}
                   </span>
                   <h3 className="font-bold text-slate-900 mt-2 mb-2 line-clamp-2">
@@ -134,7 +124,11 @@ export default async function BlogPage() {
         {/* Empty state */}
         {(!posts || posts.length === 0) && (
           <div className="text-center py-16 bg-white rounded-2xl border border-slate-100">
-            <p className="text-4xl mb-3">📝</p>
+            <div className="w-12 h-12 bg-slate-200 rounded-xl mx-auto mb-3 flex items-center justify-center">
+              <svg className="w-6 h-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
             <p className="font-medium text-slate-700">No posts yet</p>
             <p className="text-sm text-slate-500 mt-1">
               Check back soon for server-side tracking insights and guides.

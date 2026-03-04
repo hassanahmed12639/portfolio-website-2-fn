@@ -2,12 +2,10 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import LoginRadar from './LoginRadar'
 
 export default function LoginPage() {
-  const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -64,20 +62,20 @@ export default function LoginPage() {
     supabase.auth
       .signInWithPassword({ email, password })
       .then(async (res) => {
-        setLoading(false)
         if (res.error) {
+          setLoading(false)
           setError(res.error.message)
           return
         }
-        // Persist session so cookie is set and session stays alive
+        // Sync session to cookies for SSR before redirecting into protected routes.
         if (res.data?.session) {
           await supabase.auth.setSession({
             access_token: res.data.session.access_token,
             refresh_token: res.data.session.refresh_token,
           })
         }
-        router.push('/dashboard')
-        router.refresh()
+        setLoading(false)
+        window.location.replace('/dashboard')
       })
       .catch((err: unknown) => {
         setLoading(false)

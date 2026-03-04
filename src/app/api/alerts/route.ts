@@ -4,6 +4,8 @@ import type { AlertRule } from '@/lib/email-alerts'
 import { readFile, writeFile } from 'fs/promises'
 import path from 'path'
 
+export const dynamic = 'force-dynamic'
+
 const RULES_PATH = path.join(process.cwd(), 'src', 'data', 'alert-rules.json')
 
 async function readRules(): Promise<AlertRule[]> {

@@ -75,7 +75,7 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
             textColor: 'text-purple-700'
           }
         ].map(stat => (
-          <div key={stat.label} className={`${stat.color} rounded-xl border p-5 shadow-sm`}>
+          <div key={stat.label} className={`${stat.color} rounded-2xl border border-slate-200/80 p-5 shadow-[0_1px_2px_rgba(15,23,42,0.05)]`}>
             <div className="flex items-center justify-between mb-2">
               <span className="text-xl">{stat.icon}</span>
             </div>
@@ -92,7 +92,7 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
           { name: 'TikTok Events API', icon: '🎵', status: 'connected', events: Number(stats?.tiktokEvents ?? 0) },
           { name: 'Google Enhanced', icon: '🔍', status: 'connected', events: Number(stats?.googleEvents ?? 0) }
         ].map(platform => (
-          <div key={platform.name} className="bg-white rounded-xl border border-slate-100 shadow-sm p-5">
+          <div key={platform.name} className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <span className="text-xl">{platform.icon}</span>
@@ -112,7 +112,7 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
 
         {/* Recent events */}
-        <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-[0_1px_2px_rgba(15,23,42,0.05)] overflow-hidden">
           <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
             <p className="font-semibold text-slate-900">Recent Events</p>
             <Link href="/dashboard/logs" className="text-xs text-blue-600 hover:text-blue-700">View all →</Link>
@@ -146,7 +146,7 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
         </div>
 
         {/* Ecom quick actions */}
-        <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-5">
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
           <p className="font-semibold text-slate-900 mb-4">Quick Actions</p>
           <div className="space-y-2">
             {[

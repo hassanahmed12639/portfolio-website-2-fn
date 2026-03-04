@@ -3,16 +3,17 @@
 import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
 import { validatePayload, type ValidationResult } from '@/lib/payload-validator'
+import { useDashboardType } from '@/contexts/DashboardContext'
 
-const EVENT_TYPES = [
-  { id: 'Purchase', label: 'Purchase' },
-  { id: 'Lead', label: 'Lead' },
-  { id: 'PageView', label: 'PageView' },
-  { id: 'AddToCart', label: 'AddToCart' },
-  { id: 'InitiateCheckout', label: 'InitiateCheckout' },
-  { id: 'ViewContent', label: 'ViewContent' },
-  { id: 'Search', label: 'Search' },
-  { id: 'CompleteRegistration', label: 'CompleteRegistration' },
+const ALL_EVENT_TYPES = [
+  { id: 'Purchase', label: 'Purchase', mode: 'ecommerce' as const },
+  { id: 'Lead', label: 'Lead', mode: 'leadgen' as const },
+  { id: 'PageView', label: 'PageView', mode: 'both' as const },
+  { id: 'AddToCart', label: 'AddToCart', mode: 'ecommerce' as const },
+  { id: 'InitiateCheckout', label: 'InitiateCheckout', mode: 'ecommerce' as const },
+  { id: 'ViewContent', label: 'ViewContent', mode: 'ecommerce' as const },
+  { id: 'Search', label: 'Search', mode: 'ecommerce' as const },
+  { id: 'CompleteRegistration', label: 'CompleteRegistration', mode: 'leadgen' as const },
 ] as const
 
 const CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'AUD']
@@ -77,7 +78,15 @@ function getFieldSeverity(result: ValidationResult | null, field: string): 'erro
 }
 
 export default function PlaygroundPage() {
-  const [eventType, setEventType] = useState<string>('Purchase')
+  const dashboardType = useDashboardType()
+  const EVENT_TYPES = ALL_EVENT_TYPES.filter(
+    (t) => t.mode === dashboardType || t.mode === 'both'
+  )
+  const defaultEventType = dashboardType === 'leadgen' ? 'Lead' : 'Purchase'
+  const [eventType, setEventType] = useState<string>(defaultEventType)
+  useEffect(() => {
+    setEventType(defaultEventType)
+  }, [dashboardType, defaultEventType])
   const [customEventName, setCustomEventName] = useState('')
   const [params, setParams] = useState<EventParams>({ ...defaultParams, event_id: generateEventId() })
   const [includeTestEmail, setIncludeTestEmail] = useState(false)

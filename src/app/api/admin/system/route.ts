@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
+export const dynamic = 'force-dynamic'
+
 const CHECKS = [
   { name: 'SUPABASE_URL', key: 'NEXT_PUBLIC_SUPABASE_URL', warning: false },
   { name: 'SERVICE_ROLE_KEY', key: 'SUPABASE_SERVICE_ROLE_KEY', warning: false },
