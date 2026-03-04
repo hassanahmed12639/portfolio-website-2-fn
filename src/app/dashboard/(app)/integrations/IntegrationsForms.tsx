@@ -14,7 +14,6 @@ export default function IntegrationsForms({
   activePixelsCount = 0,
   google,
   tiktok,
-  snapchat,
   ga4,
 }: {
   meta: MetaIntegration
@@ -22,7 +21,6 @@ export default function IntegrationsForms({
   activePixelsCount?: number
   google: GoogleIntegration
   tiktok: PixelTokenIntegration
-  snapchat: PixelTokenIntegration
   ga4: Ga4Integration
 }) {
   const [metaPixelId, setMetaPixelId] = useState(meta?.pixel_id ?? '')
@@ -32,8 +30,6 @@ export default function IntegrationsForms({
   const [googleConversionLabel, setGoogleConversionLabel] = useState(google?.conversion_label ?? '')
   const [tiktokPixelId, setTiktokPixelId] = useState(tiktok?.pixel_id ?? '')
   const [tiktokAccessToken, setTiktokAccessToken] = useState(tiktok?.access_token ?? '')
-  const [snapPixelId, setSnapPixelId] = useState(snapchat?.pixel_id ?? '')
-  const [snapAccessToken, setSnapAccessToken] = useState(snapchat?.access_token ?? '')
   const [ga4MeasurementId, setGa4MeasurementId] = useState(ga4?.tag_id ?? '')
   const [ga4ApiSecret, setGa4ApiSecret] = useState(ga4?.access_token ?? '')
 
@@ -43,8 +39,6 @@ export default function IntegrationsForms({
   const [googleTestMsg, setGoogleTestMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [tiktokSaveMsg, setTiktokSaveMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [tiktokTestMsg, setTiktokTestMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
-  const [snapSaveMsg, setSnapSaveMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
-  const [snapTestMsg, setSnapTestMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [ga4SaveMsg, setGa4SaveMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [ga4TestMsg, setGa4TestMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
@@ -59,8 +53,6 @@ export default function IntegrationsForms({
   const [googleTesting, setGoogleTesting] = useState(false)
   const [tiktokSaving, setTiktokSaving] = useState(false)
   const [tiktokTesting, setTiktokTesting] = useState(false)
-  const [snapSaving, setSnapSaving] = useState(false)
-  const [snapTesting, setSnapTesting] = useState(false)
   const [ga4Saving, setGa4Saving] = useState(false)
   const [ga4Testing, setGa4Testing] = useState(false)
 
@@ -252,82 +244,6 @@ export default function IntegrationsForms({
     }
   }
 
-  async function handleSnapSave(e: React.FormEvent) {
-    e.preventDefault()
-    setSnapSaveMsg(null)
-    setSnapTestMsg(null)
-    setSnapSaving(true)
-    try {
-      const saveRes = await fetch('/api/integrations/save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          platform: 'snapchat',
-          pixel_id: snapPixelId.trim() || undefined,
-          access_token: snapAccessToken.trim() || undefined,
-        }),
-      })
-      const saveData = await saveRes.json().catch(() => ({}))
-      if (!saveRes.ok) {
-        setSnapSaveMsg({ type: 'error', text: saveData.error ?? 'Save failed' })
-        return
-      }
-      setSnapSaveMsg({ type: 'success', text: 'Saved.' })
-      if (snapPixelId.trim() && snapAccessToken.trim()) {
-        const testRes = await fetch('/api/integrations/test', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            platform: 'snapchat',
-            pixel_id: snapPixelId.trim(),
-            access_token: snapAccessToken.trim(),
-          }),
-        })
-        const testData = await testRes.json().catch(() => ({}))
-        if (testRes.ok) {
-          setSnapTestMsg({ type: 'success', text: testData.message ?? 'Test event sent successfully' })
-        } else {
-          setSnapTestMsg({ type: 'error', text: testData.error ?? testData.details ?? 'Test failed' })
-        }
-      }
-    } catch {
-      setSnapSaveMsg({ type: 'error', text: 'Request failed' })
-    } finally {
-      setSnapSaving(false)
-    }
-  }
-
-  async function handleSnapTest(e: React.FormEvent) {
-    e.preventDefault()
-    setSnapTestMsg(null)
-    if (!snapPixelId.trim() || !snapAccessToken.trim()) {
-      setSnapTestMsg({ type: 'error', text: 'Enter Pixel ID and Access Token first' })
-      return
-    }
-    setSnapTesting(true)
-    try {
-      const res = await fetch('/api/integrations/test', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          platform: 'snapchat',
-          pixel_id: snapPixelId.trim(),
-          access_token: snapAccessToken.trim(),
-        }),
-      })
-      const data = await res.json().catch(() => ({}))
-      if (res.ok) {
-        setSnapTestMsg({ type: 'success', text: data.message ?? 'Test event sent successfully' })
-      } else {
-        setSnapTestMsg({ type: 'error', text: data.error ?? data.details ?? 'Test failed' })
-      }
-    } catch {
-      setSnapTestMsg({ type: 'error', text: 'Request failed' })
-    } finally {
-      setSnapTesting(false)
-    }
-  }
-
   async function handleGa4Save(e: React.FormEvent) {
     e.preventDefault()
     setGa4SaveMsg(null)
@@ -414,12 +330,11 @@ export default function IntegrationsForms({
   const metaConnected = meta && (meta.pixel_id || meta.access_token)
   const googleConnected = google && (google.tag_id || google.conversion_label)
   const tiktokConnected = tiktok && (tiktok.pixel_id || tiktok.access_token)
-  const snapConnected = snapchat && (snapchat.pixel_id || snapchat.access_token)
   const ga4Connected = ga4 && (ga4.tag_id || ga4.access_token)
 
   return (
     <div className="space-y-8 overflow-y-auto">
-      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
+      <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-6">
         <div className="flex items-center gap-2 mb-4">
           <h2 className="text-lg font-semibold text-[var(--dash-text)]">Meta CAPI</h2>
           {metaConnected && (
@@ -548,7 +463,7 @@ export default function IntegrationsForms({
                 </p>
                 <Link
                   href="/dashboard/data-quality"
-                  className="text-xs text-[var(--dash-muted)] hover:text-[var(--dash-muted)] mt-1 inline-block"
+                  className="text-xs text-[var(--dash-muted)] hover:text-[var(--dash-primary)] mt-1 inline-block"
                 >
                   View full report →
                 </Link>
@@ -576,7 +491,7 @@ export default function IntegrationsForms({
         </div>
       </section>
 
-      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
+      <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-6">
         <div className="flex items-center gap-2 mb-4">
           <h2 className="text-lg font-semibold text-[var(--dash-text)]">Google Enhanced Conversions</h2>
           {googleConnected && (
@@ -644,9 +559,8 @@ export default function IntegrationsForms({
         </form>
       </section>
 
-      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
+      <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-6">
         <div className="flex items-center gap-2 mb-4">
-          <span className="text-xl" aria-hidden>🎵</span>
           <h2 className="text-lg font-semibold text-[var(--dash-text)]">TikTok Events API</h2>
           {tiktokConnected && (
             <span className="px-2 py-0.5 rounded text-xs font-medium bg-[var(--dash-success-badge-bg)] text-[var(--dash-success-badge-text)] border border-[var(--dash-success)]">
@@ -719,84 +633,8 @@ export default function IntegrationsForms({
         </form>
       </section>
 
-      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
+      <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-6">
         <div className="flex items-center gap-2 mb-4">
-          <span className="text-xl" aria-hidden>👻</span>
-          <h2 className="text-lg font-semibold text-[var(--dash-text)]">Snapchat CAPI</h2>
-          {snapConnected && (
-            <span className="px-2 py-0.5 rounded text-xs font-medium bg-[var(--dash-success-badge-bg)] text-[var(--dash-success-badge-text)] border border-[var(--dash-success)]">
-              Connected
-            </span>
-          )}
-        </div>
-        <form onSubmit={handleSnapSave} className="space-y-4 max-w-md">
-          <div>
-            <label htmlFor="snap-pixel-id" className="block text-sm font-medium text-[var(--dash-muted)] mb-1.5">
-              Snap Pixel ID
-            </label>
-            <input
-              id="snap-pixel-id"
-              type="text"
-              value={snapPixelId}
-              onChange={(e) => setSnapPixelId(e.target.value)}
-              placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-              className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]"
-            />
-          </div>
-          <div>
-            <label htmlFor="snap-access-token" className="block text-sm font-medium text-[var(--dash-muted)] mb-1.5">
-              Snapchat Access Token
-            </label>
-            <input
-              id="snap-access-token"
-              type="password"
-              value={snapAccessToken}
-              onChange={(e) => setSnapAccessToken(e.target.value)}
-              placeholder="••••••••"
-              className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]"
-            />
-            <a
-              href="https://businesshelp.snapchat.com/s/article/pixel-setup"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-1 block text-xs text-[var(--dash-muted)] hover:text-[var(--dash-muted)]"
-            >
-              Get from Snapchat Ads Manager → Assets → Snap Pixel → Settings
-            </a>
-          </div>
-          {snapSaveMsg && (
-            <p className={snapSaveMsg.type === 'success' ? 'text-[var(--dash-success)] text-sm' : 'text-red-400 text-sm'}>
-              {snapSaveMsg.text}
-            </p>
-          )}
-          <div className="flex gap-3">
-            <button
-              type="submit"
-              disabled={snapSaving}
-              className="px-4 py-2 rounded-lg bg-[var(--dash-surface)] text-[var(--dash-text)] font-medium hover:bg-[var(--dash-surface-hover)] disabled:opacity-50 text-sm"
-            >
-              {snapSaving ? 'Saving…' : 'Save & Test'}
-            </button>
-            <button
-              type="button"
-              onClick={handleSnapTest}
-              disabled={snapTesting || !snapPixelId.trim() || !snapAccessToken.trim()}
-              className="px-4 py-2 rounded-lg bg-[var(--dash-surface-hover)] text-[var(--dash-text)] font-medium hover:bg-[var(--dash-border)] disabled:opacity-50 text-sm"
-            >
-              {snapTesting ? 'Sending…' : 'Test only'}
-            </button>
-          </div>
-          {snapTestMsg && (
-            <p className={snapTestMsg.type === 'success' ? 'text-[var(--dash-success)] text-sm' : 'text-red-400 text-sm'}>
-              {snapTestMsg.text}
-            </p>
-          )}
-        </form>
-      </section>
-
-      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
-        <div className="flex items-center gap-2 mb-4">
-          <span className="text-xl" aria-hidden>📊</span>
           <h2 className="text-lg font-semibold text-[var(--dash-text)]">GA4 (Google Analytics 4)</h2>
           {ga4Connected && (
             <span className="px-2 py-0.5 rounded text-xs font-medium bg-[var(--dash-success-badge-bg)] text-[var(--dash-success-badge-text)] border border-[var(--dash-success)]">

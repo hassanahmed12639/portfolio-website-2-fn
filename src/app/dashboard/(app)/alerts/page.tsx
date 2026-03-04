@@ -167,7 +167,7 @@ export default function AlertsPage() {
         </div>
       )}
 
-      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
+      <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-6">
         <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">Create New Alert Rule</h2>
         <form onSubmit={createRule} className="space-y-4 max-w-lg">
           <div>
@@ -234,7 +234,7 @@ export default function AlertsPage() {
         </form>
       </section>
 
-      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
+      <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-6">
         <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">Active Alert Rules</h2>
         {loadingRules ? (
           <p className="text-[var(--dash-muted)] animate-pulse">Loading rules...</p>
@@ -287,7 +287,7 @@ export default function AlertsPage() {
         )}
       </section>
 
-      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+      <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
         <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">Alert History</h2>
         {loadingLogs ? (
           <p className="p-4 text-[var(--dash-muted)] animate-pulse">Loading logs...</p>
@@ -335,7 +335,7 @@ export default function AlertsPage() {
         )}
       </section>
 
-      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
+      <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-6">
         <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">Send Test Alert</h2>
         <p className="text-[var(--dash-muted)] text-sm mb-3">
           Send a test email to verify your Resend setup. Use the email below or from your first enabled rule.

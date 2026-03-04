@@ -330,27 +330,27 @@ export default function LogsPage() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
+        <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
           <p className="text-sm text-[var(--dash-muted)] mb-1">Total events today</p>
           <p className="text-xl font-semibold text-[var(--dash-text)]">{totalToday}</p>
         </div>
-        <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
+        <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
           <p className="text-sm text-[var(--dash-muted)] mb-1">Success rate</p>
           <p className="text-xl font-semibold text-[var(--dash-text)]">{successRate}%</p>
         </div>
-        <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
+        <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
           <p className="text-sm text-[var(--dash-muted)] mb-1">Most fired event</p>
           <p className="text-xl font-semibold text-[var(--dash-text)] truncate" title={mostFired}>
             {mostFired}
           </p>
         </div>
-        <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
+        <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
           <p className="text-sm text-[var(--dash-muted)] mb-1">Last event</p>
           <p className="text-xl font-semibold text-[var(--dash-text)]">{lastEventTime}</p>
         </div>
       </div>
 
-      <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+      <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
         {loading && !events.length ? (
           <div className="py-16 text-center">
             <p className="text-[var(--dash-muted)] animate-pulse">Waiting for events...</p>

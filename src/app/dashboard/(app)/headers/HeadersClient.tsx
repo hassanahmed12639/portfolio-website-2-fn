@@ -191,7 +191,7 @@ export default function HeadersClient() {
       {/* Section 1 — Default Headers */}
       <section className="mb-10">
         <h2 className="text-sm font-medium text-[var(--dash-muted)] uppercase tracking-wider mb-4">Default Headers</h2>
-        <div className="rounded-xl border border-blue-100/60 bg-gradient-to-br from-blue-50/90 to-sky-50/90 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5 space-y-5">
+        <div className="rounded-xl border border-[var(--dash-border)] bg-white shadow-[var(--dash-shadow)] p-5 space-y-5">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="font-medium text-[var(--dash-text)]">Forward User-Agent</p>
@@ -260,7 +260,7 @@ export default function HeadersClient() {
       {/* Section 2 — Custom Headers */}
       <section className="mb-10">
         <h2 className="text-sm font-medium text-[var(--dash-muted)] uppercase tracking-wider mb-4">Custom Headers</h2>
-        <div className="rounded-xl border border-blue-100/60 bg-gradient-to-br from-blue-50/90 to-sky-50/90 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5">
+        <div className="rounded-xl border border-[var(--dash-border)] bg-white shadow-[var(--dash-shadow)] p-5">
           <div className="flex justify-between items-center mb-4">
             <span className="text-sm text-[var(--dash-muted)]">Add custom headers sent with every API call</span>
             <Button type="button" onClick={addHeader} variant="outline" className="border-[var(--dash-border-strong)] text-[var(--dash-muted)]">
@@ -324,7 +324,7 @@ export default function HeadersClient() {
       {/* Section 3 — Headers Preview */}
       <section className="mb-10">
         <h2 className="text-sm font-medium text-[var(--dash-muted)] uppercase tracking-wider mb-4">Headers Preview</h2>
-        <div className="rounded-xl border border-blue-100/60 bg-gradient-to-br from-blue-50/90 to-sky-50/90 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5 space-y-6">
+        <div className="rounded-xl border border-[var(--dash-border)] bg-white shadow-[var(--dash-shadow)] p-5 space-y-6">
           <div>
             <p className="text-sm text-[var(--dash-muted)] mb-2">Headers sent to Meta CAPI:</p>
             <pre className="text-xs text-[var(--dash-muted)] font-mono bg-[var(--dash-surface-hover)] rounded-lg p-4 overflow-x-auto">
@@ -441,7 +441,7 @@ export default function HeadersClient() {
               ),
             },
           ].map(({ id, label, children }) => (
-            <div key={id} className="rounded-xl border border-blue-100/60 bg-gradient-to-br from-blue-50/90 to-sky-50/90 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+            <div key={id} className="rounded-xl border border-[var(--dash-border)] bg-white shadow-[var(--dash-shadow)] overflow-hidden">
               <button
                 type="button"
                 onClick={() => setOpenAccordion(openAccordion === id ? null : id)}

@@ -141,19 +141,19 @@ export default function RetryQueuePage() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
+        <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
           <p className="text-sm text-[var(--dash-muted)] mb-1">Pending</p>
           <p className="text-xl font-semibold text-amber-400">{stats.pending}</p>
         </div>
-        <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
+        <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
           <p className="text-sm text-[var(--dash-muted)] mb-1">Retrying</p>
           <p className="text-xl font-semibold text-[var(--dash-primary)]">{stats.retrying}</p>
         </div>
-        <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
+        <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
           <p className="text-sm text-[var(--dash-muted)] mb-1">Recovered</p>
           <p className="text-xl font-semibold text-[var(--dash-success)]">{stats.recovered}</p>
         </div>
-        <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
+        <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
           <p className="text-sm text-[var(--dash-muted)] mb-1">Exhausted</p>
           <p className="text-xl font-semibold text-red-400">{stats.exhausted}</p>
         </div>
@@ -161,7 +161,7 @@ export default function RetryQueuePage() {
 
       <section className="mb-8">
         <h2 className="text-lg font-medium text-[var(--dash-text)] mb-4">Queue</h2>
-        <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+        <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
           {loading && !jobs.length ? (
             <div className="py-12 text-center text-[var(--dash-muted)]">Loading...</div>
           ) : !jobs.length ? (

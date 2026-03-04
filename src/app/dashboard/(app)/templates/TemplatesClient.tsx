@@ -404,7 +404,7 @@ export default function TemplatesClient({
           onClick={() => setPreviewTemplate(null)}
         >
           <div
-            className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] max-w-3xl w-full max-h-[90vh] flex flex-col"
+            className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] max-w-3xl w-full max-h-[90vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-4 border-b border-[var(--dash-border)] flex items-center justify-between">

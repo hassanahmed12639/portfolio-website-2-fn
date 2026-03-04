@@ -1,38 +1,46 @@
-/* Dashboard light theme — clean blue/white */
+/* Dashboard light theme — high contrast, launch-ready */
 .dashboard-shell {
-  --dash-bg: #f8fafc;
+  --dash-bg: #f1f5f9;
   --dash-card: #ffffff;
   --dash-sidebar: #ffffff;
   --dash-text: #0f172a;
   --dash-text-secondary: #475569;
-  --dash-text-muted: #334155;
+  --dash-text-muted: #475569;
   --dash-border: #e2e8f0;
-  --dash-accent: #2563eb;
-  --dash-accent-hover: #1d4ed8;
+  --dash-border-strong: #cbd5e1;
+  --dash-accent: #1d4ed8;
+  --dash-accent-hover: #1e40af;
   --dash-accent-light: #eff6ff;
   --dash-accent-border: #bfdbfe;
 
-  /* Aliases for existing usage */
-  --dash-surface: var(--dash-card);
+  /* Surfaces — always readable */
+  --dash-surface: #ffffff;
   --dash-surface-hover: #f1f5f9;
-  --dash-border-strong: #cbd5e1;
   --dash-text-soft: #334155;
   --dash-muted: var(--dash-text-muted);
-  --dash-primary: var(--dash-accent);
-  --dash-primary-strong: var(--dash-accent-hover);
-  --dash-primary-soft: var(--dash-accent-light);
-  --dash-primary-soft-strong: #bfdbfe;
-  --dash-success: var(--dash-accent);
-  --dash-success-strong: var(--dash-accent-hover);
-  --dash-success-soft: var(--dash-accent-light);
-  --dash-success-badge-bg: var(--dash-accent);
+  --dash-primary: #1d4ed8;
+  --dash-primary-strong: #1e40af;
+  --dash-primary-soft: #eff6ff;
+  --dash-primary-soft-strong: #dbeafe;
+  /* Success = primary blue for badges/buttons; white text on these */
+  --dash-success: #1d4ed8;
+  --dash-success-strong: #1e40af;
+  --dash-success-soft: #eff6ff;
+  --dash-success-badge-bg: #1d4ed8;
   --dash-success-badge-text: #ffffff;
-  --dash-success-border: rgba(37, 99, 235, 0.5);
-  --dash-warning: #d97706;
+  --dash-success-border: rgba(29, 78, 216, 0.4);
+  --dash-warning: #b45309;
   --dash-danger: #dc2626;
   --dash-danger-soft: #fee2e2;
   --dash-danger-border: #fecaca;
   --dash-danger-strong: #991b1b;
-  --dash-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --dash-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   --dash-radius: 0.5rem;
+}
+
+/* Card: white on gray background so boxes and blue buttons are never invisible */
+.dashboard-shell .dash-card {
+  background: var(--dash-card);
+  border: 1px solid var(--dash-border);
+  box-shadow: var(--dash-shadow);
 }

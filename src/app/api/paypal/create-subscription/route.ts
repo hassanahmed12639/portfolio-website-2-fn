@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(req: NextRequest) {
-  const { planId } = await req.json()
+  const body = await req.json().catch(() => ({}))
+  const { planId, return_url: customReturn, cancel_url: customCancel } = body as { planId?: string; return_url?: string; cancel_url?: string }
+
+  if (!planId) {
+    return NextResponse.json({ error: 'planId required' }, { status: 400 })
+  }
 
   const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ?? process.env.PAYPAL_CLIENT_ID
   const secret = process.env.PAYPAL_SECRET
@@ -28,6 +33,8 @@ export async function POST(req: NextRequest) {
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+  const returnUrl = customReturn ? (customReturn.startsWith('http') ? customReturn : `${baseUrl}${customReturn.startsWith('/') ? '' : '/'}${customReturn}`) : `${baseUrl}/dashboard/billing?success=true`
+  const cancelUrl = customCancel ? (customCancel.startsWith('http') ? customCancel : `${baseUrl}${customCancel.startsWith('/') ? '' : '/'}${customCancel}`) : `${baseUrl}/pricing?cancelled=true`
 
   const subRes = await fetch('https://api-m.paypal.com/v1/billing/subscriptions', {
     method: 'POST',
@@ -42,8 +49,8 @@ export async function POST(req: NextRequest) {
         locale: 'en-US',
         shipping_preference: 'NO_SHIPPING',
         user_action: 'SUBSCRIBE_NOW',
-        return_url: `${baseUrl}/dashboard/billing?success=true`,
-        cancel_url: `${baseUrl}/pricing?cancelled=true`,
+        return_url: returnUrl,
+        cancel_url: cancelUrl,
       },
     }),
   })

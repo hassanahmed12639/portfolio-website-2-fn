@@ -114,23 +114,23 @@ export default async function DashboardOverviewPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <div className="bg-gradient-to-br from-blue-50 to-sky-100 border border-blue-100/60 rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <div className="bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
           <p className="text-sm text-slate-700 mb-1">Events used</p>
           <p className="text-2xl font-semibold text-slate-900">
             {limit != null ? `${eventsUsed} / ${limit}` : eventsUsed}
           </p>
         </div>
-        <div className="bg-gradient-to-br from-amber-50 to-orange-100 border border-amber-200/60 rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <div className="bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
           <p className="text-sm text-slate-700 mb-1">Current plan</p>
           <p className="text-2xl font-semibold text-slate-900 capitalize">{plan}</p>
         </div>
-        <div className="bg-gradient-to-br from-violet-50 to-purple-100 border border-violet-200/60 rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <div className="bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
           <p className="text-sm text-slate-700 mb-1">Events today</p>
           <p className="text-2xl font-semibold text-slate-900">{eventsToday ?? 0}</p>
         </div>
       </div>
 
-      <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-100 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4 mb-8">
+      <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4 mb-8">
         <h2 className="text-sm font-medium text-slate-900 mb-3">Data Quality (this month)</h2>
         <div className="flex flex-wrap items-center gap-6">
           <div>
@@ -178,7 +178,7 @@ export default async function DashboardOverviewPage() {
         <MatchRateSummary avgScore={avgScore} />
       </div>
 
-      <div className="rounded-xl bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-200/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+      <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
         <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-text)]">
           Recent events
         </h2>

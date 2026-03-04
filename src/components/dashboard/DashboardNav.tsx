@@ -150,11 +150,11 @@ export default function DashboardNav() {
                         href={href}
                         className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors ${
                           isActive
-                            ? 'bg-blue-50 font-semibold text-blue-700'
+                            ? 'bg-[var(--dash-primary-soft)] font-semibold text-[var(--dash-primary)]'
                             : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                         }`}
                       >
-                        {Icon && <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? 'text-blue-600' : 'text-slate-700'}`} />}
+                        {Icon && <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? 'text-[var(--dash-primary)]' : 'text-slate-700'}`} />}
                         <span className="truncate">{label}</span>
                       </Link>
                     )

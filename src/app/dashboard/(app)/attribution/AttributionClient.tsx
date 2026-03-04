@@ -130,7 +130,7 @@ function FixSnippetModal({
       onClick={onClose}
     >
       <div
-        className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] shadow-xl max-w-lg w-full max-h-[80vh] overflow-auto"
+        className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] shadow-xl max-w-lg w-full max-h-[80vh] overflow-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-4 border-b border-[var(--dash-border)] flex items-center justify-between">
@@ -298,25 +298,25 @@ export default function AttributionClient() {
           {!overviewLoading && !overviewError && (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4 flex flex-col items-center">
+                <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4 flex flex-col items-center">
                   <p className="text-sm text-[var(--dash-muted)] mb-2">Average Truth Score</p>
                   <TruthScoreRing score={avgScore} size={100} />
                 </div>
-                <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
+                <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
                   <p className="text-sm text-[var(--dash-muted)] mb-1">Total Conversions Analyzed</p>
                   <p className="text-2xl font-semibold text-[var(--dash-text)]">{conversions.length}</p>
                 </div>
-                <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
+                <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
                   <p className="text-sm text-[var(--dash-muted)] mb-1">High Confidence (80+)</p>
                   <p className="text-2xl font-semibold text-[var(--dash-success)]">{highConfidence}</p>
                 </div>
-                <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
+                <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
                   <p className="text-sm text-[var(--dash-muted)] mb-1">Attribution Mismatches</p>
                   <p className="text-2xl font-semibold text-red-400">{mismatches}</p>
                 </div>
               </div>
 
-              <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+              <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
                 <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">
                   Conversion Truth Score Table
                 </h2>
@@ -369,7 +369,7 @@ export default function AttributionClient() {
                 )}
               </div>
 
-              <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
+              <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
                 <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">
                   Platform Comparison (Meta vs Google vs Server logged)
                 </h2>
@@ -407,13 +407,13 @@ export default function AttributionClient() {
 
       {tab === 'calculator' && (
         <div className="space-y-6 max-w-xl">
-          <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6 flex flex-col items-center">
+          <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-6 flex flex-col items-center">
             <p className="text-sm text-[var(--dash-muted)] mb-4">Live Truth Score</p>
             <TruthScoreRing score={clampedCalculatorScore} size={140} />
             <p className="mt-4 text-[var(--dash-muted)] text-sm text-center">{calculatorMeaning}</p>
           </div>
 
-          <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+          <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
             <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">
               Score breakdown
             </h2>
@@ -469,7 +469,7 @@ export default function AttributionClient() {
             </ul>
           </div>
 
-          <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4 space-y-3">
+          <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4 space-y-3">
             <h2 className="text-sm font-medium text-[var(--dash-muted)]">Toggle factors</h2>
             {[
               { label: 'Was event fired server-side?', value: serverSide, set: setServerSide },
@@ -504,7 +504,7 @@ export default function AttributionClient() {
 
       {tab === 'ai' && (
         <div className="space-y-6">
-          <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
+          <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
             <button
               type="button"
               onClick={runAnalyze}
@@ -528,19 +528,19 @@ export default function AttributionClient() {
           {analyzeResult && (
             <div className="space-y-6">
               {analyzeResult.summary && (
-                <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
+                <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
                   <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-2">Summary</h2>
                   <p className="text-[var(--dash-text)]">{analyzeResult.summary}</p>
                 </div>
               )}
               {analyzeResult.overall_truth_score != null && (
-                <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6 flex flex-col items-center">
+                <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-6 flex flex-col items-center">
                   <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-3">Overall Truth Score</h2>
                   <TruthScoreRing score={analyzeResult.overall_truth_score} />
                 </div>
               )}
               {analyzeResult.estimated_revenue_at_risk != null && (
-                <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
+                <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
                   <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-1">
                     Estimated revenue at risk
                   </h2>
@@ -552,7 +552,7 @@ export default function AttributionClient() {
               {analyzeResult.platform_breakdown && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {analyzeResult.platform_breakdown.meta && (
-                    <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
+                    <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
                       <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-2">Meta</h2>
                       <p className="text-2xl font-semibold text-[var(--dash-text)]">
                         {analyzeResult.platform_breakdown.meta.score ?? '—'}
@@ -572,7 +572,7 @@ export default function AttributionClient() {
                     </div>
                   )}
                   {analyzeResult.platform_breakdown.google && (
-                    <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
+                    <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
                       <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-2">Google</h2>
                       <p className="text-2xl font-semibold text-[var(--dash-text)]">
                         {analyzeResult.platform_breakdown.google.score ?? '—'}
@@ -594,7 +594,7 @@ export default function AttributionClient() {
                 </div>
               )}
               {analyzeResult.data_quality && (
-                <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
+                <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
                   <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-2">Data quality</h2>
                   <p className="text-2xl font-semibold text-[var(--dash-text)]">
                     {analyzeResult.data_quality.score ?? '—'}
@@ -616,7 +616,7 @@ export default function AttributionClient() {
                 </div>
               )}
               {analyzeResult.attribution_issues && analyzeResult.attribution_issues.length > 0 && (
-                <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+                <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
                   <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">
                     Attribution issues
                   </h2>

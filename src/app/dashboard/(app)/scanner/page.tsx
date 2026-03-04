@@ -105,7 +105,7 @@ function ScoreCircle({ score }: { score: number }) {
 
 function SkeletonSection({ title }: { title: string }) {
   return (
-    <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+    <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
       <div className="px-4 py-3 border-b border-[var(--dash-border)]">
         <h2 className="text-sm font-medium text-[var(--dash-muted)]">{title}</h2>
       </div>
@@ -268,7 +268,7 @@ export default function ScannerPage() {
 
       {loading && (
         <div className="space-y-6 mb-10">
-          <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden p-4">
+          <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden p-4">
             <div className="h-2 bg-[var(--dash-surface-hover)] rounded-full overflow-hidden">
               <div
                 className="h-full bg-[var(--dash-muted)] rounded-full transition-all duration-500"
@@ -292,7 +292,7 @@ export default function ScannerPage() {
       {!loading && report && (
         <div className="space-y-6">
           {/* Section 1 — Overall Health Score */}
-          <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+          <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
             <div className="px-4 py-3 border-b border-[var(--dash-border)]">
               <h2 className="text-sm font-medium text-[var(--dash-muted)]">Overall Health Score</h2>
             </div>
@@ -306,7 +306,7 @@ export default function ScannerPage() {
           </section>
 
           {/* Section 2 — Pixels Detected */}
-          <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+          <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
             <div className="px-4 py-3 border-b border-[var(--dash-border)]">
               <h2 className="text-sm font-medium text-[var(--dash-muted)]">Pixels Detected</h2>
             </div>
@@ -325,7 +325,7 @@ export default function ScannerPage() {
           </section>
 
           {/* Section 3 — CAPI Status */}
-          <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+          <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
             <div className="px-4 py-3 border-b border-[var(--dash-border)]">
               <h2 className="text-sm font-medium text-[var(--dash-muted)]">CAPI Status</h2>
             </div>
@@ -350,7 +350,7 @@ export default function ScannerPage() {
           </section>
 
           {/* Section 4 — Missing Events */}
-          <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+          <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
             <div className="px-4 py-3 border-b border-[var(--dash-border)]">
               <h2 className="text-sm font-medium text-[var(--dash-muted)]">Recommended Events</h2>
             </div>
@@ -378,7 +378,7 @@ export default function ScannerPage() {
           </section>
 
           {/* Section 5 — Page Speed & JS Health */}
-          <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+          <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
             <div className="px-4 py-3 border-b border-[var(--dash-border)]">
               <h2 className="text-sm font-medium text-[var(--dash-muted)]">Page Speed & JS Health</h2>
             </div>
@@ -402,7 +402,7 @@ export default function ScannerPage() {
           </section>
 
           {/* Section 6 — Quick Recommendations */}
-          <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+          <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
             <div className="px-4 py-3 border-b border-[var(--dash-border)]">
               <h2 className="text-sm font-medium text-[var(--dash-muted)]">Quick Recommendations</h2>
             </div>
@@ -427,7 +427,7 @@ export default function ScannerPage() {
           </section>
 
           {/* Smart Events Auto-Detection */}
-          <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+          <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
             <div className="px-4 py-3 border-b border-[var(--dash-border)]">
               <h2 className="text-sm font-medium text-[var(--dash-muted)]">Smart Events Auto-Detection</h2>
               <p className="text-xs text-[var(--dash-muted)] mt-0.5">Detected actions on website — enable and generate code</p>
@@ -533,7 +533,7 @@ export default function ScannerPage() {
           aria-label="Generated code"
         >
           <div
-            className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] shadow-xl w-full max-w-2xl max-h-[85vh] flex flex-col"
+            className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] shadow-xl w-full max-w-2xl max-h-[85vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="px-4 py-3 border-b border-[var(--dash-border)] flex items-center justify-between">

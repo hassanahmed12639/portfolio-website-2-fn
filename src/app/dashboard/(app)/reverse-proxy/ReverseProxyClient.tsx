@@ -236,7 +236,7 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
   return (
     <div className="space-y-8">
       {/* Section 1 — Status & Setup */}
-      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+      <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
         <div className="px-4 py-3 border-b border-[var(--dash-border)] flex items-center justify-between flex-wrap gap-2">
           <h2 className="text-sm font-medium text-[var(--dash-muted)]">Status & Setup</h2>
           <div className="flex items-center gap-3">
@@ -291,7 +291,7 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
       </section>
 
       {/* Section 2 — Proxy URLs */}
-      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+      <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
         <div className="px-4 py-3 border-b border-[var(--dash-border)]">
           <h2 className="text-sm font-medium text-[var(--dash-muted)]">Proxy URLs</h2>
         </div>
@@ -328,7 +328,7 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
       </section>
 
       {/* Section 3 — Implementation */}
-      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+      <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
         <div className="px-4 py-3 border-b border-[var(--dash-border)] flex items-center justify-between flex-wrap gap-2">
           <div className="flex gap-1">
             <button
@@ -356,7 +356,7 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
       </section>
 
       {/* Section 4 — Ad Blocker Test */}
-      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+      <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
         <div className="px-4 py-3 border-b border-[var(--dash-border)]">
           <h2 className="text-sm font-medium text-[var(--dash-muted)]">Ad Blocker Test</h2>
         </div>
@@ -387,7 +387,7 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
       </section>
 
       {/* Section 5 — How to Use */}
-      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+      <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
         <div className="px-4 py-3 border-b border-[var(--dash-border)]">
           <h2 className="text-sm font-medium text-[var(--dash-muted)]">How to Use</h2>
         </div>

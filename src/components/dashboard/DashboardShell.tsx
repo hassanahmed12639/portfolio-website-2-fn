@@ -25,9 +25,9 @@ export default function DashboardShell({ user, trialExpired, children }: Dashboa
         <div className="flex items-center justify-between p-4 min-w-[240px]">
           <Link
             href="/dashboard"
-            className="flex items-center gap-2 text-sm font-semibold text-blue-600 truncate"
+            className="flex items-center gap-2 text-sm font-semibold text-[var(--dash-primary)] truncate"
           >
-            <span className="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center text-white text-xs font-bold shrink-0">T</span>
+            <span className="w-7 h-7 bg-[var(--dash-primary)] rounded-lg flex items-center justify-center text-white text-xs font-bold shrink-0">T</span>
             TrackHive
           </Link>
           <button
@@ -52,7 +52,7 @@ export default function DashboardShell({ user, trialExpired, children }: Dashboa
             className="flex min-w-0 flex-1 items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5"
             title={user.email ?? ''}
           >
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-semibold text-blue-700">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--dash-primary-soft)] text-sm font-semibold text-[var(--dash-primary)]">
               {(user.user_metadata?.full_name?.[0] ?? user.email?.[0] ?? 'U').toUpperCase()}
             </span>
             <div className="min-w-0 flex-1 leading-tight">

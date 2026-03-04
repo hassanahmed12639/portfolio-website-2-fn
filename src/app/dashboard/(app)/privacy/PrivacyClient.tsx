@@ -249,7 +249,7 @@ export default function PrivacyClient() {
         <h2 className="text-sm font-medium text-[var(--dash-muted)] uppercase tracking-wider mb-4">
           Data Privacy Settings
         </h2>
-        <div className="space-y-4 rounded-xl border border-blue-100/60 bg-gradient-to-br from-blue-50/90 to-sky-50/90 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5">
+        <div className="space-y-4 rounded-xl border border-[var(--dash-border)] bg-white shadow-[var(--dash-shadow)] p-5">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="font-medium text-[var(--dash-text)]">IP Anonymization</p>
@@ -311,7 +311,7 @@ export default function PrivacyClient() {
         <h2 className="text-sm font-medium text-[var(--dash-muted)] uppercase tracking-wider mb-4">
           Data Retention
         </h2>
-        <div className="rounded-xl border border-blue-100/60 bg-gradient-to-br from-blue-50/90 to-sky-50/90 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5 space-y-5">
+        <div className="rounded-xl border border-[var(--dash-border)] bg-white shadow-[var(--dash-shadow)] p-5 space-y-5">
           <div>
             <p className="text-sm text-[var(--dash-muted)] mb-2">
               Data retention period: <strong className="text-[var(--dash-text)]">{settings.data_retention_days} days</strong>
@@ -379,7 +379,7 @@ export default function PrivacyClient() {
         <h2 className="text-sm font-medium text-[var(--dash-muted)] uppercase tracking-wider mb-4">
           Compliance Status
         </h2>
-        <div className="rounded-xl border border-blue-100/60 bg-gradient-to-br from-blue-50/90 to-sky-50/90 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5">
+        <div className="rounded-xl border border-[var(--dash-border)] bg-white shadow-[var(--dash-shadow)] p-5">
           <div className="flex items-center gap-4 mb-4">
             <span className="text-sm text-[var(--dash-muted)]">Overall score</span>
             <div className="flex-1 h-3 rounded-full bg-[var(--dash-surface-hover)] overflow-hidden">
@@ -420,7 +420,7 @@ export default function PrivacyClient() {
       {/* Delete confirmation modal */}
       {deleteModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70">
-          <div className="rounded-xl border border-blue-100/60 bg-gradient-to-br from-violet-50 to-purple-50 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6 max-w-md w-full shadow-xl">
+          <div className="rounded-xl border border-[var(--dash-border)] bg-white shadow-[var(--dash-shadow)] p-6 max-w-md w-full shadow-xl">
             <h3 className="text-lg font-semibold text-[var(--dash-text)] mb-2">Delete all events data?</h3>
             <p className="text-sm text-[var(--dash-muted)] mb-4">
               Are you sure? This will permanently delete all your events data. This cannot be undone.

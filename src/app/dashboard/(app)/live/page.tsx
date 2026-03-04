@@ -285,7 +285,7 @@ export default function LivePage() {
             type="button"
             onClick={() => setFilter(f.id)}
             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-              filter === f.id ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-800 hover:bg-slate-100 hover:text-slate-900'
+              filter === f.id ? 'bg-[var(--dash-primary)] text-white' : 'bg-white border border-[var(--dash-border)] text-[var(--dash-text)] hover:bg-[var(--dash-surface-hover)]'
             }`}
           >
             {f.label}

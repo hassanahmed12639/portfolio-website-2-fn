@@ -15,7 +15,7 @@ export default function TrackHiveNavbar() {
         {/* Logo */}
         <Link href="/trackhive" className="flex items-center gap-2">
           <div
-            className="w-8 h-8 rounded-lg flex items-center justify-center"
+            className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
             style={{ backgroundColor: "#2563eb" }}
           >
             <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -26,7 +26,7 @@ export default function TrackHiveNavbar() {
             TrackHive
           </span>
         </Link>
-        {/* Nav links */}
+        {/* Nav links - original: Features, Integrations, Pricing, Docs */}
         <div className="hidden md:flex items-center gap-8">
           <Link href="/features" className="text-sm hover:opacity-80 transition-opacity" style={{ color: "#475569" }}>
             Features
@@ -47,7 +47,7 @@ export default function TrackHiveNavbar() {
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle menu"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-6 h-6" style={{ color: "#0f172a" }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             {mobileOpen ? (
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             ) : (
@@ -56,7 +56,7 @@ export default function TrackHiveNavbar() {
           </svg>
         </button>
 
-        {/* CTA */}
+        {/* CTA - Sign in + Start for free */}
         <div className="hidden md:flex items-center gap-3">
           <Link
             href="/dashboard/login"

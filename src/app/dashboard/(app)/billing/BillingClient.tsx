@@ -63,7 +63,7 @@ export default function BillingClient() {
                   <span
                     className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
                       currentPlan === 'pro'
-                        ? 'bg-blue-50 text-blue-700'
+                        ? 'bg-[var(--dash-primary-soft)] text-[var(--dash-primary)]'
                         : currentPlan === 'agency'
                           ? 'bg-purple-50 text-purple-700'
                           : currentPlan === 'trial'
@@ -87,7 +87,7 @@ export default function BillingClient() {
 
               {/* Selected plan summary */}
               {selectedPlan && selectedPlan !== 'free' && (
-                <div className="border border-blue-100 rounded-xl p-4 mb-6 bg-blue-50/80">
+                <div className="border border-[var(--dash-border)] rounded-xl p-4 mb-6 bg-white shadow-[var(--dash-shadow)]">
                   <p className="text-xs text-blue-600 uppercase tracking-wider mb-2">You selected</p>
                   <div className="flex items-center justify-between mb-1">
                     <p className="font-bold text-slate-900">
@@ -97,7 +97,7 @@ export default function BillingClient() {
                       {selectedPlan === 'pro' ? '$10' : '$25'}/mo
                     </p>
                   </div>
-                  <div className="border-t border-blue-100 mt-3 pt-3">
+                  <div className="border-t border-[var(--dash-border)] mt-3 pt-3">
                     <div className="flex justify-between text-sm text-slate-600">
                       <span>Subtotal</span>
                       <span>{selectedPlan === 'pro' ? '$10.00' : '$25.00'}</span>
@@ -106,7 +106,7 @@ export default function BillingClient() {
                       <span>Billed</span>
                       <span>Monthly</span>
                     </div>
-                    <div className="flex justify-between font-bold text-slate-900 mt-2 pt-2 border-t border-blue-100">
+                    <div className="flex justify-between font-bold text-slate-900 mt-2 pt-2 border-t border-[var(--dash-border)]">
                       <span>Total</span>
                       <span>{selectedPlan === 'pro' ? '$10.00' : '$25.00'}/mo</span>
                     </div>
@@ -203,7 +203,7 @@ export default function BillingClient() {
                   </p>
                   <div
                     className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                      selectedPlan === 'free' ? 'border-blue-500 bg-blue-500' : 'border-slate-300'
+                      selectedPlan === 'free' ? 'border-[var(--dash-primary)] bg-[var(--dash-primary)]' : 'border-slate-300'
                     }`}
                   >
                     {selectedPlan === 'free' && <div className="w-2 h-2 rounded-full bg-white" />}
@@ -260,7 +260,7 @@ export default function BillingClient() {
                   </p>
                   <div
                     className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                      selectedPlan === 'pro' ? 'border-blue-500 bg-blue-500' : 'border-slate-300'
+                      selectedPlan === 'pro' ? 'border-[var(--dash-primary)] bg-[var(--dash-primary)]' : 'border-slate-300'
                     }`}
                   >
                     {selectedPlan === 'pro' && <div className="w-2 h-2 rounded-full bg-white" />}

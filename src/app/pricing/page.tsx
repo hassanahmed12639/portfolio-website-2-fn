@@ -116,11 +116,11 @@ export default function PricingPage() {
                 <li>✅ Priority support</li>
               </ul>
               <Link
-                href="/dashboard/signup"
+                href="/billing"
                 className="block text-center bg-white font-semibold py-3 rounded-xl transition-colors hover:bg-blue-50"
                 style={{ color: "#2563eb" }}
               >
-                Start for free
+                Upgrade to Pro
               </Link>
             </div>
 

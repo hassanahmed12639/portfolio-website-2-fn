@@ -197,19 +197,19 @@ export default function EventReplayClient() {
         <>
           {summary && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
+              <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
                 <p className="text-sm text-[var(--dash-muted)] mb-1">Total failed events</p>
                 <p className="text-xl font-semibold text-[var(--dash-text)]">{summary.totalFailed}</p>
               </div>
-              <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
+              <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
                 <p className="text-sm text-[var(--dash-muted)] mb-1">Total recovered</p>
                 <p className="text-xl font-semibold text-[var(--dash-text)]">{summary.totalRecovered}</p>
               </div>
-              <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
+              <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
                 <p className="text-sm text-[var(--dash-muted)] mb-1">Recovery rate</p>
                 <p className="text-xl font-semibold text-[var(--dash-text)]">{summary.recoveryRate}%</p>
               </div>
-              <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
+              <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
                 <p className="text-sm text-[var(--dash-muted)] mb-1">Revenue at risk</p>
                 <p className="text-xl font-semibold text-[var(--dash-text)]">${summary.revenueAtRisk.toFixed(2)}</p>
               </div>
@@ -227,7 +227,7 @@ export default function EventReplayClient() {
             </button>
           </div>
 
-          <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+          <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
             {loading && !events.length ? (
               <div className="py-16 text-center text-[var(--dash-muted)]">Loading…</div>
             ) : !failedOnly.length && events.length > 0 ? (
@@ -305,7 +305,7 @@ export default function EventReplayClient() {
 
           <div className="space-y-6 max-w-2xl">
             {/* Meta CAPI */}
-            <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+            <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
               <div className="px-4 py-3 border-b border-[var(--dash-border)]">
                 <h2 className="text-sm font-medium text-[var(--dash-muted)]">Meta CAPI</h2>
               </div>
@@ -354,7 +354,7 @@ export default function EventReplayClient() {
             </div>
 
             {/* Google Ads */}
-            <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+            <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
               <div className="px-4 py-3 border-b border-[var(--dash-border)]">
                 <h2 className="text-sm font-medium text-[var(--dash-muted)]">Google Ads</h2>
               </div>
@@ -397,7 +397,7 @@ export default function EventReplayClient() {
             </div>
 
             {/* TikTok */}
-            <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+            <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
               <div className="px-4 py-3 border-b border-[var(--dash-border)]">
                 <h2 className="text-sm font-medium text-[var(--dash-muted)]">TikTok</h2>
               </div>
@@ -424,7 +424,7 @@ export default function EventReplayClient() {
             </div>
           </div>
 
-          <div className="mt-8 rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4 space-y-2">
+          <div className="mt-8 rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4 space-y-2">
             <p className="text-sm text-[var(--dash-muted)]">
               Channels with full coverage: <span className="text-[var(--dash-text)] font-medium">{channelsWithFullCoverage}/{totalChannels}</span>
             </p>

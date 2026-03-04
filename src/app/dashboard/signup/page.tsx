@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { createProfileAfterSignup } from '../actions'
+import LoginRadar from '../login/LoginRadar'
 
 export default function SignupPage() {
   const router = useRouter()
@@ -146,14 +147,7 @@ export default function SignupPage() {
       </div>
 
       <div className="hidden md:flex flex-1 relative min-h-[320px] md:min-h-screen bg-gradient-to-b from-[var(--dash-primary-soft)] to-[var(--dash-primary-soft-strong)] items-center justify-center overflow-hidden rounded-l-2xl">
-        <div className="text-center px-8 max-w-md">
-          <h2 className="text-2xl font-semibold text-[var(--dash-text)] mb-2">
-            Write Better <span className="text-[var(--dash-primary)] font-bold">Everywhere</span>
-          </h2>
-          <p className="text-[var(--dash-muted)] text-sm leading-relaxed">
-            Compatible with <strong>Gmail</strong>, <strong>Outlook Web</strong>, <strong>LinkedIn</strong> and most web editors for a smooth tracking experience anywhere online.
-          </p>
-        </div>
+        <LoginRadar />
       </div>
     </div>
   )

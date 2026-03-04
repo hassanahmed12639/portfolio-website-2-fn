@@ -1,11 +1,13 @@
 'use client'
 import { useState } from 'react'
 
-export default function PayPalButton({ planId, planName, price, className }: {
+export default function PayPalButton({ planId, planName, price, className, returnUrl, cancelUrl }: {
   planId: string
   planName: string
   price: string
   className?: string
+  returnUrl?: string
+  cancelUrl?: string
 }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -17,7 +19,7 @@ export default function PayPalButton({ planId, planName, price, className }: {
       const res = await fetch('/api/paypal/create-subscription', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ planId }),
+        body: JSON.stringify({ planId, return_url: returnUrl, cancel_url: cancelUrl }),
       })
       const { approvalUrl, error: apiError } = await res.json()
       if (apiError) {

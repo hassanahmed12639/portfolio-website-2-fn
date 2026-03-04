@@ -239,7 +239,7 @@ export default function PlaygroundPage() {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* Left — Event Builder */}
         <div className="space-y-6">
-          <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+          <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
             <div className="px-4 py-3 border-b border-[var(--dash-border)]">
               <h2 className="text-sm font-medium text-[var(--dash-muted)]">Choose Event Type</h2>
             </div>
@@ -253,8 +253,8 @@ export default function PlaygroundPage() {
                     title={t.label}
                     className={`min-w-0 px-3 py-2.5 rounded-lg border text-left text-sm transition-colors overflow-hidden ${
                       eventType === t.id
-                        ? 'bg-gradient-to-br from-blue-100/90 to-sky-100/80 border-blue-200/80 text-[var(--dash-text)]'
-                        : 'bg-gradient-to-br from-blue-50/70 to-sky-50/50 border-[var(--dash-border)] text-[var(--dash-text)] hover:from-blue-100/60 hover:to-sky-100/50'
+                        ? 'bg-[var(--dash-primary-soft)] border-[var(--dash-primary)] text-[var(--dash-primary)] font-medium'
+                        : 'bg-white border-[var(--dash-border)] text-[var(--dash-text)] hover:bg-[var(--dash-surface-hover)]'
                     }`}
                   >
                     <span className="block truncate">{t.label}</span>
@@ -265,8 +265,8 @@ export default function PlaygroundPage() {
                   onClick={() => setEventType('Custom')}
                   className={`min-w-0 px-3 py-2.5 rounded-lg border text-left text-sm transition-colors overflow-hidden ${
                     eventType === 'Custom'
-                      ? 'bg-gradient-to-br from-blue-100/90 to-sky-100/80 border-blue-200/80 text-[var(--dash-text)]'
-                      : 'bg-gradient-to-br from-blue-50/70 to-sky-50/50 border-[var(--dash-border)] text-[var(--dash-text)] hover:from-blue-100/60 hover:to-sky-100/50'
+                      ? 'bg-[var(--dash-primary-soft)] border-[var(--dash-primary)] text-[var(--dash-primary)] font-medium'
+                      : 'bg-white border-[var(--dash-border)] text-[var(--dash-text)] hover:bg-[var(--dash-surface-hover)]'
                   }`}
                 >
                   <span className="block truncate">Custom</span>
@@ -284,7 +284,7 @@ export default function PlaygroundPage() {
             </div>
           </section>
 
-          <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+          <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
             <div className="px-4 py-3 border-b border-[var(--dash-border)] flex flex-wrap items-center justify-between gap-2">
               <h2 className="text-sm font-medium text-[var(--dash-muted)]">Event Parameters</h2>
               {validationResult && (
@@ -566,7 +566,7 @@ export default function PlaygroundPage() {
             </div>
           )}
 
-          <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+          <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
             <div className="px-4 py-3 border-b border-[var(--dash-border)]">
               <h2 className="text-sm font-medium text-[var(--dash-muted)]">Send Controls</h2>
             </div>
@@ -614,7 +614,7 @@ export default function PlaygroundPage() {
         </div>
 
         {/* Right — Results */}
-        <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden flex flex-col min-h-[400px]">
+        <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden flex flex-col min-h-[400px]">
           <div className="flex border-b border-[var(--dash-border)]">
             {(['response', 'payload', 'platform', 'history'] as const).map((tab) => (
               <button
@@ -801,7 +801,7 @@ export default function PlaygroundPage() {
 
       {/* Bottom — Quality Score */}
       {qualityScore !== null && (
-        <div className="mt-6 rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+        <div className="mt-6 rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
           <div className="px-4 py-3 border-b border-[var(--dash-border)] flex items-center gap-4">
             <span className="text-sm font-medium text-[var(--dash-muted)]">Event Quality Score</span>
             <span
