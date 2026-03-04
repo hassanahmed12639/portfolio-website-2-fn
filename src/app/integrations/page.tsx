@@ -32,7 +32,7 @@ const INTEGRATION_GROUPS = [
 
 export default function IntegrationsPage() {
   return (
-    <div className="min-h-screen bg-white antialiased" style={{ color: "#0f172a" }}>
+    <div className="trackhive-flow min-h-screen bg-white antialiased" style={{ color: "#0f172a" }}>
       <TrackHiveNavbar />
 
       {/* Hero */}

@@ -31,7 +31,7 @@ const FAQ_ITEMS = [
 
 export default function PricingPage() {
   return (
-    <div className="min-h-screen bg-white antialiased" style={{ color: "#0f172a" }}>
+    <div className="trackhive-flow min-h-screen bg-white antialiased" style={{ color: "#0f172a" }}>
       <TrackHiveNavbar />
 
       {/* Hero */}

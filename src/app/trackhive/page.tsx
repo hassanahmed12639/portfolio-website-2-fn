@@ -18,7 +18,7 @@ const INTEGRATIONS: { name: string; src: string }[] = [
 
 export default function TrackHivePage() {
   return (
-    <div className="min-h-screen bg-white antialiased" style={{ color: "#0f172a" }}>
+    <div className="trackhive-flow min-h-screen bg-white antialiased" style={{ color: "#0f172a" }}>
       <TrackHiveNavbar />
 
       {/* Hero - Clause style: grid bg, tagline, headline with underlines, CTAs, floating avatars, partners */}

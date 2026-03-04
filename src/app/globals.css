@@ -162,6 +162,18 @@ nav a {
   color: #0F0F0F;
 }
 
+/* TrackHive flow + dashboard: no neon green — use blue for selection and scrollbar */
+.trackhive-flow ::selection,
+.dashboard-shell ::selection {
+  background: #2563eb;
+  color: #fff;
+}
+.trackhive-flow ::-webkit-scrollbar-thumb,
+.dashboard-shell ::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 2px;
+}
+
 ::-webkit-scrollbar {
   width: 4px;
 }
