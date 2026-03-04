@@ -1,24 +1,21 @@
 import { createServerClient } from '@supabase/ssr'
-import { NextResponse, type NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
-export async function middleware(request: NextRequest) {
-  const hostname = request.headers.get('host') || ''
-  const pathname = request.nextUrl.pathname
+export async function middleware(req: NextRequest) {
+  const res = NextResponse.next({ request: req })
+  const hostname = req.headers.get('host') || ''
+  const pathname = req.nextUrl.pathname
 
-  // TrackHive subdomain
+  // Hostname routing
   const isTrackDomain =
-    hostname.startsWith('track.') || hostname === 'track.itshassanahmed.com'
-
-  // Portfolio domain
+    hostname.includes('track.itshassanahmed.com') || hostname.includes('localhost')
   const isPortfolioDomain =
     hostname === 'itshassanahmed.com' || hostname === 'www.itshassanahmed.com'
 
-  // If on track.itshassanahmed.com and visiting root → redirect to /trackhive
   if (isTrackDomain && pathname === '/') {
-    return NextResponse.redirect(new URL('/trackhive', request.url))
+    return NextResponse.redirect(new URL('/trackhive', req.url))
   }
 
-  // If on itshassanahmed.com and visiting /trackhive, /dashboard, /admin etc → redirect to track subdomain
   const trackHiveRoutes = [
     '/trackhive',
     '/dashboard',
@@ -27,81 +24,78 @@ export async function middleware(request: NextRequest) {
     '/features',
     '/integrations',
     '/docs',
+    '/api',
   ]
   const isTrackHiveRoute = trackHiveRoutes.some((r) => pathname.startsWith(r))
 
   if (isPortfolioDomain && isTrackHiveRoute) {
     return NextResponse.redirect(
-      new URL(`https://track.itshassanahmed.com${pathname}`, request.url)
+      new URL(`https://track.itshassanahmed.com${pathname}`, req.url)
     )
   }
 
-  // If on track.itshassanahmed.com and visiting portfolio routes → redirect to portfolio
-  const portfolioRoutes = [
-    '/project',
-    '/about-me',
-    '/resume',
-    '/contact',
-    '/my-process',
-  ]
-  const isPortfolioRoute = portfolioRoutes.some((r) => pathname.startsWith(r))
-
-  if (isTrackDomain && isPortfolioRoute) {
-    return NextResponse.redirect(
-      new URL(`https://itshassanahmed.com${pathname}`, request.url)
-    )
-  }
-
-  let response = NextResponse.next({ request })
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
-          )
-        },
-      },
-    }
-  )
-
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
-
+  // Auth check for dashboard routes
   const isDashboardRoute = pathname.startsWith('/dashboard')
-  const isLogin = pathname === '/dashboard/login'
-  const isSignup = pathname === '/dashboard/signup'
-  const isAuthPage = isLogin || isSignup
-
+  const isAuthPage =
+    pathname === '/dashboard/login' || pathname === '/dashboard/signup'
   const isAdminRoute = pathname.startsWith('/admin')
   const isAdminLogin = pathname === '/admin/login'
-  const isAdminLogout = pathname === '/admin/logout'
-  const isAdminProtected = isAdminRoute && !isAdminLogin && !isAdminLogout
 
-  if (isDashboardRoute && !isAuthPage && !session) {
-    return NextResponse.redirect(new URL('/dashboard/login', request.url))
+  if (isDashboardRoute && !isAuthPage) {
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          get(name: string) {
+            return req.cookies.get(name)?.value
+          },
+          set(name: string, value: string, options: any) {
+            res.cookies.set(name, value, options)
+          },
+          remove(name: string, options: any) {
+            res.cookies.set(name, '', { ...options, maxAge: 0 })
+          },
+        },
+      }
+    )
+    const {
+      data: { session },
+    } = await supabase.auth.getSession()
+    if (!session) {
+      return NextResponse.redirect(new URL('/dashboard/login', req.url))
+    }
   }
 
-  if (isAuthPage && session) {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
+  if (isAdminRoute && !isAdminLogin) {
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          get(name: string) {
+            return req.cookies.get(name)?.value
+          },
+          set(name: string, value: string, options: any) {
+            res.cookies.set(name, value, options)
+          },
+          remove(name: string, options: any) {
+            res.cookies.set(name, '', { ...options, maxAge: 0 })
+          },
+        },
+      }
+    )
+    const {
+      data: { session },
+    } = await supabase.auth.getSession()
+    if (!session) {
+      return NextResponse.redirect(new URL('/admin/login', req.url))
+    }
   }
 
-  if (isAdminProtected && !session) {
-    return NextResponse.redirect(new URL('/admin/login', request.url))
-  }
-
-  return response
+  return res
 }
 
 export const config = {
-  matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$|api).*)',
-  ],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 }
