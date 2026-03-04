@@ -17,6 +17,10 @@ type EventRow = {
   data_quality_score?: number | null
   data_quality_label?: string | null
   data_quality_breakdown?: Record<string, boolean> | null
+  meta_status?: string | null
+  ga4_status?: string | null
+  tiktok_status?: string | null
+  google_status?: string | null
   [key: string]: unknown
 }
 
@@ -365,6 +369,7 @@ export default function LogsPage() {
                   <th className="px-4 py-3 font-medium">Platform</th>
                   <th className="px-4 py-3 font-medium">Source</th>
                   <th className="px-4 py-3 font-medium">Value</th>
+                  <th className="px-4 py-3 font-medium">Platforms</th>
                   <th className="px-4 py-3 font-medium">Quality</th>
                   <th className="px-4 py-3 font-medium">IP</th>
                   <th className="px-4 py-3 font-medium">Time</th>
@@ -418,6 +423,38 @@ export default function LogsPage() {
                         {row.value != null ? row.value : '—'}
                       </td>
                       <td className="px-4 py-3">
+                        <div className="flex items-center gap-1">
+                          <span
+                            className={`text-xs px-1.5 py-0.5 rounded font-medium ${
+                              (row.meta_status === 'sent' || (row.platform === 'meta' && row.status === 'success')) ? 'bg-blue-50 text-blue-600' : 'bg-slate-100 text-slate-400'
+                            }`}
+                          >
+                            Meta
+                          </span>
+                          <span
+                            className={`text-xs px-1.5 py-0.5 rounded font-medium ${
+                              row.ga4_status === 'sent' ? 'bg-orange-50 text-orange-600' : 'bg-slate-100 text-slate-400'
+                            }`}
+                          >
+                            GA4
+                          </span>
+                          <span
+                            className={`text-xs px-1.5 py-0.5 rounded font-medium ${
+                              row.tiktok_status === 'sent' ? 'bg-pink-50 text-pink-600' : 'bg-slate-100 text-slate-400'
+                            }`}
+                          >
+                            TikTok
+                          </span>
+                          <span
+                            className={`text-xs px-1.5 py-0.5 rounded font-medium ${
+                              row.google_status === 'sent' ? 'bg-green-50 text-green-600' : 'bg-slate-100 text-slate-400'
+                            }`}
+                          >
+                            Google
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
                         <QualityBadge row={row} />
                       </td>
                       <td className="px-4 py-3 text-[var(--dash-muted)] font-mono text-xs">
@@ -440,7 +477,7 @@ export default function LogsPage() {
                     </tr>
                     {expandedId === row.id && (
                       <tr key={`${row.id}-exp`} className="bg-[var(--dash-bg)]">
-                        <td colSpan={10} className="px-4 py-3">
+                        <td colSpan={11} className="px-4 py-3">
                           <pre className="text-xs text-[var(--dash-muted)] overflow-auto rounded bg-[var(--dash-surface)] p-4 max-h-48">
                             {JSON.stringify(row, null, 2)}
                           </pre>

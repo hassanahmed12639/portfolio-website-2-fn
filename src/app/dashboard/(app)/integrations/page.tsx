@@ -12,7 +12,7 @@ export default async function IntegrationsPage() {
 
   const { data: integrations } = await supabase
     .from('integrations')
-    .select('platform, pixel_id, access_token, tag_id, meta_test_event_code')
+    .select('platform, pixel_id, access_token, tag_id, meta_test_event_code, conversion_label')
     .eq('user_id', user.id)
 
   const startOfMonth = new Date()
@@ -46,7 +46,7 @@ export default async function IntegrationsPage() {
         meta={meta ? { pixel_id: meta.pixel_id, access_token: meta.access_token, meta_test_event_code: meta.meta_test_event_code } : null}
         metaFbclidCount={metaFbclidCount ?? 0}
         activePixelsCount={activePixelsCount ?? 0}
-        google={google ? { tag_id: google.tag_id } : null}
+        google={google ? { tag_id: google.tag_id, conversion_label: google.conversion_label } : null}
         tiktok={tiktok ? { pixel_id: tiktok.pixel_id, access_token: tiktok.access_token } : null}
         snapchat={snapchat ? { pixel_id: snapchat.pixel_id, access_token: snapchat.access_token } : null}
         ga4={ga4 ? { tag_id: ga4.tag_id, access_token: ga4.access_token } : null}

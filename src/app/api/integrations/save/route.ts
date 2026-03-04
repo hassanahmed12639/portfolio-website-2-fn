@@ -16,6 +16,7 @@ export async function POST(request: NextRequest) {
     access_token?: string
     tag_id?: string
     meta_test_event_code?: string
+    conversion_label?: string
   }
 
   try {
@@ -24,7 +25,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
-  const { platform, pixel_id, access_token, tag_id, meta_test_event_code } = body
+  const { platform, pixel_id, access_token, tag_id, meta_test_event_code, conversion_label } = body
   if (!platform) {
     return NextResponse.json({ error: 'platform required' }, { status: 400 })
   }
@@ -46,6 +47,7 @@ export async function POST(request: NextRequest) {
   if (access_token !== undefined) row.access_token = access_token || null
   if (tag_id !== undefined) row.tag_id = tag_id || null
   if (platform === 'meta' && meta_test_event_code !== undefined) row.meta_test_event_code = meta_test_event_code?.trim() || null
+  if (platform === 'google' && conversion_label !== undefined) (row as Record<string, unknown>).conversion_label = conversion_label?.trim() || null
 
   const { data: existing } = await supabase
     .from('integrations')
@@ -62,6 +64,7 @@ export async function POST(request: NextRequest) {
       is_active: true,
     }
     if (platform === 'meta' && meta_test_event_code !== undefined) updatePayload.meta_test_event_code = meta_test_event_code?.trim() || null
+    if (platform === 'google' && conversion_label !== undefined) updatePayload.conversion_label = conversion_label?.trim() || null
     const { error } = await supabase
       .from('integrations')
       .update(updatePayload)

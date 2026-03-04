@@ -7,12 +7,13 @@ export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname
 
   // Hostname routing
-  const isTrackDomain =
-    hostname.includes('track.itshassanahmed.com') || hostname.includes('localhost')
+  const isTrackDomain = hostname.includes('track.itshassanahmed.com')
+  const isLocalhost =
+    hostname.includes('localhost') || hostname.includes('127.0.0.1')
   const isPortfolioDomain =
     hostname === 'itshassanahmed.com' || hostname === 'www.itshassanahmed.com'
 
-  if (isTrackDomain && pathname === '/') {
+  if (isTrackDomain && !isLocalhost && pathname === '/') {
     return NextResponse.redirect(new URL('/trackhive', req.url))
   }
 

@@ -30,7 +30,7 @@ const navItems = [
   { name: "Contact", url: "/contact" },
   {
     name: "TrackHive",
-    url: "/trackhive",
+    url: "https://track.itshassanahmed.com",
     highlight: true,
     badge: "NEW",
   },

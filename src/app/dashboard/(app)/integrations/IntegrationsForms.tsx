@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
 type MetaIntegration = { pixel_id: string | null; access_token: string | null; meta_test_event_code?: string | null } | null
-type GoogleIntegration = { tag_id: string | null } | null
+type GoogleIntegration = { tag_id: string | null; conversion_label?: string | null } | null
 type PixelTokenIntegration = { pixel_id: string | null; access_token: string | null } | null
 type Ga4Integration = { tag_id: string | null; access_token: string | null } | null
 
@@ -29,6 +29,7 @@ export default function IntegrationsForms({
   const [metaAccessToken, setMetaAccessToken] = useState(meta?.access_token ?? '')
   const [metaTestEventCode, setMetaTestEventCode] = useState(meta?.meta_test_event_code ?? '')
   const [googleTagId, setGoogleTagId] = useState(google?.tag_id ?? '')
+  const [googleConversionLabel, setGoogleConversionLabel] = useState(google?.conversion_label ?? '')
   const [tiktokPixelId, setTiktokPixelId] = useState(tiktok?.pixel_id ?? '')
   const [tiktokAccessToken, setTiktokAccessToken] = useState(tiktok?.access_token ?? '')
   const [snapPixelId, setSnapPixelId] = useState(snapchat?.pixel_id ?? '')
@@ -154,6 +155,7 @@ export default function IntegrationsForms({
         body: JSON.stringify({
           platform: 'google',
           tag_id: googleTagId.trim() || undefined,
+          conversion_label: googleConversionLabel.trim() || undefined,
         }),
       })
       const data = await res.json().catch(() => ({}))
@@ -410,7 +412,7 @@ export default function IntegrationsForms({
   }, [])
 
   const metaConnected = meta && (meta.pixel_id || meta.access_token)
-  const googleConnected = google && google.tag_id
+  const googleConnected = google && (google.tag_id || google.conversion_label)
   const tiktokConnected = tiktok && (tiktok.pixel_id || tiktok.access_token)
   const snapConnected = snapchat && (snapchat.pixel_id || snapchat.access_token)
   const ga4Connected = ga4 && (ga4.tag_id || ga4.access_token)
@@ -586,7 +588,7 @@ export default function IntegrationsForms({
         <form onSubmit={handleGoogleSave} className="space-y-4 max-w-md">
           <div>
             <label htmlFor="google-tag-id" className="block text-sm font-medium text-[var(--dash-muted)] mb-1.5">
-              Google Ads Tag ID
+              Conversion ID
             </label>
             <input
               id="google-tag-id"
@@ -597,6 +599,20 @@ export default function IntegrationsForms({
               className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]"
             />
             <p className="mt-1 text-xs text-[var(--dash-muted)]">Format: AW-XXXXXXXXX</p>
+          </div>
+          <div>
+            <label htmlFor="google-conversion-label" className="block text-sm font-medium text-[var(--dash-muted)] mb-1.5">
+              Conversion Label
+            </label>
+            <input
+              id="google-conversion-label"
+              type="text"
+              value={googleConversionLabel}
+              onChange={(e) => setGoogleConversionLabel(e.target.value)}
+              placeholder="K0XaCLrkhbwZEIDr4aAB"
+              className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]"
+            />
+            <p className="mt-1 text-xs text-[var(--dash-muted)]">From Google Ads → Goals → Conversions → Tag setup</p>
           </div>
           {googleSaveMsg && (
             <p className={googleSaveMsg.type === 'success' ? 'text-[var(--dash-success)] text-sm' : 'text-red-400 text-sm'}>

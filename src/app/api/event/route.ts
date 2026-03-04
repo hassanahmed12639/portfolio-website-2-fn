@@ -1,6 +1,9 @@
 import { validateEvent } from '@/lib/validate-event'
 import { enrichEvent } from '@/lib/enrich-event'
 import { calculateNextRetry } from '@/lib/retry-queue'
+import { sendGA4Event } from '@/lib/ga4'
+import { sendTikTokEvent } from '@/lib/tiktok'
+import { sendGoogleEnhancedConversion } from '@/lib/google-ads'
 import { createClient } from '@supabase/supabase-js'
 import { createHash } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
@@ -48,6 +51,7 @@ export async function POST(request: NextRequest) {
     fbclid?: string
     is_test?: boolean
     consent_rejected?: boolean
+    order_id?: string
   }
 
   try {
@@ -79,6 +83,7 @@ export async function POST(request: NextRequest) {
     fbclid,
     is_test,
     consent_rejected,
+    order_id: bodyOrderId,
   } = body
   const event_source_url = bodySourceUrl ?? request.headers.get('referer') ?? undefined
   if (!api_key || !event_name) {
@@ -409,6 +414,7 @@ export async function POST(request: NextRequest) {
   }
 
   const fiveMinutesFromNow = new Date(Date.now() + 5 * 60 * 1000).toISOString()
+  let metaStatus: 'sent' | 'failed' | 'pending' = 'pending'
 
   for (const integration of integrations ?? []) {
     let status: 'success' | 'failed' = 'failed'
@@ -498,6 +504,7 @@ export async function POST(request: NextRequest) {
           )
           if (res.ok) {
             status = 'success'
+            metaStatus = 'sent'
             platformsFired.push('meta')
             console.log(`[MultiPixel] Fired to ${px.name} (${px.pixel_id}): ${res.status}`)
           } else {
@@ -507,6 +514,9 @@ export async function POST(request: NextRequest) {
           }
         }
 
+        if (status === 'failed') {
+          metaStatus = 'failed'
+        }
         if (status === 'failed' && lastMetaError) {
           const nextRetry = calculateNextRetry(1)
           await supabaseService.from('retry_queue').insert({
@@ -689,6 +699,83 @@ export async function POST(request: NextRequest) {
     insertRow.data_quality_breakdown = qualityBreakdown
     console.log('[QS]', { qualityScore, qualityLabel, qualityBreakdown })
     await supabase.from('events').insert(insertRow)
+  }
+
+  // Fire GA4, TikTok, Google Enhanced Conversions in parallel (env-based)
+  const platformResults = await Promise.allSettled([
+    sendGA4Event(
+      event_name,
+      {
+        value,
+        currency,
+        order_id: bodyOrderId,
+        event_source_url: event_source_url_final,
+        fbp,
+        client_ip_address: ip,
+        client_user_agent: userAgent,
+        event_id,
+      },
+      email
+    ),
+    sendTikTokEvent(
+      event_name,
+      {
+        value,
+        currency,
+        order_id: bodyOrderId,
+        event_source_url: event_source_url_final,
+        client_ip_address: ip,
+        client_user_agent: userAgent,
+        event_id,
+      },
+      {
+        email: email ?? undefined,
+        phone: phone ?? undefined,
+        first_name: first_name ?? undefined,
+        last_name: last_name ?? undefined,
+      }
+    ),
+    sendGoogleEnhancedConversion(
+      event_name,
+      {
+        value,
+        currency,
+        order_id: bodyOrderId,
+        event_source_url: event_source_url_final,
+        client_ip_address: ip,
+      },
+      {
+        email: email ?? undefined,
+        phone: phone ?? undefined,
+        first_name: first_name ?? undefined,
+        last_name: last_name ?? undefined,
+      }
+    ),
+  ])
+
+  const platformNames = ['GA4', 'TikTok', 'Google']
+  platformResults.forEach((result, index) => {
+    if (result.status === 'fulfilled') {
+      console.log(`[${platformNames[index]}] ✅`)
+    } else {
+      console.log(`[${platformNames[index]}] ❌`, result.reason)
+    }
+  })
+
+  if (event_id) {
+    const ga4Ok = platformResults[0].status === 'fulfilled' && (platformResults[0].value as { success?: boolean })?.success
+    const tiktokOk = platformResults[1].status === 'fulfilled' && (platformResults[1].value as { success?: boolean })?.success
+    const googleOk = platformResults[2].status === 'fulfilled' && (platformResults[2].value as { success?: boolean; skipped?: boolean })?.success !== false
+    await supabase
+      .from('events')
+      .update({
+        meta_status: metaStatus,
+        ga4_status: ga4Ok ? 'sent' : 'failed',
+        tiktok_status: tiktokOk ? 'sent' : 'failed',
+        google_status: googleOk ? 'sent' : 'failed',
+      })
+      .eq('event_id', event_id)
+      .eq('user_id', profile.id)
   }
 
   if (!is_test) {
