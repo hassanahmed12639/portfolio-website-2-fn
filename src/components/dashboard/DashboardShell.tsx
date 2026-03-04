@@ -30,7 +30,7 @@ export default function DashboardShell({ user, trialExpired, profile, children }
             href="/dashboard"
             className="flex items-center gap-2 text-sm font-semibold text-[var(--dash-primary)] truncate"
           >
-            <img src="/logo-icon.png" alt="TrackHive" className="w-7 h-7 rounded-lg shrink-0 object-contain" />
+            <img src="/logo-icon.png" alt="TrackHive" className="w-14 h-14 rounded-lg shrink-0 object-contain" />
             TrackHive
           </Link>
           <button

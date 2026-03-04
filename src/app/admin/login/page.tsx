@@ -43,7 +43,7 @@ export default function AdminLoginPage() {
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-8 w-full max-w-sm">
         <div className="flex items-center gap-2 mb-6">
-          <img src="/logo-icon.png" alt="TrackHive" className="w-8 h-8 rounded-lg object-contain" />
+          <img src="/logo-icon.png" alt="TrackHive" className="w-14 h-14 rounded-lg object-contain" />
           <div>
             <p className="font-bold text-slate-900 text-sm">TrackHive</p>
             <p className="text-xs text-red-500 font-semibold">Admin Panel</p>

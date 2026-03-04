@@ -8,7 +8,7 @@ export default function TrackHiveFooter() {
           {/* Brand & contact - Clause style */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <img src="/logo-icon.png" alt="TrackHive" className="w-7 h-7 rounded-lg object-contain" />
+              <img src="/logo-icon.png" alt="TrackHive" className="w-14 h-14 rounded-lg object-contain" />
               <span className="font-bold text-white">TrackHive</span>
             </div>
             <p className="text-sm flex items-center gap-2 mb-1" style={{ color: "#94a3b8" }}>
