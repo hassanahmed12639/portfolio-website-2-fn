@@ -31,7 +31,7 @@ export async function GET() {
     admin.from('profiles').select('plan, created_at'),
     admin
       .from('profiles')
-      .select('id, email, plan, created_at, api_key')
+      .select('id, email, plan, created_at')
       .order('created_at', { ascending: false })
       .limit(50),
   ])

@@ -10,25 +10,28 @@ export async function sendGoogleEnhancedConversion(
   eventData: Record<string, unknown>,
   userData: Record<string, string | undefined> & { address?: { street?: string; city?: string; region?: string; postal_code?: string; country?: string } }
 ) {
+  const debugLog = (...args: unknown[]) => {
+    if (process.env.NODE_ENV === 'development') console.log(...args)
+  }
   const conversionId = process.env.GOOGLE_ADS_CONVERSION_ID
   const conversionLabel = process.env.GOOGLE_ADS_CONVERSION_LABEL
   const ga4MeasurementId = process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID
   const ga4ApiSecret = process.env.GA4_API_SECRET
 
   if (!conversionId || !conversionLabel) {
-    console.log('[Google] Missing credentials, skipping')
+    debugLog('[Google] Missing credentials, skipping')
     return { success: false, error: 'Missing credentials' }
   }
 
   if (!ga4MeasurementId || !ga4ApiSecret) {
-    console.log('[Google] Missing GA4 Measurement Protocol credentials, skipping')
+    debugLog('[Google] Missing GA4 Measurement Protocol credentials, skipping')
     return { success: false, error: 'Missing GA4 credentials' }
   }
 
   // Only send for conversion events
   const conversionEvents = ['Purchase', 'Lead', 'CompleteRegistration', 'InitiateCheckout', 'AddToCart']
   if (!conversionEvents.includes(eventName)) {
-    console.log(`[Google] Skipping non-conversion event: ${eventName}`)
+    debugLog(`[Google] Skipping non-conversion event: ${eventName}`)
     return { success: true, skipped: true }
   }
 
@@ -87,7 +90,7 @@ export async function sendGoogleEnhancedConversion(
       }
     )
 
-    console.log(`[Google Enhanced] Event sent: ${googleEventName} → ${res.status}`)
+    debugLog(`[Google Enhanced] Event sent: ${googleEventName} → ${res.status}`)
     return { success: res.ok, status: res.status }
   } catch (error) {
     console.error('[Google Enhanced] Error:', error)

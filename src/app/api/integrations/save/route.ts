@@ -2,6 +2,8 @@ import { createClient } from '@supabase/supabase-js'
 import { createClient as createServerClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 
+export const dynamic = 'force-dynamic'
+
 export async function POST(request: NextRequest) {
   const serverClient = await createServerClient()
   const { data: { user } } = await serverClient.auth.getUser()
@@ -30,8 +32,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'platform required' }, { status: 400 })
   }
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
   if (!supabaseUrl || !serviceRoleKey) {
     return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 })
   }

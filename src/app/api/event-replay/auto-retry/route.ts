@@ -1,18 +1,25 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-export async function POST() {
-  if (!serviceRoleKey || !supabaseUrl) {
-    return NextResponse.json({ retried: 0, recovered: 0, error: 'Server misconfiguration' }, { status: 500 })
-  }
+export const dynamic = 'force-dynamic'
 
-  const supabase = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } })
-  const now = new Date().toISOString()
+export async function POST(request: Request) {
+  try {
+    const authHeader = request.headers.get('authorization')
+    if (!process.env.CRON_SECRET || authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    if (!serviceRoleKey || !supabaseUrl) {
+      return NextResponse.json({ retried: 0, recovered: 0, error: 'Server misconfiguration' }, { status: 500 })
+    }
 
-  const { data: events, error: fetchErr } = await supabase
+    const supabase = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } })
+    const now = new Date().toISOString()
+
+    const { data: events, error: fetchErr } = await supabase
     .from('events')
     .select('id, user_id, platform, original_payload, retry_count')
     .eq('status', 'failed')
@@ -20,12 +27,12 @@ export async function POST() {
     .not('next_retry_at', 'is', null)
     .limit(100)
 
-  if (fetchErr) {
-    return NextResponse.json({ retried: 0, recovered: 0, error: fetchErr.message }, { status: 500 })
-  }
+    if (fetchErr) {
+      return NextResponse.json({ retried: 0, recovered: 0, error: fetchErr.message }, { status: 500 })
+    }
 
-  let recovered = 0
-  for (const event of events ?? []) {
+    let recovered = 0
+    for (const event of events ?? []) {
     const integrationRes = await supabase
       .from('integrations')
       .select('pixel_id, access_token')
@@ -64,5 +71,9 @@ export async function POST() {
     }
   }
 
-  return NextResponse.json({ retried: events?.length ?? 0, recovered })
+    return NextResponse.json({ retried: events?.length ?? 0, recovered })
+  } catch (error) {
+    console.error('[event-replay/auto-retry] Unexpected error', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
 }

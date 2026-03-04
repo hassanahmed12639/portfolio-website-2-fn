@@ -1,6 +1,8 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 
+export const dynamic = 'force-dynamic'
+
 const DESTINATIONS: Record<string, string> = {
   fb: 'https://connect.facebook.net/en_US/fbevents.js',
   'meta-capi': 'https://graph.facebook.com',
@@ -8,6 +10,17 @@ const DESTINATIONS: Record<string, string> = {
   gads: 'https://googleadservices.com',
   th: 'https://track.itshassanahmed.com/th.js',
 }
+
+const ALLOWED_PROXY_HEADERS = new Set([
+  'user-agent',
+  'accept',
+  'accept-language',
+  'content-type',
+  'referer',
+  'origin',
+  'x-forwarded-for',
+  'x-real-ip',
+])
 
 function getDestination(pathSegments: string[]): string | null {
   const slug = pathSegments[0]
@@ -43,6 +56,7 @@ export async function GET(
   request.headers.forEach((value, key) => {
     const lower = key.toLowerCase()
     if (lower === 'host' || lower === 'connection') return
+    if (!ALLOWED_PROXY_HEADERS.has(lower)) return
     headers.set(key, value)
   })
   headers.set('Host', new URL(destination).host)
@@ -108,6 +122,7 @@ export async function POST(
   request.headers.forEach((value, key) => {
     const lower = key.toLowerCase()
     if (lower === 'host' || lower === 'connection') return
+    if (!ALLOWED_PROXY_HEADERS.has(lower)) return
     headers.set(key, value)
   })
   headers.set('Host', new URL(destination).host)

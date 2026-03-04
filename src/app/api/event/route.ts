@@ -8,8 +8,31 @@ import { createClient } from '@supabase/supabase-js'
 import { createHash } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
+
+export const dynamic = 'force-dynamic'
+
+function isRateLimited(identifier: string, limit = 100, windowMs = 60000): boolean {
+  const now = Date.now()
+  const record = rateLimitMap.get(identifier)
+
+  if (!record || now > record.resetAt) {
+    rateLimitMap.set(identifier, { count: 1, resetAt: now + windowMs })
+    return false
+  }
+
+  if (record.count >= limit) return true
+  record.count++
+  return false
+}
+
+function debugLog(...args: unknown[]) {
+  if (process.env.NODE_ENV === 'development') {
+    console.log(...args)
+  }
+}
 
 function sha256(value: string): string {
   return createHash('sha256').update(value.trim().toLowerCase()).digest('hex')
@@ -24,11 +47,17 @@ function getClientIp(headers: Headers): string | null {
 }
 
 export async function POST(request: NextRequest) {
-  if (!serviceRoleKey || !supabaseUrl) {
-    return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 })
-  }
+  try {
+    if (!serviceRoleKey || !supabaseUrl) {
+      return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 })
+    }
 
-  let body: {
+    const clientIp = getClientIp(request.headers) ?? request.headers.get('x-real-ip') ?? 'unknown'
+    if (isRateLimited(clientIp)) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+    }
+
+    let body: {
     api_key?: string
     event_name?: string
     event_id?: string
@@ -54,11 +83,11 @@ export async function POST(request: NextRequest) {
     order_id?: string
   }
 
-  try {
-    body = await request.json()
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
-  }
+    try {
+      body = await request.json()
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+    }
 
   const {
     api_key,
@@ -293,7 +322,7 @@ export async function POST(request: NextRequest) {
       visitor_id: visitor_id ?? null,
     }
     for (const integration of integrations ?? []) {
-      console.log('[QS]', { qualityScore, qualityLabel, qualityBreakdown })
+      debugLog('[QS]', { qualityScore, qualityLabel, qualityBreakdown })
       await supabase.from('events').insert({
         user_id: profile.id,
         event_name,
@@ -506,11 +535,11 @@ export async function POST(request: NextRequest) {
             status = 'success'
             metaStatus = 'sent'
             platformsFired.push('meta')
-            console.log(`[MultiPixel] Fired to ${px.name} (${px.pixel_id}): ${res.status}`)
+            debugLog(`[MultiPixel] Fired to ${px.name} (${px.pixel_id}): ${res.status}`)
           } else {
             const metaResponseBody = await res.text()
             lastMetaError = `${res.status}: ${metaResponseBody.slice(0, 300)}`
-            console.log(`[MultiPixel] Failed ${px.name} (${px.pixel_id}):`, lastMetaError)
+            debugLog(`[MultiPixel] Failed ${px.name} (${px.pixel_id}):`, lastMetaError)
           }
         }
 
@@ -544,7 +573,7 @@ export async function POST(request: NextRequest) {
         }
       }
     } else if (integration.platform === 'google') {
-      console.log('[event] Google integration (not implemented):', { event_name, value, currency })
+      debugLog('[event] Google integration (not implemented):', { event_name, value, currency })
       status = 'success'
     } else if (integration.platform === 'tiktok') {
       const pixelId = integration.pixel_id
@@ -697,7 +726,7 @@ export async function POST(request: NextRequest) {
     insertRow.data_quality_score = qualityScore
     insertRow.data_quality_label = qualityLabel
     insertRow.data_quality_breakdown = qualityBreakdown
-    console.log('[QS]', { qualityScore, qualityLabel, qualityBreakdown })
+    debugLog('[QS]', { qualityScore, qualityLabel, qualityBreakdown })
     await supabase.from('events').insert(insertRow)
   }
 
@@ -756,9 +785,9 @@ export async function POST(request: NextRequest) {
   const platformNames = ['GA4', 'TikTok', 'Google']
   platformResults.forEach((result, index) => {
     if (result.status === 'fulfilled') {
-      console.log(`[${platformNames[index]}] ✅`)
+      debugLog(`[${platformNames[index]}] ✅`)
     } else {
-      console.log(`[${platformNames[index]}] ❌`, result.reason)
+      debugLog(`[${platformNames[index]}] ❌`, result.reason)
     }
   })
 
@@ -785,5 +814,9 @@ export async function POST(request: NextRequest) {
       .eq('id', profile.id)
   }
 
-  return NextResponse.json({ success: true, platforms_fired: platformsFired })
+    return NextResponse.json({ success: true, platforms_fired: platformsFired })
+  } catch (error) {
+    console.error('[event] Unexpected error', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
 }

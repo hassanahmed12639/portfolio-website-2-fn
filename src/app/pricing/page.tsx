@@ -1,6 +1,12 @@
 import Link from "next/link"
+import type { Metadata } from 'next'
 import TrackHiveNavbar from "@/components/trackhive/Navbar"
 import TrackHiveFooter from "@/components/trackhive/Footer"
+
+export const metadata: Metadata = {
+  title: 'TrackHive Pricing — Server-Side Tracking Plans',
+  description: 'Choose the right TrackHive plan for your business. Recover lost conversions with server-side tracking for Meta, TikTok, Snapchat, and Google.',
+}
 
 const FAQ_ITEMS = [
   {

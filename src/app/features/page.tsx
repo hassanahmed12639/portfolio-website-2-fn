@@ -1,6 +1,12 @@
 import Link from "next/link"
+import type { Metadata } from 'next'
 import TrackHiveNavbar from "@/components/trackhive/Navbar"
 import TrackHiveFooter from "@/components/trackhive/Footer"
+
+export const metadata: Metadata = {
+  title: 'TrackHive Features — CAPI, Retry Queue, Data Quality',
+  description: 'Explore TrackHive features including Meta CAPI, deduplication, event replay, anomaly alerts, and privacy-safe server-side tracking.',
+}
 
 const FEATURE_SECTIONS = [
   {

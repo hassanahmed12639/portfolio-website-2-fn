@@ -1,15 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server'
+
+export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
-  let body: { platform?: string; pixel_id?: string; access_token?: string; tag_id?: string; meta_test_event_code?: string }
-
   try {
-    body = await request.json()
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
-  }
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    let body: { platform?: string; pixel_id?: string; access_token?: string; tag_id?: string; meta_test_event_code?: string }
 
-  const { platform, pixel_id, access_token, tag_id, meta_test_event_code } = body
+    try {
+      body = await request.json()
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+    }
+
+    const { platform, pixel_id, access_token, tag_id, meta_test_event_code } = body
 
   if (platform === 'meta') {
     if (!pixel_id || !access_token) {
@@ -172,8 +181,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, message: 'Test event sent successfully' })
   }
 
-  return NextResponse.json(
-    { error: 'Test is only supported for meta, tiktok, snapchat, ga4' },
-    { status: 400 }
-  )
+    return NextResponse.json(
+      { error: 'Test is only supported for meta, tiktok, snapchat, ga4' },
+      { status: 400 }
+    )
+  } catch (error) {
+    console.error('[integrations/test] Unexpected error', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
 }

@@ -1,13 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
+export const dynamic = 'force-dynamic'
+
+function debugLog(...args: unknown[]) {
+  if (process.env.NODE_ENV === 'development') {
+    console.log(...args)
+  }
+}
+
 export async function GET(req: NextRequest) {
   try {
-    console.log('[MatchRate] GET started')
+    debugLog('[MatchRate] GET started')
     const supabase = await createClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
 
-    console.log('[MatchRate] Auth check:', user?.id ?? 'no user', authError?.message ?? 'ok')
+    debugLog('[MatchRate] Auth check:', user?.id ?? 'no user', authError?.message ?? 'ok')
 
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -16,7 +24,7 @@ export async function GET(req: NextRequest) {
     const thirtyDaysAgo = new Date()
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 
-    console.log('[MatchRate] Fetching events since:', thirtyDaysAgo.toISOString())
+    debugLog('[MatchRate] Fetching events since:', thirtyDaysAgo.toISOString())
 
     const { data: events, error: eventsError } = await supabase
       .from('events')
@@ -25,12 +33,12 @@ export async function GET(req: NextRequest) {
       .eq('platform', 'meta')
       .gte('created_at', thirtyDaysAgo.toISOString())
 
-    console.log('[MatchRate] Events:', events?.length ?? 0, eventsError ? `error: ${eventsError.message}` : 'ok')
+    debugLog('[MatchRate] Events:', events?.length ?? 0, eventsError ? `error: ${eventsError.message}` : 'ok')
 
     const total = events?.length || 0
 
     if (total === 0) {
-      console.log('[MatchRate] No events, returning empty payload')
+      debugLog('[MatchRate] No events, returning empty payload')
       return NextResponse.json({
         estimated_match_rate: 0,
         label: 'No Data',
@@ -53,7 +61,7 @@ export async function GET(req: NextRequest) {
       })
     }
 
-    console.log('[MatchRate] Computing coverage')
+    debugLog('[MatchRate] Computing coverage')
     const withEmail = events?.filter((e) => (e.data_quality_breakdown as Record<string, boolean>)?.email).length || 0
     const withPhone = events?.filter((e) => (e.data_quality_breakdown as Record<string, boolean>)?.phone).length || 0
     const withFbp = events?.filter((e) => e.fbp || (e.data_quality_breakdown as Record<string, boolean>)?.fbp).length || 0
@@ -70,7 +78,7 @@ export async function GET(req: NextRequest) {
     const locationRate = withLocation / total
     const fbclidRate = withFbclid / total
 
-    console.log('[MatchRate] Computing estimated match rate')
+    debugLog('[MatchRate] Computing estimated match rate')
     const estimatedMatchRate = Math.round(
       (emailRate * 35 +
         phoneRate * 25 +
@@ -146,7 +154,7 @@ export async function GET(req: NextRequest) {
       last_updated: new Date().toISOString(),
     }
 
-    console.log('[MatchRate] Success:', payload.estimated_match_rate, payload.label)
+    debugLog('[MatchRate] Success:', payload.estimated_match_rate, payload.label)
     return NextResponse.json(payload)
   } catch (error) {
     console.error('[MatchRate] Error:', error)

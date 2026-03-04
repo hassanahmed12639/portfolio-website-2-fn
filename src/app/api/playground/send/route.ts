@@ -7,8 +7,16 @@ import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { createHash } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+export const dynamic = 'force-dynamic'
+
+function debugLog(...args: unknown[]) {
+  if (process.env.NODE_ENV === 'development') {
+    console.log(...args)
+  }
+}
 
 function sha256(value: string): string {
   return createHash('sha256').update(value.trim().toLowerCase()).digest('hex')
@@ -169,7 +177,7 @@ export async function POST(request: NextRequest) {
     zip: body.zip,
     fbclid: body.fbclid,
   })
-  console.log('[DQ]', dataQuality)
+  debugLog('[DQ]', dataQuality)
 
   for (const integration of list) {
     let status: 'success' | 'failed' = 'failed'
@@ -291,9 +299,9 @@ export async function POST(request: NextRequest) {
   const platforms = ['GA4', 'TikTok', 'Google']
   platformResults.forEach((result, index) => {
     if (result.status === 'fulfilled') {
-      console.log(`[${platforms[index]}] ✅ Sent`)
+      debugLog(`[${platforms[index]}] ✅ Sent`)
     } else {
-      console.log(`[${platforms[index]}] ❌ Failed:`, result.reason)
+      debugLog(`[${platforms[index]}] ❌ Failed:`, result.reason)
     }
   })
 

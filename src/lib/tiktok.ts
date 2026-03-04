@@ -9,11 +9,14 @@ export async function sendTikTokEvent(
   eventData: Record<string, unknown>,
   userData: Record<string, string | undefined>
 ) {
+  const debugLog = (...args: unknown[]) => {
+    if (process.env.NODE_ENV === 'development') console.log(...args)
+  }
   const pixelId = process.env.TIKTOK_PIXEL_ID
   const accessToken = process.env.TIKTOK_ACCESS_TOKEN
 
   if (!pixelId || !accessToken) {
-    console.log('[TikTok] Missing credentials, skipping')
+    debugLog('[TikTok] Missing credentials, skipping')
     return { success: false, error: 'Missing credentials' }
   }
 
@@ -87,7 +90,7 @@ export async function sendTikTokEvent(
       body: JSON.stringify(payload),
     })
     const data = (await res.json()) as { code?: number; message?: string }
-    console.log(`[TikTok] Event sent: ${tiktokEventName} → ${data.code} ${data.message}`)
+    debugLog(`[TikTok] Event sent: ${tiktokEventName} → ${data.code} ${data.message}`)
     return { success: data.code === 0, data }
   } catch (error) {
     console.error('[TikTok] Error:', error)

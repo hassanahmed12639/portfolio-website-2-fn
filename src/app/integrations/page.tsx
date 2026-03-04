@@ -1,6 +1,12 @@
 import Link from "next/link"
+import type { Metadata } from 'next'
 import TrackHiveNavbar from "@/components/trackhive/Navbar"
 import TrackHiveFooter from "@/components/trackhive/Footer"
+
+export const metadata: Metadata = {
+  title: 'TrackHive Integrations — Meta, Google, TikTok, Snapchat',
+  description: 'Connect TrackHive with ad platforms, GTM, and e-commerce stacks to send reliable server-side conversion events.',
+}
 
 const INTEGRATION_GROUPS = [
   {

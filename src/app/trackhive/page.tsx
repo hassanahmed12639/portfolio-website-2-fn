@@ -1,6 +1,25 @@
 import Link from "next/link"
+import type { Metadata } from 'next'
 import TrackHiveNavbar from "@/components/trackhive/Navbar"
 import TrackHiveFooter from "@/components/trackhive/Footer"
+
+export const metadata: Metadata = {
+  title: 'TrackHive — Server-Side Tracking for Meta, TikTok & Google',
+  description: 'Stop losing conversions to ad blockers. TrackHive sends events server-side via Meta CAPI, TikTok Events API and Google Enhanced Conversions. 85%+ match rate guaranteed.',
+  keywords: 'Meta CAPI, server-side tracking, TikTok Events API, Google Enhanced Conversions, ad blocker bypass',
+  openGraph: {
+    title: 'TrackHive — Server-Side Tracking',
+    description: 'Stop losing 30-40% of your conversions to ad blockers.',
+    url: 'https://track.itshassanahmed.com',
+    siteName: 'TrackHive',
+    type: 'website'
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'TrackHive — Server-Side Tracking',
+    description: 'Stop losing 30-40% of your conversions to ad blockers.'
+  }
+}
 
 const PARTNERS = ["Meta", "Google Ads", "TikTok", "Shopify", "Snapchat"]
 

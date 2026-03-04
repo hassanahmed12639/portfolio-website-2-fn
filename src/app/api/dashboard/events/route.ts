@@ -1,13 +1,16 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET(request: NextRequest) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+export const dynamic = 'force-dynamic'
 
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+export async function GET(request: NextRequest) {
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
 
   const { searchParams } = new URL(request.url)
   const platform = searchParams.get('platform') || ''
@@ -71,8 +74,12 @@ export async function GET(request: NextRequest) {
     .eq('user_id', user.id)
     .gte('created_at', startOfTodayIso)
 
-  return NextResponse.json({
-    events: filtered,
-    totalToday: totalToday ?? 0,
-  })
+    return NextResponse.json({
+      events: filtered,
+      totalToday: totalToday ?? 0,
+    })
+  } catch (error) {
+    console.error('[dashboard/events] Unexpected error', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
 }

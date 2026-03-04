@@ -3,20 +3,25 @@ import { createClient } from '@supabase/supabase-js'
 import { calculateNextRetry } from '@/lib/retry-queue'
 import { createHash } from 'crypto'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+export const dynamic = 'force-dynamic'
 
 function sha256(value: string): string {
   return createHash('sha256').update(value.trim().toLowerCase()).digest('hex')
 }
 
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get('authorization')
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+    const cronSecret = process.env.CRON_SECRET
+    if (!supabaseUrl || !serviceRoleKey || !cronSecret) {
+      return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 })
+    }
+    const authHeader = req.headers.get('authorization')
+    if (authHeader !== `Bearer ${cronSecret}`) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    const supabase = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } })
 
   const { data: jobs } = await supabase
     .from('retry_queue')
@@ -146,9 +151,13 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return NextResponse.json({
-    processed: jobs.length,
-    success: successCount,
-    failed: failCount,
-  })
+    return NextResponse.json({
+      processed: jobs.length,
+      success: successCount,
+      failed: failCount,
+    })
+  } catch (error) {
+    console.error('[retry/process] Unexpected error', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
 }

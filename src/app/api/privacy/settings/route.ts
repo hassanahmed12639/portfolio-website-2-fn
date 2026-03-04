@@ -38,6 +38,8 @@ const defaults: PrivacySettings = {
   anonymize_user_agent: false,
 }
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

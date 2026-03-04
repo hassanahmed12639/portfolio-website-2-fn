@@ -1,29 +1,35 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import { enrichEvent } from '@/lib/enrich-event'
+import { createClient as createServerClient } from '@/lib/supabase/server'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
-  if (!serviceRoleKey || !supabaseUrl) {
-    return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 })
-  }
-
-  let body: {
-    ip?: string
-    user_agent?: string
-    visitor_id?: string
-    email?: string
-    phone?: string
-    user_id?: string
-    api_key?: string
-  }
   try {
-    body = await request.json()
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
-  }
+    const sessionClient = await createServerClient()
+    const { data: { user } } = await sessionClient.auth.getUser()
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    if (!serviceRoleKey || !supabaseUrl) {
+      return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 })
+    }
+    let body: {
+      ip?: string
+      user_agent?: string
+      visitor_id?: string
+      email?: string
+      phone?: string
+    }
+    try {
+      body = await request.json()
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+    }
 
   const ip = body.ip ?? request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? request.headers.get('x-real-ip') ?? '127.0.0.1'
   const userAgent = body.user_agent ?? request.headers.get('user-agent') ?? ''
@@ -33,18 +39,7 @@ export async function POST(request: NextRequest) {
 
   const supabase = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } })
 
-  let userId = body.user_id
-  if (!userId && body.api_key) {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('api_key', body.api_key)
-      .single()
-    userId = profile?.id ?? undefined
-  }
-  if (!userId) {
-    return NextResponse.json({ error: 'user_id or api_key required' }, { status: 400 })
-  }
+    const userId = user.id
 
   const { data: settingsRow } = await supabase
     .from('enrichment_settings')
@@ -76,5 +71,9 @@ export async function POST(request: NextRequest) {
     supabase
   )
 
-  return NextResponse.json(enriched)
+    return NextResponse.json(enriched)
+  } catch (error) {
+    console.error('[enrichment/enrich] Unexpected error', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
 }

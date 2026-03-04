@@ -1,8 +1,16 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+export const dynamic = 'force-dynamic'
+
+function debugLog(...args: unknown[]) {
+  if (process.env.NODE_ENV === 'development') {
+    console.log(...args)
+  }
+}
 
 export async function GET(request: NextRequest) {
   const cronSecret = process.env.CRON_SECRET
@@ -36,7 +44,7 @@ export async function GET(request: NextRequest) {
   const count = ids.length
 
   if (count === 0) {
-    console.log('[monthly-reset] No users to reset', now)
+    debugLog('[monthly-reset] No users to reset', now)
     return NextResponse.json({
       success: true,
       users_reset: 0,
@@ -60,7 +68,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: updateError.message }, { status: 500 })
   }
 
-  console.log('[monthly-reset] Reset complete', { users_reset: count, timestamp: now })
+  debugLog('[monthly-reset] Reset complete', { users_reset: count, timestamp: now })
 
   return NextResponse.json({
     success: true,

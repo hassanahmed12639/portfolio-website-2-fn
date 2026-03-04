@@ -6,6 +6,7 @@ import { readFile, writeFile } from 'fs/promises'
 import path from 'path'
 
 const LOGS_PATH = path.join(process.cwd(), 'src', 'data', 'alert-logs.json')
+export const dynamic = 'force-dynamic'
 
 function conditionText(condition: string, value: number, threshold: number): string {
   if (condition === 'score_below') return `Your Data Quality Score dropped to ${value} — below your threshold of ${threshold}`
@@ -39,7 +40,11 @@ export async function POST(request: NextRequest) {
   if (!email) return NextResponse.json({ error: 'email required' }, { status: 400 })
 
   const fromEmail = process.env.ALERT_FROM_EMAIL ?? 'onboarding@resend.dev'
-  const resend = new Resend(process.env.RESEND_API_KEY)
+  const resendApiKey = process.env.RESEND_API_KEY
+  if (!resendApiKey) {
+    return NextResponse.json({ error: 'Email service not configured' }, { status: 500 })
+  }
+  const resend = new Resend(resendApiKey)
   const message = conditionText(condition, value, threshold)
 
   const logEntry: AlertLog = {
