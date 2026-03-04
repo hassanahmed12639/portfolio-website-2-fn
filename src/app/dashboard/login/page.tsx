@@ -63,11 +63,18 @@ export default function LoginPage() {
     // Use promise chain only (no async/await) so rejections are handled before Next.js overlay sees them
     supabase.auth
       .signInWithPassword({ email, password })
-      .then((res) => {
+      .then(async (res) => {
         setLoading(false)
         if (res.error) {
           setError(res.error.message)
           return
+        }
+        // Persist session so cookie is set and session stays alive
+        if (res.data?.session) {
+          await supabase.auth.setSession({
+            access_token: res.data.session.access_token,
+            refresh_token: res.data.session.refresh_token,
+          })
         }
         router.push('/dashboard')
         router.refresh()

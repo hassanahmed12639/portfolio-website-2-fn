@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import DashboardShell from '@/components/dashboard/DashboardShell'
+import SessionProvider from '@/components/SessionProvider'
 
 export default async function DashboardAppLayout({
   children,
@@ -26,9 +27,11 @@ export default async function DashboardAppLayout({
     new Date(profile.trial_expires_at) <= new Date()
 
   return (
-    <DashboardShell user={user} trialExpired={trialExpired}>
-      {children}
-    </DashboardShell>
+    <SessionProvider>
+      <DashboardShell user={user} trialExpired={trialExpired}>
+        {children}
+      </DashboardShell>
+    </SessionProvider>
   )
 }
 
