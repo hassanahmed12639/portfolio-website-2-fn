@@ -5,6 +5,21 @@ import { useEffect, useRef } from 'react'
 const SWEEP_WIDTH = 30
 const ROTATION_SPEED = 1.8
 
+function positionDots(radar: HTMLDivElement) {
+  const radarDots = Array.from(radar.querySelectorAll<HTMLDivElement>('.radar-dot'))
+  const radarScale = radar.clientWidth / 390
+  radarDots.forEach((dot, index) => {
+    const angle = Number.parseFloat(dot.dataset.angle ?? '0')
+    const distance = Number.parseFloat(dot.dataset.distance ?? '0')
+    const radians = (angle - 90) * (Math.PI / 180)
+    const x = Math.cos(radians) * (distance * 1.68 * radarScale)
+    const y = Math.sin(radians) * (distance * 1.68 * radarScale)
+    dot.style.left = `calc(50% + ${x}px)`
+    dot.style.top = `calc(50% + ${y}px)`
+    dot.dataset.index = String(index)
+  })
+}
+
 export default function LoginRadar() {
   const radarRef = useRef<HTMLDivElement>(null)
   const sweepGradientRef = useRef<HTMLDivElement>(null)
@@ -21,25 +36,22 @@ export default function LoginRadar() {
     const radarDots = Array.from(radar.querySelectorAll<HTMLDivElement>('.radar-dot'))
     const circleFills = Array.from(radar.querySelectorAll<HTMLDivElement>('.circle-fill'))
 
-    radarDots.forEach((dot, index) => {
-      const angle = Number.parseFloat(dot.dataset.angle ?? '0')
-      const distance = Number.parseFloat(dot.dataset.distance ?? '0')
-      const radarScale = radar.clientWidth / 390
-      const radians = (angle - 90) * (Math.PI / 180)
-      const x = Math.cos(radians) * (distance * 1.68 * radarScale)
-      const y = Math.sin(radians) * (distance * 1.68 * radarScale)
-      dot.style.left = `calc(50% + ${x}px)`
-      dot.style.top = `calc(50% + ${y}px)`
-      dot.dataset.index = String(index)
-    })
+    const runLayout = () => {
+      if (radar.clientWidth === 0) return
+      positionDots(radar)
+      radarCircles.forEach((circle, index) => {
+        const size = [100, 82, 64, 46, 28][index]
+        circle.style.width = `${size}%`
+        circle.style.height = `${size}%`
+        circle.style.opacity = '1'
+        circle.style.transform = 'translate(-50%, -50%) scale(1)'
+      })
+    }
 
-    radarCircles.forEach((circle, index) => {
-      const size = [100, 82, 64, 46, 28][index]
-      circle.style.width = `${size}%`
-      circle.style.height = `${size}%`
-      circle.style.opacity = '1'
-      circle.style.transform = 'translate(-50%, -50%) scale(1)'
-    })
+    runLayout()
+    const rafId = requestAnimationFrame(runLayout)
+    const ro = new ResizeObserver(runLayout)
+    ro.observe(radar)
 
     const applyRadarSweep = (rotation: number) => {
       sweepGradient.style.transform = `rotate(${rotation}deg)`
@@ -81,6 +93,8 @@ export default function LoginRadar() {
     animate()
 
     return () => {
+      window.cancelAnimationFrame(rafId)
+      ro.disconnect()
       if (animationFrameId.current !== null) {
         window.cancelAnimationFrame(animationFrameId.current)
       }

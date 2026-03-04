@@ -174,7 +174,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      <div className="hidden md:flex flex-1 relative min-h-[320px] md:min-h-screen bg-gradient-to-b from-[var(--dash-primary-soft)] to-[var(--dash-primary-soft-strong)] items-center justify-center overflow-hidden rounded-l-2xl">
+      <div className="hidden md:flex flex-1 relative min-w-0 md:min-w-[420px] min-h-[320px] md:min-h-screen bg-gradient-to-b from-[var(--dash-primary-soft)] to-[var(--dash-primary-soft-strong)] items-center justify-center overflow-hidden rounded-l-2xl">
         <LoginRadar />
       </div>
     </div>

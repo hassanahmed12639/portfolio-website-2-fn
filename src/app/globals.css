@@ -181,8 +181,11 @@ nav a {
   background: hsl(var(--background));
 }
 ::-webkit-scrollbar-thumb {
-  background: #AAFF00;
+  background: #94a3b8;
   border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
 }
 
 :root {
