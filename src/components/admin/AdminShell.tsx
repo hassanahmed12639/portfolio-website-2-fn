@@ -12,7 +12,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         <div className="px-5 h-14 flex items-center border-b border-slate-100">
           <div>
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 bg-blue-600 rounded-lg" />
+              <img src="/logo-icon.png" alt="TrackHive" className="w-7 h-7 rounded-lg object-contain" />
               <span className="font-bold text-slate-900 text-sm">TrackHive</span>
             </div>
             <span className="text-xs font-semibold text-red-500 ml-9">Admin Panel</span>

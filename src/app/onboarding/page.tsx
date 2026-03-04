@@ -70,7 +70,7 @@ export default function OnboardingPage() {
 
       {/* Logo */}
       <div className="fixed top-4 left-6 flex items-center gap-2">
-        <div className="w-7 h-7 bg-blue-600 rounded-lg" />
+        <img src="/logo-icon.png" alt="TrackHive" className="w-7 h-7 rounded-lg object-contain" />
         <span className="font-bold text-slate-900">TrackHive</span>
       </div>
 
