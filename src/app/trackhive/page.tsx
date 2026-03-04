@@ -42,21 +42,21 @@ export default function TrackHivePage() {
 
       {/* Hero - Clause style: grid bg, tagline, headline with underlines, CTAs, floating avatars, partners */}
       <section
-        className="pt-28 pb-20 relative overflow-hidden"
+        className="pt-20 md:pt-24 pb-10 md:pb-14 relative overflow-hidden"
         style={{
           background: "#fafafa",
           backgroundImage: "linear-gradient(rgba(226,232,240,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(226,232,240,0.15) 1px, transparent 1px)",
           backgroundSize: "24px 24px",
         }}
       >
-        <div className="max-w-5xl mx-auto px-6 text-center relative">
+        <div className="max-w-5xl mx-auto px-5 md:px-6 text-center relative">
           {/* Tagline with lightning */}
-          <div className="inline-flex items-center gap-2 text-sm font-semibold mb-6" style={{ color: "#475569" }}>
+          <div className="inline-flex items-center gap-2 text-sm font-semibold mb-4 md:mb-6" style={{ color: "#475569" }}>
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" /></svg>
             TRACK FOR FAST
           </div>
           {/* Headline with underlined words */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 max-w-4xl mx-auto" style={{ color: "#0f172a" }}>
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4 md:mb-6 max-w-4xl mx-auto" style={{ color: "#0f172a" }}>
             One tool to{" "}
             <span className="relative inline-block">
               track
@@ -68,10 +68,10 @@ export default function TrackHivePage() {
               <span className="absolute bottom-1 left-0 w-full h-2 -z-10" style={{ backgroundColor: "#93c5fd" }} />
             </span>
           </h1>
-          <p className="text-lg md:text-xl max-w-2xl mx-auto mb-10" style={{ color: "#475569" }}>
+          <p className="text-base md:text-xl max-w-2xl mx-auto mb-8 md:mb-10" style={{ color: "#475569" }}>
             TrackHive helps marketing teams work faster and smarter, delivering server-side events to Meta, Google, TikTok and Snapchat—so you get the visibility and match rates you need.
           </p>
-          <div className="flex items-center justify-center gap-4 mb-16 flex-wrap">
+          <div className="flex items-center justify-center gap-3 md:gap-4 mb-10 md:mb-16 flex-wrap">
             <Link
               href="/dashboard/signup"
               className="font-semibold px-8 py-3.5 rounded-xl text-base transition-all text-white"
@@ -91,8 +91,8 @@ export default function TrackHivePage() {
         </div>
 
         {/* Partner logos */}
-        <div className="max-w-4xl mx-auto px-6 pt-12 border-t" style={{ borderColor: "#e2e8f0" }}>
-          <p className="text-sm mb-6" style={{ color: "#64748b" }}>
+        <div className="max-w-4xl mx-auto px-5 md:px-6 pt-8 md:pt-12 border-t" style={{ borderColor: "#e2e8f0" }}>
+          <p className="text-sm mb-4 md:mb-6" style={{ color: "#64748b" }}>
             Trusted by performance marketers worldwide.
           </p>
           <div className="flex items-center justify-center gap-8 md:gap-12 flex-wrap">
@@ -106,11 +106,11 @@ export default function TrackHivePage() {
       </section>
 
       {/* Features - Clause style: FEATURES tag, title, 4-block grid */}
-      <section id="features" className="py-24" style={{ backgroundColor: "#f8fafc" }}>
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-14">
+      <section id="features" className="py-12 md:py-16" style={{ backgroundColor: "#f8fafc" }}>
+        <div className="max-w-6xl mx-auto px-5 md:px-6">
+          <div className="text-center mb-10 md:mb-14">
             <div
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold mb-6"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold mb-4 md:mb-6"
               style={{ backgroundColor: "#eff6ff", border: "1px solid #bfdbfe", color: "#1d4ed8" }}
             >
               <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
@@ -211,16 +211,16 @@ export default function TrackHivePage() {
       </section>
 
       {/* Integrations - dark section: Don't replace. Integrate. + logo grid */}
-      <section id="integrations" className="py-24 relative">
+      <section id="integrations" className="py-12 md:py-16 relative">
         <div
-          className="max-w-6xl mx-auto px-6 rounded-3xl p-12 md:p-16"
+          className="max-w-6xl mx-auto px-5 md:px-6 rounded-3xl p-8 md:p-16"
           style={{
             backgroundColor: "#0f172a",
             backgroundImage: "linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)",
             backgroundSize: "24px 24px",
           }}
         >
-          <div className="text-center mb-12">
+          <div className="text-center mb-10 md:mb-12">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold mb-6" style={{ color: "#93c5fd", border: "1px solid rgba(147,197,253,0.4)" }}>
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 4a1 1 0 110-2h2a1 1 0 110 2h-2zM11 9a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1V9zM4 7a1 1 0 011-1h2a1 1 0 011 1v8a1 1 0 01-1 1H5a1 1 0 01-1-1V7zM18 7a1 1 0 011-1h2a1 1 0 011 1v8a1 1 0 01-1 1h-2a1 1 0 01-1-1V7z" /></svg>
               INTEGRATIONS
@@ -254,9 +254,9 @@ export default function TrackHivePage() {
       </section>
 
       {/* Testimonial + Stats */}
-      <section className="py-24 bg-white">
-        <div className="max-w-4xl mx-auto px-6 text-center mb-20">
-          <p className="text-6xl md:text-7xl font-serif leading-none mb-6" style={{ color: "#1d4ed8" }}>&ldquo;</p>
+      <section className="py-12 md:py-16 bg-white">
+        <div className="max-w-4xl mx-auto px-5 md:px-6 text-center mb-8 md:mb-12">
+          <p className="text-5xl md:text-7xl font-serif leading-none mb-4 md:mb-6" style={{ color: "#1d4ed8" }}>&ldquo;</p>
           <blockquote className="text-2xl md:text-3xl font-bold leading-snug mb-8" style={{ color: "#0f172a" }}>
             TrackHive is helping us recover conversions we were losing to ad blockers and iOS, while improving Meta match rates and attribution across our whole funnel.
           </blockquote>
@@ -271,7 +271,7 @@ export default function TrackHivePage() {
 
         {/* Stats box */}
         <div
-          className="max-w-4xl mx-auto px-6 rounded-2xl p-8 md:p-12 border"
+          className="max-w-4xl mx-auto px-5 md:px-6 rounded-2xl p-7 md:p-12 border"
           style={{ backgroundColor: "#f8fafc", borderColor: "#e5e7eb", boxShadow: "0 1px 2px rgba(15,23,42,0.05)" }}
         >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
@@ -292,12 +292,12 @@ export default function TrackHivePage() {
       </section>
 
       {/* Pricing preview - keep existing pricing cards */}
-      <section className="py-24" style={{ backgroundColor: "#f8fafc" }}>
-        <div className="max-w-5xl mx-auto px-6 text-center">
+      <section className="py-12 md:py-16" style={{ backgroundColor: "#f8fafc" }}>
+        <div className="max-w-5xl mx-auto px-5 md:px-6 text-center">
           <h2 className="text-4xl font-extrabold mb-4" style={{ color: "#0f172a" }}>
             Simple pricing.
           </h2>
-          <p className="text-lg mb-16" style={{ color: "#475569" }}>
+          <p className="text-lg mb-10 md:mb-16" style={{ color: "#475569" }}>
             No hidden fees. Cancel anytime.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -355,8 +355,8 @@ export default function TrackHivePage() {
       </section>
 
       {/* CTA - dark strip: Discover full scale... + Get a Demo / Start for Free */}
-      <section className="py-20" style={{ backgroundColor: "#1e3a5f" }}>
-        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+      <section className="py-10 md:py-14" style={{ backgroundColor: "#1e3a5f" }}>
+        <div className="max-w-6xl mx-auto px-5 md:px-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6 md:gap-8">
           <h2 className="text-3xl md:text-4xl font-bold text-white max-w-xl">
             Discover the full scale of{" "}
             <span className="relative inline-block">
