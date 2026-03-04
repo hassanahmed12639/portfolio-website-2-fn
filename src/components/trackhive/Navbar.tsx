@@ -37,6 +37,9 @@ export default function TrackHiveNavbar() {
           <Link href="/pricing" className="text-sm hover:opacity-80 transition-opacity" style={{ color: "#475569" }}>
             Pricing
           </Link>
+          <Link href="/blog" className="text-sm hover:opacity-80 transition-opacity" style={{ color: "#475569" }}>
+            Blog
+          </Link>
           <Link href="/docs" className="text-sm hover:opacity-80 transition-opacity" style={{ color: "#475569" }}>
             Docs
           </Link>
@@ -85,6 +88,7 @@ export default function TrackHiveNavbar() {
             <Link href="/features" className="text-sm py-2" style={{ color: "#475569" }} onClick={() => setMobileOpen(false)}>Features</Link>
             <Link href="/integrations" className="text-sm py-2" style={{ color: "#475569" }} onClick={() => setMobileOpen(false)}>Integrations</Link>
             <Link href="/pricing" className="text-sm py-2" style={{ color: "#475569" }} onClick={() => setMobileOpen(false)}>Pricing</Link>
+            <Link href="/blog" className="text-sm py-2" style={{ color: "#475569" }} onClick={() => setMobileOpen(false)}>Blog</Link>
             <Link href="/docs" className="text-sm py-2" style={{ color: "#475569" }} onClick={() => setMobileOpen(false)}>Docs</Link>
             <div className="flex gap-3 pt-2">
               <Link href="/dashboard/login" className="text-sm py-2" style={{ color: "#475569" }} onClick={() => setMobileOpen(false)}>Sign in</Link>

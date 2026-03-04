@@ -24,6 +24,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           <AdminNavItem href="/admin/users" label="Users" />
           <AdminNavItem href="/admin/revenue" label="Revenue" />
           <AdminNavItem href="/admin/events" label="Events" />
+          <AdminNavItem href="/admin/blog" label="Blog Posts" />
           <AdminNavItem href="/admin/system" label="System Health" />
         </nav>
         {/* Logout */}

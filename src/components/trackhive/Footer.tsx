@@ -51,7 +51,7 @@ export default function TrackHiveFooter() {
               <Link href="/pricing" className="block text-sm hover:text-white transition-colors" style={{ color: "#94a3b8" }}>Pricing</Link>
               <a href="#" className="block text-sm hover:text-white transition-colors" style={{ color: "#94a3b8" }}>Contact Sales</a>
               <Link href="/docs" className="block text-sm hover:text-white transition-colors" style={{ color: "#94a3b8" }}>Docs</Link>
-              <a href="#" className="block text-sm hover:text-white transition-colors" style={{ color: "#94a3b8" }}>Blog</a>
+              <Link href="/blog" className="block text-sm hover:text-white transition-colors" style={{ color: "#94a3b8" }}>Blog</Link>
             </div>
           </div>
         </div>

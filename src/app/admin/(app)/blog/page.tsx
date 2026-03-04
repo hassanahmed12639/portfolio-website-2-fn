@@ -1,0 +1,343 @@
+'use client'
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+
+export default function AdminBlogPage() {
+  const [posts, setPosts] = useState<any[]>([])
+  const [showForm, setShowForm] = useState(false)
+  const [editing, setEditing] = useState<any>(null)
+  const [form, setForm] = useState({
+    title: '',
+    slug: '',
+    excerpt: '',
+    content: '',
+    category: 'Server-Side Tracking',
+    author: 'TrackHive Team',
+    read_time: 5,
+    published: false,
+  })
+
+  useEffect(() => {
+    fetchPosts()
+  }, [])
+
+  const fetchPosts = async () => {
+    const res = await fetch('/api/admin/blog')
+    const data = await res.json()
+    setPosts(data.posts || [])
+  }
+
+  const generateSlug = (title: string) =>
+    title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '')
+
+  const handleTitleChange = (title: string) => {
+    setForm((f) => ({ ...f, title, slug: generateSlug(title) }))
+  }
+
+  const handleSave = async () => {
+    const method = editing ? 'PUT' : 'POST'
+    const body = editing ? { ...form, id: editing.id } : form
+    await fetch('/api/admin/blog', {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    })
+    setShowForm(false)
+    setEditing(null)
+    setForm({
+      title: '',
+      slug: '',
+      excerpt: '',
+      content: '',
+      category: 'Server-Side Tracking',
+      author: 'TrackHive Team',
+      read_time: 5,
+      published: false,
+    })
+    fetchPosts()
+  }
+
+  const handleEdit = (post: any) => {
+    setEditing(post)
+    setForm(post)
+    setShowForm(true)
+  }
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Delete this post?')) return
+    await fetch('/api/admin/blog', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    })
+    fetchPosts()
+  }
+
+  const handleTogglePublish = async (post: any) => {
+    await fetch('/api/admin/blog', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...post, published: !post.published }),
+    })
+    fetchPosts()
+  }
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-xl font-bold text-slate-900">Blog Posts</h1>
+          <p className="text-sm text-slate-500">{posts.length} total posts</p>
+        </div>
+        <button
+          onClick={() => {
+            setShowForm(true)
+            setEditing(null)
+          }}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700"
+        >
+          + New Post
+        </button>
+      </div>
+
+      {/* Posts table */}
+      {!showForm && (
+        <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
+          <table className="w-full">
+            <thead className="bg-slate-50">
+              <tr>
+                <th className="px-5 py-3 text-left text-xs font-semibold text-slate-400 uppercase">
+                  Title
+                </th>
+                <th className="px-5 py-3 text-left text-xs font-semibold text-slate-400 uppercase">
+                  Category
+                </th>
+                <th className="px-5 py-3 text-left text-xs font-semibold text-slate-400 uppercase">
+                  Status
+                </th>
+                <th className="px-5 py-3 text-left text-xs font-semibold text-slate-400 uppercase">
+                  Views
+                </th>
+                <th className="px-5 py-3 text-left text-xs font-semibold text-slate-400 uppercase">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {posts.map((post) => (
+                <tr
+                  key={post.id}
+                  className="border-t border-slate-50 hover:bg-slate-50"
+                >
+                  <td className="px-5 py-3">
+                    <p className="text-sm font-medium text-slate-900">
+                      {post.title}
+                    </p>
+                    <p className="text-xs text-slate-400">/blog/{post.slug}</p>
+                  </td>
+                  <td className="px-5 py-3 text-sm text-slate-500">
+                    {post.category}
+                  </td>
+                  <td className="px-5 py-3">
+                    <button
+                      onClick={() => handleTogglePublish(post)}
+                      className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
+                        post.published
+                          ? 'bg-green-50 text-green-700'
+                          : 'bg-slate-100 text-slate-500'
+                      }`}
+                    >
+                      {post.published ? '✅ Published' : '⏳ Draft'}
+                    </button>
+                  </td>
+                  <td className="px-5 py-3 text-sm text-slate-500">
+                    {post.views}
+                  </td>
+                  <td className="px-5 py-3">
+                    <div className="flex items-center gap-2">
+                      <Link
+                        href={`/blog/${post.slug}`}
+                        target="_blank"
+                        className="text-xs text-blue-600 hover:text-blue-700"
+                      >
+                        View →
+                      </Link>
+                      <button
+                        onClick={() => handleEdit(post)}
+                        className="text-xs text-slate-600 hover:text-slate-900"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(post.id)}
+                        className="text-xs text-red-500 hover:text-red-700"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {posts.length === 0 && (
+            <div className="text-center py-12 text-slate-400">
+              <p className="text-4xl mb-3">📝</p>
+              <p className="font-medium">No posts yet</p>
+              <p className="text-sm">
+                Click &quot;New Post&quot; to create your first blog post
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Post form */}
+      {showForm && (
+        <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="font-bold text-slate-900">
+              {editing ? 'Edit Post' : 'New Post'}
+            </h2>
+            <button
+              onClick={() => setShowForm(false)}
+              className="text-slate-400 hover:text-slate-600"
+            >
+              ✕ Cancel
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                Title
+              </label>
+              <input
+                value={form.title}
+                onChange={(e) => handleTitleChange(e.target.value)}
+                className="w-full mt-1 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter post title"
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                Slug
+              </label>
+              <input
+                value={form.slug}
+                onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
+                className="w-full mt-1 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                placeholder="post-url-slug"
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                Excerpt
+              </label>
+              <textarea
+                value={form.excerpt}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, excerpt: e.target.value }))
+                }
+                className="w-full mt-1 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                rows={2}
+                placeholder="Brief description for SEO and previews"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                  Category
+                </label>
+                <select
+                  value={form.category}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, category: e.target.value }))
+                  }
+                  className="w-full mt-1 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option>Server-Side Tracking</option>
+                  <option>Meta CAPI</option>
+                  <option>TikTok</option>
+                  <option>Google</option>
+                  <option>Analytics</option>
+                  <option>Tutorial</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                  Read Time (mins)
+                </label>
+                <input
+                  type="number"
+                  value={form.read_time}
+                  onChange={(e) =>
+                    setForm((f) => ({
+                      ...f,
+                      read_time: parseInt(e.target.value) || 5,
+                    }))
+                  }
+                  className="w-full mt-1 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                Content (HTML)
+              </label>
+              <textarea
+                value={form.content}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, content: e.target.value }))
+                }
+                className="w-full mt-1 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                rows={20}
+                placeholder="Write your blog post content in HTML..."
+              />
+            </div>
+
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="published"
+                checked={form.published}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, published: e.target.checked }))
+                }
+                className="w-4 h-4 text-blue-600"
+              />
+              <label
+                htmlFor="published"
+                className="text-sm text-slate-700"
+              >
+                Publish immediately
+              </label>
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={handleSave}
+                className="bg-blue-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700"
+              >
+                {editing ? 'Save Changes' : 'Create Post'}
+              </button>
+              <button
+                onClick={() => setShowForm(false)}
+                className="bg-slate-100 text-slate-700 px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-200"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
