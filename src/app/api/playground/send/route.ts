@@ -1,4 +1,7 @@
 import { validateEvent } from '@/lib/validate-event'
+import { sendGA4Event } from '@/lib/ga4'
+import { sendTikTokEvent } from '@/lib/tiktok'
+import { sendGoogleEnhancedConversion } from '@/lib/google-ads'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { createHash } from 'crypto'
@@ -76,6 +79,14 @@ export async function POST(request: NextRequest) {
     product_id?: string
     product_name?: string
     target?: 'both' | 'meta' | 'google'
+    user_data?: {
+      em?: string | string[]
+      ph?: string | string[]
+      fn?: string | string[]
+      ln?: string | string[]
+      client_ip_address?: string
+      client_user_agent?: string
+    }
   }
   try {
     body = await request.json()
@@ -224,6 +235,67 @@ export async function POST(request: NextRequest) {
       ...(status === 'failed' && { original_payload: originalPayload }),
     })
   }
+
+  const clientIp = body.user_data?.client_ip_address ?? request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? request.headers.get('x-real-ip') ?? undefined
+  const clientUserAgent = body.user_data?.client_user_agent ?? request.headers.get('user-agent') ?? undefined
+  const em = body.user_data?.em
+  const emailStr = typeof em === 'string' ? em : Array.isArray(em) ? em[0] : body.email
+  const ph = body.user_data?.ph
+  const phoneStr = typeof ph === 'string' ? ph : Array.isArray(ph) ? ph[0] : body.phone
+  const fn = body.user_data?.fn
+  const firstNameStr = typeof fn === 'string' ? fn : Array.isArray(fn) ? fn[0] : body.first_name
+  const ln = body.user_data?.ln
+  const lastNameStr = typeof ln === 'string' ? ln : Array.isArray(ln) ? ln[0] : body.last_name
+
+  // Fire all platforms in parallel
+  const platformResults = await Promise.allSettled([
+    sendGA4Event(event_name, {
+      value: body.value,
+      currency: body.currency,
+      order_id: body.order_id,
+      event_source_url: body.event_source_url || 'https://track.itshassanahmed.com',
+      client_ip_address: clientIp,
+      client_user_agent: clientUserAgent,
+      event_id: body.event_id,
+    }, emailStr),
+
+    sendTikTokEvent(event_name, {
+      value: body.value,
+      currency: body.currency,
+      order_id: body.order_id,
+      event_source_url: body.event_source_url || 'https://track.itshassanahmed.com',
+      client_ip_address: clientIp,
+      client_user_agent: clientUserAgent,
+      event_id: body.event_id,
+    }, {
+      email: emailStr,
+      phone: phoneStr,
+      first_name: firstNameStr,
+      last_name: lastNameStr,
+    }),
+
+    sendGoogleEnhancedConversion(event_name, {
+      value: body.value,
+      currency: body.currency,
+      order_id: body.order_id,
+      event_source_url: body.event_source_url || 'https://track.itshassanahmed.com',
+      client_ip_address: clientIp,
+    }, {
+      email: emailStr,
+      phone: phoneStr,
+      first_name: firstNameStr,
+      last_name: lastNameStr,
+    }),
+  ])
+
+  const platforms = ['GA4', 'TikTok', 'Google']
+  platformResults.forEach((result, index) => {
+    if (result.status === 'fulfilled') {
+      console.log(`[${platforms[index]}] ✅ Sent`)
+    } else {
+      console.log(`[${platforms[index]}] ❌ Failed:`, result.reason)
+    }
+  })
 
   return NextResponse.json({
     success: true,

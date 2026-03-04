@@ -17,39 +17,70 @@ export default function LoginPage() {
   async function handleGoogleSignIn() {
     setError(null)
     setGoogleLoading(true)
-    const supabase = createClient()
-    const { error: oauthError } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: typeof window !== 'undefined' ? `${window.location.origin}/dashboard` : undefined,
-      },
-    })
-    setGoogleLoading(false)
-    if (oauthError) {
-      setError(oauthError.message)
+    try {
+      const supabase = createClient()
+      const { error: oauthError } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: typeof window !== 'undefined' ? `${window.location.origin}/dashboard` : undefined,
+        },
+      })
+      if (oauthError) {
+        setError(oauthError.message)
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      if (message === 'Failed to fetch' || message.includes('fetch')) {
+        setError(
+          'Cannot reach the authentication server. Check your internet connection and Supabase configuration in .env.local.'
+        )
+      } else {
+        setError(message)
+      }
+    } finally {
+      setGoogleLoading(false)
     }
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
     setLoading(true)
 
-    const supabase = createClient()
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-
-    setLoading(false)
-
-    if (signInError) {
-      setError(signInError.message)
+    let supabase
+    try {
+      supabase = createClient()
+    } catch (configErr) {
+      setLoading(false)
+      setError(
+        configErr instanceof Error
+          ? configErr.message
+          : 'Supabase is not configured. Check .env.local and restart the dev server.'
+      )
       return
     }
 
-    router.push('/dashboard')
-    router.refresh()
+    // Use promise chain only (no async/await) so rejections are handled before Next.js overlay sees them
+    supabase.auth
+      .signInWithPassword({ email, password })
+      .then((res) => {
+        setLoading(false)
+        if (res.error) {
+          setError(res.error.message)
+          return
+        }
+        router.push('/dashboard')
+        router.refresh()
+      })
+      .catch((err: unknown) => {
+        setLoading(false)
+        const msg = err instanceof Error ? err.message : String(err)
+        setError(
+          msg === 'Failed to fetch' || msg.includes('fetch')
+            ? 'Cannot reach the authentication server. Check your internet connection, ensure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are set in .env.local, restart the dev server, and that your Supabase project is not paused.'
+            : msg
+        )
+      })
   }
 
   return (

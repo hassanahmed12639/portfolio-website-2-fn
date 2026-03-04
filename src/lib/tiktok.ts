@@ -32,13 +32,27 @@ export async function sendTikTokEvent(
   const tiktokEventName = tiktokEventMap[eventName] ?? eventName
 
   // Hash user data
-  const hashedUser: Record<string, string[]> = {}
+  const hashedUser: Record<string, string[] | string> = {}
   if (userData.email) hashedUser.email = [hashData(userData.email)]
   if (userData.phone) hashedUser.phone_number = [hashData(userData.phone)]
   if (userData.first_name) hashedUser.first_name = [hashData(userData.first_name)]
   if (userData.last_name) hashedUser.last_name = [hashData(userData.last_name)]
-  if (eventData.client_ip_address) hashedUser.ip = [String(eventData.client_ip_address)]
-  if (eventData.client_user_agent) hashedUser.user_agent = [String(eventData.client_user_agent)]
+  // Only add IP if it's a valid non-empty string (TikTok rejects null/undefined)
+  if (
+    eventData.client_ip_address &&
+    typeof eventData.client_ip_address === 'string' &&
+    eventData.client_ip_address.trim() !== ''
+  ) {
+    hashedUser.ip = eventData.client_ip_address.trim()
+  }
+  // Only add user_agent if valid
+  if (
+    eventData.client_user_agent &&
+    typeof eventData.client_user_agent === 'string' &&
+    eventData.client_user_agent.trim() !== ''
+  ) {
+    hashedUser.user_agent = eventData.client_user_agent.trim()
+  }
 
   const payload = {
     data: [
