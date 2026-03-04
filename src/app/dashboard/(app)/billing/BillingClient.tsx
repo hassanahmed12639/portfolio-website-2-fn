@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import PayPalButton from '@/components/PayPalButton'
+import PayPalSubscriptionButton from '@/components/PayPalSubscriptionButton'
 
 function SuccessBanner({ selectedPlan }: { selectedPlan: string }) {
   const [show, setShow] = useState(false)
@@ -114,20 +114,15 @@ export default function BillingClient() {
                 </div>
               )}
 
-              {/* Subscribe button */}
+              {/* PayPal subscription button (SDK) */}
               {selectedPlan &&
                 selectedPlan !== 'free' &&
                 currentPlan !== selectedPlan &&
                 (selectedPlan === 'pro' ? proPlanId : agencyPlanId) && (
-                  <PayPalButton
-                    planId={
-                      selectedPlan === 'pro'
-                        ? proPlanId!
-                        : agencyPlanId!
-                    }
-                    planName={selectedPlan === 'pro' ? 'Pro' : 'Agency'}
-                    price={selectedPlan === 'pro' ? '$10' : '$25'}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl transition-colors shadow-md shadow-blue-100 text-base disabled:opacity-50"
+                  <PayPalSubscriptionButton
+                    key={selectedPlan}
+                    planId={selectedPlan === 'pro' ? proPlanId! : agencyPlanId!}
+                    containerId={`paypal-button-container-${selectedPlan === 'pro' ? proPlanId! : agencyPlanId!}`}
                   />
                 )}
 
