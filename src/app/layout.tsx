@@ -2,8 +2,6 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import ChatWidget from '@/components/ChatWidget'
 import { ThemeProvider } from '@/components/ThemeProvider'
-import ThemeToggle from '@/components/ThemeToggle'
-import ScrollToTop from '@/components/ScrollToTop'
 import GsapInit from '@/components/GsapInit'
 
 export const metadata: Metadata = {
@@ -40,8 +38,6 @@ export default function RootLayout({
         <ThemeProvider>
           <GsapInit />
           {children}
-          <ThemeToggle />
-          <ScrollToTop />
           <ChatWidget />
         </ThemeProvider>
       </body>

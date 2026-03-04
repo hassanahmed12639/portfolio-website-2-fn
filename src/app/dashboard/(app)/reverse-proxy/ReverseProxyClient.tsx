@@ -236,7 +236,7 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
   return (
     <div className="space-y-8">
       {/* Section 1 — Status & Setup */}
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
         <div className="px-4 py-3 border-b border-[var(--dash-border)] flex items-center justify-between flex-wrap gap-2">
           <h2 className="text-sm font-medium text-[var(--dash-muted)]">Status & Setup</h2>
           <div className="flex items-center gap-3">
@@ -281,7 +281,7 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
           </button>
           <div className="rounded-lg border border-[var(--dash-border)] bg-[var(--dash-bg)] p-3 text-sm text-[var(--dash-muted)]">
             <p className="text-[var(--dash-muted)] font-medium mb-1">What is Reverse Proxy?</p>
-            <p>
+            <p className="text-black">
               Tracking scripts loaded from facebook.com or google.com are often blocked by ad blockers.
               With reverse proxy, scripts are served from your own domain (e.g. {baseUrl}/th-proxy/...),
               so ad blockers do not block them and tracking coverage improves.
@@ -291,14 +291,14 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
       </section>
 
       {/* Section 2 — Proxy URLs */}
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
         <div className="px-4 py-3 border-b border-[var(--dash-border)]">
           <h2 className="text-sm font-medium text-[var(--dash-muted)]">Proxy URLs</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[var(--dash-border)] text-left text-[var(--dash-muted)]">
+              <tr className="text-left text-[var(--dash-muted)]">
                 <th className="px-4 py-3 font-medium">Purpose</th>
                 <th className="px-4 py-3 font-medium">Original URL</th>
                 <th className="px-4 py-3 font-medium">Your Proxy URL</th>
@@ -309,7 +309,7 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
               {PROXY_ROUTES.map((r) => {
                 const proxyUrl = `https://${baseUrl}/th-proxy/${r.slug}`
                 return (
-                  <tr key={r.slug} className="border-b border-[var(--dash-border)]/80">
+                  <tr key={r.slug}>
                     <td className="px-4 py-3 text-[var(--dash-muted)]">{r.purpose}</td>
                     <td className="px-4 py-3 text-[var(--dash-muted)] font-mono text-xs">{r.original}</td>
                     <td className="px-4 py-3 text-[var(--dash-muted)] font-mono text-xs">{proxyUrl}</td>
@@ -322,13 +322,13 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
             </tbody>
           </table>
         </div>
-        <p className="px-4 py-3 text-sm text-[var(--dash-muted)] border-t border-[var(--dash-border)]">
+        <p className="px-4 py-3 text-sm text-[var(--dash-muted)] border-t-2 border-[var(--dash-primary)]">
           Add these rewrites to your next.config.js OR contact your developer to set up nginx proxy rules. Full instructions are shown below.
         </p>
       </section>
 
       {/* Section 3 — Implementation */}
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
         <div className="px-4 py-3 border-b border-[var(--dash-border)] flex items-center justify-between flex-wrap gap-2">
           <div className="flex gap-1">
             <button
@@ -356,7 +356,7 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
       </section>
 
       {/* Section 4 — Ad Blocker Test */}
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
         <div className="px-4 py-3 border-b border-[var(--dash-border)]">
           <h2 className="text-sm font-medium text-[var(--dash-muted)]">Ad Blocker Test</h2>
         </div>
@@ -387,7 +387,7 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
       </section>
 
       {/* Section 5 — How to Use */}
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
         <div className="px-4 py-3 border-b border-[var(--dash-border)]">
           <h2 className="text-sm font-medium text-[var(--dash-muted)]">How to Use</h2>
         </div>

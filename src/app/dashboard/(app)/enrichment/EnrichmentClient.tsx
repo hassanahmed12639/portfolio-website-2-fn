@@ -131,7 +131,7 @@ export default function EnrichmentClient() {
   return (
     <div className="space-y-8">
       {/* Section 1 — Enrichment Settings */}
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
         <div className="px-4 py-3 border-b border-[var(--dash-border)] flex items-center justify-between">
           <h2 className="text-sm font-medium text-[var(--dash-muted)]">Enrichment Settings</h2>
           <button
@@ -171,7 +171,7 @@ export default function EnrichmentClient() {
       </section>
 
       {/* Section 2 — Enrichment Stats */}
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
         <div className="px-4 py-3 border-b border-[var(--dash-border)]">
           <h2 className="text-sm font-medium text-[var(--dash-muted)]">Enrichment Stats</h2>
         </div>
@@ -264,7 +264,7 @@ export default function EnrichmentClient() {
       </section>
 
       {/* Section 3 — Recent Enriched Events */}
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
         <div className="px-4 py-3 border-b border-[var(--dash-border)]">
           <h2 className="text-sm font-medium text-[var(--dash-muted)]">Recent Enriched Events</h2>
         </div>

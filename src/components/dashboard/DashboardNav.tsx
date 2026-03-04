@@ -128,7 +128,7 @@ export default function DashboardNav() {
               <button
                 type="button"
                 onClick={() => toggleSection(section.title)}
-                className="mb-1.5 flex w-full items-center gap-1.5 px-2 py-0.5 text-left text-[10px] font-semibold tracking-wide text-slate-500 transition-colors hover:text-slate-700"
+                className="mb-1.5 flex w-full items-center gap-1.5 px-2 py-0.5 text-left text-sm font-bold tracking-wide text-slate-700 transition-colors hover:text-slate-900"
               >
                 {isOpen ? (
                   <ChevronDown className="h-3 w-3 shrink-0" />
@@ -141,7 +141,9 @@ export default function DashboardNav() {
                 <div className="space-y-0.5">
                   {sectionItems.map(({ label, href, icon: Icon, isLogout }) => {
                     const isActive =
-                      !isLogout && (pathname === href || pathname.startsWith(href + '/'))
+                      !isLogout &&
+                      (pathname === href ||
+                        (href !== '/dashboard' && pathname.startsWith(href + '/')))
                     return (
                       <Link
                         key={href}
@@ -152,7 +154,7 @@ export default function DashboardNav() {
                             : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                         }`}
                       >
-                        {Icon && <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? 'text-blue-600' : 'text-slate-500'}`} />}
+                        {Icon && <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? 'text-blue-600' : 'text-slate-700'}`} />}
                         <span className="truncate">{label}</span>
                       </Link>
                     )

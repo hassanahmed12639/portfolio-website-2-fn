@@ -77,7 +77,7 @@ export default function CookieExtenderClient({
   return (
     <div className="space-y-8">
       {/* Section 1 — Status Card */}
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
         <div className="px-4 py-3 border-b border-[var(--dash-border)]">
           <h2 className="text-sm font-medium text-[var(--dash-muted)]">Status</h2>
         </div>
@@ -160,7 +160,7 @@ export default function CookieExtenderClient({
       </section>
 
       {/* Section 2 — How It Works */}
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
         <div className="px-4 py-3 border-b border-[var(--dash-border)]">
           <h2 className="text-sm font-medium text-[var(--dash-muted)]">How It Works</h2>
         </div>
@@ -231,7 +231,7 @@ export default function CookieExtenderClient({
       </section>
 
       {/* Section 3 — Cookie Stats */}
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
         <div className="px-4 py-3 border-b border-[var(--dash-border)]">
           <h2 className="text-sm font-medium text-[var(--dash-muted)]">Cookie Stats</h2>
         </div>
@@ -258,7 +258,7 @@ export default function CookieExtenderClient({
       </section>
 
       {/* Section 4 — Implementation */}
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
         <div className="px-4 py-3 border-b border-[var(--dash-border)] flex items-center justify-between">
           <h2 className="text-sm font-medium text-[var(--dash-muted)]">Implementation</h2>
           <CopyButton text={snippet} />
@@ -267,7 +267,7 @@ export default function CookieExtenderClient({
           <p className="text-[var(--dash-muted)] text-sm mb-3">
             Add this snippet to your site. It calls the cookie set endpoint so the server can set a long-lived cookie.
           </p>
-          <pre className="bg-[var(--dash-surface-hover)] rounded-lg border border-[var(--dash-border)] p-4 text-sm text-[var(--dash-muted)] font-mono overflow-x-auto whitespace-pre">
+          <pre className="bg-[var(--dash-primary-soft)] rounded-lg border border-[var(--dash-border)] p-4 text-sm text-[var(--dash-muted)] font-mono overflow-x-auto whitespace-pre">
             {snippet}
           </pre>
           <p className="mt-3 text-[var(--dash-muted)] text-sm">

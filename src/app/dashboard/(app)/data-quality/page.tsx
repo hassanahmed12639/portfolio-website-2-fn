@@ -242,7 +242,7 @@ export default function DataQualityPage() {
     <div className="p-6 md:p-8 space-y-8">
       <h1 className="text-xl font-semibold text-[var(--dash-text)]">Data Quality</h1>
 
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
         <div className="flex items-center justify-between gap-4 mb-4">
           <h2 className="text-sm font-medium text-[var(--dash-muted)]">Meta Match Rate</h2>
           {matchRateLoading && !matchRate ? (
@@ -367,7 +367,7 @@ export default function DataQualityPage() {
         )}
       </section>
 
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
         <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">Score overview</h2>
         <div className="flex flex-wrap gap-8 items-start">
           <div className="flex flex-col items-center gap-2">
@@ -401,7 +401,7 @@ export default function DataQualityPage() {
         </div>
       </section>
 
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
         <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">
           Field coverage
         </h2>
@@ -437,7 +437,7 @@ export default function DataQualityPage() {
         </div>
       </section>
 
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
         <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-3">Recommendations</h2>
         <ul className="space-y-2 text-sm text-[var(--dash-muted)]">
           {recommendations.map((rec, i) => (
@@ -449,7 +449,7 @@ export default function DataQualityPage() {
         </ul>
       </section>
 
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
         <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">Event quality timeline (last 30 days)</h2>
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">

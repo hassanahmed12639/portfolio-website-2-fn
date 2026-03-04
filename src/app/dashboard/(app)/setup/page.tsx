@@ -52,7 +52,7 @@ export default async function SetupPage() {
 
       <div className="space-y-8">
         {/* Section 1 — Your API Key */}
-        <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] shadow-sm overflow-hidden">
+        <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
           <div className="px-4 py-3 border-b border-[var(--dash-border)] flex items-center justify-between">
             <h2 className="text-sm font-medium text-[var(--dash-text-soft)]">Your API Key</h2>
             <CopyButton text={apiKey} />
@@ -68,7 +68,7 @@ export default async function SetupPage() {
         </section>
 
         {/* Section 2 — Install Snippet */}
-        <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] shadow-sm overflow-hidden">
+        <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
           <div className="px-4 py-3 border-b border-[var(--dash-border)] flex items-center justify-between">
             <h2 className="text-sm font-medium text-[var(--dash-text-soft)]">Install Snippet</h2>
             <CopyButton text={SNIPPET_TEMPLATE(apiKey)} />
@@ -84,7 +84,7 @@ export default async function SetupPage() {
         </section>
 
         {/* Section 3 — Track Events Manually */}
-        <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] shadow-sm overflow-hidden">
+        <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
           <div className="px-4 py-3 border-b border-[var(--dash-border)] flex items-center justify-between">
             <h2 className="text-sm font-medium text-[var(--dash-text-soft)]">Track Events Manually</h2>
             <CopyButton text={MANUAL_EVENTS_CODE} />
@@ -97,7 +97,7 @@ export default async function SetupPage() {
         </section>
 
         {/* Section 4 — Using Reverse Proxy */}
-        <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] shadow-sm overflow-hidden">
+        <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
           <div className="px-4 py-3 border-b border-[var(--dash-border)] flex items-center justify-between">
             <h2 className="text-sm font-medium text-[var(--dash-text-soft)]">Using Reverse Proxy (Recommended)</h2>
             <CopyButton text={SNIPPET_WITH_PROXY(apiKey)} />
@@ -113,7 +113,7 @@ export default async function SetupPage() {
         </section>
 
         {/* Section 5 — Meta Signal Capture */}
-        <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] shadow-sm overflow-hidden">
+        <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
           <div className="px-4 py-3 border-b border-[var(--dash-border)]">
             <h2 className="text-sm font-medium text-[var(--dash-text-soft)]">Meta Signal Capture</h2>
           </div>
@@ -168,11 +168,11 @@ export default async function SetupPage() {
         </section>
 
         {/* Section 6 — GTM Instructions */}
-        <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] shadow-sm overflow-hidden">
+        <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
           <div className="px-4 py-3 border-b border-[var(--dash-border)]">
             <h2 className="text-sm font-medium text-[var(--dash-text-soft)]">Google Tag Manager</h2>
           </div>
-          <div className="p-4 text-[var(--dash-muted)] text-sm space-y-3">
+          <div className="p-4 text-[var(--dash-text)] text-sm space-y-3">
             <p>
               <span className="text-[var(--dash-text-soft)] font-medium">1.</span> Download the{' '}
               <a href="#" className="text-[var(--dash-primary)] underline hover:text-[var(--dash-primary-strong)]">TrackHive GTM template</a> (link placeholder for now).

@@ -285,7 +285,7 @@ export default function LivePage() {
             type="button"
             onClick={() => setFilter(f.id)}
             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-              filter === f.id ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+              filter === f.id ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-800 hover:bg-slate-100 hover:text-slate-900'
             }`}
           >
             {f.label}
@@ -295,7 +295,7 @@ export default function LivePage() {
 
       <div className="flex gap-6 flex-1 min-h-0">
         <div className="flex-1 min-w-0 rounded-xl bg-white border border-slate-100 overflow-hidden flex flex-col">
-          <div className="bg-slate-50 border-b border-slate-100 px-4 py-3 text-xs text-slate-500 font-mono">
+          <div className="bg-slate-50 border-b border-slate-100 px-4 py-3 text-xs text-slate-700 font-mono">
             Live feed (newest at top)
           </div>
           <div className="flex-1 overflow-auto p-2 font-mono text-sm">
@@ -311,15 +311,15 @@ export default function LivePage() {
                     }`}
                   >
                     <StatusDot event={ev} />
-                    <span className="text-xs text-slate-400 w-14 shrink-0">{formatTimeAgo(ev.created_at)}</span>
+                    <span className="text-xs text-slate-700 w-14 shrink-0">{formatTimeAgo(ev.created_at)}</span>
                     <span className="text-sm font-medium text-slate-900 shrink-0 w-24">{ev.event_name}</span>
-                    <span className="text-xs text-slate-400 shrink-0 w-14">
+                    <span className="text-xs text-slate-700 shrink-0 w-14">
                       {ev.event_name === 'Purchase' && ev.value != null ? `$${Number(ev.value).toFixed(2)}` : '—'}
                     </span>
                     <QualityBar score={ev.data_quality_score ?? 0} />
-                    <span className="text-xs text-slate-400 w-12 shrink-0">{ev.data_quality_score ?? 0}/100</span>
-                    <span className="text-xs text-slate-400 shrink-0">{ev.data_quality_label ?? '—'}</span>
-                    <span className="text-xs text-slate-400 shrink-0 capitalize">{ev.platform}</span>
+                    <span className="text-xs text-slate-700 w-12 shrink-0">{ev.data_quality_score ?? 0}/100</span>
+                    <span className="text-xs text-slate-700 shrink-0">{ev.data_quality_label ?? '—'}</span>
+                    <span className="text-xs text-slate-700 shrink-0 capitalize">{ev.platform}</span>
                     {ev.status === 'failed' && (
                       <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-100">
                         FAILED

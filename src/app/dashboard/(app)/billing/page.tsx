@@ -63,7 +63,7 @@ export default async function BillingPage() {
 
       {/* Trial banner: free user who never started trial */}
       {neverStartedTrial && (
-        <div className="mb-6 rounded-xl bg-[var(--dash-success-soft)] border border-[var(--dash-success-border)] p-4 flex flex-wrap items-center justify-between gap-4">
+        <div className="mb-6 rounded-xl bg-[var(--dash-success-soft)] border border-[var(--dash-success-border)] shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4 flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="font-medium text-[var(--dash-text)]">
               🎉 Try TrackHive Pro FREE for 7 days — No credit card required
@@ -80,13 +80,13 @@ export default async function BillingPage() {
 
       {/* Trial countdown: currently on trial */}
       {isOnTrial && (
-        <div className="mb-6 rounded-xl bg-[var(--dash-warning)]/20 border border-amber-500/50 p-4 flex flex-wrap items-center justify-between gap-4">
+        <div className="mb-6 rounded-xl bg-[var(--dash-warning)]/20 border border-amber-500/50 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4 flex flex-wrap items-center justify-between gap-4">
           <p className="font-medium text-[var(--dash-text)]">
             ⏳ Your free trial ends in {trialDaysLeft} day{trialDaysLeft !== 1 ? 's' : ''} — Upgrade to keep access
           </p>
           <Link
             href="/dashboard/billing"
-            className="shrink-0 px-4 py-2 rounded-lg font-medium bg-[var(--dash-warning)] text-amber-950 hover:bg-amber-400 transition-colors"
+            className="shrink-0 px-4 py-2 rounded-lg font-medium bg-[var(--dash-primary)] text-white hover:bg-[var(--dash-primary-strong)] transition-colors"
           >
             Upgrade Now
           </Link>
@@ -99,7 +99,7 @@ export default async function BillingPage() {
           Current usage
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+          <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
             <p className="text-sm text-[var(--dash-muted)] mb-1">Events this period</p>
             <p className="text-2xl font-semibold text-[var(--dash-text)]">
               {isUnlimited(eventsLimit)
@@ -107,7 +107,7 @@ export default async function BillingPage() {
                 : `${eventsUsed} / ${eventsLimit}`}
             </p>
           </div>
-          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+          <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
             <p className="text-sm text-[var(--dash-muted)] mb-1">Scans used</p>
             <p className="text-2xl font-semibold text-[var(--dash-text)]">
               {isUnlimited(scansLimit)
@@ -115,7 +115,7 @@ export default async function BillingPage() {
                 : `${scansUsed} / ${scansLimit}`}
             </p>
           </div>
-          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+          <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
             <p className="text-sm text-[var(--dash-muted)] mb-1">AI analyses used</p>
             <p className="text-2xl font-semibold text-[var(--dash-text)]">
               {isUnlimited(aiLimit) ? aiUsed : `${aiUsed} / ${aiLimit}`}
@@ -157,9 +157,10 @@ export default async function BillingPage() {
       </div>
 
       {/* Plan cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+      <div className="flex justify-center mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-5xl">
         {/* FREE */}
-        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6 flex flex-col">
+        <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6 flex flex-col">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-[var(--dash-text)]">Free</h2>
             {currentPlanLabel === 'free' && !profile?.trial_started_at && (
@@ -174,18 +175,16 @@ export default async function BillingPage() {
           <p className="text-sm text-[var(--dash-muted)] mb-4">500 events/month</p>
           <ul className="space-y-2 text-sm text-[var(--dash-muted)] mb-6 flex-1">
             <li>1 domain</li>
-            <li>Meta CAPI ✅</li>
-            <li>Google Enhanced ✅</li>
+            <li>Meta CAPI</li>
+            <li>Google Enhanced</li>
             <li>AI Analysis: 3/month</li>
             <li>Scanner: 3/month</li>
-            <li className="text-[var(--dash-muted)]">TikTok / Snapchat / GA4 ❌</li>
-            <li className="text-[var(--dash-muted)]">Advanced features ❌</li>
           </ul>
         </div>
 
         {/* TRIAL — only if never used trial */}
         {neverStartedTrial && (
-          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-success-border)] p-6 flex flex-col">
+          <div className="rounded-xl bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-200/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6 flex flex-col">
             <span className="text-xs font-medium px-2 py-1 rounded bg-[var(--dash-success-soft)] text-[var(--dash-success)] w-fit mb-4">
               7 Days Free
             </span>
@@ -196,8 +195,8 @@ export default async function BillingPage() {
             <ul className="space-y-2 text-sm text-[var(--dash-muted)] mb-6 flex-1">
               <li>50,000 events</li>
               <li>3 domains</li>
-              <li>All 5 platforms ✅</li>
-              <li>All features ✅</li>
+              <li>All 5 platforms</li>
+              <li>All features</li>
             </ul>
             <StartTrialButton className="w-full py-2.5 rounded-lg font-medium bg-[var(--dash-success)] text-white hover:bg-[var(--dash-success-strong)] transition-colors">
               Start Free Trial
@@ -206,7 +205,7 @@ export default async function BillingPage() {
         )}
 
         {/* PRO */}
-        <div className="rounded-xl bg-[var(--dash-surface)] border-2 border-[var(--dash-success)] p-6 flex flex-col relative">
+        <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-100 border-2 border-[var(--dash-success)] shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6 flex flex-col relative">
           <div className="absolute -top-2.5 left-4 px-2 py-0.5 rounded text-xs font-medium bg-[var(--dash-success)] text-white">
             Most Popular
           </div>
@@ -217,15 +216,14 @@ export default async function BillingPage() {
           <p className="text-sm text-[var(--dash-muted)] mb-4">50,000 events/month</p>
           <ul className="space-y-2 text-sm text-[var(--dash-muted)] mb-6 flex-1">
             <li>3 domains</li>
-            <li>All 5 platforms ✅</li>
-            <li>All features ✅</li>
-            <li className="text-[var(--dash-muted)]">GTM Templates ❌</li>
+            <li>All 5 platforms</li>
+            <li>All features</li>
           </ul>
           <UpgradeProButton />
         </div>
 
         {/* AGENCY */}
-        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6 flex flex-col">
+        <div className="rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6 flex flex-col">
           <h2 className="text-lg font-semibold text-[var(--dash-text)] mb-4">Agency</h2>
           <p className="text-2xl font-bold text-[var(--dash-text)] mb-1">
             $25<span className="text-base font-normal text-[var(--dash-muted)]">/mo</span>
@@ -233,10 +231,10 @@ export default async function BillingPage() {
           <p className="text-sm text-[var(--dash-muted)] mb-4">Unlimited events</p>
           <ul className="space-y-2 text-sm text-[var(--dash-muted)] mb-6 flex-1">
             <li>10 domains</li>
-            <li>Everything in Pro ✅</li>
-            <li>GTM Templates ✅ (80+ templates)</li>
-            <li>White-label ✅</li>
-            <li>Priority support ✅</li>
+            <li>Everything in Pro</li>
+            <li>GTM Templates (80+ templates)</li>
+            <li>White-label</li>
+            <li>Priority support</li>
           </ul>
           <a
             href="mailto:hassan@itshassanahmed.com"
@@ -245,16 +243,17 @@ export default async function BillingPage() {
             Contact Hassan
           </a>
         </div>
+        </div>
       </div>
 
       {/* Feature comparison table */}
       <h2 className="text-sm font-medium text-[var(--dash-muted)] uppercase tracking-wider mb-4">
         Feature comparison
       </h2>
-      <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-x-auto">
+      <div className="rounded-xl bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-200/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-[var(--dash-border)]">
+            <tr>
               <th className="text-left px-4 py-3 font-medium text-[var(--dash-muted)]">
                 Feature
               </th>
@@ -292,7 +291,7 @@ export default async function BillingPage() {
                 ['gtm_templates', 'GTM Templates'],
               ] as const
             ).map(([key, label]) => (
-              <tr key={key} className="border-b border-[var(--dash-border)]/80">
+              <tr key={key}>
                 <td className="px-4 py-3 text-[var(--dash-muted)]">{label}</td>
                 <td className="px-4 py-3">
                   {PLANS.free.features[key] ? (

@@ -34,7 +34,7 @@ export default function DashboardShell({ user, trialExpired, children }: Dashboa
             type="button"
             onClick={() => setSidebarCollapsed(true)}
             aria-label="Collapse sidebar"
-            className="rounded-md border border-slate-200 bg-slate-50 p-1 text-slate-500 hover:bg-slate-100 transition-colors shrink-0"
+            className="rounded-md border border-slate-200 bg-slate-50 p-1 text-slate-700 hover:bg-slate-100 transition-colors shrink-0"
           >
             <ChevronLeft className="h-3 w-3" />
           </button>
@@ -59,11 +59,11 @@ export default function DashboardShell({ user, trialExpired, children }: Dashboa
               <p className="truncate text-xs font-semibold text-slate-900">
                 {user.user_metadata?.full_name ?? user.email?.split('@')[0] ?? 'User'}
               </p>
-              <p className="truncate text-[10px] text-slate-500">
+              <p className="truncate text-[10px] text-slate-700">
                 {user.email ?? 'Signed in'}
               </p>
             </div>
-            <ChevronDown className="h-3.5 w-3.5 shrink-0 text-slate-500" />
+            <ChevronDown className="h-3.5 w-3.5 shrink-0 text-slate-700" />
           </div>
         </div>
       </aside>
@@ -73,7 +73,7 @@ export default function DashboardShell({ user, trialExpired, children }: Dashboa
           type="button"
           onClick={() => setSidebarCollapsed(false)}
           aria-label="Expand sidebar"
-          className="fixed left-0 top-4 z-50 rounded-r-md border border-l-0 border-slate-200 bg-slate-50 p-2 text-slate-500 hover:bg-slate-100 transition-colors shadow-sm"
+          className="fixed left-0 top-4 z-50 rounded-r-md border border-l-0 border-slate-200 bg-slate-50 p-2 text-slate-700 hover:bg-slate-100 transition-colors shadow-sm"
         >
           <ChevronRight className="h-4 w-4" />
         </button>

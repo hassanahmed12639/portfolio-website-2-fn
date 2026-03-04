@@ -58,19 +58,19 @@ export default function DeduplicationPage() {
       <h1 className="text-xl font-semibold text-[var(--dash-text)]">Event Deduplication</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+        <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
           <p className="text-sm text-[var(--dash-muted)] mb-1">Total Events</p>
           <p className="text-2xl font-semibold text-[var(--dash-text)]">{data?.total_events ?? 0}</p>
         </div>
-        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+        <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
           <p className="text-sm text-[var(--dash-muted)] mb-1">Duplicates Caught</p>
           <p className="text-2xl font-semibold text-[var(--dash-success)]">{data?.total_duplicates ?? 0}</p>
         </div>
-        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+        <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
           <p className="text-sm text-[var(--dash-muted)] mb-1">Dedup Rate</p>
           <p className="text-2xl font-semibold text-[var(--dash-text)]">{data?.dedup_rate ?? 0}%</p>
         </div>
-        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+        <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
           <p className="text-sm text-[var(--dash-muted)] mb-1">Ad Spend Saved</p>
           <p className="text-2xl font-semibold text-[var(--dash-text)]">
             ${(data?.money_saved ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
@@ -78,7 +78,7 @@ export default function DeduplicationPage() {
         </div>
       </div>
 
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
         <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">Duplicates by Event Name</h2>
         <div className="h-64">
           {barData.length > 0 ? (
@@ -100,7 +100,7 @@ export default function DeduplicationPage() {
         </div>
       </section>
 
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
         <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">Daily Deduplication Trend (last 7 days)</h2>
         <div className="h-64">
           {(data?.daily_trend?.length ?? 0) > 0 ? (
@@ -134,7 +134,7 @@ export default function DeduplicationPage() {
         </div>
       </section>
 
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
         <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">
           Recent Duplicate Events
         </h2>
@@ -172,7 +172,7 @@ export default function DeduplicationPage() {
         </div>
       </section>
 
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
         <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-3">Deduplication Settings</h2>
         <div className="rounded-lg bg-[var(--dash-surface-hover)]/50 border border-[var(--dash-border)] p-4 space-y-2 text-sm text-[var(--dash-muted)]">
           <p>

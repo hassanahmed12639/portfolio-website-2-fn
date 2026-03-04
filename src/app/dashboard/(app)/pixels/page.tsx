@@ -142,7 +142,7 @@ export default function PixelsPage() {
       </div>
 
       {/* Add New Pixel form */}
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6 mb-8">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6 mb-8">
         <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">Add New Pixel</h2>
         <form onSubmit={handleAdd} className="space-y-4 max-w-md">
           <div>
@@ -199,7 +199,7 @@ export default function PixelsPage() {
       </section>
 
       {/* Active Pixels list */}
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6 mb-8">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6 mb-8">
         <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">Your Pixels</h2>
         {pixels.length === 0 ? (
           <p className="text-[var(--dash-muted)] text-sm">No pixels yet. Add one above.</p>
@@ -272,7 +272,7 @@ export default function PixelsPage() {
       </section>
 
       {/* How it works */}
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
         <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">How Multi-Pixel Works</h2>
         <div className="space-y-4 text-sm text-[var(--dash-text)]">
           <p>When TrackHive receives a Purchase event:</p>

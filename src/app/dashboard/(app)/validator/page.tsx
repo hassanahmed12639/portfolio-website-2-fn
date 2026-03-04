@@ -136,7 +136,7 @@ export default function ValidatorPage() {
 
       {/* Section 2 — Input */}
       <section className="mb-8">
-        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+        <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
           <div className="px-4 py-3 border-b border-[var(--dash-border)] flex flex-wrap items-center justify-between gap-3">
             <span className="text-sm font-medium text-[var(--dash-muted)]">Event payload (JSON)</span>
             <div className="flex flex-wrap items-center gap-2">
@@ -213,7 +213,7 @@ export default function ValidatorPage() {
                   {result.willBeAccepted ? 'Meta will accept this event' : 'Fix errors before sending'}
                 </p>
               </div>
-              <div className="rounded-xl border border-[var(--dash-border)] bg-[var(--dash-surface)]/50 p-4">
+              <div className="rounded-xl border border-blue-100/60 bg-gradient-to-br from-blue-50/90 to-sky-50/90 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
                 <p className="text-xs text-[var(--dash-muted)] mb-1">Score</p>
                 <p
                   className={`text-2xl font-bold ${
@@ -223,11 +223,11 @@ export default function ValidatorPage() {
                   {result.score}/100
                 </p>
               </div>
-              <div className="rounded-xl border border-[var(--dash-border)] bg-[var(--dash-surface)]/50 p-4">
+              <div className="rounded-xl border border-blue-100/60 bg-gradient-to-br from-blue-50/90 to-sky-50/90 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
                 <p className="text-xs text-[var(--dash-muted)] mb-1">Match rate</p>
                 <p className="text-2xl font-bold text-[var(--dash-text)]">~{result.estimatedMatchRate}%</p>
               </div>
-              <div className="rounded-xl border border-[var(--dash-border)] bg-[var(--dash-surface)]/50 p-4">
+              <div className="rounded-xl border border-blue-100/60 bg-gradient-to-br from-blue-50/90 to-sky-50/90 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
                 <p className="text-xs text-[var(--dash-muted)] mb-1">Warnings</p>
                 <p className="text-2xl font-bold text-amber-400">{result.warnings.length}</p>
               </div>
@@ -301,7 +301,7 @@ export default function ValidatorPage() {
           {/* Section 4 — Match rate breakdown */}
           <section className="mb-8">
             <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">Match rate breakdown</h2>
-            <div className="rounded-xl border border-[var(--dash-border)] bg-[var(--dash-surface)]/50 p-4 space-y-3">
+            <div className="rounded-xl border border-blue-100/60 bg-gradient-to-br from-blue-50/90 to-sky-50/90 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4 space-y-3">
               {MATCH_RATE_FIELDS.map(({ key, label, pct }) => {
                 const present = getMatchRatePresent(payloadForMatchRate, key)
                 return (
@@ -332,7 +332,7 @@ export default function ValidatorPage() {
           {(result.errors.length > 0 || result.warnings.length > 0 || result.suggestions.length > 0) && (
             <section>
               <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">Fix suggestions</h2>
-              <div className="rounded-xl border border-[var(--dash-border)] bg-[var(--dash-surface-hover)] p-4">
+              <div className="rounded-xl border border-blue-100/60 bg-gradient-to-br from-amber-50/90 to-orange-50/90 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
                 <p className="text-[var(--dash-muted)] text-sm mb-3">
                   Add missing fields to your TrackHive.track() call:
                 </p>

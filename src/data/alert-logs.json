@@ -31,5 +31,38 @@
     "threshold": 70,
     "emailSentTo": "hassanonclouds@gmail.com",
     "status": "sent"
+  },
+  {
+    "id": "693e94c6-e00e-4f6c-aa20-10bef4e4b413",
+    "ruleId": "27e71f00-a23a-459f-82fa-0a08f7411d56",
+    "ruleName": "low scroe alert",
+    "triggeredAt": "2026-03-04T01:16:46.791Z",
+    "condition": "score_below",
+    "value": 9,
+    "threshold": 70,
+    "emailSentTo": "hassanonclouds@gmail.com",
+    "status": "sent"
+  },
+  {
+    "id": "60513b06-4433-403d-86a0-06396746305b",
+    "ruleId": "27e71f00-a23a-459f-82fa-0a08f7411d56",
+    "ruleName": "low scroe alert",
+    "triggeredAt": "2026-03-04T01:16:47.325Z",
+    "condition": "score_below",
+    "value": 9,
+    "threshold": 70,
+    "emailSentTo": "hassanonclouds@gmail.com",
+    "status": "failed"
+  },
+  {
+    "id": "418e3154-243f-40a5-b4a7-5435cb2a60d7",
+    "ruleId": "27e71f00-a23a-459f-82fa-0a08f7411d56",
+    "ruleName": "low scroe alert",
+    "triggeredAt": "2026-03-04T01:16:47.161Z",
+    "condition": "score_below",
+    "value": 9,
+    "threshold": 70,
+    "emailSentTo": "hassanonclouds@gmail.com",
+    "status": "sent"
   }
 ]

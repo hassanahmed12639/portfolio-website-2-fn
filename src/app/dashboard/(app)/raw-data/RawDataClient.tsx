@@ -178,7 +178,7 @@ export default function RawDataClient() {
 
       {tab === 'export' && (
         <div className="space-y-6">
-          <div className="rounded-xl border border-[var(--dash-border)] bg-[var(--dash-surface)]/50 p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="rounded-xl border border-blue-100/60 bg-gradient-to-br from-blue-50/90 to-sky-50/90 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
               <label className="block text-xs text-[var(--dash-muted)] mb-1">From</label>
               <input
@@ -244,7 +244,7 @@ export default function RawDataClient() {
             </button>
           </div>
 
-          <div className="rounded-xl border border-[var(--dash-border)] bg-[var(--dash-surface)]/50 overflow-hidden">
+          <div className="rounded-xl border border-blue-100/60 bg-gradient-to-br from-blue-50/90 to-sky-50/90 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
             <p className="text-xs text-[var(--dash-muted)] p-3 border-b border-[var(--dash-border)]">Preview (first 10 rows)</p>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -314,7 +314,7 @@ export default function RawDataClient() {
               {logsLoading ? 'Loading…' : 'Refresh'}
             </button>
           </div>
-          <div className="rounded-xl border border-[var(--dash-border)] bg-[var(--dash-surface)]/50 overflow-hidden">
+          <div className="rounded-xl border border-blue-100/60 bg-gradient-to-br from-blue-50/90 to-sky-50/90 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
@@ -352,7 +352,7 @@ export default function RawDataClient() {
                 <StatCard label="Top country" value={summary.top_country} />
                 <StatCard label="Top device type" value={summary.top_device_type} />
               </div>
-              <div className="rounded-xl border border-[var(--dash-border)] bg-[var(--dash-surface)]/50 p-5">
+              <div className="rounded-xl border border-blue-100/60 bg-gradient-to-br from-blue-50/90 to-sky-50/90 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5">
                 <h3 className="text-sm font-medium text-[var(--dash-muted)] mb-4">Events per day (last 30 days)</h3>
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
@@ -381,7 +381,7 @@ export default function RawDataClient() {
 function ExportRow({ row }: { row: ExportRow }) {
   const [openEnriched, setOpenEnriched] = useState(false)
   return (
-    <tr className="border-b border-[var(--dash-border)]/50 hover:bg-[var(--dash-surface-hover)]/30">
+    <tr className="hover:bg-[var(--dash-surface-hover)]/30">
       <td className="p-3 text-[var(--dash-muted)] font-mono text-xs">{String(row.event_id).slice(0, 8)}…</td>
       <td className="p-3 text-[var(--dash-muted)]">{row.event_name}</td>
       <td className="p-3 text-[var(--dash-muted)]">{row.platform}</td>
@@ -419,7 +419,7 @@ function ExportRow({ row }: { row: ExportRow }) {
 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-[var(--dash-border)] bg-[var(--dash-surface)]/50 p-4">
+    <div className="rounded-xl border border-blue-100/60 bg-gradient-to-br from-blue-50/90 to-sky-50/90 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
       <p className="text-xs text-[var(--dash-muted)] mb-1">{label}</p>
       <p className="text-lg font-semibold text-[var(--dash-text)] truncate" title={value}>{value}</p>
     </div>
@@ -430,7 +430,7 @@ function LogRow({ log }: { log: LogEntry }) {
   const [openPayload, setOpenPayload] = useState(false)
   const [openResponse, setOpenResponse] = useState(false)
   return (
-    <tr className="border-b border-[var(--dash-border)]/50 hover:bg-[var(--dash-surface-hover)]/30">
+    <tr className="hover:bg-[var(--dash-surface-hover)]/30">
       <td className="p-3 text-[var(--dash-muted)] text-xs whitespace-nowrap">{log.timestamp?.slice(0, 19)}</td>
       <td className="p-3 text-[var(--dash-muted)] capitalize">{log.platform}</td>
       <td className="p-3">

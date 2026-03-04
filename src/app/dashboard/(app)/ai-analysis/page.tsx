@@ -102,7 +102,7 @@ function ReportView({ report }: { report: AnalyzeReport }) {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6 flex flex-col items-center">
+      <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6 flex flex-col items-center">
         <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-3">Overall Tracking Health Score</h2>
         <HealthRing score={report.health_score ?? 0} />
         {report.summary && (
@@ -111,7 +111,7 @@ function ReportView({ report }: { report: AnalyzeReport }) {
       </div>
 
       {missing.length > 0 && (
-        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+        <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
           <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">
             Missing Funnel Events
           </h2>
@@ -128,7 +128,7 @@ function ReportView({ report }: { report: AnalyzeReport }) {
       )}
 
       {duplicates.length > 0 && (
-        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+        <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
           <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">
             Duplicate Events Detected
           </h2>
@@ -145,7 +145,7 @@ function ReportView({ report }: { report: AnalyzeReport }) {
       )}
 
       {missingValue.length > 0 && (
-        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+        <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
           <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">
             Events Missing Value
           </h2>
@@ -162,7 +162,7 @@ function ReportView({ report }: { report: AnalyzeReport }) {
       )}
 
       {funnel.length > 0 && (
-        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+        <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
           <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">
             Funnel Drop-off Analysis
           </h2>
@@ -180,7 +180,7 @@ function ReportView({ report }: { report: AnalyzeReport }) {
       )}
 
       {recs.length > 0 && (
-        <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+        <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
           <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">
             AI Recommendations
           </h2>
@@ -330,7 +330,7 @@ export default function AiAnalysisPage() {
 
       {tab === 'events' && (
         <div className="space-y-6">
-          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+          <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
             <button
               type="button"
               onClick={runEventAnalysis}
@@ -357,7 +357,7 @@ export default function AiAnalysisPage() {
 
       {tab === 'upload' && (
         <div className="space-y-6">
-          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4 space-y-3">
+          <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4 space-y-3">
             <input
               type="file"
               accept=".json,.csv,.txt"
@@ -390,7 +390,7 @@ export default function AiAnalysisPage() {
 
       {tab === 'utm' && (
         <div className="space-y-6">
-          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4 space-y-3">
+          <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4 space-y-3">
             <label className="block text-sm text-[var(--dash-muted)]">Paste your full URL with UTMs</label>
             <textarea
               value={utmUrl}
@@ -414,7 +414,7 @@ export default function AiAnalysisPage() {
             </p>
           )}
           {utmResult && (
-            <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden space-y-4 p-4">
+            <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden space-y-4 p-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <p className="text-xs text-[var(--dash-muted)] mb-1">Original</p>

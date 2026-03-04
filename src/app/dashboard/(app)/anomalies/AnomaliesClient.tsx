@@ -89,7 +89,7 @@ function FixModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" onClick={onClose}>
       <div
-        className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] shadow-xl max-w-lg w-full max-h-[80vh] overflow-auto"
+        className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] shadow-xl max-w-lg w-full max-h-[80vh] overflow-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-4 border-b border-[var(--dash-border)] flex items-center justify-between">
@@ -304,7 +304,7 @@ export default function AnomaliesClient() {
             </div>
           </div>
 
-          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden mb-6">
+          <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden mb-6">
             <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">
               Anomaly Timeline
             </h2>
@@ -337,7 +337,7 @@ export default function AnomaliesClient() {
             )}
           </div>
 
-          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+          <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
             <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">Events per hour (last 24h)</h2>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
@@ -370,7 +370,7 @@ export default function AnomaliesClient() {
 
       {tab === 'validator' && (
         <div className="space-y-6">
-          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-4">
+          <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
             <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-2">Validate an event (JSON)</h2>
             <textarea
               value={validateInput}
@@ -422,7 +422,7 @@ export default function AnomaliesClient() {
             )}
           </div>
 
-          <div className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] overflow-hidden">
+          <div className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
             <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">
               Live feed — recent events (auto-refresh 30s)
             </h2>

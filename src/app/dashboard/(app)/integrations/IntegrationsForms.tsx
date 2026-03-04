@@ -417,7 +417,7 @@ export default function IntegrationsForms({
 
   return (
     <div className="space-y-8 overflow-y-auto">
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
         <div className="flex items-center gap-2 mb-4">
           <h2 className="text-lg font-semibold text-[var(--dash-text)]">Meta CAPI</h2>
           {metaConnected && (
@@ -574,7 +574,7 @@ export default function IntegrationsForms({
         </div>
       </section>
 
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
         <div className="flex items-center gap-2 mb-4">
           <h2 className="text-lg font-semibold text-[var(--dash-text)]">Google Enhanced Conversions</h2>
           {googleConnected && (
@@ -628,7 +628,7 @@ export default function IntegrationsForms({
         </form>
       </section>
 
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
         <div className="flex items-center gap-2 mb-4">
           <span className="text-xl" aria-hidden>🎵</span>
           <h2 className="text-lg font-semibold text-[var(--dash-text)]">TikTok Events API</h2>
@@ -703,7 +703,7 @@ export default function IntegrationsForms({
         </form>
       </section>
 
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
         <div className="flex items-center gap-2 mb-4">
           <span className="text-xl" aria-hidden>👻</span>
           <h2 className="text-lg font-semibold text-[var(--dash-text)]">Snapchat CAPI</h2>
@@ -778,7 +778,7 @@ export default function IntegrationsForms({
         </form>
       </section>
 
-      <section className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] p-6">
+      <section className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
         <div className="flex items-center gap-2 mb-4">
           <span className="text-xl" aria-hidden>📊</span>
           <h2 className="text-lg font-semibold text-[var(--dash-text)]">GA4 (Google Analytics 4)</h2>

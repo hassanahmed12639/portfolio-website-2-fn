@@ -298,7 +298,7 @@ export default function TemplatesClient({
           return (
             <div
               key={t.id}
-              className={`relative rounded-xl border bg-[var(--dash-surface)]/80 overflow-hidden ${
+              className={`relative rounded-xl border bg-gradient-to-br from-violet-50 to-purple-50 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden ${
                 locked
                   ? 'border-[var(--dash-border)] opacity-90'
                   : 'border-[var(--dash-border)] hover:border-[var(--dash-border-strong)]'
@@ -404,7 +404,7 @@ export default function TemplatesClient({
           onClick={() => setPreviewTemplate(null)}
         >
           <div
-            className="rounded-xl bg-[var(--dash-surface)] border border-[var(--dash-border)] shadow-xl max-w-3xl w-full max-h-[90vh] flex flex-col"
+            className="rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] max-w-3xl w-full max-h-[90vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-4 border-b border-[var(--dash-border)] flex items-center justify-between">
