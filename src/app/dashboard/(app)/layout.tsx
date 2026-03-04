@@ -17,7 +17,7 @@ export default async function DashboardAppLayout({
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('plan, is_trial, trial_expires_at')
+    .select('plan, is_trial, trial_expires_at, dashboard_type')
     .eq('id', user.id)
     .single()
 
@@ -28,7 +28,7 @@ export default async function DashboardAppLayout({
 
   return (
     <SessionProvider>
-      <DashboardShell user={user} trialExpired={trialExpired}>
+      <DashboardShell user={user} trialExpired={trialExpired} profile={profile ?? undefined}>
         {children}
       </DashboardShell>
     </SessionProvider>

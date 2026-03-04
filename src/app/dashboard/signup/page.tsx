@@ -57,7 +57,7 @@ export default function SignupPage() {
     }
 
     setLoading(false)
-    router.push('/dashboard')
+    router.push('/onboarding')
     router.refresh()
   }
 

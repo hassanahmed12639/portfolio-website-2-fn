@@ -20,7 +20,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         </div>
         {/* Nav */}
         <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-          <AdminNavItem href="/admin" label="Overview" />
+          <AdminNavItem href="/admin/overview" label="Overview" />
           <AdminNavItem href="/admin/users" label="Users" />
           <AdminNavItem href="/admin/revenue" label="Revenue" />
           <AdminNavItem href="/admin/events" label="Events" />

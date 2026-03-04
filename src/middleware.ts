@@ -17,6 +17,7 @@ export async function middleware(req: NextRequest) {
   const trackHiveRoutes = [
     '/trackhive',
     '/dashboard',
+    '/onboarding',
     '/admin',
     '/pricing',
     '/features',
@@ -34,8 +35,9 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL('/trackhive', req.url))
   }
 
-  // Auth protection for dashboard routes
+  // Auth protection for dashboard and onboarding routes
   const isDashboardRoute = pathname.startsWith('/dashboard')
+  const isOnboardingPage = pathname === '/onboarding'
   const isAuthPage =
     pathname === '/dashboard/login' ||
     pathname === '/dashboard/signup' ||
@@ -47,7 +49,7 @@ export async function middleware(req: NextRequest) {
     pathname === '/admin/logout'
 
   // Skip auth check for public routes
-  if (!isDashboardRoute && !isAdminRoute) {
+  if (!isDashboardRoute && !isAdminRoute && !isOnboardingPage) {
     return res
   }
 
@@ -87,13 +89,26 @@ export async function middleware(req: NextRequest) {
 
   // Redirect to login if no session
   if (!session) {
-    if (isDashboardRoute) {
+    if (isDashboardRoute || isOnboardingPage) {
       const loginUrl = new URL('/dashboard/login', req.url)
       loginUrl.searchParams.set('redirectTo', pathname)
       return NextResponse.redirect(loginUrl)
     }
     if (isAdminRoute) {
       return NextResponse.redirect(new URL('/admin/login', req.url))
+    }
+  }
+
+  // After auth: redirect to onboarding if dashboard and onboarding not completed
+  if (session && isDashboardRoute && !isAuthPage) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('onboarding_completed')
+      .eq('id', session.user.id)
+      .single()
+
+    if (!profile?.onboarding_completed && pathname !== '/onboarding') {
+      return NextResponse.redirect(new URL('/onboarding', req.url))
     }
   }
 

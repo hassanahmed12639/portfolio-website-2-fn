@@ -6,104 +6,80 @@ import { createClient } from '@/lib/supabase/client'
 
 export default function AdminLoginPage() {
   const router = useRouter()
+  const supabase = createClient()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setError(null)
+  const handleLogin = async () => {
     setLoading(true)
-
-    const supabase = createClient()
-    const { data: { user }, error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-
-    if (signInError) {
+    setError('')
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) {
+      setError(error.message)
       setLoading(false)
-      setError(signInError.message)
       return
     }
 
-    if (!user) {
-      setLoading(false)
-      setError('Could not get user')
-      return
-    }
-
+    // Check if admin
     const { data: profile } = await supabase
       .from('profiles')
       .select('is_admin')
-      .eq('id', user.id)
+      .eq('id', data.user.id)
       .single()
 
     if (!profile?.is_admin) {
+      setError('Access denied. Admin only.')
       await supabase.auth.signOut()
       setLoading(false)
-      setError('Access denied. Not an admin account.')
       return
     }
 
-    router.push('/admin')
-    router.refresh()
+    router.push('/admin/overview')
   }
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-sm">
-        <h1 className="text-2xl font-bold text-slate-900 mb-1">TrackHive Admin</h1>
-        <p className="text-slate-500 text-sm mb-8">Internal use only</p>
-
-        <form onSubmit={handleSubmit} className="space-y-5">
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-8 w-full max-w-sm">
+        <div className="flex items-center gap-2 mb-6">
+          <div className="w-8 h-8 bg-blue-600 rounded-lg" />
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-slate-600 mb-1.5">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              autoComplete="email"
-              className="w-full px-4 py-2.5 rounded-lg bg-white border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="you@example.com"
-            />
+            <p className="font-bold text-slate-900 text-sm">TrackHive</p>
+            <p className="text-xs text-red-500 font-semibold">Admin Panel</p>
           </div>
-
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-slate-600 mb-1.5">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              autoComplete="current-password"
-              className="w-full px-4 py-2.5 rounded-lg bg-white border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="••••••••"
-            />
+        </div>
+        <h1 className="text-xl font-bold text-slate-900 mb-1">Admin Login</h1>
+        <p className="text-sm text-slate-500 mb-6">Restricted access only</p>
+        {error && (
+          <div className="bg-red-50 border border-red-100 text-red-600 text-sm px-4 py-3 rounded-xl mb-4">
+            {error}
           </div>
-
-          {error && (
-            <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-4 py-2.5">
-              {error}
-            </p>
-          )}
-
+        )}
+        <div className="space-y-3">
+          <input
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            placeholder="Admin email"
+            className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            placeholder="Password"
+            className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onKeyDown={e => e.key === 'Enter' && handleLogin()}
+          />
           <button
-            type="submit"
+            onClick={handleLogin}
             disabled={loading}
-            className="w-full py-2.5 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-colors disabled:opacity-50"
           >
-            {loading ? 'Signing in…' : 'Sign In'}
+            {loading ? 'Signing in...' : 'Sign In'}
           </button>
-        </form>
+        </div>
       </div>
     </div>
   )

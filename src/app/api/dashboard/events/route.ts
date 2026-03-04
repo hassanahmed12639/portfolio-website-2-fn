@@ -18,6 +18,8 @@ export async function GET(request: NextRequest) {
   const status = searchParams.get('status') || ''
   const dateRange = searchParams.get('date_range') || 'today'
   const search = searchParams.get('search') || ''
+  const limitParam = searchParams.get('limit')
+  const limit = limitParam ? Math.min(500, Math.max(1, parseInt(limitParam, 10) || 500)) : 500
 
   const now = new Date()
   const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate())
@@ -39,7 +41,7 @@ export async function GET(request: NextRequest) {
     .eq('user_id', user.id)
     .gte('created_at', fromIso)
     .order('created_at', { ascending: false })
-    .limit(500)
+    .limit(limit)
 
   if (platform && platform !== 'all') {
     query = query.eq('platform', platform.toLowerCase())

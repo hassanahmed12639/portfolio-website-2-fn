@@ -6,13 +6,16 @@ import DashboardNav from '@/components/dashboard/DashboardNav'
 import { Bell, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 
+type Profile = { dashboard_type?: string | null } | undefined
+
 type DashboardShellProps = {
   user: User
   trialExpired: boolean
+  profile?: Profile
   children: React.ReactNode
 }
 
-export default function DashboardShell({ user, trialExpired, children }: DashboardShellProps) {
+export default function DashboardShell({ user, trialExpired, profile, children }: DashboardShellProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   return (
@@ -39,7 +42,7 @@ export default function DashboardShell({ user, trialExpired, children }: Dashboa
             <ChevronLeft className="h-3 w-3" />
           </button>
         </div>
-        <DashboardNav />
+        <DashboardNav profile={profile} />
         <div className="flex items-center gap-2 px-3 pt-1 pb-3 min-w-[240px]">
           <button
             type="button"
