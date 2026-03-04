@@ -84,6 +84,8 @@ export default function PayPalSubscriptionButton({
         onApprove: function (data: { subscriptionID?: string; subscriptionId?: string }) {
           const id = data.subscriptionID ?? data.subscriptionId
           if (id) {
+            // Match the sample snippet: show alert, then proceed to success state
+            alert(id)
             window.location.href = `${window.location.pathname}?success=true`
           }
         },
