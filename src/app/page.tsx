@@ -1,6 +1,9 @@
 import Footer from '../components/layout/Footer'
 import { FloatingIconsHero } from '../components/sections/Hero'
+import { FeaturesHeadingSection } from '../components/sections/FeaturesHeadingSection'
+import WhatIDoSection from '../components/sections/WhatIDoSection'
 import ScrambleIntroWrapper from '../components/ScrambleIntroWrapper'
+import { HeroWithMarquee } from '../components/sections/HeroWithMarquee'
 
 export default function Home() {
   return (
@@ -13,6 +16,9 @@ export default function Home() {
         ctaText="Get Started"
         ctaHref="#"
       />
+      <FeaturesHeadingSection />
+      <WhatIDoSection />
+      <HeroWithMarquee />
       <Footer />
     </main>
   )
