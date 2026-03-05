@@ -55,7 +55,7 @@ export default function TrackHivePage() {
         <div className="max-w-6xl mx-auto px-5 md:px-6 relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
             {/* Left: headline, description, CTA */}
-            <div className="text-center lg:text-left order-2 lg:order-1">
+            <div className="text-center lg:text-left order-1">
               <div className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 mb-4 md:mb-6">
                 <svg className="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" /></svg>
                 TRACK FOR FAST
@@ -79,7 +79,7 @@ export default function TrackHivePage() {
             </div>
 
             {/* Right: white card + input + social proof */}
-            <div className="order-1 lg:order-2 flex justify-center lg:justify-end">
+            <div className="order-2 flex justify-center lg:justify-end">
               <div className="w-full max-w-md">
                 <div
                   className="rounded-2xl bg-white p-5 shadow-xl border border-slate-100/80"
@@ -133,6 +133,61 @@ export default function TrackHivePage() {
                 {name}
               </span>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* About - Ibnésia-style: pill header, highlighted text block, short viewport */}
+      <section
+        className="py-12 md:py-16 relative overflow-hidden min-h-[320px] md:min-h-[360px] flex flex-col justify-center"
+        style={{
+          background: "linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 35%, #f8fafc 70%, #ffffff 100%)",
+          backgroundImage: `
+            linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 35%, #f8fafc 70%, #ffffff 100%),
+            radial-gradient(ellipse 80% 50% at 20% 40%, rgba(147, 197, 253, 0.08) 0%, transparent 50%),
+            radial-gradient(ellipse 60% 40% at 80% 60%, rgba(191, 219, 254, 0.06) 0%, transparent 50%)
+          `,
+        }}
+      >
+        {/* Subtle background shapes */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -left-20 -top-20 w-80 h-64 rounded-[3rem] border border-slate-200/40" />
+          <div className="absolute right-10 top-1/4 w-72 h-56 rounded-[2.5rem] border border-slate-200/30" />
+          <div className="absolute left-1/3 -bottom-10 w-64 h-48 rounded-[2rem] border border-slate-200/25" />
+        </div>
+
+        <div className="max-w-4xl mx-auto px-5 md:px-6 relative">
+          {/* Pill header */}
+          <div className="flex justify-center mb-8 md:mb-10">
+            <div
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-white border"
+              style={{ backgroundColor: "#3B82F6", borderColor: "#2563eb" }}
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+              ABOUT TRACKHIVE
+            </div>
+          </div>
+
+          {/* Main content with highlighted words */}
+          <div className="text-center mb-8">
+            <p className="text-2xl md:text-3xl lg:text-4xl font-bold leading-snug text-slate-900 max-w-3xl mx-auto">
+              Our team of highly{" "}
+              <span style={{ color: "#0ea5e9" }}>experienced engineers</span>
+              {" "}and{" "}
+              <span style={{ color: "#64748b" }}>specialists</span>
+              {" "}are dedicated to offering the best{" "}
+              <span style={{ color: "#3B82F6" }}>tracking solutions tailored</span>
+              {" "}to your unique marketing{" "}
+              <span style={{ color: "#ec4899" }}>needs.</span>
+            </p>
+          </div>
+
+          {/* Bottom tagline */}
+          <div className="flex justify-end">
+            <p className="text-xs font-medium text-slate-500 tracking-wide flex items-center gap-2">
+              <span className="w-8 h-px bg-slate-400" />
+              ENJOY THE EASE EXPERIENCE WITH TRACKHIVE
+            </p>
           </div>
         </div>
       </section>
