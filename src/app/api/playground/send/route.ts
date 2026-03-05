@@ -201,7 +201,10 @@ export async function POST(request: NextRequest) {
         if (event_id) metaEvent.event_id = event_id
         if (event_source_url) metaEvent.event_source_url = event_source_url
 
-        const metaRequestBody = { data: [metaEvent] }
+        const metaRequestBody: Record<string, unknown> = { data: [metaEvent] }
+        if (process.env.META_TEST_EVENT_CODE) {
+          metaRequestBody.test_event_code = process.env.META_TEST_EVENT_CODE
+        }
         originalPayload = metaRequestBody
 
         const res = await fetch(
