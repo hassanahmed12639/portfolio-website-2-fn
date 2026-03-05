@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function middleware(req: NextRequest) {
-  const res = NextResponse.next()
+  const res = NextResponse.next({ request: req })
   const pathname = req.nextUrl.pathname
   const hostname = req.headers.get('host') || ''
 
@@ -51,37 +51,42 @@ export async function middleware(req: NextRequest) {
   ]
 
   const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route))
-  const isDashboardRoute = pathname.startsWith('/dashboard')
-  const isAdminRoute = pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')
+  const isDashboardRoute = pathname.startsWith('/dashboard') || pathname.includes('/dashboard')
+  const isAdminRoute = (pathname.startsWith('/admin') || pathname.includes('/admin')) && !pathname.includes('/admin/login')
 
-  // Skip auth for public routes
-  if (isPublicRoute || (!isDashboardRoute && !isAdminRoute)) {
+  // Create supabase client and refresh session for any route that might need auth
+  // (includes /_next/data/* RSC fetches for dashboard pages)
+  const needsAuthCheck = isDashboardRoute || isAdminRoute
+  const shouldRunSupabase = isTrackHiveRoute || needsAuthCheck
+
+  let user: { id: string } | null = null
+  if (shouldRunSupabase) {
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookieOptions: { name: 'trackhive-auth-token' },
+        cookies: {
+          getAll() {
+            return req.cookies.getAll()
+          },
+          setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              res.cookies.set(name, value, (options ?? {}) as Record<string, string | number | boolean | Date>)
+            )
+          },
+        },
+      }
+    )
+    const { data } = await supabase.auth.getUser()
+    user = data.user
+  }
+
+  // Skip auth redirect for public routes
+  if (isPublicRoute || !needsAuthCheck) {
     return res
   }
 
-  // Create supabase client using getAll/setAll for proper cookie chunk handling
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookieOptions: { name: 'trackhive-auth-token' },
-      cookies: {
-        getAll() {
-          return req.cookies.getAll()
-        },
-        setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            res.cookies.set(name, value, options ?? {})
-          )
-        },
-      },
-    }
-  )
-
-  // CRITICAL: Use getUser (not getSession) to validate and refresh the token
-  const { data: { user } } = await supabase.auth.getUser()
-
-  // No user - redirect to login
   if (!user) {
     if (isDashboardRoute) {
       const url = new URL('/dashboard/login', req.url)
