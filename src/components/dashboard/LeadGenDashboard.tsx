@@ -48,7 +48,7 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
           <p className="text-sm text-slate-500">Here&apos;s your lead generation overview</p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs bg-orange-50 text-orange-700 border border-orange-100 px-2.5 py-1 rounded-full font-semibold">
+          <span className="text-xs bg-[var(--dash-primary-soft)] text-[var(--dash-primary-strong)] border border-[var(--dash-accent-border)] px-2.5 py-1 rounded-full font-semibold">
             Lead Gen
           </span>
           <Link
@@ -63,13 +63,13 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
       {/* Row 1 — Lead stats */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
         {[
-          { label: 'Total Leads', value: stats?.totalLeads ?? 0, color: 'bg-white border-slate-100' },
-          { label: 'Hot Leads', value: stats?.hotLeads ?? 0, color: 'bg-orange-50 border-orange-100' },
-          { label: 'Good Leads', value: stats?.goodLeads ?? 0, color: 'bg-green-50 border-green-100' },
-          { label: 'Converted', value: stats?.convertedLeads ?? 0, color: 'bg-purple-50 border-purple-100' },
-          { label: 'Meta Signals Sent', value: stats?.metaFeedbackSent ?? 0, color: 'bg-blue-50 border-blue-100' }
+          { label: 'Total Leads', value: stats?.totalLeads ?? 0, color: 'bg-[var(--dash-card)] border-[var(--dash-border)]' },
+          { label: 'Hot Leads', value: stats?.hotLeads ?? 0, color: 'bg-[var(--dash-primary-soft)] border-[var(--dash-accent-border)]' },
+          { label: 'Good Leads', value: stats?.goodLeads ?? 0, color: 'bg-[var(--dash-success-soft)] border-[var(--dash-success-border)]' },
+          { label: 'Converted', value: stats?.convertedLeads ?? 0, color: 'bg-[var(--dash-primary-soft)] border-[var(--dash-accent-border)]' },
+          { label: 'Meta Signals Sent', value: stats?.metaFeedbackSent ?? 0, color: 'bg-[var(--dash-primary-soft)] border-[var(--dash-accent-border)]' }
         ].map(stat => (
-          <div key={stat.label} className={`${stat.color} rounded-2xl border border-slate-200/80 p-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)]`}>
+          <div key={stat.label} className={`dash-card dash-card-gradient-top ${stat.color} rounded-2xl border p-4 shadow-[var(--dash-shadow)]`}>
             <p className="text-2xl font-bold text-slate-900">{loading ? '...' : Number(stat.value)}</p>
             <p className="text-xs text-slate-500 mt-1">{stat.label}</p>
           </div>
@@ -77,18 +77,18 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
       </div>
 
       {/* Row 2 — Funnel visualization */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-[0_1px_2px_rgba(15,23,42,0.05)] mb-6">
+      <div className="dash-card dash-card-gradient-top bg-[var(--dash-card)] rounded-2xl border border-[var(--dash-border)] p-5 shadow-[var(--dash-shadow)] mb-6">
         <div className="flex items-center justify-between mb-4">
           <p className="font-semibold text-slate-900">Lead Funnel</p>
-          <Link href="/dashboard/leads" className="text-xs text-blue-600">Manage leads →</Link>
+          <Link href="/dashboard/leads" className="text-xs font-medium text-[var(--dash-primary-strong)] hover:text-[var(--dash-primary)]">Manage leads →</Link>
         </div>
         <div className="flex items-center gap-2">
           {[
             { stage: 'New', count: stats?.stageNew ?? 0, color: 'bg-slate-200' },
-            { stage: 'Contacted', count: stats?.stageContacted ?? 0, color: 'bg-blue-300' },
-            { stage: 'Qualified', count: stats?.stageQualified ?? 0, color: 'bg-yellow-300' },
-            { stage: 'Proposal', count: stats?.stageProposal ?? 0, color: 'bg-orange-300' },
-            { stage: 'Converted', count: stats?.stageConverted ?? 0, color: 'bg-green-400' }
+            { stage: 'Contacted', count: stats?.stageContacted ?? 0, color: 'bg-[var(--dash-primary-soft-strong)]' },
+            { stage: 'Qualified', count: stats?.stageQualified ?? 0, color: 'bg-[var(--dash-primary-soft)]' },
+            { stage: 'Proposal', count: stats?.stageProposal ?? 0, color: 'bg-[var(--dash-primary-soft-strong)]' },
+            { stage: 'Converted', count: stats?.stageConverted ?? 0, color: 'bg-[var(--dash-success-soft)]' }
           ].map((stage) => (
             <div key={stage.stage} className="flex-1 text-center">
               <div className={`${stage.color} rounded-lg py-3 mb-2`}>
@@ -104,10 +104,10 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
 
         {/* Recent leads */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-[0_1px_2px_rgba(15,23,42,0.05)] overflow-hidden">
-          <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+        <div className="dash-card dash-card-gradient-top bg-[var(--dash-card)] rounded-2xl border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
+          <div className="px-5 py-4 border-b border-[var(--dash-border)] flex items-center justify-between" style={{ background: 'var(--dash-gradient-header)' }}>
             <p className="font-semibold text-slate-900">Recent Leads</p>
-            <Link href="/dashboard/leads" className="text-xs text-blue-600 hover:text-blue-700">View all →</Link>
+            <Link href="/dashboard/leads" className="text-xs font-medium text-[var(--dash-primary-strong)] hover:text-[var(--dash-primary)]">View all →</Link>
           </div>
           <div className="divide-y divide-slate-50">
             {loading ? (
@@ -150,7 +150,7 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
         </div>
 
         {/* Lead gen quick actions */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
+        <div className="dash-card dash-card-gradient-top bg-[var(--dash-card)] rounded-2xl border border-[var(--dash-border)] p-5 shadow-[var(--dash-shadow)]">
           <p className="font-semibold text-slate-900 mb-4">Quick Actions</p>
           <div className="space-y-2">
             {[
@@ -164,7 +164,7 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
               <Link
                 key={action.href}
                 href={action.href}
-                className="flex items-center gap-3 p-3 bg-slate-50 hover:bg-orange-50 rounded-xl transition-colors group"
+                className="flex items-center gap-3 p-3 bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-primary-soft)] rounded-xl transition-colors group"
               >
                 <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center border border-slate-100 shrink-0">
                   {action.icon === 'user' && (
@@ -199,9 +199,9 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-semibold text-slate-900">{action.label}</p>
-                  <p className="text-xs text-slate-400">{action.desc}</p>
+                  <p className="text-xs text-slate-700">{action.desc}</p>
                 </div>
-                <span className="text-slate-300 group-hover:text-orange-500 group-hover:translate-x-0.5 transition-all">→</span>
+                <span className="text-slate-300 group-hover:text-[var(--dash-primary)] group-hover:translate-x-0.5 transition-all">→</span>
               </Link>
             ))}
           </div>
@@ -212,33 +212,33 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
         {/* Meta feedback loop */}
-        <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl p-5 text-white">
-          <p className="font-bold text-lg mb-1">Meta Feedback Loop</p>
-          <p className="text-blue-200 text-sm mb-4">Send lead quality signals back to Meta</p>
+        <div className="dash-card-hero rounded-xl p-5 border border-[var(--dash-border)]" style={{ background: 'linear-gradient(135deg, rgba(170,255,0,0.2) 0%, rgba(170,255,0,0.06) 50%, rgba(15,15,15,0.04) 100%)' }}>
+          <p className="font-bold text-lg mb-1 text-slate-900">Meta Feedback Loop</p>
+          <p className="text-slate-600 text-sm mb-4">Send lead quality signals back to Meta</p>
           <div className="space-y-2 mb-4">
             {[
               { label: 'Signals sent this month', value: loading ? '...' : (stats?.metaFeedbackSent ?? 0) },
               { label: 'Conversion rate', value: loading ? '...' : `${stats?.conversionRate ?? 0}%` }
             ].map(item => (
               <div key={item.label} className="flex justify-between text-sm">
-                <span className="text-blue-200">{item.label}</span>
-                <span className="font-bold">{String(item.value)}</span>
+                <span className="text-slate-600">{item.label}</span>
+                <span className="font-bold text-slate-900">{String(item.value)}</span>
               </div>
             ))}
           </div>
           <Link
             href="/dashboard/leads"
-            className="bg-white/20 hover:bg-white/30 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors inline-block"
+            className="bg-[var(--dash-primary)] hover:bg-[var(--dash-accent-hover)] text-[#0F0F0F] text-sm font-semibold px-4 py-2 rounded-lg transition-colors inline-block"
           >
             Score Your Leads →
           </Link>
         </div>
 
         {/* Install snippet */}
-        <div className="bg-slate-900 rounded-xl p-5 text-white">
-          <p className="font-bold mb-1">Capture Leads from Your Website</p>
-          <p className="text-slate-400 text-sm mb-3">Fire Lead events from your form submissions</p>
-          <div className="bg-slate-800 rounded-lg p-3 font-mono text-xs text-green-400 mb-3 overflow-x-auto">
+        <div className="rounded-xl p-5 border border-slate-700" style={{ background: '#0F0F0F' }}>
+          <p className="font-bold mb-1 text-white">Capture Leads from Your Website</p>
+          <p className="text-slate-300 text-sm mb-3">Fire Lead events from your form submissions</p>
+          <div className="bg-slate-800 rounded-lg p-3 font-mono text-xs text-[var(--dash-neon)] mb-3 overflow-x-auto">
             {`trackhive('track', 'Lead', {
   email: 'user@email.com',
   phone: '+1234567890'
@@ -246,7 +246,7 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
           </div>
           <Link
             href="/docs"
-            className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors inline-block"
+            className="bg-[var(--dash-primary)] hover:bg-[var(--dash-accent-hover)] text-[#0F0F0F] text-sm font-semibold px-4 py-2 rounded-lg transition-colors inline-block"
           >
             View Documentation →
           </Link>

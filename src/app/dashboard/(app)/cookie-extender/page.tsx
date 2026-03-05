@@ -7,18 +7,17 @@ export default async function CookieExtenderPage() {
   const supabase = await createClient()
   const { data: { session } } = await supabase.auth.getSession()
   const user = session?.user
-  if (!user) return null
 
   const { data: profile } = await supabase
     .from('profiles')
     .select('api_key, plan, is_trial, trial_expires_at')
-    .eq('id', user.id)
+    .eq('id', user!.id)
     .single()
 
   const { data: settings } = await supabase
     .from('cookie_settings')
     .select('cookie_lifetime_days, cookie_name, is_active')
-    .eq('user_id', user.id)
+    .eq('user_id', user!.id)
     .single()
 
   const apiKey = profile?.api_key ?? ''

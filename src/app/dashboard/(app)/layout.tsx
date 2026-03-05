@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import DashboardShell from '@/components/dashboard/DashboardShell'
 import SessionProvider from '@/components/SessionProvider'
+import { redirect } from 'next/navigation'
 
 export default async function DashboardAppLayout({
   children,
@@ -12,13 +13,7 @@ export default async function DashboardAppLayout({
   const user = session?.user
 
   if (!user) {
-    return (
-      <SessionProvider>
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-          <div className="animate-pulse text-slate-500">Loading...</div>
-        </div>
-      </SessionProvider>
-    )
+    redirect('/dashboard/login')
   }
 
   const { data: profile } = await supabase

@@ -7,12 +7,11 @@ export default async function LeadsPage() {
   const supabase = await createClient()
   const { data: { session } } = await supabase.auth.getSession()
   const user = session?.user
-  if (!user) return null
 
   const { data: profile } = await supabase
     .from('profiles')
     .select('dashboard_type')
-    .eq('id', user.id)
+    .eq('id', user!.id)
     .single()
 
   if (profile?.dashboard_type !== 'leadgen') {
@@ -34,7 +33,7 @@ export default async function LeadsPage() {
   const { data: leads } = await supabase
     .from('leads')
     .select('*')
-    .eq('user_id', user.id)
+    .eq('user_id', user!.id)
     .order('created_at', { ascending: false })
     .limit(50)
 

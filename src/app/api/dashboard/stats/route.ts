@@ -15,7 +15,7 @@ export async function GET() {
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
     const startOfMonthIso = startOfMonth.toISOString()
 
-    // Events: count this month, revenue (Purchase value sum), purchases count, by platform
+    // Events: count this month, revenue (Purchase value sum), purchases count, by platform, delivery status
     const [
       eventsResult,
       purchaseEventsResult,

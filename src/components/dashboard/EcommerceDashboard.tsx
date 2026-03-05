@@ -31,7 +31,7 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
           <p className="text-sm text-slate-500">Here&apos;s your e-commerce tracking overview</p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs bg-blue-50 text-blue-700 border border-blue-100 px-2.5 py-1 rounded-full font-semibold">
+          <span className="text-xs border px-2.5 py-1 rounded-full font-semibold bg-[var(--dash-primary-soft)] text-[var(--dash-primary-strong)] border-[var(--dash-accent-border)]">
             🛍️ E-Commerce
           </span>
           <Link
@@ -50,32 +50,32 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
             label: 'Total Revenue Tracked',
             value: loading ? '...' : `$${Number(stats?.totalRevenue ?? 0).toLocaleString()}`,
             icon: '💰',
-            color: 'bg-green-50 border-green-100',
-            textColor: 'text-green-700'
+            color: 'bg-[var(--dash-success-soft)] border-[var(--dash-success-border)]',
+            textColor: 'text-[var(--dash-success-strong)]'
           },
           {
             label: 'Purchases',
             value: loading ? '...' : Number(stats?.purchases ?? 0),
             icon: '🛒',
-            color: 'bg-blue-50 border-blue-100',
-            textColor: 'text-blue-700'
+            color: 'bg-[var(--dash-primary-soft)] border-[var(--dash-accent-border)]',
+            textColor: 'text-[var(--dash-primary-strong)]'
           },
           {
             label: 'Events This Month',
             value: loading ? '...' : Number(stats?.totalEvents ?? 0).toLocaleString(),
             icon: '⚡',
-            color: 'bg-white border-slate-100',
+            color: 'bg-[var(--dash-card)] border-[var(--dash-border)]',
             textColor: 'text-slate-900'
           },
           {
             label: 'Match Rate',
             value: loading ? '...' : `${stats?.matchRate ?? 0}%`,
             icon: '🎯',
-            color: 'bg-purple-50 border-purple-100',
-            textColor: 'text-purple-700'
+            color: 'bg-[var(--dash-primary-soft)] border-[var(--dash-accent-border)]',
+            textColor: 'text-[var(--dash-primary-strong)]'
           }
         ].map(stat => (
-          <div key={stat.label} className={`${stat.color} rounded-2xl border border-slate-200/80 p-5 shadow-[0_1px_2px_rgba(15,23,42,0.05)]`}>
+          <div key={stat.label} className={`dash-card dash-card-gradient-top ${stat.color} rounded-2xl border p-5 shadow-[var(--dash-shadow)]`}>
             <div className="flex items-center justify-between mb-2">
               <span className="text-xl">{stat.icon}</span>
             </div>
@@ -92,13 +92,13 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
           { name: 'TikTok Events API', icon: '🎵', status: 'connected', events: Number(stats?.tiktokEvents ?? 0) },
           { name: 'Google Enhanced', icon: '🔍', status: 'connected', events: Number(stats?.googleEvents ?? 0) }
         ].map(platform => (
-          <div key={platform.name} className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
+          <div key={platform.name} className="dash-card dash-card-gradient-top bg-[var(--dash-card)] rounded-2xl border border-[var(--dash-border)] p-5 shadow-[var(--dash-shadow)]">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <span className="text-xl">{platform.icon}</span>
                 <p className="font-semibold text-slate-900 text-sm">{platform.name}</p>
               </div>
-              <span className="text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded-full font-semibold">
+              <span className="text-xs bg-[var(--dash-success-soft)] text-[var(--dash-success-strong)] px-2 py-0.5 rounded-full font-semibold">
                 ✅ Live
               </span>
             </div>
@@ -112,10 +112,10 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
 
         {/* Recent events */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-[0_1px_2px_rgba(15,23,42,0.05)] overflow-hidden">
-          <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+        <div className="dash-card dash-card-gradient-top bg-[var(--dash-card)] rounded-2xl border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
+          <div className="px-5 py-4 border-b border-[var(--dash-border)] flex items-center justify-between" style={{ background: 'var(--dash-gradient-header)' }}>
             <p className="font-semibold text-slate-900">Recent Events</p>
-            <Link href="/dashboard/logs" className="text-xs text-blue-600 hover:text-blue-700">View all →</Link>
+            <Link href="/dashboard/logs" className="text-xs font-medium text-[var(--dash-primary-strong)] hover:text-[var(--dash-primary)]">View all →</Link>
           </div>
           <div className="divide-y divide-slate-50">
             {loading ? (
@@ -132,12 +132,12 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
                 </div>
                 <div className="flex items-center gap-2">
                   {event.value != null && event.value > 0 && (
-                    <span className="text-xs font-semibold text-green-700 bg-green-50 px-2 py-0.5 rounded-full">
+                    <span className="text-xs font-semibold text-[var(--dash-success-strong)] bg-[var(--dash-success-soft)] px-2 py-0.5 rounded-full">
                       ${event.value}
                     </span>
                   )}
                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                    event.meta_status === 'sent' ? 'bg-blue-50 text-blue-600' : 'bg-slate-100 text-slate-400'
+                    event.meta_status === 'sent' ? 'bg-[var(--dash-primary-soft)] text-[var(--dash-primary-strong)]' : 'bg-slate-100 text-slate-400'
                   }`}>Meta</span>
                 </div>
               </div>
@@ -146,7 +146,7 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
         </div>
 
         {/* Ecom quick actions */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
+        <div className="dash-card dash-card-gradient-top bg-[var(--dash-card)] rounded-2xl border border-[var(--dash-border)] p-5 shadow-[var(--dash-shadow)]">
           <p className="font-semibold text-slate-900 mb-4">Quick Actions</p>
           <div className="space-y-2">
             {[
@@ -160,14 +160,14 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
               <Link
                 key={action.href}
                 href={action.href}
-                className="flex items-center gap-3 p-3 bg-slate-50 hover:bg-blue-50 rounded-xl transition-colors group"
+                className="flex items-center gap-3 p-3 bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-primary-soft)] rounded-xl transition-colors group"
               >
                 <span className="text-lg">{action.icon}</span>
                 <div className="flex-1">
                   <p className="text-sm font-semibold text-slate-900">{action.label}</p>
                   <p className="text-xs text-slate-400">{action.desc}</p>
                 </div>
-                <span className="text-slate-300 group-hover:text-blue-500 group-hover:translate-x-0.5 transition-all">→</span>
+                <span className="text-slate-300 group-hover:text-[var(--dash-primary)] group-hover:translate-x-0.5 transition-all">→</span>
               </Link>
             ))}
           </div>
@@ -178,31 +178,31 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
         {/* Data quality card */}
-        <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl p-5 text-white">
-          <p className="font-bold text-lg mb-1">📊 Data Quality Score</p>
-          <p className="text-blue-200 text-sm mb-4">Your current Meta match rate</p>
-          <p className="text-5xl font-black mb-1">{loading ? '...' : `${stats?.matchRate ?? 0}%`}</p>
-          <p className="text-blue-200 text-xs mb-4">
+        <div className="dash-card-hero rounded-xl p-5 border border-[var(--dash-border)]" style={{ background: 'linear-gradient(135deg, rgba(170,255,0,0.2) 0%, rgba(170,255,0,0.06) 50%, rgba(15,15,15,0.04) 100%)' }}>
+          <p className="font-bold text-lg mb-1 text-slate-900">📊 Data Quality Score</p>
+          <p className="text-slate-600 text-sm mb-4">Your current Meta match rate</p>
+          <p className="text-5xl font-black mb-1 text-slate-900">{loading ? '...' : `${stats?.matchRate ?? 0}%`}</p>
+          <p className="text-slate-600 text-xs mb-4">
             {Number(stats?.matchRate ?? 0) >= 70 ? '🟢 Good' : Number(stats?.matchRate ?? 0) >= 50 ? '🟡 Average' : '🔴 Needs improvement'}
           </p>
           <Link
             href="/dashboard/data-quality"
-            className="bg-white/20 hover:bg-white/30 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors inline-block"
+            className="bg-[var(--dash-primary)] hover:bg-[var(--dash-accent-hover)] text-[#0F0F0F] text-sm font-semibold px-4 py-2 rounded-lg transition-colors inline-block"
           >
             Improve Score →
           </Link>
         </div>
 
         {/* Install snippet */}
-        <div className="bg-slate-900 rounded-xl p-5 text-white">
-          <p className="font-bold mb-1">🔧 Install Tracking Script</p>
+        <div className="dash-card bg-[#0F0F0F] rounded-xl p-5 border border-slate-700">
+          <p className="font-bold mb-1 text-white">🔧 Install Tracking Script</p>
           <p className="text-slate-400 text-sm mb-3">Add to your website&apos;s &lt;head&gt; tag</p>
-          <div className="bg-slate-800 rounded-lg p-3 font-mono text-xs text-green-400 mb-3 overflow-x-auto">
+          <div className="bg-slate-800 rounded-lg p-3 font-mono text-xs text-[var(--dash-neon)] mb-3 overflow-x-auto">
             {`<script src="https://track.itshassanahmed.com/th.js?id=YOUR_PIXEL_ID"></script>`}
           </div>
           <Link
             href="/dashboard/pixels"
-            className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors inline-block"
+            className="bg-[var(--dash-primary)] hover:bg-[var(--dash-accent-hover)] text-[#0F0F0F] text-sm font-semibold px-4 py-2 rounded-lg transition-colors inline-block"
           >
             Get Your Pixel ID →
           </Link>

@@ -5,12 +5,11 @@ export default async function IntegrationsPage() {
   const supabase = await createClient()
   const { data: { session } } = await supabase.auth.getSession()
   const user = session?.user
-  if (!user) return null
 
   const { data: integrations } = await supabase
     .from('integrations')
     .select('platform, pixel_id, access_token, tag_id, meta_test_event_code, conversion_label')
-    .eq('user_id', user.id)
+    .eq('user_id', user!.id)
 
   const startOfMonth = new Date()
   startOfMonth.setDate(1)
@@ -18,14 +17,14 @@ export default async function IntegrationsPage() {
   const { count: activePixelsCount } = await supabase
     .from('pixels')
     .select('id', { count: 'exact', head: true })
-    .eq('user_id', user.id)
+    .eq('user_id', user!.id)
     .eq('platform', 'meta')
     .eq('is_active', true)
 
   const { count: metaFbclidCount } = await supabase
     .from('events')
     .select('id', { count: 'exact', head: true })
-    .eq('user_id', user.id)
+    .eq('user_id', user!.id)
     .not('fbclid', 'is', null)
     .gte('created_at', startOfMonth.toISOString())
 

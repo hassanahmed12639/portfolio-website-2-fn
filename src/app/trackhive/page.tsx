@@ -89,9 +89,6 @@ export default function TrackHivePage() {
                     <span className="text-slate-400 text-sm flex-1 truncate">
                       Send events to Meta, Google, TikTok every morning
                     </span>
-                    <button type="button" className="p-1.5 text-slate-400 hover:text-slate-600" aria-label="Voice">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v0m0 0v7m0-7h7" /></svg>
-                    </button>
                     <button
                       type="button"
                       className="p-2 rounded-full bg-[#3B82F6] text-white hover:bg-[#2563eb] transition-colors"
@@ -192,107 +189,94 @@ export default function TrackHivePage() {
         </div>
       </section>
 
-      {/* Features - Clause style: FEATURES tag, title, 4-block grid */}
-      <section id="features" className="py-12 md:py-16" style={{ backgroundColor: "#f8fafc" }}>
-        <div className="max-w-6xl mx-auto px-5 md:px-6">
-          <div className="text-center mb-10 md:mb-14">
-            <div
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold mb-4 md:mb-6"
-              style={{ backgroundColor: "#eff6ff", border: "1px solid #bfdbfe", color: "#1d4ed8" }}
-            >
-              <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
-              FEATURES
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: "#0f172a" }}>
-              Latest advanced tech to capture every conversion
+      {/* Feature Cards Section - 1 row 3 cards, clean minimal SaaS style */}
+      <section id="features" className="py-24 bg-white">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <span className="text-xs font-semibold text-blue-600 uppercase tracking-widest bg-blue-50 px-3 py-1.5 rounded-full">
+              Everything You Need
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mt-4 mb-4">
+              Built for serious advertisers
             </h2>
-            <p className="text-lg max-w-2xl mx-auto" style={{ color: "#475569" }}>
-              Maximize match rates and attribution with server-side tracking, AI analysis, and alerts—without replacing your existing tools.
+            <p className="text-slate-500 max-w-xl mx-auto text-lg">
+              Stop losing conversions to ad blockers and browser restrictions. TrackHive sends your data server-side, every time.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Block 1: Dynamic dashboard */}
-            <div
-              className="rounded-2xl p-6 lg:p-8 border bg-white"
-              style={{ borderColor: "#e5e7eb", boxShadow: "0 1px 2px rgba(15,23,42,0.06)" }}
-            >
-              <h3 className="text-xl font-bold mb-3" style={{ color: "#0f172a" }}>
-                Dynamic dashboard
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="bg-slate-50 rounded-2xl p-7 border border-slate-100 hover:border-blue-200 hover:shadow-md transition-all duration-200 group">
+              <div className="w-8 h-0.5 bg-blue-600 mb-6 group-hover:w-12 transition-all duration-200" />
+              <h3 className="text-lg font-bold text-slate-900 mb-3">
+                Server-Side Tracking
               </h3>
-              <p className="text-sm mb-6 leading-relaxed" style={{ color: "#475569" }}>
-                TrackHive gives you live events, match rates, and data quality in one place—so you see exactly what’s working across Meta, Google, TikTok and more.
+              <p className="text-slate-500 text-sm leading-relaxed">
+                Send events directly from your server to Meta, TikTok and Google. Ad blockers, iOS 14 restrictions and browser privacy settings cannot interfere.
               </p>
-              <Link
-                href="/dashboard/signup"
-                className="inline-block font-semibold text-sm px-4 py-2 rounded-lg text-white"
-                style={{ backgroundColor: "#1d4ed8" }}
-              >
-                Explore all
-              </Link>
             </div>
 
-            {/* Block 2: Chart / stats */}
-            <div
-              className="rounded-2xl p-6 lg:p-8 border bg-white"
-              style={{ borderColor: "#e5e7eb", boxShadow: "0 1px 2px rgba(15,23,42,0.06)" }}
-            >
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-medium" style={{ color: "#475569" }}>Match rate</span>
-                <div className="flex -space-x-2">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="w-8 h-8 rounded-full bg-slate-300 border-2 border-white" />
-                  ))}
-                </div>
-              </div>
-              <div className="flex items-end gap-1.5 h-32">
-                {[40, 55, 45, 65, 58, 72, 68, 80, 75, 90].map((h, i) => (
-                  <div
-                    key={i}
-                    className="flex-1 rounded-t"
-                    style={{
-                      height: `${h}%`,
-                      backgroundColor: i === 7 ? "#1d4ed8" : "#e2e8f0",
-                    }}
-                  />
-                ))}
-              </div>
-              <p className="text-xs mt-2" style={{ color: "#94a3b8" }}>0 · 2K · 6K · 10K</p>
+            <div className="bg-slate-50 rounded-2xl p-7 border border-slate-100 hover:border-blue-200 hover:shadow-md transition-all duration-200 group">
+              <div className="w-8 h-0.5 bg-blue-600 mb-6 group-hover:w-12 transition-all duration-200" />
+              <h3 className="text-lg font-bold text-slate-900 mb-3">
+                85%+ Match Rate
+              </h3>
+              <p className="text-slate-500 text-sm leading-relaxed">
+                Achieve industry-leading match rates on Meta CAPI with automatic fbp, fbc and fbclid capture. Better matching means better optimization.
+              </p>
             </div>
 
-            {/* Block 3: Smart notifications */}
-            <div
-              className="rounded-2xl p-6 lg:p-8 border bg-white"
-              style={{ borderColor: "#e5e7eb", boxShadow: "0 1px 2px rgba(15,23,42,0.06)" }}
-            >
-              <h3 className="text-xl font-bold mb-3" style={{ color: "#0f172a" }}>
-                Smart notifications
+            <div className="bg-slate-50 rounded-2xl p-7 border border-slate-100 hover:border-blue-200 hover:shadow-md transition-all duration-200 group">
+              <div className="w-8 h-0.5 bg-blue-600 mb-6 group-hover:w-12 transition-all duration-200" />
+              <h3 className="text-lg font-bold text-slate-900 mb-3">
+                All Platforms, One Tool
               </h3>
-              <p className="text-sm mb-6 leading-relaxed" style={{ color: "#475569" }}>
-                Get alerts when tracking breaks, match rate drops, or anomalies appear—via email or in-dashboard so you can fix issues fast.
+              <p className="text-slate-500 text-sm leading-relaxed">
+                Meta CAPI, TikTok Events API, Google Enhanced Conversions and GA4 all fire simultaneously from a single event. No duplicate setup needed.
               </p>
-              <div className="flex items-center justify-between text-xs" style={{ color: "#94a3b8" }}>
-                <span>Email notification</span>
-                <span>Save</span>
-              </div>
             </div>
 
-            {/* Block 4: Task / event management */}
-            <div
-              className="rounded-2xl p-6 lg:p-8 border bg-white"
-              style={{ borderColor: "#e5e7eb", boxShadow: "0 1px 2px rgba(15,23,42,0.06)" }}
-            >
-              <h3 className="text-xl font-bold mb-3" style={{ color: "#0f172a" }}>
-                Event replay & retry
+            <div className="bg-slate-50 rounded-2xl p-7 border border-slate-100 hover:border-blue-200 hover:shadow-md transition-all duration-200 group">
+              <div className="w-8 h-0.5 bg-blue-600 mb-6 group-hover:w-12 transition-all duration-200" />
+              <h3 className="text-lg font-bold text-slate-900 mb-3">
+                Lead Scoring & Feedback Loop
               </h3>
-              <p className="text-sm mb-6 leading-relaxed" style={{ color: "#475569" }}>
-                Failed events are retried automatically. Replay from logs, manage deduplication, and keep every conversion in sync across platforms.
+              <p className="text-slate-500 text-sm leading-relaxed">
+                Score leads as Good, Bad or Hot and send quality signals back to Meta automatically. Train the algorithm to find more buyers, not just form fillers.
               </p>
-              <div className="flex items-center justify-between text-xs" style={{ color: "#94a3b8" }}>
-                <span>Activity</span>
-                <span>+ Message</span>
-              </div>
             </div>
+
+            <div className="bg-slate-50 rounded-2xl p-7 border border-slate-100 hover:border-blue-200 hover:shadow-md transition-all duration-200 group">
+              <div className="w-8 h-0.5 bg-blue-600 mb-6 group-hover:w-12 transition-all duration-200" />
+              <h3 className="text-lg font-bold text-slate-900 mb-3">
+                Real-Time Monitoring
+              </h3>
+              <p className="text-slate-500 text-sm leading-relaxed">
+                Watch events fire live, detect anomalies instantly and receive email alerts before tracking issues hurt your ROAS. Full visibility at all times.
+              </p>
+            </div>
+
+            <div className="bg-slate-50 rounded-2xl p-7 border border-slate-100 hover:border-blue-200 hover:shadow-md transition-all duration-200 group">
+              <div className="w-8 h-0.5 bg-blue-600 mb-6 group-hover:w-12 transition-all duration-200" />
+              <h3 className="text-lg font-bold text-slate-900 mb-3">
+                Live in 5 Minutes
+              </h3>
+              <p className="text-slate-500 text-sm leading-relaxed">
+                Add one script tag to your website and you are tracking server-side immediately. No complex infrastructure, no DevOps knowledge required.
+              </p>
+            </div>
+          </div>
+
+          <div className="text-center mt-12">
+            <Link
+              href="/dashboard/signup"
+              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors text-sm"
+            >
+              Start tracking for free
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </Link>
+            <p className="text-xs text-slate-400 mt-3">Free forever. No credit card required.</p>
           </div>
         </div>
       </section>
@@ -336,6 +320,90 @@ export default function TrackHivePage() {
                 />
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Two-column: dashboard visual + headline, description, CTA, stat cards */}
+      <section className="py-16 md:py-24 bg-slate-50/50">
+        <div className="max-w-6xl mx-auto px-5 md:px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+            {/* Left: dashboard-style card */}
+            <div className="order-2 lg:order-1">
+              <div
+                className="rounded-2xl bg-white p-6 shadow-lg border border-slate-100 overflow-hidden"
+                style={{ boxShadow: "0 4px 24px -4px rgba(15,23,42,0.08), 0 0 0 1px rgba(15,23,42,0.04)" }}
+              >
+                <h3 className="text-lg font-bold text-slate-900 mb-4">Ecommerce conversion tracking</h3>
+                <p className="text-2xl font-bold text-slate-900 mb-1">85.2<span className="text-sm font-normal text-slate-500 ml-1">% match rate</span></p>
+                <div className="flex gap-1 h-3 rounded-full overflow-hidden bg-slate-100 mb-6">
+                  <div className="flex-1 rounded-full bg-blue-500" style={{ minWidth: "18%" }} />
+                  <div className="flex-1 rounded-full bg-blue-400" style={{ minWidth: "22%" }} />
+                  <div className="flex-1 rounded-full bg-blue-600" style={{ minWidth: "25%" }} />
+                  <div className="flex-1 rounded-full bg-slate-300" style={{ minWidth: "20%" }} />
+                  <div className="flex-1 rounded-full bg-slate-200" style={{ minWidth: "15%" }} />
+                </div>
+                <ul className="space-y-2 text-sm text-slate-600 mb-4">
+                  {[
+                    { label: "Purchase", value: "14,250" },
+                    { label: "Add to cart", value: "4,250" },
+                    { label: "View content", value: "3,250" },
+                    { label: "Initiate checkout", value: "12,250" },
+                  ].map(({ label, value }) => (
+                    <li key={label} className="flex justify-between items-center">
+                      <span>{label}</span>
+                      <span className="font-semibold text-slate-900">{value}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-3 flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-medium text-slate-500">Conversions sent</p>
+                    <p className="text-xl font-bold text-slate-900">24,360</p>
+                  </div>
+                  <div className="text-right">
+                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
+                      +15%
+                    </span>
+                    <p className="text-xs text-slate-500">124 orders today</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: headline, description, CTA, stat cards */}
+            <div className="order-1 lg:order-2">
+              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight mb-4">
+                Recover lost sales and improve ROAS with server-side ecommerce tracking
+              </h2>
+              <p className="text-slate-600 text-base md:text-lg mb-6 max-w-lg">
+                Stop losing purchase and add-to-cart events to ad blockers and iOS. TrackHive sends every conversion from your store to Meta, TikTok and Google—so your ads optimize on real sales.
+              </p>
+              <Link
+                href="/features"
+                className="inline-flex items-center gap-2 text-blue-600 font-semibold hover:text-blue-700 transition-colors mb-8"
+              >
+                Read more about it
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+              </Link>
+              <div className="grid grid-cols-3 gap-4">
+                {[
+                  { value: "85%+", label: "Match rate" },
+                  { value: "5 min", label: "Setup time" },
+                  { value: "50K+", label: "Ecommerce events" },
+                ].map(({ value, label }) => (
+                  <div
+                    key={label}
+                    className="rounded-2xl bg-white border border-slate-100 px-5 py-4 text-center"
+                    style={{ boxShadow: "0 1px 3px rgba(15,23,42,0.06)" }}
+                  >
+                    <p className="text-2xl font-bold text-slate-900">{value}</p>
+                    <p className="text-sm font-medium text-slate-500 mt-0.5">{label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>

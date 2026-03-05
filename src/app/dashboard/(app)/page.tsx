@@ -8,12 +8,12 @@ export default async function DashboardPage() {
   const supabase = await createClient()
   const { data: { session } } = await supabase.auth.getSession()
   const user = session?.user
-  if (!user) return null
+  // Auth is enforced by middleware; no duplicate check here to avoid race conditions
 
   const { data: profile } = await supabase
     .from('profiles')
     .select('*')
-    .eq('id', user.id)
+    .eq('id', user!.id)
     .single()
 
   const dashboardType = (profile?.dashboard_type as string) || 'ecommerce'

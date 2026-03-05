@@ -7,12 +7,11 @@ export default async function ReverseProxyPage() {
   const supabase = await createClient()
   const { data: { session } } = await supabase.auth.getSession()
   const user = session?.user
-  if (!user) return null
 
   const { data: profile } = await supabase
     .from('profiles')
     .select('api_key, plan, is_trial, trial_expires_at')
-    .eq('id', user.id)
+    .eq('id', user!.id)
     .single()
 
   const apiKey = profile?.api_key ?? ''

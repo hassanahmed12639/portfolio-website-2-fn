@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import ChatWidget from '@/components/ChatWidget'
+import ChatbotWrapper from '@/components/ChatbotWrapper'
+import MetaPixel from '@/components/MetaPixel'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import GsapInit from '@/components/GsapInit'
 
@@ -39,6 +41,8 @@ export default function RootLayout({
           <GsapInit />
           {children}
           <ChatWidget />
+          <ChatbotWrapper />
+          <MetaPixel />
         </ThemeProvider>
       </body>
     </html>

@@ -129,11 +129,12 @@ export default function DashboardNav({ profile: _profile }: { profile?: { dashbo
                         href={href}
                         className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors ${
                           isActive
-                            ? 'bg-[var(--dash-primary-soft)] font-semibold text-[var(--dash-primary)]'
+                            ? 'font-semibold text-[var(--dash-primary-strong)]'
                             : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                         }`}
+                        style={isActive ? { background: 'var(--dash-gradient-sidebar-active)' } : undefined}
                       >
-                        {Icon && <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? 'text-[var(--dash-primary)]' : 'text-slate-700'}`} />}
+                        {Icon && <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? 'text-[var(--dash-primary-strong)]' : 'text-slate-700'}`} />}
                         <span className="truncate">{label}</span>
                       </Link>
                     )

@@ -66,7 +66,7 @@ export default function SessionProvider({ children }: { children: React.ReactNod
 
   // Listen for auth changes
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: string, session: import('@supabase/supabase-js').Session | null) => {
       console.log('[Session] Auth event:', event)
       if (event === 'SIGNED_OUT') {
         router.push('/dashboard/login')

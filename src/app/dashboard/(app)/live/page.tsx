@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef, useMemo } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import type { Session } from '@supabase/supabase-js'
 
 const MAX_EVENTS = 50
 const GAUGE_EVENTS = 10
@@ -136,9 +137,10 @@ export default function LivePage() {
           schema: 'public',
           table: 'events',
         },
-        (payload) => {
-          const row = payload.new as EventRow
-          supabase.auth.getSession().then(({ data: { session: s } }) => {
+        (payload: { new: EventRow }) => {
+          const row = payload.new
+          supabase.auth.getSession().then((res: { data: { session: Session | null } }) => {
+            const s = res.data.session
             const u = s?.user
             if (!u || row.user_id !== u.id) return
             setLastAddedId(row.id)
@@ -147,7 +149,7 @@ export default function LivePage() {
           })
         }
       )
-      .subscribe((s) => {
+      .subscribe((s: 'SUBSCRIBED' | 'CHANNEL_ERROR' | 'TIMED_OUT' | 'CLOSED') => {
         setStatus(s)
         setConnected(s === 'SUBSCRIBED')
       })
@@ -182,15 +184,15 @@ export default function LivePage() {
           schema: 'public',
           table: 'events',
         },
-        (payload) => {
-          const row = payload.new as EventRow
+        (payload: { new: EventRow }) => {
+          const row = payload.new
           if (userIdRef.current && row.user_id !== userIdRef.current) return
           setLastAddedId(row.id)
           setTimeout(() => setLastAddedId(null), 400)
           setEvents((prev) => [row, ...prev].slice(0, MAX_EVENTS))
         }
       )
-      .subscribe((s) => {
+      .subscribe((s: 'SUBSCRIBED' | 'CHANNEL_ERROR' | 'TIMED_OUT' | 'CLOSED') => {
         setStatus(s)
         setConnected(s === 'SUBSCRIBED')
       })

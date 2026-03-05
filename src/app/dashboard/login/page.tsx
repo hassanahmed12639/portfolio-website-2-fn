@@ -20,7 +20,7 @@ export default function LoginPage() {
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: typeof window !== 'undefined' ? `${window.location.origin}/dashboard` : undefined,
+          redirectTo: typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : undefined,
         },
       })
       if (oauthError) {
@@ -40,52 +40,70 @@ export default function LoginPage() {
     }
   }
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setError(null)
-    setLoading(true)
-
-    let supabase
-    try {
-      supabase = createClient()
-    } catch (configErr) {
-      setLoading(false)
-      setError(
-        configErr instanceof Error
-          ? configErr.message
-          : 'Supabase is not configured. Check .env.local and restart the dev server.'
-      )
+  const handleLogin = async () => {
+    if (!email || !password) {
+      setError('Please enter email and password')
       return
     }
 
-    // Use promise chain only (no async/await) so rejections are handled before Next.js overlay sees them
-    supabase.auth
-      .signInWithPassword({ email, password })
-      .then(async (res) => {
-        if (res.error) {
-          setLoading(false)
-          setError(res.error.message)
-          return
-        }
-        // Sync session to cookies for SSR before redirecting into protected routes.
-        if (res.data?.session) {
-          await supabase.auth.setSession({
-            access_token: res.data.session.access_token,
-            refresh_token: res.data.session.refresh_token,
-          })
-        }
-        setLoading(false)
-        window.location.replace('/dashboard')
+    setLoading(true)
+    setError('')
+
+    try {
+      const supabase = createClient()
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim().toLowerCase(),
+        password
       })
-      .catch((err: unknown) => {
-        setLoading(false)
-        const msg = err instanceof Error ? err.message : String(err)
-        setError(
-          msg === 'Failed to fetch' || msg.includes('fetch')
-            ? 'Cannot reach the authentication server. Check your internet connection, ensure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are set in .env.local, restart the dev server, and that your Supabase project is not paused.'
-            : msg
-        )
+
+      if (error) {
+        setError(error.message)
+        return
+      }
+
+      if (!data.session) {
+        setError('Login failed. Please try again.')
+        return
+      }
+
+      // Explicitly set session so cookie is written (same key as server: trackhive-auth-token)
+      await supabase.auth.setSession({
+        access_token: data.session.access_token,
+        refresh_token: data.session.refresh_token
       })
+
+      // Check onboarding status
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('onboarding_completed, dashboard_type')
+        .eq('id', data.user.id)
+        .single()
+
+      // Brief delay so cookie is committed before full-page redirect
+      await new Promise(resolve => setTimeout(resolve, 300))
+
+      if (!profile?.onboarding_completed) {
+        window.location.href = '/onboarding'
+      } else {
+        window.location.href = '/dashboard'
+      }
+    } catch (err) {
+      console.error('[Login] Error:', err)
+      const message = err instanceof Error ? err.message : String(err)
+      if (message.includes('Supabase') || message.includes('URL') || message.includes('API key')) {
+        setError('Auth is not configured. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to .env.local and restart the dev server.')
+      } else {
+        setError(message || 'Something went wrong. Please try again.')
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    await handleLogin()
   }
 
   return (

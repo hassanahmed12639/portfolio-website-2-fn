@@ -1,4 +1,4 @@
-/* Dashboard light theme — high contrast, launch-ready */
+/* Dashboard light theme — high contrast, launch-ready (blue) */
 .dashboard-shell {
   --dash-bg: #f1f5f9;
   --dash-card: #ffffff;
@@ -13,6 +13,11 @@
   --dash-accent-light: #eff6ff;
   --dash-accent-border: #bfdbfe;
 
+  /* Code/snippet highlight (blue-tinted) */
+  --dash-neon: #1d4ed8;
+  --dash-neon-dim: rgba(29, 78, 216, 0.15);
+  --dash-neon-soft: rgba(29, 78, 216, 0.08);
+
   /* Surfaces — always readable */
   --dash-surface: #ffffff;
   --dash-surface-hover: #f1f5f9;
@@ -23,9 +28,9 @@
   --dash-primary-soft: #eff6ff;
   --dash-primary-soft-strong: #dbeafe;
   /* Success = primary blue for badges/buttons; white text on these */
-  --dash-success: #1d4ed8;
-  --dash-success-strong: #1e40af;
-  --dash-success-soft: #eff6ff;
+  --dash-success: #16a34a;
+  --dash-success-strong: #15803d;
+  --dash-success-soft: #dcfce7;
   --dash-success-badge-bg: #1d4ed8;
   --dash-success-badge-text: #ffffff;
   --dash-success-border: rgba(29, 78, 216, 0.4);
@@ -36,11 +41,55 @@
   --dash-danger-strong: #991b1b;
   --dash-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   --dash-radius: 0.5rem;
+  --dash-radius-lg: 1rem;
+
+  /* Gradients (blue tones) */
+  --dash-gradient-header: linear-gradient(135deg, rgba(29, 78, 216, 0.22) 0%, rgba(29, 78, 216, 0.08) 50%, rgba(15, 15, 15, 0.03) 100%);
+  --dash-gradient-hero: linear-gradient(135deg, rgba(29, 78, 216, 0.25) 0%, rgba(29, 78, 216, 0.1) 40%, rgba(15, 15, 15, 0.04) 100%);
+  --dash-gradient-sidebar-active: linear-gradient(135deg, rgba(29, 78, 216, 0.18) 0%, rgba(29, 78, 216, 0.06) 100%);
+  --dash-gradient-bar: linear-gradient(180deg, rgba(29, 78, 216, 0.5) 0%, rgba(29, 78, 216, 0.2) 100%);
 }
 
-/* Card: white on gray background so boxes and blue buttons are never invisible */
+/* Base card: white, rounded, soft shadow */
 .dashboard-shell .dash-card {
   background: var(--dash-card);
   border: 1px solid var(--dash-border);
   box-shadow: var(--dash-shadow);
+  border-radius: var(--dash-radius-lg);
+}
+
+/* Card with gradient header band */
+.dashboard-shell .dash-card-gradient-header {
+  background: var(--dash-card);
+  border: 1px solid var(--dash-border);
+  box-shadow: var(--dash-shadow);
+  border-radius: var(--dash-radius-lg);
+  overflow: hidden;
+}
+.dashboard-shell .dash-card-gradient-header .dash-card-header {
+  background: var(--dash-gradient-header);
+  padding: 1rem 1.25rem;
+  margin: -1px -1px 0 -1px;
+  border-radius: var(--dash-radius-lg) var(--dash-radius-lg) 0 0;
+}
+
+/* Gradient top strip on cards */
+.dashboard-shell .dash-card-gradient-top {
+  position: relative;
+}
+.dashboard-shell .dash-card-gradient-top::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--dash-gradient-bar);
+  border-radius: var(--dash-radius-lg) var(--dash-radius-lg) 0 0;
+}
+.dashboard-shell .dash-card-hero {
+  background: var(--dash-gradient-hero);
+  border: 1px solid var(--dash-border);
+  box-shadow: var(--dash-shadow);
+  border-radius: var(--dash-radius-lg);
 }

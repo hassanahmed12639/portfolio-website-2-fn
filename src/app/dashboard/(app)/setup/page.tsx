@@ -32,12 +32,11 @@ export default async function SetupPage() {
   const supabase = await createClient()
   const { data: { session } } = await supabase.auth.getSession()
   const user = session?.user
-  if (!user) return null
 
   const { data: profile } = await supabase
     .from('profiles')
     .select('api_key')
-    .eq('id', user.id)
+    .eq('id', user!.id)
     .single()
 
   const apiKey = profile?.api_key ?? ''
