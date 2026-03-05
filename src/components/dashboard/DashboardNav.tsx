@@ -127,6 +127,7 @@ export default function DashboardNav({ profile: _profile }: { profile?: { dashbo
                       <Link
                         key={href}
                         href={href}
+                        prefetch={false}
                         className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors ${
                           isActive
                             ? 'font-semibold text-[var(--dash-primary-strong)]'

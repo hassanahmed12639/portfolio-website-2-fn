@@ -78,8 +78,8 @@ export async function middleware(req: NextRequest) {
         },
       }
     )
-    const { data } = await supabase.auth.getUser()
-    user = data.user
+    const { data: { session } } = await supabase.auth.getSession()
+    user = session?.user ?? null
   }
 
   // Skip auth redirect for public routes
