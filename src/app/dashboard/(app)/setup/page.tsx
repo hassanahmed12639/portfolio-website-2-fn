@@ -1,5 +1,4 @@
 import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
 import CopyButton from './CopyButton'
 
 const SNIPPET_TEMPLATE = (apiKey: string) => `<!-- TrackHive by itshassanahmed.com -->
@@ -31,11 +30,9 @@ TrackHive.track('PageView', {});`
 
 export default async function SetupPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect('/dashboard/login')
-  }
+  const { data: { session } } = await supabase.auth.getSession()
+  const user = session?.user
+  if (!user) return null
 
   const { data: profile } = await supabase
     .from('profiles')

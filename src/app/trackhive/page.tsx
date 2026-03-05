@@ -40,64 +40,96 @@ export default function TrackHivePage() {
     <div className="trackhive-flow min-h-screen bg-white antialiased" style={{ color: "#0f172a" }}>
       <TrackHiveNavbar />
 
-      {/* Hero - Clause style: grid bg, tagline, headline with underlines, CTAs, floating avatars, partners */}
+      {/* Hero - Aigen style: light blue gradient, two-column, headline + card + social proof */}
       <section
-        className="pt-20 md:pt-24 pb-10 md:pb-14 relative overflow-hidden"
+        className="pt-20 md:pt-24 pb-10 md:pb-14 relative overflow-hidden min-h-[600px] md:min-h-[680px]"
         style={{
-          background: "#fafafa",
-          backgroundImage: "linear-gradient(rgba(226,232,240,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(226,232,240,0.15) 1px, transparent 1px)",
-          backgroundSize: "24px 24px",
+          background: "linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 35%, #f8fafc 70%, #ffffff 100%)",
+          backgroundImage: `
+            linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 35%, #f8fafc 70%, #ffffff 100%),
+            radial-gradient(ellipse 80% 50% at 20% 40%, rgba(147, 197, 253, 0.12) 0%, transparent 50%),
+            radial-gradient(ellipse 60% 40% at 80% 60%, rgba(191, 219, 254, 0.08) 0%, transparent 50%)
+          `,
         }}
       >
-        <div className="max-w-5xl mx-auto px-5 md:px-6 text-center relative">
-          {/* Tagline with lightning */}
-          <div className="inline-flex items-center gap-2 text-sm font-semibold mb-4 md:mb-6" style={{ color: "#475569" }}>
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" /></svg>
-            TRACK FOR FAST
-          </div>
-          {/* Headline with underlined words */}
-          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4 md:mb-6 max-w-4xl mx-auto" style={{ color: "#0f172a" }}>
-            One tool to{" "}
-            <span className="relative inline-block">
-              track
-              <span className="absolute bottom-1 left-0 w-full h-2 -z-10" style={{ backgroundColor: "#93c5fd" }} />
-            </span>{" "}
-            conversions and your{" "}
-            <span className="relative inline-block">
-              ads.
-              <span className="absolute bottom-1 left-0 w-full h-2 -z-10" style={{ backgroundColor: "#93c5fd" }} />
-            </span>
-          </h1>
-          <p className="text-base md:text-xl max-w-2xl mx-auto mb-8 md:mb-10" style={{ color: "#475569" }}>
-            TrackHive helps marketing teams work faster and smarter, delivering server-side events to Meta, Google, TikTok and Snapchat—so you get the visibility and match rates you need.
-          </p>
-          <div className="flex items-center justify-center gap-3 md:gap-4 mb-10 md:mb-16 flex-wrap">
-            <Link
-              href="/dashboard/signup"
-              className="font-semibold px-8 py-3.5 rounded-xl text-base transition-all text-white"
-              style={{ backgroundColor: "#1d4ed8" }}
-            >
-              Start for Free
-            </Link>
-            <Link
-              href="/features"
-              className="font-semibold px-8 py-3.5 rounded-xl text-base border transition-colors bg-white hover:bg-slate-50"
-              style={{ borderColor: "#e2e8f0", color: "#0f172a" }}
-            >
-              Get a Demo
-            </Link>
-          </div>
+        <div className="max-w-6xl mx-auto px-5 md:px-6 relative">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
+            {/* Left: headline, description, CTA */}
+            <div className="text-center lg:text-left order-2 lg:order-1">
+              <div className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 mb-4 md:mb-6">
+                <svg className="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" /></svg>
+                TRACK FOR FAST
+              </div>
+              <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-[3.25rem] font-bold leading-tight mb-4 md:mb-6 text-slate-900">
+                One tool to{" "}
+                <span className="text-[#3B82F6]">track</span>
+                {" "}conversions and your{" "}
+                <span className="text-[#3B82F6]">ads.</span>
+              </h1>
+              <p className="text-base md:text-lg lg:text-xl text-slate-600 max-w-xl mb-8 md:mb-10">
+                TrackHive helps marketing teams work faster and smarter, delivering server-side events to Meta, Google, TikTok and Snapchat—so you get the visibility and match rates you need.
+              </p>
+              <Link
+                href="/dashboard/signup"
+                className="inline-flex font-semibold px-8 py-3.5 rounded-xl text-base text-white transition-all shadow-lg hover:shadow-xl hover:opacity-95"
+                style={{ background: "linear-gradient(180deg, #3B82F6 0%, #2563eb 100%)" }}
+              >
+                Start for Free
+              </Link>
+            </div>
 
+            {/* Right: white card + input + social proof */}
+            <div className="order-1 lg:order-2 flex justify-center lg:justify-end">
+              <div className="w-full max-w-md">
+                <div
+                  className="rounded-2xl bg-white p-5 shadow-xl border border-slate-100/80"
+                  style={{ boxShadow: "0 20px 40px -12px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.02)" }}
+                >
+                  <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3">
+                    <span className="text-slate-400 text-sm flex-1 truncate">
+                      Send events to Meta, Google, TikTok every morning
+                    </span>
+                    <button type="button" className="p-1.5 text-slate-400 hover:text-slate-600" aria-label="Voice">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v0m0 0v7m0-7h7" /></svg>
+                    </button>
+                    <button
+                      type="button"
+                      className="p-2 rounded-full bg-[#3B82F6] text-white hover:bg-[#2563eb] transition-colors"
+                      aria-label="Send"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+                    </button>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 mt-6 pl-1">
+                  <div className="flex -space-x-2">
+                    {[1, 2, 3, 4].map((i) => (
+                      <div
+                        key={i}
+                        className="w-9 h-9 rounded-full border-2 border-white bg-slate-300 flex items-center justify-center text-xs font-medium text-slate-600"
+                        style={{ zIndex: 5 - i }}
+                      >
+                        {i}
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-sm font-medium text-slate-600">
+                    Trusted by performance marketers worldwide
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Partner logos */}
-        <div className="max-w-4xl mx-auto px-5 md:px-6 pt-8 md:pt-12 border-t" style={{ borderColor: "#e2e8f0" }}>
-          <p className="text-sm mb-4 md:mb-6" style={{ color: "#64748b" }}>
-            Trusted by performance marketers worldwide.
+        {/* Partner logos - below hero */}
+        <div className="max-w-4xl mx-auto px-5 md:px-6 pt-10 md:pt-14 border-t border-slate-200/60">
+          <p className="text-sm text-slate-500 mb-4 md:mb-6 text-center">
+            Integrations with leading platforms
           </p>
           <div className="flex items-center justify-center gap-8 md:gap-12 flex-wrap">
             {PARTNERS.map((name) => (
-              <span key={name} className="font-semibold text-base" style={{ color: "#94a3b8" }}>
+              <span key={name} className="font-semibold text-base text-slate-400">
                 {name}
               </span>
             ))}

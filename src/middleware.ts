@@ -2,6 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function middleware(req: NextRequest) {
+  // Always create res first so cookie updates are forwarded; return this same res at the end
   const res = NextResponse.next()
   const hostname = req.headers.get('host') || ''
   const pathname = req.nextUrl.pathname

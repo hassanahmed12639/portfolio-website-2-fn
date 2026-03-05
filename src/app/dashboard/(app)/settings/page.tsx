@@ -1,4 +1,3 @@
-import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import SettingsClient from './SettingsClient'
 
@@ -6,8 +5,9 @@ export const dynamic = 'force-dynamic'
 
 export default async function SettingsPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/dashboard/login')
+  const { data: { session } } = await supabase.auth.getSession()
+  const user = session?.user
+  if (!user) return null
 
   const { data: profile } = await supabase
     .from('profiles')

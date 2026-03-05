@@ -1,14 +1,11 @@
 import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
 import IntegrationsForms from './IntegrationsForms'
 
 export default async function IntegrationsPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect('/dashboard/login')
-  }
+  const { data: { session } } = await supabase.auth.getSession()
+  const user = session?.user
+  if (!user) return null
 
   const { data: integrations } = await supabase
     .from('integrations')

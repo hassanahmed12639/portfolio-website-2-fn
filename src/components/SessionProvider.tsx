@@ -2,63 +2,81 @@
 
 import { useEffect, useCallback, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 
-export default function SessionProvider({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function SessionProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter()
+  const pathname = usePathname()
   const supabaseRef = useRef<ReturnType<typeof createClient> | null>(null)
   if (!supabaseRef.current) supabaseRef.current = createClient()
   const supabase = supabaseRef.current
+  const refreshing = useRef(false)
 
   const refreshSession = useCallback(async () => {
-    const { data: { session }, error } = await supabase.auth.getSession()
-    if (error || !session) return
+    if (refreshing.current) return
+    refreshing.current = true
 
-    const expiresAt = session.expires_at ?? 0
-    const timeUntilExpiry = expiresAt - Math.floor(Date.now() / 1000)
-    if (timeUntilExpiry < 600) {
-      await supabase.auth.refreshSession()
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+
+      if (!session) {
+        console.log('[Session] No session found, redirecting to login')
+        router.push('/dashboard/login')
+        return
+      }
+
+      const now = Math.floor(Date.now() / 1000)
+      const expiresAt = session.expires_at || 0
+      const timeLeft = expiresAt - now
+
+      console.log('[Session] Time left:', timeLeft, 'seconds')
+
+      if (timeLeft < 600) {
+        const { error } = await supabase.auth.refreshSession()
+        if (error) {
+          console.error('[Session] Refresh failed:', error.message)
+        } else {
+          console.log('[Session] Refreshed successfully')
+        }
+      }
+    } finally {
+      refreshing.current = false
     }
-  }, [supabase])
+  }, [supabase, router])
 
+  // Refresh on every page navigation
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'SIGNED_OUT') router.push('/dashboard/login')
-    })
+    refreshSession()
+  }, [pathname, refreshSession])
 
-    // Defer session refresh to avoid blocking initial dashboard paint
-    const t = setTimeout(refreshSession, 200)
-    const interval = setInterval(refreshSession, 4 * 60 * 1000)
+  // Refresh every 3 minutes
+  useEffect(() => {
+    const interval = setInterval(refreshSession, 3 * 60 * 1000)
+    return () => clearInterval(interval)
+  }, [refreshSession])
 
-    const handleVisibilityChange = () => {
+  // Refresh when tab becomes visible
+  useEffect(() => {
+    const handleVisibility = () => {
       if (document.visibilityState === 'visible') refreshSession()
     }
-    document.addEventListener('visibilitychange', handleVisibilityChange)
+    document.addEventListener('visibilitychange', handleVisibility)
+    return () => document.removeEventListener('visibilitychange', handleVisibility)
+  }, [refreshSession])
 
-    let idleTimer: ReturnType<typeof setTimeout>
-    const handleActivity = () => {
-      clearTimeout(idleTimer)
-      idleTimer = setTimeout(refreshSession, 1000)
-    }
-    window.addEventListener('mousemove', handleActivity)
-    window.addEventListener('keypress', handleActivity)
-    window.addEventListener('click', handleActivity)
-
-    return () => {
-      clearTimeout(t)
-      subscription.unsubscribe()
-      clearInterval(interval)
-      document.removeEventListener('visibilitychange', handleVisibilityChange)
-      window.removeEventListener('mousemove', handleActivity)
-      window.removeEventListener('keypress', handleActivity)
-      window.removeEventListener('click', handleActivity)
-      clearTimeout(idleTimer)
-    }
-  }, [supabase, router, refreshSession])
+  // Listen for auth changes
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('[Session] Auth event:', event)
+      if (event === 'SIGNED_OUT') {
+        router.push('/dashboard/login')
+      }
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        router.refresh()
+      }
+    })
+    return () => subscription.unsubscribe()
+  }, [supabase, router])
 
   return <>{children}</>
 }

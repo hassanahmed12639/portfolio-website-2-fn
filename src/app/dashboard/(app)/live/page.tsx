@@ -110,7 +110,8 @@ export default function LivePage() {
   useEffect(() => {
     let mounted = true
     const loadInitial = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { session } } = await supabase.auth.getSession()
+      const user = session?.user
       if (user) userIdRef.current = user.id
       if (!user || !mounted) return
 
@@ -137,7 +138,8 @@ export default function LivePage() {
         },
         (payload) => {
           const row = payload.new as EventRow
-          supabase.auth.getUser().then(({ data: { user: u } }) => {
+          supabase.auth.getSession().then(({ data: { session: s } }) => {
+            const u = s?.user
             if (!u || row.user_id !== u.id) return
             setLastAddedId(row.id)
             setTimeout(() => setLastAddedId(null), 400)

@@ -1,13 +1,13 @@
 import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
 import { getEffectivePlan, type PlanName } from '@/lib/plans'
 import { FeatureGate } from '@/components/FeatureGate'
 import RawDataClient from './RawDataClient'
 
 export default async function RawDataPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/dashboard/login')
+  const { data: { session } } = await supabase.auth.getSession()
+  const user = session?.user
+  if (!user) return null
 
   const { data: profile } = await supabase
     .from('profiles')
