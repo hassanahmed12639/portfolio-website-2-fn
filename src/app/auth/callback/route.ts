@@ -41,7 +41,20 @@ export async function GET(req: NextRequest) {
         .eq('id', user.id)
         .single()
 
-      if (!profile?.onboarding_completed) {
+      if (!profile) {
+        await supabase.from('profiles').upsert(
+          { id: user.id, email: user.email ?? '', api_key: crypto.randomUUID() },
+          { onConflict: 'id' }
+        )
+      }
+
+      const { data: updatedProfile } = await supabase
+        .from('profiles')
+        .select('onboarding_completed')
+        .eq('id', user.id)
+        .single()
+
+      if (!updatedProfile?.onboarding_completed) {
         res.headers.set('Location', new URL('/onboarding', origin).toString())
       }
     }

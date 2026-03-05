@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { completeOnboarding } from '@/app/dashboard/actions'
 
 const steps = [
   { id: 1, title: 'Welcome to TrackHive', subtitle: "Let's set up your account in 2 minutes" },
@@ -13,9 +13,9 @@ const steps = [
 
 export default function OnboardingPage() {
   const router = useRouter()
-  const supabase = createClient()
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [form, setForm] = useState({
     business_name: '',
     website_url: '',
@@ -35,27 +35,20 @@ export default function OnboardingPage() {
 
   const handleComplete = async () => {
     setLoading(true)
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    if (!user) return
-
-    const dashboardType = form.business_type === 'leadgen' ? 'leadgen' : 'ecommerce'
-
-    await supabase
-      .from('profiles')
-      .update({
-        business_name: form.business_name,
-        website_url: form.website_url,
-        business_type: form.business_type,
-        monthly_events: parseInt(form.monthly_events) || 0,
-        ad_platforms: form.ad_platforms,
-        dashboard_type: dashboardType,
-        onboarding_completed: true,
-      })
-      .eq('id', user.id)
-
-    router.push('/dashboard')
+    setError(null)
+    try {
+      const result = await completeOnboarding(form)
+      if (!result.ok) {
+        setError(result.error)
+        return
+      }
+      router.push('/dashboard')
+      router.refresh()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -331,6 +324,11 @@ export default function OnboardingPage() {
                 After setup you can add your API keys in the Integrations page and start tracking in minutes.
               </p>
             </div>
+            {error && (
+              <p className="mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                {error}
+              </p>
+            )}
             <div className="flex gap-3">
               <button
                 onClick={() => setStep(3)}
