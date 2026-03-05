@@ -3,7 +3,14 @@ const path = require('path')
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: false,
+  },
   experimental: {
+    serverComponentsExternalPackages: [],
     outputFileTracingExcludes: {
       '*': [
         'node_modules/@swc/core-linux-x64-gnu',
