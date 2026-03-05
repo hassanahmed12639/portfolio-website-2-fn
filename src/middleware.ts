@@ -59,31 +59,30 @@ export async function middleware(req: NextRequest) {
     return res
   }
 
-  // Create supabase client that reads from request and writes to response (persists cookie)
+  // Create supabase client using getAll/setAll for proper cookie chunk handling
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookieOptions: { name: 'trackhive-auth-token' },
       cookies: {
-        get(name: string) {
-          return req.cookies.get(name)?.value
+        getAll() {
+          return req.cookies.getAll()
         },
-        set(name: string, value: string, options: Record<string, unknown>) {
-          res.cookies.set({ name, value, ...options })
-        },
-        remove(name: string, options: Record<string, unknown>) {
-          res.cookies.set({ name, value: '', ...options, maxAge: 0 })
+        setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            res.cookies.set(name, value, options ?? {})
+          )
         },
       },
     }
   )
 
-  // CRITICAL: Always call getSession to refresh the cookie
-  const { data: { session } } = await supabase.auth.getSession()
+  // CRITICAL: Use getUser (not getSession) to validate and refresh the token
+  const { data: { user } } = await supabase.auth.getUser()
 
-  // No session - redirect to login
-  if (!session) {
+  // No user - redirect to login
+  if (!user) {
     if (isDashboardRoute) {
       const url = new URL('/dashboard/login', req.url)
       url.searchParams.set('redirectTo', pathname)
