@@ -1,25 +1,24 @@
 import { createClient } from '@/lib/supabase/server'
-import DashboardShell from '@/components/dashboard/DashboardShell'
-import SessionProvider from '@/components/SessionProvider'
 import { redirect } from 'next/navigation'
+import SessionProvider from '@/components/SessionProvider'
+import DashboardShell from '@/components/dashboard/DashboardShell'
 
-export default async function DashboardAppLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const supabase = await createClient()
+  const supabase = createClient()
   const { data: { session } } = await supabase.auth.getSession()
-  const user = session?.user
 
-  if (!user) {
+  if (!session) {
     redirect('/dashboard/login')
   }
 
   const { data: profile } = await supabase
     .from('profiles')
     .select('plan, is_trial, trial_expires_at, dashboard_type')
-    .eq('id', user.id)
+    .eq('id', session.user.id)
     .single()
 
   const trialExpired =
@@ -29,13 +28,13 @@ export default async function DashboardAppLayout({
 
   return (
     <SessionProvider>
-      <DashboardShell user={user} trialExpired={trialExpired} profile={profile ?? undefined}>
+      <DashboardShell
+        user={session.user}
+        trialExpired={trialExpired}
+        profile={profile ?? undefined}
+      >
         {children}
       </DashboardShell>
     </SessionProvider>
   )
 }
-
-
-
-

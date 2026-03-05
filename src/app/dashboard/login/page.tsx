@@ -81,7 +81,7 @@ export default function LoginPage() {
         .single()
 
       // Brief delay so cookie is committed before full-page redirect
-      await new Promise(resolve => setTimeout(resolve, 300))
+      await new Promise((resolve) => setTimeout(resolve, 500))
 
       if (!profile?.onboarding_completed) {
         window.location.href = '/onboarding'
