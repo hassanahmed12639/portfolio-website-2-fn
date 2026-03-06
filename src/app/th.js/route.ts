@@ -1,82 +1,96 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
 
-const script = `(function () {
-  if (window.TrackHiveLoaded) return;
-  window.TrackHiveLoaded = true;
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url)
+  const pixelId = searchParams.get('id')
 
-  var apiKey = window.TRACKHIVE_KEY || null;
-  if (!apiKey) return;
+  const script = `
+(function() {
+  if (window.trackhive) return;
 
-  function getCookie(name) {
-    var match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/[.$?*|{}()\\[\\]\\\\/+^]/g, '\\\\$&') + '=([^;]*)'));
-    return match ? decodeURIComponent(match[1]) : null;
+  var pixelId = '${pixelId || ''}';
+  var apiUrl = 'https://track.itshassanahmed.com/api/event';
+
+  // Get or create fbp cookie
+  function getFbp() {
+    var match = document.cookie.match(/_fbp=([^;]+)/);
+    if (match) return match[1];
+    var fbp = 'fb.1.' + Date.now() + '.' + Math.floor(Math.random() * 1000000000);
+    document.cookie = '_fbp=' + fbp + '; path=/; max-age=7776000';
+    return fbp;
   }
 
-  function setCookie(name, value, days) {
-    var maxAge = days * 24 * 60 * 60;
-    document.cookie = name + '=' + encodeURIComponent(value) + '; path=/; max-age=' + maxAge + '; SameSite=Lax';
+  // Get fbc from cookie or fbclid in URL
+  function getFbc() {
+    var match = document.cookie.match(/_fbc=([^;]+)/);
+    if (match) return match[1];
+    var urlParams = new URLSearchParams(window.location.search);
+    var fbclid = urlParams.get('fbclid');
+    if (fbclid) {
+      var fbc = 'fb.1.' + Date.now() + '.' + fbclid;
+      document.cookie = '_fbc=' + fbc + '; path=/; max-age=7776000';
+      return fbc;
+    }
+    return null;
   }
 
-  function randomId() {
-    return 'th_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
-  }
+  // Main track function
+  window.trackhive = function(action, eventName, params) {
+    if (action !== 'track') return;
 
-  var params = new URLSearchParams(window.location.search);
-  var fbclid = params.get('fbclid');
+    params = params || {};
 
-  var fbp = getCookie('_fbp');
-  if (!fbp) {
-    fbp = 'fb.1.' + Date.now() + '.' + Math.floor(Math.random() * 1e10);
-    setCookie('_fbp', fbp, 90);
-  }
+    var em = params.email;
+    if (!em && params.user_data && params.user_data.em && params.user_data.em[0]) em = params.user_data.em[0];
+    var ph = params.phone;
+    if (!ph && params.user_data && params.user_data.ph && params.user_data.ph[0]) ph = params.user_data.ph[0];
+    var fn = params.first_name;
+    if (!fn && params.user_data && params.user_data.fn && params.user_data.fn[0]) fn = params.user_data.fn[0];
+    var ln = params.last_name;
+    if (!ln && params.user_data && params.user_data.ln && params.user_data.ln[0]) ln = params.user_data.ln[0];
 
-  var fbc = getCookie('_fbc');
-  if (fbclid) {
-    fbc = 'fb.1.' + Date.now() + '.' + fbclid;
-    setCookie('_fbc', fbc, 90);
-  }
-
-  function track(eventName, payload) {
-    var body = Object.assign({
-      api_key: apiKey,
+    var payload = {
+      pixel_id: pixelId,
       event_name: eventName,
-      event_id: randomId(),
-      event_source_url: window.location.href,
-      fbp: fbp || undefined,
-      fbc: fbc || undefined,
-      fbclid: fbclid || undefined
-    }, payload || {});
+      event_source_url: params.event_source_url || window.location.href,
+      fbp: getFbp(),
+      fbc: getFbc(),
+      value: params.value || 0,
+      currency: params.currency || 'USD',
+      email: em || null,
+      phone: ph || null,
+      first_name: fn || null,
+      last_name: ln || null,
+      order_id: params.order_id || null
+    };
 
-    return fetch('/api/event', {
+    fetch(apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+      body: JSON.stringify(payload),
       keepalive: true
-    }).catch(function () {});
+    }).catch(function(err) {
+      console.error('[TrackHive] Error:', err);
+    });
+  };
+
+  // Auto fire PageView
+  if (pixelId) {
+    window.trackhive('track', 'PageView', {
+      event_source_url: window.location.href
+    });
+    console.log('[TrackHive] Initialized with pixel:', pixelId);
   }
+})();
+`
 
-  window.TrackHive = window.TrackHive || {};
-  window.TrackHive.track = track;
-  track('PageView');
-})();`
-
-export async function GET() {
-  const headers = new Headers()
-  headers.set('Content-Type', 'application/javascript; charset=utf-8')
-  headers.set('Cache-Control', 'public, max-age=300, s-maxage=300')
-  headers.set('Access-Control-Allow-Origin', '*')
-  headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS')
-  headers.set('Access-Control-Allow-Headers', 'Content-Type')
-
-  return new NextResponse(script, { status: 200, headers })
-}
-
-export async function OPTIONS() {
-  const headers = new Headers()
-  headers.set('Access-Control-Allow-Origin', '*')
-  headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS')
-  headers.set('Access-Control-Allow-Headers', 'Content-Type')
-  return new NextResponse(null, { status: 204, headers })
+  return new NextResponse(script, {
+    headers: {
+      'Content-Type': 'application/javascript',
+      'Cache-Control': 'public, max-age=3600',
+      'Access-Control-Allow-Origin': '*',
+    },
+  })
 }

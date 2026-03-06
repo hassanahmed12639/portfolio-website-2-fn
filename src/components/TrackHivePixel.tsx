@@ -12,6 +12,7 @@ export default function TrackHivePixel() {
     const hostname = window.location.hostname
     if (
       hostname.includes('track.itshassanahmed.com') ||
+      hostname.includes('itshassanahmed.com') ||
       hostname.includes('localhost')
     ) {
       setIsTrackDomain(true)

@@ -14,6 +14,18 @@ const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
 
 export const dynamic = 'force-dynamic'
 
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+} as const
+
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    headers: CORS_HEADERS,
+  })
+}
+
 function isRateLimited(identifier: string, limit = 100, windowMs = 60000): boolean {
   const now = Date.now()
   const record = rateLimitMap.get(identifier)
@@ -49,16 +61,18 @@ function getClientIp(headers: Headers): string | null {
 export async function POST(request: NextRequest) {
   try {
     if (!serviceRoleKey || !supabaseUrl) {
-      return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 })
+      return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500, headers: CORS_HEADERS })
     }
 
     const clientIp = getClientIp(request.headers) ?? request.headers.get('x-real-ip') ?? 'unknown'
     if (isRateLimited(clientIp)) {
-      return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: CORS_HEADERS })
     }
 
     let body: {
     api_key?: string
+    pixel_id?: string
+    user_data?: { em?: string[]; ph?: string[]; fn?: string[]; ln?: string[] }
     event_name?: string
     event_id?: string
     event_source_url?: string
@@ -86,20 +100,22 @@ export async function POST(request: NextRequest) {
     try {
       body = await request.json()
     } catch {
-      return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+      return NextResponse.json({ error: 'Invalid JSON' }, { status: 400, headers: CORS_HEADERS })
     }
 
   const {
-    api_key,
+    api_key: bodyApiKey,
+    pixel_id: pixelId,
+    user_data: userData,
     event_name,
     event_id,
     event_source_url: bodySourceUrl,
     value = 0,
     currency = 'USD',
-    email,
-    phone,
-    first_name,
-    last_name,
+    email: bodyEmail,
+    phone: bodyPhone,
+    first_name: bodyFirstName,
+    last_name: bodyLastName,
     city,
     state,
     zip,
@@ -115,8 +131,34 @@ export async function POST(request: NextRequest) {
     order_id: bodyOrderId,
   } = body
   const event_source_url = bodySourceUrl ?? request.headers.get('referer') ?? undefined
+
+  // Support th.js payload: extract from user_data arrays if present
+  const email = bodyEmail ?? userData?.em?.[0] ?? undefined
+  const phone = bodyPhone ?? userData?.ph?.[0] ?? undefined
+  const first_name = bodyFirstName ?? userData?.fn?.[0] ?? undefined
+  const last_name = bodyLastName ?? userData?.ln?.[0] ?? undefined
+
+  let api_key = bodyApiKey
+  if (!api_key && pixelId) {
+    const supabaseForLookup = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } })
+    const { data: pixel } = await supabaseForLookup
+      .from('pixels')
+      .select('user_id')
+      .eq('pixel_id', pixelId)
+      .eq('is_active', true)
+      .single()
+    if (pixel) {
+      const { data: profileWithKey } = await supabaseForLookup
+        .from('profiles')
+        .select('api_key')
+        .eq('id', pixel.user_id)
+        .single()
+      if (profileWithKey?.api_key) api_key = profileWithKey.api_key
+    }
+  }
+
   if (!api_key || !event_name) {
-    return NextResponse.json({ error: 'api_key and event_name required' }, { status: 400 })
+    return NextResponse.json({ error: 'api_key (or valid pixel_id) and event_name required' }, { status: 400, headers: CORS_HEADERS })
   }
 
   let qualityScore = 0
@@ -179,7 +221,7 @@ export async function POST(request: NextRequest) {
     .single()
 
   if (profileError || !profile) {
-    return NextResponse.json({ error: 'Invalid API key' }, { status: 401 })
+    return NextResponse.json({ error: 'Invalid API key' }, { status: 401, headers: CORS_HEADERS })
   }
 
   const userId = profile.id
@@ -209,7 +251,7 @@ export async function POST(request: NextRequest) {
         used: eventsUsed,
         upgrade_url: 'https://track.itshassanahmed.com/dashboard/billing',
       },
-      { status: 429 }
+      { status: 429, headers: CORS_HEADERS }
     )
   }
 
@@ -236,11 +278,14 @@ export async function POST(request: NextRequest) {
         dedup_reason: 'Duplicate event_id within 24 hours',
       })
 
-      return NextResponse.json({
-        success: true,
-        deduplicated: true,
-        message: 'Duplicate event detected and suppressed',
-      })
+      return NextResponse.json(
+        {
+          success: true,
+          deduplicated: true,
+          message: 'Duplicate event detected and suppressed',
+        },
+        { headers: CORS_HEADERS }
+      )
     }
   }
 
@@ -346,10 +391,13 @@ export async function POST(request: NextRequest) {
         .update({ events_used: (profile.events_used ?? 0) + 1 })
         .eq('id', profile.id)
     }
-    return NextResponse.json({
-      success: true,
-      note: 'Event logged but not forwarded due to consent rejection',
-    })
+    return NextResponse.json(
+      {
+        success: true,
+        note: 'Event logged but not forwarded due to consent rejection',
+      },
+      { headers: CORS_HEADERS }
+    )
   }
 
   const platformsFired: string[] = []
@@ -814,9 +862,9 @@ export async function POST(request: NextRequest) {
       .eq('id', profile.id)
   }
 
-    return NextResponse.json({ success: true, platforms_fired: platformsFired })
+    return NextResponse.json({ success: true, platforms_fired: platformsFired }, { headers: CORS_HEADERS })
   } catch (error) {
     console.error('[event] Unexpected error', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500, headers: CORS_HEADERS })
   }
 }
