@@ -38,6 +38,13 @@ export async function GET(req: NextRequest) {
     setCookie('_fbc', fbc, 90);
   }
 
+  // Get ttclid from URL or cookie
+  var ttclid = urlParams.get('ttclid');
+  if (ttclid) {
+    setCookie('ttclid', ttclid, 30);
+  }
+  var savedTtclid = ttclid || getCookie('ttclid');
+
   // Main track function
   window.trackhive = function(action, eventName, params) {
     if (action !== 'track') return;
@@ -52,6 +59,7 @@ export async function GET(req: NextRequest) {
       fbp: fbp,
       fbc: fbc || undefined,
       fbclid: fbclid || undefined,
+      ttclid: savedTtclid || undefined,
       client_user_agent: navigator.userAgent,
       value: params.value || 0,
       currency: params.currency || 'USD',

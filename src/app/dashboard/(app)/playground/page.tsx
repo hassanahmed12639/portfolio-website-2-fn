@@ -99,7 +99,7 @@ export default function PlaygroundPage() {
   const [params, setParams] = useState<EventParams>({ ...defaultParams, event_id: generateEventId() })
   const [includeTestEmail, setIncludeTestEmail] = useState(false)
   const [autoGenerateEventId, setAutoGenerateEventId] = useState(true)
-  const [sendTarget, setSendTarget] = useState<'both' | 'meta' | 'google'>('both')
+  const [sendTarget, setSendTarget] = useState<'both' | 'meta' | 'google' | 'ga4' | 'tiktok'>('both')
   const [resultTab, setResultTab] = useState<'response' | 'payload' | 'platform' | 'history'>('response')
   const [lastResponse, setLastResponse] = useState<unknown>(null)
   const [lastPayload, setLastPayload] = useState<unknown>(null)
@@ -108,7 +108,7 @@ export default function PlaygroundPage() {
   const [qualityScore, setQualityScore] = useState<number | null>(null)
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null)
   const [sendConfirm, setSendConfirm] = useState<{ show: boolean; errors: number; warnings: number } | null>(null)
-  const [pendingSendTarget, setPendingSendTarget] = useState<'both' | 'meta' | 'google' | null>(null)
+  const [pendingSendTarget, setPendingSendTarget] = useState<'both' | 'meta' | 'google' | 'ga4' | 'tiktok' | null>(null)
 
   const displayEventName = eventType === 'Custom' ? customEventName.trim() || 'Custom' : eventType
 
@@ -162,7 +162,7 @@ export default function PlaygroundPage() {
     }
   }, [eventType, autoGenerateEventId])
 
-  const doSendTestEvent = async (targetOverride?: 'both' | 'meta' | 'google') => {
+  const doSendTestEvent = async (targetOverride?: 'both' | 'meta' | 'google' | 'ga4' | 'tiktok') => {
     const target = targetOverride ?? sendTarget
     const payload = buildPayload()
     setSending(true)
@@ -207,7 +207,7 @@ export default function PlaygroundPage() {
     }
   }
 
-  const sendTestEvent = (targetOverride?: 'both' | 'meta' | 'google') => {
+  const sendTestEvent = (targetOverride?: 'both' | 'meta' | 'google' | 'ga4' | 'tiktok') => {
     const target = targetOverride ?? sendTarget
     if (validationResult && (validationResult.errors.length > 0 || validationResult.warnings.length > 0)) {
       setSendConfirm({
@@ -644,12 +644,14 @@ export default function PlaygroundPage() {
                 <label className="block text-xs text-[var(--dash-muted)] mb-1">Send to</label>
                 <select
                   value={sendTarget}
-                  onChange={(e) => setSendTarget(e.target.value as 'both' | 'meta' | 'google')}
+                  onChange={(e) => setSendTarget(e.target.value as 'both' | 'meta' | 'google' | 'ga4' | 'tiktok')}
                   className="w-full px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] text-sm"
                 >
                   <option value="both">Both</option>
                   <option value="meta">Meta only</option>
                   <option value="google">Google only</option>
+                  <option value="ga4">GA4 only</option>
+                  <option value="tiktok">TikTok only</option>
                 </select>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -676,6 +678,22 @@ export default function PlaygroundPage() {
                   className="px-4 py-3 rounded-lg bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-border)] text-[var(--dash-text)] text-sm disabled:opacity-50 transition-colors"
                 >
                   Send to Google only
+                </button>
+                <button
+                  type="button"
+                  onClick={() => sendTestEvent('ga4')}
+                  disabled={sending}
+                  className="px-4 py-3 rounded-lg bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-border)] text-[var(--dash-text)] text-sm disabled:opacity-50 transition-colors"
+                >
+                  Send to GA4 only
+                </button>
+                <button
+                  type="button"
+                  onClick={() => sendTestEvent('tiktok')}
+                  disabled={sending}
+                  className="px-4 py-3 rounded-lg bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-border)] text-[var(--dash-text)] text-sm disabled:opacity-50 transition-colors"
+                >
+                  Send to TikTok only
                 </button>
               </div>
             </div>

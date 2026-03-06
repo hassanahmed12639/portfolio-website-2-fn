@@ -114,8 +114,11 @@ export async function POST(request: NextRequest) {
     consent_rejected?: boolean
     order_id?: string
     external_id?: string
+    ttclid?: string
     content_ids?: string[]
     content_type?: string
+    content_name?: string
+    brand?: string
     contents?: { id?: string; quantity?: number; item_price?: number }[]
     num_items?: number
   }
@@ -848,13 +851,19 @@ export async function POST(request: NextRequest) {
         client_ip_address: ip,
         client_user_agent: userAgent,
         event_id,
+        ttclid: body.ttclid,
+        user_data: {
+          em: email ? [email] : [],
+          ph: phone ? [phone] : [],
+          external_id: external_id ? [external_id] : [],
+        },
+        external_id,
+        content_ids: body.content_ids,
+        content_type: body.content_type,
+        content_name: body.content_name,
+        brand: body.brand,
       },
-      {
-        email: email ?? undefined,
-        phone: phone ?? undefined,
-        first_name: first_name ?? undefined,
-        last_name: last_name ?? undefined,
-      }
+      request
     ),
     sendGoogleEnhancedConversion(
       event_name,

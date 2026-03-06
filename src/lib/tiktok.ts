@@ -1,99 +1,155 @@
 import crypto from 'crypto'
 
-function hashData(value: string): string {
-  return crypto.createHash('sha256').update(value.toLowerCase().trim()).digest('hex')
+function hashData(data: string): string {
+  return crypto.createHash('sha256').update(data.trim().toLowerCase()).digest('hex')
 }
 
 export async function sendTikTokEvent(
   eventName: string,
-  eventData: Record<string, unknown>,
-  userData: Record<string, string | undefined>
+  body: {
+    client_ip_address?: string
+    client_user_agent?: string
+    event_source_url?: string
+    value?: number
+    currency?: string
+    order_id?: string
+    event_id?: string
+    ttclid?: string
+    content_ids?: string[]
+    content_type?: string
+    content_name?: string
+    brand?: string
+    user_data?: {
+      em?: string[]
+      ph?: string[]
+      external_id?: string[] | string
+    }
+    external_id?: string
+  },
+  req?: { headers?: { get: (name: string) => string | null } }
 ) {
-  const debugLog = (...args: unknown[]) => {
-    if (process.env.NODE_ENV === 'development') console.log(...args)
-  }
   const pixelId = process.env.TIKTOK_PIXEL_ID
   const accessToken = process.env.TIKTOK_ACCESS_TOKEN
 
   if (!pixelId || !accessToken) {
-    debugLog('[TikTok] Missing credentials, skipping')
-    return { success: false, error: 'Missing credentials' }
+    return { success: false, error: 'TikTok credentials missing' }
   }
 
-  // Map TrackHive event names to TikTok event names
-  const tiktokEventMap: Record<string, string> = {
+  // Map event names to TikTok standard events
+  const eventMap: Record<string, string> = {
     Purchase: 'CompletePayment',
-    PageView: 'Pageview',
     AddToCart: 'AddToCart',
     InitiateCheckout: 'InitiateCheckout',
+    ViewContent: 'ViewContent',
     Lead: 'SubmitForm',
     CompleteRegistration: 'CompleteRegistration',
     Search: 'Search',
-    ViewContent: 'ViewContent',
+    PageView: 'Pageview',
+    Subscribe: 'Subscribe',
+    Contact: 'Contact',
   }
 
-  const tiktokEventName = tiktokEventMap[eventName] ?? eventName
+  const tiktokEventName = eventMap[eventName] || eventName
 
-  // Hash user data
-  const hashedUser: Record<string, string[] | string> = {}
-  if (userData.email) hashedUser.email = [hashData(userData.email)]
-  if (userData.phone) hashedUser.phone_number = [hashData(userData.phone)]
-  if (userData.first_name) hashedUser.first_name = [hashData(userData.first_name)]
-  if (userData.last_name) hashedUser.last_name = [hashData(userData.last_name)]
-  // Only add IP if it's a valid non-empty string (TikTok rejects null/undefined)
-  if (
-    eventData.client_ip_address &&
-    typeof eventData.client_ip_address === 'string' &&
-    eventData.client_ip_address.trim() !== ''
-  ) {
-    hashedUser.ip = eventData.client_ip_address.trim()
+  // Get IP and user agent
+  const ip =
+    body.client_ip_address ||
+    req?.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    req?.headers?.get('x-real-ip') ||
+    '127.0.0.1'
+
+  const userAgent = body.client_user_agent || req?.headers?.get('user-agent') || ''
+
+  // Get ttclid from body
+  const ttclid = body.ttclid || undefined
+
+  // Build user data with ALL parameters
+  const userData: Record<string, string> = {
+    ip,
+    user_agent: userAgent,
   }
-  // Only add user_agent if valid
-  if (
-    eventData.client_user_agent &&
-    typeof eventData.client_user_agent === 'string' &&
-    eventData.client_user_agent.trim() !== ''
-  ) {
-    hashedUser.user_agent = eventData.client_user_agent.trim()
+
+  // Email — hashed
+  if (body.user_data?.em?.length) {
+    const email = body.user_data.em[0]
+    userData.email = hashData(email)
   }
+
+  // Phone — hashed
+  if (body.user_data?.ph?.length) {
+    const phone = body.user_data.ph[0].replace(/\D/g, '')
+    userData.phone_number = hashData(phone)
+  }
+
+  // External ID — hashed
+  const extId =
+    body.external_id ??
+    (Array.isArray(body.user_data?.external_id) ? body.user_data.external_id[0] : body.user_data?.external_id)
+  if (extId) {
+    userData.external_id = hashData(typeof extId === 'string' ? extId : String(extId))
+  }
+
+  // ttclid — not hashed
+  if (ttclid) {
+    userData.ttclid = ttclid
+  }
+
+  // Build properties with ALL parameters
+  const properties: Record<string, unknown> = {
+    event_source_url: body.event_source_url || '',
+  }
+
+  if (body.value != null) properties.value = parseFloat(String(body.value))
+  if (body.currency) properties.currency = body.currency
+  if (body.order_id) properties.order_id = body.order_id
+
+  if (body.content_ids?.length) {
+    properties.content_id = body.content_ids[0]
+  }
+  if (body.content_type) properties.content_type = body.content_type
+  if (body.content_name) properties.content_name = body.content_name
+  if (body.brand) properties.brand = body.brand
 
   const payload = {
+    event_source: 'web',
+    event_source_id: pixelId,
     data: [
       {
         event: tiktokEventName,
         event_time: Math.floor(Date.now() / 1000),
-        event_id: (eventData.event_id as string) || `trackhive_${Date.now()}`,
-        user: hashedUser,
+        event_id: body.event_id || `th_${Date.now()}_${Math.random().toString(36).slice(2)}`,
+        user: userData,
+        properties,
         page: {
-          url: (eventData.event_source_url as string) || '',
-          referrer: (eventData.referrer_url as string) || '',
-        },
-        properties: {
-          value: eventData.value != null ? parseFloat(String(eventData.value)) : undefined,
-          currency: (eventData.currency as string) || 'USD',
-          order_id: eventData.order_id,
-          content_type: 'product',
+          url: body.event_source_url || '',
         },
       },
     ],
-    event_source: 'web',
-    event_source_id: pixelId,
   }
 
   try {
-    const res = await fetch('https://business-api.tiktok.com/open_api/v1.3/event/track/', {
+    const response = await fetch('https://business-api.tiktok.com/open_api/v1.3/event/track/', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
         'Access-Token': accessToken,
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(payload),
     })
-    const data = (await res.json()) as { code?: number; message?: string }
-    debugLog(`[TikTok] Event sent: ${tiktokEventName} → ${data.code} ${data.message}`)
-    return { success: data.code === 0, data }
-  } catch (error) {
-    console.error('[TikTok] Error:', error)
-    return { success: false, error }
+
+    const data = (await response.json()) as { code?: number; message?: string }
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[TikTok] Event sent:', tiktokEventName, '→', data.code, data.message)
+    }
+
+    return {
+      success: data.code === 0,
+      code: data.code,
+      message: data.message,
+    }
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error)
+    console.error('[TikTok] Error:', message)
+    return { success: false, error: message }
   }
 }

@@ -332,8 +332,23 @@ export default function IntegrationsForms({
   const tiktokConnected = tiktok && (tiktok.pixel_id || tiktok.access_token)
   const ga4Connected = ga4 && (ga4.tag_id || ga4.access_token)
 
+  const installScript = `<script src="https://track.itshassanahmed.com/th.js?id=${metaPixelId.trim() || 'YOUR_PIXEL_ID'}"></script>`
+
   return (
     <div className="space-y-8 overflow-y-auto">
+      <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-6">
+        <h2 className="text-lg font-semibold text-[var(--dash-text)] mb-2">Add to your website</h2>
+        <p className="text-sm text-[var(--dash-muted)] mb-3">
+          Add it to <strong>your website</strong> head tag:
+        </p>
+        <pre className="p-4 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-sm text-[var(--dash-text)] overflow-x-auto font-mono">
+          <code>{installScript}</code>
+        </pre>
+        <p className="text-xs text-[var(--dash-muted)] mt-2">
+          Replace <code className="px-1.5 py-0.5 rounded bg-[var(--dash-surface)] text-[var(--dash-text)]">YOUR_PIXEL_ID</code> with your actual Meta Pixel ID (you can enter it in the Meta CAPI section below).
+        </p>
+      </section>
+
       <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-6">
         <div className="flex items-center gap-2 mb-4">
           <h2 className="text-lg font-semibold text-[var(--dash-text)]">Meta CAPI</h2>

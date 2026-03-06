@@ -89,8 +89,11 @@ export async function POST(request: NextRequest) {
     fbclid?: string
     order_id?: string
     external_id?: string
+    ttclid?: string
     content_ids?: string[]
     content_type?: string
+    content_name?: string
+    brand?: string
     contents?: { id?: string; quantity?: number; item_price?: number }[]
     num_items?: number
     client_user_agent?: string
@@ -99,7 +102,7 @@ export async function POST(request: NextRequest) {
     page_title?: string
     product_id?: string
     product_name?: string
-    target?: 'both' | 'meta' | 'google'
+    target?: 'both' | 'meta' | 'google' | 'ga4' | 'tiktok'
     user_data?: {
       em?: string | string[]
       ph?: string | string[]
@@ -158,6 +161,8 @@ export async function POST(request: NextRequest) {
     list = list.filter((i) => i.platform === 'meta')
   } else if (target === 'google') {
     list = list.filter((i) => i.platform === 'google')
+  } else if (target === 'ga4' || target === 'tiktok') {
+    list = []
   }
 
   const eventTime = Math.floor(Date.now() / 1000)
@@ -309,53 +314,85 @@ export async function POST(request: NextRequest) {
   const ln = body.user_data?.ln
   const lastNameStr = typeof ln === 'string' ? ln : Array.isArray(ln) ? ln[0] : body.last_name
 
-  // Fire all platforms in parallel
-  const platformResults = await Promise.allSettled([
-    sendGA4Event(event_name, {
-      value: body.value,
-      currency: body.currency,
-      order_id: body.order_id,
-      event_source_url: body.event_source_url || 'https://track.itshassanahmed.com',
-      client_ip_address: clientIp,
-      client_user_agent: clientUserAgent,
-      event_id: body.event_id,
-    }, emailStr),
+  // Fire GA4 / TikTok / Google only when target allows (meta-only skips these)
+  const runGA4 = target === 'both' || target === 'ga4'
+  const runTikTok = target === 'both' || target === 'tiktok'
+  const runGoogle = target === 'both' || target === 'google'
 
-    sendTikTokEvent(event_name, {
-      value: body.value,
-      currency: body.currency,
-      order_id: body.order_id,
-      event_source_url: body.event_source_url || 'https://track.itshassanahmed.com',
-      client_ip_address: clientIp,
-      client_user_agent: clientUserAgent,
-      event_id: body.event_id,
-    }, {
-      email: emailStr,
-      phone: phoneStr,
-      first_name: firstNameStr,
-      last_name: lastNameStr,
-    }),
+  const platformPromises: Promise<unknown>[] = []
+  if (runGA4) {
+    platformPromises.push(
+      sendGA4Event(event_name, {
+        value: body.value,
+        currency: body.currency,
+        order_id: body.order_id,
+        event_source_url: body.event_source_url || 'https://track.itshassanahmed.com',
+        client_ip_address: clientIp,
+        client_user_agent: clientUserAgent,
+        event_id: body.event_id,
+      }, emailStr)
+    )
+  }
+  if (runTikTok) {
+    platformPromises.push(
+      sendTikTokEvent(
+        event_name,
+        {
+          value: body.value,
+          currency: body.currency,
+          order_id: body.order_id,
+          event_source_url: body.event_source_url || 'https://track.itshassanahmed.com',
+          client_ip_address: clientIp,
+          client_user_agent: clientUserAgent,
+          event_id: body.event_id,
+          ttclid: body.ttclid,
+          user_data: {
+            em: emailStr ? [emailStr] : [],
+            ph: phoneStr ? [phoneStr] : [],
+            external_id: (body.external_id || body.order_id) ? [String(body.external_id || body.order_id)] : [],
+          },
+          external_id: body.external_id ?? body.order_id,
+          content_ids: body.content_ids,
+          content_type: body.content_type,
+          content_name: body.content_name,
+          brand: body.brand,
+        },
+        request
+      )
+    )
+  }
+  if (runGoogle) {
+    platformPromises.push(
+      sendGoogleEnhancedConversion(event_name, {
+        value: body.value,
+        currency: body.currency,
+        order_id: body.order_id,
+        event_source_url: body.event_source_url || 'https://track.itshassanahmed.com',
+        client_ip_address: clientIp,
+      }, {
+        email: emailStr,
+        phone: phoneStr,
+        first_name: firstNameStr,
+        last_name: lastNameStr,
+      })
+    )
+  }
 
-    sendGoogleEnhancedConversion(event_name, {
-      value: body.value,
-      currency: body.currency,
-      order_id: body.order_id,
-      event_source_url: body.event_source_url || 'https://track.itshassanahmed.com',
-      client_ip_address: clientIp,
-    }, {
-      email: emailStr,
-      phone: phoneStr,
-      first_name: firstNameStr,
-      last_name: lastNameStr,
-    }),
-  ])
-
-  const platforms = ['GA4', 'TikTok', 'Google']
+  const platformResults = await Promise.allSettled(platformPromises)
+  const platformNames = [
+    ...(runGA4 ? ['GA4'] : []),
+    ...(runTikTok ? ['TikTok'] : []),
+    ...(runGoogle ? ['Google'] : []),
+  ]
   platformResults.forEach((result, index) => {
     if (result.status === 'fulfilled') {
-      debugLog(`[${platforms[index]}] ✅ Sent`)
+      const name = platformNames[index]
+      if (name === 'GA4') platformsFired.push('ga4')
+      else if (name === 'TikTok') platformsFired.push('tiktok')
+      else if (name === 'Google') platformsFired.push('google')
+      debugLog(`[${name}] ✅ Sent`)
     } else {
-      debugLog(`[${platforms[index]}] ❌ Failed:`, result.reason)
+      debugLog(`[${platformNames[index]}] ❌ Failed:`, result.reason)
     }
   })
 
