@@ -55,7 +55,12 @@ function hashValue(value: string): string {
 }
 
 function getClientIp(headers: Headers): string | null {
-  return headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? null
+  return (
+    headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
+    headers.get('x-real-ip') ??
+    headers.get('cf-connecting-ip') ??
+    null
+  )
 }
 
 export async function POST(request: NextRequest) {
@@ -72,7 +77,20 @@ export async function POST(request: NextRequest) {
     let body: {
     api_key?: string
     pixel_id?: string
-    user_data?: { em?: string[]; ph?: string[]; fn?: string[]; ln?: string[] }
+    client_user_agent?: string
+    user_data?: {
+      em?: string[]
+      ph?: string[]
+      fn?: string[]
+      ln?: string[]
+      ct?: string[]
+      st?: string[]
+      zp?: string[]
+      country?: string[]
+      db?: string[]
+      ge?: string[]
+      external_id?: string[]
+    }
     event_name?: string
     event_id?: string
     event_source_url?: string
@@ -95,6 +113,11 @@ export async function POST(request: NextRequest) {
     is_test?: boolean
     consent_rejected?: boolean
     order_id?: string
+    external_id?: string
+    content_ids?: string[]
+    content_type?: string
+    contents?: { id?: string; quantity?: number; item_price?: number }[]
+    num_items?: number
   }
 
     try {
@@ -106,9 +129,10 @@ export async function POST(request: NextRequest) {
   const {
     api_key: bodyApiKey,
     pixel_id: pixelId,
+    client_user_agent: bodyClientUserAgent,
     user_data: userData,
     event_name,
-    event_id,
+    event_id: bodyEventId,
     event_source_url: bodySourceUrl,
     value = 0,
     currency = 'USD',
@@ -116,12 +140,6 @@ export async function POST(request: NextRequest) {
     phone: bodyPhone,
     first_name: bodyFirstName,
     last_name: bodyLastName,
-    city,
-    state,
-    zip,
-    country: userCountry,
-    date_of_birth,
-    gender,
     visitor_id,
     fbc,
     fbp,
@@ -129,6 +147,10 @@ export async function POST(request: NextRequest) {
     is_test,
     consent_rejected,
     order_id: bodyOrderId,
+    content_ids: bodyContentIds,
+    content_type: bodyContentType,
+    contents: bodyContents,
+    num_items: bodyNumItems,
   } = body
   const event_source_url = bodySourceUrl ?? request.headers.get('referer') ?? undefined
 
@@ -137,6 +159,14 @@ export async function POST(request: NextRequest) {
   const phone = bodyPhone ?? userData?.ph?.[0] ?? undefined
   const first_name = bodyFirstName ?? userData?.fn?.[0] ?? undefined
   const last_name = bodyLastName ?? userData?.ln?.[0] ?? undefined
+  const city = body.city ?? userData?.ct?.[0] ?? undefined
+  const state = body.state ?? userData?.st?.[0] ?? undefined
+  const zip = body.zip ?? userData?.zp?.[0] ?? undefined
+  const userCountry = body.country ?? userData?.country?.[0] ?? undefined
+  const date_of_birth = body.date_of_birth ?? userData?.db?.[0] ?? undefined
+  const gender = body.gender ?? userData?.ge?.[0] ?? undefined
+  const external_id = body.external_id ?? userData?.external_id?.[0] ?? undefined
+  const event_id = bodyEventId ?? `th_${Date.now()}_${Math.random().toString(36).slice(2)}`
 
   let api_key = bodyApiKey
   if (!api_key && pixelId) {
@@ -308,7 +338,11 @@ export async function POST(request: NextRequest) {
     .eq('is_active', true)
     .single()
 
-  const ipRaw = getClientIp(request.headers) ?? request.headers.get('x-real-ip') ?? '127.0.0.1'
+  const ipRaw =
+    getClientIp(request.headers) ??
+    request.headers.get('x-real-ip') ??
+    request.headers.get('cf-connecting-ip') ??
+    '127.0.0.1'
   const ipMode = (privacySettings?.ip_modification as string) || 'anonymized'
   let processedIp = ipRaw
   if (ipMode === 'anonymized' && ipRaw) {
@@ -333,7 +367,7 @@ export async function POST(request: NextRequest) {
   }
   const event_source_url_final = sourceUrl || undefined
 
-  const userAgentRaw = request.headers.get('user-agent') ?? ''
+  const userAgentRaw = request.headers.get('user-agent') ?? bodyClientUserAgent ?? ''
   let processedUA = userAgentRaw
   if (privacySettings?.anonymize_user_agent && userAgentRaw) {
     const device = /mobile/i.test(userAgentRaw) ? 'Mobile' : 'Desktop'
@@ -528,18 +562,19 @@ export async function POST(request: NextRequest) {
         const userData: Record<string, string | string[]> = {}
         if (ip) userData.client_ip_address = ip
         if (userAgent) userData.client_user_agent = userAgent
+        if (fbp) userData.fbp = fbp
+        if (fbc) userData.fbc = fbc
         if (hashedEmail) userData.em = [hashedEmail]
         if (hashedPhone) userData.ph = [hashedPhone]
-        if (fbc) userData.fbc = fbc
-        if (fbp) userData.fbp = fbp
         if (first_name) userData.fn = [hashValue(first_name.toLowerCase().trim())]
         if (last_name) userData.ln = [hashValue(last_name.toLowerCase().trim())]
-        if (city) userData.ct = [hashValue(city.toLowerCase().trim())]
-        if (state) userData.st = [hashValue(state.toLowerCase().trim())]
-        if (zip) userData.zp = [hashValue(zip.toLowerCase().trim())]
+        if (city) userData.ct = [hashValue(city.toLowerCase().trim().replace(/\s/g, ''))]
+        if (state) userData.st = [hashValue(state.toLowerCase().trim().replace(/\s/g, ''))]
+        if (zip) userData.zp = [hashValue(zip.replace(/\D/g, ''))]
         if (userCountry) userData.country = [hashValue(userCountry.toLowerCase().trim())]
         if (date_of_birth) userData.db = [hashValue(date_of_birth.replace(/-/g, ''))]
         if (gender) userData.ge = [hashValue(gender.toLowerCase().trim())]
+        if (external_id) userData.external_id = [hashValue(external_id)]
         if (enrichmentData?.geo?.countryCode && !userData.country) {
           userData.country = [enrichmentData.geo.countryCode.toLowerCase()]
         }
@@ -550,15 +585,24 @@ export async function POST(request: NextRequest) {
         const actionSource = (headerSettings?.meta_send_action_source !== false && headerSettings?.meta_action_source)
           ? headerSettings.meta_action_source
           : 'website'
+        const customData: Record<string, unknown> = {
+          value,
+          currency,
+          order_id: bodyOrderId ?? undefined,
+          content_ids: bodyContentIds ?? undefined,
+          content_type: bodyContentType ?? undefined,
+          contents: bodyContents ?? undefined,
+          num_items: bodyNumItems ?? undefined,
+        }
         const metaEvent: Record<string, unknown> = {
           event_name,
           event_time: Math.floor(Date.now() / 1000),
+          event_id,
+          event_source_url: event_source_url_final ?? '',
           action_source: actionSource,
           user_data: userData,
-          custom_data: { value, currency },
+          custom_data: customData,
         }
-        if (event_id) metaEvent.event_id = event_id
-        if (event_source_url_final) metaEvent.event_source_url = event_source_url_final
 
         const testEventCode = (integration as { meta_test_event_code?: string | null }).meta_test_event_code?.trim() || null
         const metaRequestBody: { data: Record<string, unknown>[]; test_event_code?: string } = { data: [metaEvent] }

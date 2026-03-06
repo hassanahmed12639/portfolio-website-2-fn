@@ -43,20 +43,36 @@ export async function GET(req: NextRequest) {
     if (action !== 'track') return;
     params = params || {};
 
+    var eventId = params.event_id || 'th_' + Date.now() + '_' + Math.random().toString(36).slice(2);
     var payload = {
       pixel_id: pixelId,
       event_name: eventName,
       event_source_url: window.location.href,
+      event_id: eventId,
       fbp: fbp,
       fbc: fbc || undefined,
       fbclid: fbclid || undefined,
+      client_user_agent: navigator.userAgent,
       value: params.value || 0,
       currency: params.currency || 'USD',
+      external_id: params.external_id || params.order_id || undefined,
+      order_id: params.order_id || undefined,
+      content_ids: params.content_ids || undefined,
+      content_type: params.content_type || undefined,
+      contents: params.contents || undefined,
+      num_items: params.num_items || undefined,
       user_data: {
         em: params.email ? [params.email] : [],
         ph: params.phone ? [params.phone] : [],
         fn: params.first_name ? [params.first_name] : [],
-        ln: params.last_name ? [params.last_name] : []
+        ln: params.last_name ? [params.last_name] : [],
+        ct: params.city ? [params.city] : [],
+        st: params.state ? [params.state] : [],
+        zp: params.zip ? [params.zip] : [],
+        country: params.country ? [params.country] : [],
+        db: params.date_of_birth ? [params.date_of_birth] : [],
+        ge: params.gender ? [params.gender] : [],
+        external_id: params.external_id || params.order_id ? [params.external_id || params.order_id] : []
       }
     };
 

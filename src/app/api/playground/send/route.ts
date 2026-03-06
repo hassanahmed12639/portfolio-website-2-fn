@@ -22,6 +22,10 @@ function sha256(value: string): string {
   return createHash('sha256').update(value.trim().toLowerCase()).digest('hex')
 }
 
+function hashValue(value: string): string {
+  return createHash('sha256').update(value).digest('hex')
+}
+
 function calculateDataQuality(payload: {
   email?: string
   phone?: string
@@ -79,8 +83,17 @@ export async function POST(request: NextRequest) {
     city?: string
     state?: string
     zip?: string
+    country?: string
+    date_of_birth?: string
+    gender?: string
     fbclid?: string
     order_id?: string
+    external_id?: string
+    content_ids?: string[]
+    content_type?: string
+    contents?: { id?: string; quantity?: number; item_price?: number }[]
+    num_items?: number
+    client_user_agent?: string
     form_name?: string
     page_url?: string
     page_title?: string
@@ -92,6 +105,13 @@ export async function POST(request: NextRequest) {
       ph?: string | string[]
       fn?: string | string[]
       ln?: string | string[]
+      ct?: string | string[]
+      st?: string | string[]
+      zp?: string | string[]
+      country?: string | string[]
+      db?: string | string[]
+      ge?: string | string[]
+      external_id?: string | string[]
       client_ip_address?: string
       client_user_agent?: string
     }
@@ -187,19 +207,50 @@ export async function POST(request: NextRequest) {
       const pixelId = integration.pixel_id
       const accessToken = integration.access_token
       if (pixelId && accessToken) {
-        const userData: Record<string, string[]> = {}
+        const clientIp =
+          request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
+          request.headers.get('x-real-ip') ??
+          request.headers.get('cf-connecting-ip') ??
+          '127.0.0.1'
+        const clientUserAgent =
+          request.headers.get('user-agent') ?? body.user_data?.client_user_agent ?? body.client_user_agent ?? ''
+
+        const userData: Record<string, string | string[]> = {}
+        userData.client_ip_address = clientIp
+        userData.client_user_agent = clientUserAgent
+        if (body.fbp) userData.fbp = body.fbp
+        if (body.fbc) userData.fbc = body.fbc
         if (email) userData.em = [sha256(email)]
         if (phone) userData.ph = [sha256(phone.replace(/\D/g, ''))]
+        if (body.first_name) userData.fn = [hashValue(body.first_name.toLowerCase().trim())]
+        if (body.last_name) userData.ln = [hashValue(body.last_name.toLowerCase().trim())]
+        if (body.city) userData.ct = [hashValue(body.city.toLowerCase().trim().replace(/\s/g, ''))]
+        if (body.state) userData.st = [hashValue(body.state.toLowerCase().trim().replace(/\s/g, ''))]
+        if (body.zip) userData.zp = [hashValue(body.zip.replace(/\D/g, ''))]
+        if (body.country) userData.country = [hashValue(body.country.toLowerCase().trim())]
+        if (body.date_of_birth) userData.db = [hashValue(body.date_of_birth.replace(/-/g, ''))]
+        if (body.gender) userData.ge = [hashValue(body.gender.toLowerCase().trim())]
+        const extId = body.external_id ?? body.order_id
+        if (extId) userData.external_id = [hashValue(extId)]
 
+        const metaEventId = event_id ?? `th_${Date.now()}_${Math.random().toString(36).slice(2)}`
         const metaEvent: Record<string, unknown> = {
           event_name,
           event_time: eventTime,
+          event_id: metaEventId,
+          event_source_url: event_source_url ?? '',
           action_source: 'website',
           user_data: userData,
-          custom_data: { value, currency },
+          custom_data: {
+            value,
+            currency,
+            order_id: body.order_id ?? undefined,
+            content_ids: body.content_ids ?? undefined,
+            content_type: body.content_type ?? undefined,
+            contents: body.contents ?? undefined,
+            num_items: body.num_items ?? undefined,
+          },
         }
-        if (event_id) metaEvent.event_id = event_id
-        if (event_source_url) metaEvent.event_source_url = event_source_url
 
         const metaRequestBody: Record<string, unknown> = { data: [metaEvent] }
         if (process.env.META_TEST_EVENT_CODE) {

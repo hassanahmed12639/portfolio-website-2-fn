@@ -23,6 +23,10 @@ type EventParams = {
   currency: string
   email: string
   phone: string
+  first_name: string
+  last_name: string
+  city: string
+  country: string
   order_id: string
   form_name: string
   page_url: string
@@ -38,6 +42,10 @@ const defaultParams: EventParams = {
   currency: 'USD',
   email: '',
   phone: '',
+  first_name: '',
+  last_name: '',
+  city: '',
+  country: '',
   order_id: '',
   form_name: '',
   page_url: '',
@@ -113,6 +121,10 @@ export default function PlaygroundPage() {
       event_source_url: params.event_source_url || undefined,
       email: email || undefined,
       phone: params.phone || undefined,
+      first_name: params.first_name || undefined,
+      last_name: params.last_name || undefined,
+      city: params.city || undefined,
+      country: params.country || undefined,
       value: numValue,
       currency: params.currency || undefined,
       target: sendTarget,
@@ -214,8 +226,8 @@ export default function PlaygroundPage() {
   }
 
   const showField = (key: keyof EventParams) => {
-    const purchase = ['value', 'currency', 'email', 'phone', 'order_id', 'event_id', 'event_source_url']
-    const lead = ['email', 'phone', 'form_name', 'event_id', 'event_source_url']
+    const purchase = ['value', 'currency', 'email', 'phone', 'first_name', 'last_name', 'city', 'country', 'order_id', 'event_id', 'event_source_url']
+    const lead = ['email', 'phone', 'first_name', 'last_name', 'city', 'country', 'form_name', 'event_id', 'event_source_url']
     const pageView = ['page_url', 'page_title', 'event_id', 'event_source_url']
     const addToCart = ['value', 'currency', 'product_id', 'product_name', 'event_id', 'event_source_url']
     const all = ['event_id', 'event_source_url']
@@ -232,9 +244,9 @@ export default function PlaygroundPage() {
       case 'ViewContent':
       case 'Search':
       case 'CompleteRegistration':
-        return all.includes(key) || ['value', 'currency', 'email', 'phone'].includes(key)
+        return all.includes(key) || ['value', 'currency', 'email', 'phone', 'first_name', 'last_name', 'city', 'country'].includes(key)
       default:
-        return [...new Set([...all, 'value', 'currency', 'email', 'phone'])].includes(key)
+        return [...new Set([...all, 'value', 'currency', 'email', 'phone', 'first_name', 'last_name', 'city', 'country'])].includes(key)
     }
   }
 
@@ -400,9 +412,57 @@ export default function PlaygroundPage() {
                   />
                 </div>
               )}
+              {showField('first_name') && (
+                <div>
+                  <label className="block text-xs text-[var(--dash-muted)] mb-1">First Name</label>
+                  <input
+                    type="text"
+                    value={params.first_name}
+                    onChange={(e) => updateParam('first_name', e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] text-sm"
+                    placeholder="John"
+                  />
+                </div>
+              )}
+              {showField('last_name') && (
+                <div>
+                  <label className="block text-xs text-[var(--dash-muted)] mb-1">Last Name</label>
+                  <input
+                    type="text"
+                    value={params.last_name}
+                    onChange={(e) => updateParam('last_name', e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] text-sm"
+                    placeholder="Doe"
+                  />
+                </div>
+              )}
+              {showField('city') && (
+                <div>
+                  <label className="block text-xs text-[var(--dash-muted)] mb-1">City</label>
+                  <input
+                    type="text"
+                    value={params.city}
+                    onChange={(e) => updateParam('city', e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] text-sm"
+                    placeholder="New York"
+                  />
+                </div>
+              )}
+              {showField('country') && (
+                <div>
+                  <label className="block text-xs text-[var(--dash-muted)] mb-1">Country</label>
+                  <input
+                    type="text"
+                    value={params.country}
+                    onChange={(e) => updateParam('country', e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] text-sm"
+                    placeholder="US"
+                  />
+                </div>
+              )}
               {showField('order_id') && (
                 <div>
-                  <label className="block text-xs text-[var(--dash-muted)] mb-1">order_id</label>
+                  <label className="block text-xs text-[var(--dash-muted)] mb-1">Order ID (for Purchase events)</label>
                   <input
                     type="text"
                     value={params.order_id}
