@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
 
-export default function AdminAppIndexPage() {
+export default function AdminAppPage() {
   redirect('/admin/overview')
 }
