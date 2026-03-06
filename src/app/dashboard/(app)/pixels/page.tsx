@@ -18,6 +18,7 @@ const LIMITS = { free: 1, pro: 3, agency: 10, trial: 3 }
 export default function PixelsPage() {
   const [pixels, setPixels] = useState<Pixel[]>([])
   const [plan, setPlan] = useState<string>('free')
+  const [copied, setCopied] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [form, setForm] = useState({ name: 'My Pixel', pixel_id: '', access_token: '', platform: 'meta' })
   const [adding, setAdding] = useState(false)
@@ -237,6 +238,50 @@ export default function PixelsPage() {
                 <p className="text-xs text-[var(--dash-muted)] mt-1">
                   Status: {pixel.is_active ? 'Active — receiving events' : 'Paused — not receiving events'}
                 </p>
+
+                {/* Install snippet for each pixel */}
+                <div className="mt-4 bg-slate-950 rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Install Script</p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText(`<script src="https://track.itshassanahmed.com/th.js?id=${pixel.pixel_id}"></script>`)
+                        setCopied(pixel.id)
+                        setTimeout(() => setCopied(null), 2000)
+                      }}
+                      className="text-xs text-blue-400 hover:text-blue-300 font-medium transition-colors"
+                    >
+                      {copied === pixel.id ? '✓ Copied!' : 'Copy'}
+                    </button>
+                  </div>
+                  <code className="text-xs text-green-400 font-mono break-all">
+                    {`<script src="https://track.itshassanahmed.com/th.js?id=${pixel.pixel_id}"></script>`}
+                  </code>
+                </div>
+
+                {/* Usage examples */}
+                <div className="mt-3 bg-slate-950 rounded-xl p-4">
+                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Track Purchase Event</p>
+                  <code className="text-xs text-green-400 font-mono block">
+                    {`trackhive('track', 'Purchase', {`}<br />
+                    {`  value: 99.99,`}<br />
+                    {`  currency: 'USD',`}<br />
+                    {`  email: 'customer@email.com'`}<br />
+                    {`})`}
+                  </code>
+                </div>
+
+                <div className="mt-3 bg-slate-950 rounded-xl p-4">
+                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Track Lead Event</p>
+                  <code className="text-xs text-green-400 font-mono block">
+                    {`trackhive('track', 'Lead', {`}<br />
+                    {`  email: 'lead@email.com',`}<br />
+                    {`  phone: '+1234567890'`}<br />
+                    {`})`}
+                  </code>
+                </div>
+
                 <div className="flex flex-wrap gap-2 mt-4">
                   {!pixel.is_primary && (
                     <button

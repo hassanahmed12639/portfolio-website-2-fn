@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import ChatWidget from '@/components/ChatWidget'
 import ChatbotWrapper from '@/components/ChatbotWrapper'
-import MetaPixel from '@/components/MetaPixel'
+import TrackHivePixel from '@/components/TrackHivePixel'
 import MetaDomainVerification from '@/components/MetaDomainVerification'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import GsapInit from '@/components/GsapInit'
@@ -43,7 +43,7 @@ export default function RootLayout({
           {children}
           <ChatWidget />
           <ChatbotWrapper />
-          <MetaPixel />
+          <TrackHivePixel />
           <MetaDomainVerification />
         </ThemeProvider>
       </body>
