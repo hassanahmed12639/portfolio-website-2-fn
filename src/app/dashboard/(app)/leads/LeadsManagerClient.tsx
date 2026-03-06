@@ -191,7 +191,25 @@ export default function LeadsManagerClient({ initialLeads }: { initialLeads: Lea
               </p>
               <p className="text-sm text-slate-900">
                 <span className="text-slate-600 font-medium">Source:</span>{' '}
-                {selectedLead.source_url || 'N/A'}
+                {selectedLead.source_url ? (
+                  <a
+                    href={selectedLead.source_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline truncate max-w-xs inline-block align-baseline"
+                  >
+                    {(() => {
+                      try {
+                        const u = new URL(selectedLead.source_url)
+                        return u.hostname + u.pathname
+                      } catch {
+                        return selectedLead.source_url
+                      }
+                    })()}
+                  </a>
+                ) : (
+                  <span className="text-slate-500">Direct / Unknown</span>
+                )}
               </p>
               <p className="text-sm text-slate-900">
                 <span className="text-slate-600 font-medium">Event:</span>{' '}
@@ -276,24 +294,38 @@ export default function LeadsManagerClient({ initialLeads }: { initialLeads: Lea
               </select>
             </div>
 
-            <div className="bg-slate-50 rounded-xl p-3">
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
-                Meta Feedback
+            {/* Platform Feedback */}
+            <div className="bg-slate-50 rounded-xl p-3 space-y-2">
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                Platform Feedback
               </p>
-              {selectedLead.meta_feedback_sent ? (
-                <p className="text-xs text-green-600 font-medium">
-                  Signal sent on{' '}
-                  {selectedLead.meta_feedback_at
-                    ? new Date(
-                        selectedLead.meta_feedback_at
-                      ).toLocaleString()
-                    : '—'}
-                </p>
-              ) : (
-                <p className="text-xs text-slate-400">
-                  Score this lead to send quality signal to Meta
-                </p>
-              )}
+
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-slate-600">Meta CAPI</span>
+                {selectedLead.meta_feedback_sent ? (
+                  <span className="text-xs text-green-600 font-medium">
+                    ✓ Signal sent
+                  </span>
+                ) : (
+                  <span className="text-xs text-slate-500">Pending score</span>
+                )}
+              </div>
+
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-slate-600">Google Ads</span>
+                {selectedLead.score === 'converted' &&
+                selectedLead.meta_feedback_sent ? (
+                  <span className="text-xs text-green-600 font-medium">
+                    ✓ Conversion sent
+                  </span>
+                ) : (
+                  <span className="text-xs text-slate-500">
+                    {selectedLead.score === 'converted'
+                      ? 'Sending...'
+                      : 'Mark as Converted'}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </div>

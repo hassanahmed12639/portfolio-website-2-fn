@@ -73,6 +73,7 @@ export async function POST(request: NextRequest) {
     event_name?: string
     event_id?: string
     event_source_url?: string
+    source_url?: string
     pixel_id?: string
     value?: number
     currency?: string
@@ -318,6 +319,8 @@ export async function POST(request: NextRequest) {
     const leadFirstName = typeof fn === 'string' ? fn : Array.isArray(fn) ? fn[0] : body.first_name
     const ln = body.user_data?.ln
     const leadLastName = typeof ln === 'string' ? ln : Array.isArray(ln) ? ln[0] : body.last_name
+    const leadSourceUrl =
+      body.event_source_url ?? body.source_url ?? body.page_url ?? null
     const leadData = {
       user_id: user.id,
       pixel_id: body.pixel_id ?? list[0]?.pixel_id ?? null,
@@ -329,7 +332,7 @@ export async function POST(request: NextRequest) {
       event_name,
       value: value ?? 0,
       currency: currency ?? 'USD',
-      source_url: event_source_url ?? null,
+      source_url: leadSourceUrl,
       score: 'new',
       stage: 'new',
       raw_data: body,

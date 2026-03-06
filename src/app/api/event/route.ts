@@ -83,6 +83,8 @@ export async function POST(request: NextRequest) {
     event_name?: string
     event_id?: string
     event_source_url?: string
+    source_url?: string
+    page_url?: string
     value?: number
     currency?: string
     email?: string
@@ -841,6 +843,8 @@ export async function POST(request: NextRequest) {
   const leadEvents = ['Lead', 'CompleteRegistration', 'Subscribe', 'Contact']
   if (leadEvents.includes(event_name)) {
     console.log('[Leads] Saving lead event to leads table')
+    const leadSourceUrl =
+      body.event_source_url ?? body.source_url ?? body.page_url ?? request.headers.get('referer') ?? null
     const leadData = {
       user_id: userId,
       pixel_id: pixelId ?? null,
@@ -852,7 +856,7 @@ export async function POST(request: NextRequest) {
       event_name,
       value: value ?? 0,
       currency: currency ?? 'USD',
-      source_url: event_source_url_final ?? null,
+      source_url: leadSourceUrl,
       ip_address: ip,
       user_agent: userAgent,
       score: 'new',

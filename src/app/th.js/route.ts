@@ -55,6 +55,7 @@ export async function GET(req: NextRequest) {
       pixel_id: pixelId,
       event_name: eventName,
       event_source_url: window.location.href,
+      page_url: window.location.href,
       event_id: eventId,
       fbp: fbp,
       fbc: fbc || undefined,

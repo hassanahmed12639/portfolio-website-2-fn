@@ -5,6 +5,17 @@ import { getUserCredentials } from '@/lib/get-user-credentials'
 
 export const dynamic = 'force-dynamic'
 
+async function hashData(data: string): Promise<string> {
+  const encoder = new TextEncoder()
+  const hashBuffer = await crypto.subtle.digest(
+    'SHA-256',
+    encoder.encode(data.trim().toLowerCase())
+  )
+  return Array.from(new Uint8Array(hashBuffer))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('')
+}
+
 export async function POST(req: NextRequest) {
   try {
     const supabase = await createClient()
@@ -49,17 +60,6 @@ export async function POST(req: NextRequest) {
     const metaEvent = scoreMap[score]
     if (!metaEvent) return NextResponse.json({ success: true, skipped: true })
 
-    async function hashData(data: string): Promise<string> {
-      const encoder = new TextEncoder()
-      const hashBuffer = await crypto.subtle.digest(
-        'SHA-256',
-        encoder.encode(data.trim().toLowerCase())
-      )
-      return Array.from(new Uint8Array(hashBuffer))
-        .map((b) => b.toString(16).padStart(2, '0'))
-        .join('')
-    }
-
     const userData: Record<string, string[]> = {}
     if (lead.email) userData.em = [await hashData(String(lead.email))]
     if (lead.phone)
@@ -95,6 +95,65 @@ export async function POST(req: NextRequest) {
 
     const data = await response.json()
     console.log('[Meta Feedback] Sent:', score, '→', data)
+
+    // When score is 'converted', also send Google Ads conversion via GA4 Measurement Protocol
+    if (score === 'converted') {
+      const measurementId =
+        credentials.ga4MeasurementId || process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID
+      const apiSecret = credentials.ga4ApiSecret || process.env.GA4_API_SECRET
+      const conversionId =
+        credentials.googleConversionId || process.env.GOOGLE_ADS_CONVERSION_ID
+      const conversionLabel =
+        credentials.googleConversionLabel || process.env.GOOGLE_ADS_CONVERSION_LABEL
+
+      if (measurementId && apiSecret) {
+        const sendTo =
+          conversionId && conversionLabel
+            ? `${conversionId}/${conversionLabel}`
+            : undefined
+        const googlePayload = {
+          client_id: lead.email || `lead_${leadId}`,
+          events: [
+            {
+              name: 'conversion',
+              params: {
+                ...(sendTo && { send_to: sendTo }),
+                value: lead.value ?? 100,
+                currency: lead.currency || 'USD',
+                transaction_id: `lead_converted_${leadId}`
+              }
+            }
+          ],
+          user_data: {
+            ...(lead.email && {
+              sha256_email_address: await hashData(lead.email)
+            }),
+            ...(lead.phone && {
+              sha256_phone_number: await hashData(
+                String(lead.phone).replace(/\D/g, '')
+              )
+            })
+          }
+        }
+
+        try {
+          const googleRes = await fetch(
+            `https://www.google-analytics.com/mp/collect?measurement_id=${measurementId}&api_secret=${apiSecret}`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(googlePayload)
+            }
+          )
+          console.log(
+            '[Google Feedback] Conversion sent for converted lead:',
+            googleRes.status
+          )
+        } catch (err) {
+          console.error('[Google Feedback] Error:', err)
+        }
+      }
+    }
 
     await supabaseAdmin
       .from('leads')
