@@ -26,10 +26,12 @@ export async function sendTikTokEvent(
     }
     external_id?: string
   },
-  req?: { headers?: { get: (name: string) => string | null } }
+  req?: { headers?: { get: (name: string) => string | null } },
+  pixelIdParam?: string,
+  accessTokenParam?: string
 ) {
-  const pixelId = process.env.TIKTOK_PIXEL_ID
-  const accessToken = process.env.TIKTOK_ACCESS_TOKEN
+  const pixelId = pixelIdParam ?? process.env.TIKTOK_PIXEL_ID
+  const accessToken = accessTokenParam ?? process.env.TIKTOK_ACCESS_TOKEN
 
   if (!pixelId || !accessToken) {
     return { success: false, error: 'TikTok credentials missing' }

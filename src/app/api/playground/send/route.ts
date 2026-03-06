@@ -1,4 +1,5 @@
 import { validateEvent } from '@/lib/validate-event'
+import { getUserCredentials } from '@/lib/get-user-credentials'
 import { sendGA4Event } from '@/lib/ga4'
 import { sendTikTokEvent } from '@/lib/tiktok'
 import { sendGoogleEnhancedConversion } from '@/lib/google-ads'
@@ -316,6 +317,9 @@ export async function POST(request: NextRequest) {
   const ln = body.user_data?.ln
   const lastNameStr = typeof ln === 'string' ? ln : Array.isArray(ln) ? ln[0] : body.last_name
 
+  // User credentials from integrations table (ENV fallback)
+  const credentials = user ? await getUserCredentials(user.id) : {}
+
   // Fire GA4 / TikTok / Google only when target allows (all = every configured platform)
   const runGA4 = sendToAll || effectiveTarget === 'ga4'
   const runTikTok = sendToAll || effectiveTarget === 'tiktok'
@@ -324,15 +328,21 @@ export async function POST(request: NextRequest) {
   const platformPromises: Promise<unknown>[] = []
   if (runGA4) {
     platformPromises.push(
-      sendGA4Event(event_name, {
-        value: body.value,
-        currency: body.currency,
-        order_id: body.order_id,
-        event_source_url: body.event_source_url || 'https://track.itshassanahmed.com',
-        client_ip_address: clientIp,
-        client_user_agent: clientUserAgent,
-        event_id: body.event_id,
-      }, emailStr)
+      sendGA4Event(
+        event_name,
+        {
+          value: body.value,
+          currency: body.currency,
+          order_id: body.order_id,
+          event_source_url: body.event_source_url || 'https://track.itshassanahmed.com',
+          client_ip_address: clientIp,
+          client_user_agent: clientUserAgent,
+          event_id: body.event_id,
+        },
+        emailStr,
+        credentials.ga4MeasurementId,
+        credentials.ga4ApiSecret
+      )
     )
   }
   if (runTikTok) {
@@ -359,25 +369,34 @@ export async function POST(request: NextRequest) {
           content_name: body.content_name,
           brand: body.brand,
         },
-        request
+        request,
+        credentials.tiktokPixelId,
+        credentials.tiktokAccessToken
       )
     )
   }
   if (runGoogle) {
     platformPromises.push(
-      sendGoogleEnhancedConversion(event_name, {
-        fbp: body.fbp,
-        value: body.value,
-        currency: body.currency,
-        order_id: body.order_id,
-        event_id: body.event_id,
-        user_data: {
-          em: emailStr ? [emailStr] : [],
-          ph: phoneStr ? [phoneStr] : [],
-          fn: firstNameStr ? [firstNameStr] : [],
-          ln: lastNameStr ? [lastNameStr] : [],
+      sendGoogleEnhancedConversion(
+        event_name,
+        {
+          fbp: body.fbp,
+          value: body.value,
+          currency: body.currency,
+          order_id: body.order_id,
+          event_id: body.event_id,
+          user_data: {
+            em: emailStr ? [emailStr] : [],
+            ph: phoneStr ? [phoneStr] : [],
+            fn: firstNameStr ? [firstNameStr] : [],
+            ln: lastNameStr ? [lastNameStr] : [],
+          },
         },
-      })
+        credentials.googleConversionId,
+        credentials.googleConversionLabel,
+        credentials.ga4MeasurementId,
+        credentials.ga4ApiSecret
+      )
     )
   }
 

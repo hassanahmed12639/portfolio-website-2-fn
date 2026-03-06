@@ -1,15 +1,23 @@
 export async function sendGoogleEnhancedConversion(
   eventName: string,
-  body: any
+  body: any,
+  conversionIdParam?: string,
+  conversionLabelParam?: string,
+  measurementIdParam?: string,
+  apiSecretParam?: string
 ) {
-  const conversionId = process.env.GOOGLE_ADS_CONVERSION_ID
-  const conversionLabel = process.env.GOOGLE_ADS_CONVERSION_LABEL
-  const measurementId = process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID
-  const apiSecret = process.env.GA4_API_SECRET
+  const conversionId = conversionIdParam ?? process.env.GOOGLE_ADS_CONVERSION_ID
+  const conversionLabel = conversionLabelParam ?? process.env.GOOGLE_ADS_CONVERSION_LABEL
+  const measurementId = measurementIdParam ?? process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID
+  const apiSecret = apiSecretParam ?? process.env.GA4_API_SECRET
 
   if (!measurementId || !apiSecret) {
     console.log('[Google] Missing GA4 credentials')
     return { success: false, error: 'Missing credentials' }
+  }
+  if (!conversionId || !conversionLabel) {
+    console.log('[Google] Missing conversion ID or label')
+    return { success: false, error: 'Missing conversion ID or label' }
   }
 
   // Only send for conversion events

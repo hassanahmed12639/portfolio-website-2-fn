@@ -1,9 +1,15 @@
-export async function sendGA4Event(eventName: string, eventData: Record<string, unknown>, userEmail?: string) {
+export async function sendGA4Event(
+  eventName: string,
+  eventData: Record<string, unknown>,
+  userEmail?: string,
+  measurementIdParam?: string,
+  apiSecretParam?: string
+) {
   const debugLog = (...args: unknown[]) => {
     if (process.env.NODE_ENV === 'development') console.log(...args)
   }
-  const measurementId = process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID
-  const apiSecret = process.env.GA4_API_SECRET
+  const measurementId = measurementIdParam ?? process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID
+  const apiSecret = apiSecretParam ?? process.env.GA4_API_SECRET
 
   if (!measurementId || !apiSecret) {
     debugLog('[GA4] Missing credentials, skipping')

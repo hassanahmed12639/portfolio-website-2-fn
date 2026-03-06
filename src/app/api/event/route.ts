@@ -1,6 +1,7 @@
 import { validateEvent } from '@/lib/validate-event'
 import { enrichEvent } from '@/lib/enrich-event'
 import { calculateNextRetry } from '@/lib/retry-queue'
+import { getUserCredentials } from '@/lib/get-user-credentials'
 import { sendGA4Event } from '@/lib/ga4'
 import { sendTikTokEvent } from '@/lib/tiktok'
 import { sendGoogleEnhancedConversion } from '@/lib/google-ads'
@@ -825,7 +826,8 @@ export async function POST(request: NextRequest) {
     await supabase.from('events').insert(insertRow)
   }
 
-  // Fire GA4, TikTok, Google Enhanced Conversions in parallel (env-based)
+  // Fire GA4, TikTok, Google Enhanced Conversions in parallel (user credentials from integrations, ENV fallback)
+  const credentials = await getUserCredentials(profile.id)
   const platformResults = await Promise.allSettled([
     sendGA4Event(
       event_name,
@@ -839,7 +841,9 @@ export async function POST(request: NextRequest) {
         client_user_agent: userAgent,
         event_id,
       },
-      email
+      email,
+      credentials.ga4MeasurementId,
+      credentials.ga4ApiSecret
     ),
     sendTikTokEvent(
       event_name,
@@ -863,21 +867,30 @@ export async function POST(request: NextRequest) {
         content_name: body.content_name,
         brand: body.brand,
       },
-      request
+      request,
+      credentials.tiktokPixelId,
+      credentials.tiktokAccessToken
     ),
-    sendGoogleEnhancedConversion(event_name, {
-      fbp,
-      value,
-      currency,
-      order_id: bodyOrderId,
-      event_id,
-      user_data: {
-        em: email ? [email] : [],
-        ph: phone ? [phone] : [],
-        fn: first_name ? [first_name] : [],
-        ln: last_name ? [last_name] : [],
+    sendGoogleEnhancedConversion(
+      event_name,
+      {
+        fbp,
+        value,
+        currency,
+        order_id: bodyOrderId,
+        event_id,
+        user_data: {
+          em: email ? [email] : [],
+          ph: phone ? [phone] : [],
+          fn: first_name ? [first_name] : [],
+          ln: last_name ? [last_name] : [],
+        },
       },
-    }),
+      credentials.googleConversionId,
+      credentials.googleConversionLabel,
+      credentials.ga4MeasurementId,
+      credentials.ga4ApiSecret
+    ),
   ])
 
   const platformNames = ['GA4', 'TikTok', 'Google']
