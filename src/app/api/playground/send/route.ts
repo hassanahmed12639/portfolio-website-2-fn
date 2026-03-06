@@ -161,6 +161,12 @@ export async function POST(request: NextRequest) {
     .eq('user_id', profile.id)
     .eq('is_active', true)
 
+  const { data: headerSettings } = await serviceSupabase
+    .from('header_settings')
+    .select('*')
+    .eq('user_id', user.id)
+    .single()
+
   let list = integrationsRes.data ?? []
   if (effectiveTarget === 'meta') {
     list = list.filter((i) => i.platform === 'meta')
@@ -216,6 +222,12 @@ export async function POST(request: NextRequest) {
     if (integration.platform === 'meta') {
       const pixelId = integration.pixel_id
       const accessToken = integration.access_token
+      const testEventCode = headerSettings?.meta_test_event_code?.trim() ||
+        (process.env.META_TEST_EVENT_CODE ?? '')
+      console.log('[Meta] Attempting to send event:', body.event_name)
+      console.log('[Meta] Pixel ID:', pixelId ? 'found' : 'missing')
+      console.log('[Meta] Access Token:', accessToken ? 'found' : 'missing')
+      console.log('[Meta] Test event code:', testEventCode || 'none')
       if (pixelId && accessToken) {
         const clientIp =
           request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
@@ -262,18 +274,19 @@ export async function POST(request: NextRequest) {
           },
         }
 
-        const metaRequestBody: Record<string, unknown> = { data: [metaEvent] }
-        if (process.env.META_TEST_EVENT_CODE) {
-          metaRequestBody.test_event_code = process.env.META_TEST_EVENT_CODE
+        const metaPayload: Record<string, unknown> = { data: [metaEvent] }
+        if (testEventCode) {
+          metaPayload.test_event_code = testEventCode
+          console.log('[Meta] Using test event code:', testEventCode)
         }
-        originalPayload = metaRequestBody
+        originalPayload = metaPayload
 
         const res = await fetch(
           `https://graph.facebook.com/v19.0/${pixelId}/events?access_token=${encodeURIComponent(accessToken)}`,
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(metaRequestBody),
+            body: JSON.stringify(metaPayload),
           }
         )
         const metaJson = await res.json().catch(() => ({}))
