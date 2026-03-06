@@ -165,7 +165,33 @@ export default function IntegrationsForms({
 
   async function handleGoogleTest(e: React.FormEvent) {
     e.preventDefault()
-    setGoogleTestMsg({ type: 'error', text: 'Google test not implemented yet.' })
+    setGoogleTestMsg(null)
+    if (!googleTagId.trim() || !googleConversionLabel.trim()) {
+      setGoogleTestMsg({ type: 'error', text: 'Enter Conversion ID and Conversion Label first' })
+      return
+    }
+    setGoogleTesting(true)
+    try {
+      const res = await fetch('/api/integrations/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          platform: 'google',
+          tag_id: googleTagId.trim(),
+          conversion_label: googleConversionLabel.trim(),
+        }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (res.ok) {
+        setGoogleTestMsg({ type: 'success', text: data.message ?? 'Test conversion sent successfully' })
+      } else {
+        setGoogleTestMsg({ type: 'error', text: data.error ?? data.details ?? 'Test failed' })
+      }
+    } catch {
+      setGoogleTestMsg({ type: 'error', text: 'Request failed' })
+    } finally {
+      setGoogleTesting(false)
+    }
   }
 
   async function handleTiktokSave(e: React.FormEvent) {
@@ -549,7 +575,7 @@ export default function IntegrationsForms({
               disabled={googleTesting}
               className="px-4 py-2 rounded-lg bg-[var(--dash-surface-hover)] text-[var(--dash-text)] font-medium hover:bg-[var(--dash-border)] disabled:opacity-50 text-sm"
             >
-              Test only
+              {googleTesting ? 'Sending…' : 'Test only'}
             </button>
           </div>
           {googleTestMsg && (

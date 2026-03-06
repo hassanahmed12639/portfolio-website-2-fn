@@ -10,7 +10,14 @@ export async function POST(request: NextRequest) {
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
-    let body: { platform?: string; pixel_id?: string; access_token?: string; tag_id?: string; meta_test_event_code?: string }
+    let body: {
+      platform?: string
+      pixel_id?: string
+      access_token?: string
+      tag_id?: string
+      meta_test_event_code?: string
+      conversion_label?: string
+    }
 
     try {
       body = await request.json()
@@ -18,7 +25,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
     }
 
-    const { platform, pixel_id, access_token, tag_id, meta_test_event_code } = body
+    const { platform, pixel_id, access_token, tag_id, meta_test_event_code, conversion_label } = body
 
   if (platform === 'meta') {
     if (!pixel_id || !access_token) {
@@ -144,6 +151,54 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, message: 'Test event sent successfully' })
   }
 
+  if (platform === 'google') {
+    if (!tag_id || !conversion_label) {
+      return NextResponse.json(
+        { error: 'Conversion ID (tag_id) and Conversion Label required for Google Enhanced' },
+        { status: 400 }
+      )
+    }
+    const measurementId = process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID
+    const apiSecret = process.env.GA4_API_SECRET
+    if (!measurementId || !apiSecret) {
+      return NextResponse.json(
+        { error: 'GA4 credentials (NEXT_PUBLIC_GA4_MEASUREMENT_ID, GA4_API_SECRET) required to send Google Enhanced test' },
+        { status: 400 }
+      )
+    }
+    const conversionId = tag_id
+    const googlePayload = {
+      client_id: `th_test_${Date.now()}`,
+      events: [
+        {
+          name: 'conversion',
+          params: {
+            send_to: `${conversionId}/${conversion_label}`,
+            value: 0,
+            currency: 'USD',
+            transaction_id: `th_test_${Date.now()}`,
+          },
+        },
+      ],
+    }
+    const res = await fetch(
+      `https://www.google-analytics.com/mp/collect?measurement_id=${measurementId}&api_secret=${apiSecret}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(googlePayload),
+      }
+    )
+    if (!res.ok) {
+      const text = await res.text()
+      return NextResponse.json(
+        { error: 'Google Enhanced test failed', details: text },
+        { status: 502 }
+      )
+    }
+    return NextResponse.json({ success: true, message: 'Test conversion sent successfully' })
+  }
+
   if (platform === 'ga4') {
     if (!tag_id || !access_token) {
       return NextResponse.json(
@@ -182,7 +237,7 @@ export async function POST(request: NextRequest) {
   }
 
     return NextResponse.json(
-      { error: 'Test is only supported for meta, tiktok, snapchat, ga4' },
+      { error: 'Test is only supported for meta, tiktok, snapchat, google, ga4' },
       { status: 400 }
     )
   } catch (error) {
