@@ -1,14 +1,31 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 const PRELOADER_HIDE_DELAY_MS = 3200;
 
+/** Routes where the TrackHive preloader should show (not the portfolio). */
+function isTrackHiveRoute(pathname: string | null): boolean {
+  if (!pathname) return false;
+  return (
+    pathname === "/trackhive" ||
+    pathname.startsWith("/trackhive/") ||
+    pathname === "/dashboard" ||
+    pathname.startsWith("/dashboard/")
+  );
+}
+
 export default function Preloader() {
+  const pathname = usePathname();
   const [hide, setHide] = useState(false);
   const [removed, setRemoved] = useState(false);
 
+  const showPreloader = isTrackHiveRoute(pathname);
+
   useEffect(() => {
+    if (!showPreloader) return;
+
     const onLoad = () => {
       setTimeout(() => {
         setHide(true);
@@ -21,13 +38,13 @@ export default function Preloader() {
       window.addEventListener("load", onLoad);
       return () => window.removeEventListener("load", onLoad);
     }
-  }, []);
+  }, [showPreloader]);
 
   const handleTransitionEnd = () => {
     setRemoved(true);
   };
 
-  if (removed) return null;
+  if (!showPreloader || removed) return null;
 
   return (
     <div
@@ -40,11 +57,12 @@ export default function Preloader() {
         <div className="preloader-logo-icon">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/logo-icon.png"
-            alt=""
-            width={20}
-            height={20}
+            src="/logo-new-1.png"
+            alt="TrackHive"
+            width={24}
+            height={24}
             className="preloader-logo-img"
+            fetchPriority="high"
           />
         </div>
         <span className="preloader-logo-name">TrackHive</span>

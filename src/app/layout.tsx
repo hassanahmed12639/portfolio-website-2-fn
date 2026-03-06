@@ -37,10 +37,6 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=DM+Sans:wght@400;500&display=swap"
-          rel="stylesheet"
-        />
       </head>
       <body className="m-0 p-0 bg-background text-foreground">
         <ThemeProvider>

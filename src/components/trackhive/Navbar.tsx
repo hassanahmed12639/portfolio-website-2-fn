@@ -20,7 +20,7 @@ export default function TrackHiveNavbar() {
       <div className="max-w-6xl mx-auto px-6 h-[67px] flex items-center justify-between">
         {/* Logo - left */}
         <Link href="/trackhive" className="flex items-center gap-2 shrink-0">
-          <img src="/logo-icon.png" alt="TrackHive" className="w-8 h-8 rounded-lg object-contain" />
+          <img src="/logo-new-1.png" alt="TrackHive" className="w-8 h-8 rounded-lg object-contain" />
           <span className="font-semibold text-[#1e293b] text-base">
             TrackHive
           </span>
