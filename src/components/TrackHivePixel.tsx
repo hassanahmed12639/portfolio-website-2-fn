@@ -92,6 +92,22 @@ export default function TrackHivePixel() {
         src={`https://track.itshassanahmed.com/th.js?id=${pixelId}`}
         strategy="afterInteractive"
       />
+
+      {/* Cookie Lifetime Extender */}
+      {isTrackDomain && (
+        <img
+          src="https://track.itshassanahmed.com/api/cookie/set?api_key=0efb5a00-a57e-4fa6-852f-0f144001b08d"
+          width={1}
+          height={1}
+          alt=""
+          style={{
+            position: 'absolute',
+            width: '1px',
+            height: '1px',
+            opacity: 0
+          }}
+        />
+      )}
     </>
   )
 }
