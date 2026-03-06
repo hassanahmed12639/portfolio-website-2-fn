@@ -5,6 +5,41 @@ import { rateLimit } from '@/lib/rate-limit'
 
 export const dynamic = 'force-dynamic'
 
+export async function PUT(req: NextRequest) {
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+    const body = await req.json()
+    const { id, score, stage, notes } = body
+
+    if (!id) return NextResponse.json({ error: 'Missing lead id' }, { status: 400 })
+
+    const supabaseAdmin = createAdminClient()
+    const updateData: Record<string, unknown> = { updated_at: new Date().toISOString() }
+    if (score !== undefined) updateData.score = score
+    if (stage !== undefined) updateData.stage = stage
+    if (notes !== undefined) updateData.notes = notes
+
+    const { error } = await supabaseAdmin
+      .from('leads')
+      .update(updateData)
+      .eq('id', id)
+      .eq('user_id', user.id)
+
+    if (error) {
+      console.error('[Leads] Update error:', error.message)
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+
+    return NextResponse.json({ success: true })
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Internal server error'
+    return NextResponse.json({ error: message }, { status: 500 })
+  }
+}
+
 export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient()
