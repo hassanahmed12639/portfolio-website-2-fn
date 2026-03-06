@@ -176,29 +176,29 @@ export default function LeadsManagerClient({ initialLeads }: { initialLeads: Lea
           <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-6 sticky top-6">
             <h3 className="font-bold text-slate-900 mb-4">Lead Details</h3>
 
-            <div className="space-y-2 mb-6">
-              <p className="text-sm">
-                <span className="text-slate-400">Name:</span>{' '}
+            <div className="space-y-2 mb-6 text-slate-900">
+              <p className="text-sm text-slate-900">
+                <span className="text-slate-600 font-medium">Name:</span>{' '}
                 {selectedLead.first_name} {selectedLead.last_name}
               </p>
-              <p className="text-sm">
-                <span className="text-slate-400">Email:</span>{' '}
+              <p className="text-sm text-slate-900">
+                <span className="text-slate-600 font-medium">Email:</span>{' '}
                 {selectedLead.email}
               </p>
-              <p className="text-sm">
-                <span className="text-slate-400">Phone:</span>{' '}
+              <p className="text-sm text-slate-900">
+                <span className="text-slate-600 font-medium">Phone:</span>{' '}
                 {selectedLead.phone || 'N/A'}
               </p>
-              <p className="text-sm">
-                <span className="text-slate-400">Source:</span>{' '}
+              <p className="text-sm text-slate-900">
+                <span className="text-slate-600 font-medium">Source:</span>{' '}
                 {selectedLead.source_url || 'N/A'}
               </p>
-              <p className="text-sm">
-                <span className="text-slate-400">Event:</span>{' '}
+              <p className="text-sm text-slate-900">
+                <span className="text-slate-600 font-medium">Event:</span>{' '}
                 {selectedLead.event_name ?? 'N/A'}
               </p>
-              <p className="text-sm">
-                <span className="text-slate-400">Value:</span> $
+              <p className="text-sm text-slate-900">
+                <span className="text-slate-600 font-medium">Value:</span> $
                 {selectedLead.value ?? 0}
               </p>
             </div>
