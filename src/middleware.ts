@@ -93,6 +93,18 @@ export async function middleware(req: NextRequest) {
     }
   }
 
+  // Admin routes: require is_admin
+  if (isAdminRoute && session?.user?.id) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('is_admin')
+      .eq('id', session.user.id)
+      .single()
+    if (!profile?.is_admin) {
+      return NextResponse.redirect(new URL('/admin/login', req.url))
+    }
+  }
+
   // CRITICAL: Return res not NextResponse.next()
   return res
 }

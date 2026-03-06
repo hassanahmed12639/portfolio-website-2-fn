@@ -103,7 +103,6 @@ export default function AdminBlogPage() {
         </button>
       </div>
 
-      {/* Posts table */}
       {!showForm && (
         <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
           <table className="w-full">
@@ -195,7 +194,6 @@ export default function AdminBlogPage() {
         </div>
       )}
 
-      {/* Post form */}
       {showForm && (
         <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-6">
           <div className="flex items-center justify-between mb-6">
