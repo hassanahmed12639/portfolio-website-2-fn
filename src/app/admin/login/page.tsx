@@ -15,9 +15,30 @@ export default function AdminLoginPage() {
   const handleLogin = async () => {
     setLoading(true)
     setError('')
+
+    const attempts = parseInt(typeof localStorage !== 'undefined' ? localStorage.getItem('admin_attempts') || '0' : '0', 10)
+    const lockoutTime = parseInt(typeof localStorage !== 'undefined' ? localStorage.getItem('admin_lockout') || '0' : '0', 10)
+
+    if (Date.now() < lockoutTime) {
+      const minutesLeft = Math.ceil((lockoutTime - Date.now()) / 60000)
+      setError(`Too many attempts. Try again in ${minutesLeft} minutes.`)
+      setLoading(false)
+      return
+    }
+
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) {
-      setError(error.message)
+      const newAttempts = attempts + 1
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('admin_attempts', String(newAttempts))
+        if (newAttempts >= 5) {
+          localStorage.setItem('admin_lockout', String(Date.now() + 30 * 60000))
+          setError('Too many failed attempts. Locked for 30 minutes.')
+          setLoading(false)
+          return
+        }
+      }
+      setError(`Invalid credentials. ${5 - newAttempts} attempts remaining.`)
       setLoading(false)
       return
     }
@@ -34,6 +55,11 @@ export default function AdminLoginPage() {
       await supabase.auth.signOut()
       setLoading(false)
       return
+    }
+
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem('admin_attempts')
+      localStorage.removeItem('admin_lockout')
     }
 
     router.push('/admin/overview')

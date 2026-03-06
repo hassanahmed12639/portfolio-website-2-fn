@@ -53,7 +53,7 @@ export default async function IntegrationsPage() {
         activePixelsCount={activePixelsCount ?? 0}
         google={google ? { tag_id: google.tag_id, conversion_label: google.conversion_label } : null}
         tiktok={tiktok ? { pixel_id: tiktok.pixel_id, access_token: tiktok.access_token } : null}
-        ga4={ga4 ? { tag_id: ga4.tag_id, access_token: ga4.access_token } : null}
+        ga4={ga4 ? { tag_id: ga4.ga4_measurement_id ?? ga4.tag_id, access_token: ga4.ga4_api_secret ?? ga4.access_token } : null}
       />
     </div>
   )

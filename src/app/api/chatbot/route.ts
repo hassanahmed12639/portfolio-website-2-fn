@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { rateLimit } from '@/lib/rate-limit'
 
 export const dynamic = 'force-dynamic'
 
@@ -126,6 +127,12 @@ Always give detailed step-by-step answers. If someone asks how to do something, 
 
 export async function POST(req: NextRequest) {
   try {
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
+    const rateLimitResult = rateLimit(`chatbot:${ip}`, { windowMs: 60000, maxRequests: 20 })
+    if (!rateLimitResult.success) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+    }
+
     const { messages, chatbotType } = await req.json()
 
     if (!messages || !chatbotType) {

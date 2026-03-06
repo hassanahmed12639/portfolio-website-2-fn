@@ -24,12 +24,12 @@ export const metadata: Metadata = {
 const PARTNERS = ["Meta", "Google Ads", "TikTok", "Shopify", "Snapchat"]
 
 const INTEGRATIONS: { name: string; src: string }[] = [
-  { name: "Meta", src: "/meta-icon.png" },
-  { name: "Google", src: "/google-ads-icon.png" },
-  { name: "TikTok", src: "/tiktok-icon.png" },
-  { name: "Snapchat", src: "/snapchat-icon.png" },
+  { name: "Meta", src: "/landing-meta.png" },
+  { name: "Google", src: "/landing-google-ads.png" },
+  { name: "TikTok", src: "/landing-tiktok-ads.png" },
+  { name: "Snapchat", src: "/landing-snapchat-ads (1).png" },
   { name: "GTM", src: "https://cdn.simpleicons.org/googletagmanager/4285F4" },
-  { name: "Shopify", src: "/shopify-icon.png" },
+  { name: "Shopify", src: "/landing-shopify-ads.png" },
   { name: "WooCommerce", src: "https://cdn.simpleicons.org/woocommerce/96588A" },
   { name: "GA4", src: "https://cdn.simpleicons.org/googleanalytics/E37400" },
   { name: "Zapier", src: "https://cdn.simpleicons.org/zapier/FF4A00" },
@@ -168,14 +168,12 @@ export default function TrackHivePage() {
           {/* Main content with highlighted words */}
           <div className="text-center mb-8">
             <p className="text-2xl md:text-3xl lg:text-4xl font-bold leading-snug text-slate-900 max-w-3xl mx-auto">
-              Our team of highly{" "}
-              <span style={{ color: "#0ea5e9" }}>experienced engineers</span>
-              {" "}and{" "}
-              <span style={{ color: "#64748b" }}>specialists</span>
-              {" "}are dedicated to offering the best{" "}
-              <span style={{ color: "#3B82F6" }}>tracking solutions tailored</span>
-              {" "}to your unique marketing{" "}
-              <span style={{ color: "#ec4899" }}>needs.</span>
+              Advanced{" "}
+              <span style={{ color: "#3B82F6" }}>server-side tracking</span>
+              {" "}infrastructure built to deliver{" "}
+              <span style={{ color: "#0ea5e9" }}>accurate data</span>
+              {" "}and maximize{" "}
+              <span style={{ color: "#ec4899" }}>marketing performance</span>
             </p>
           </div>
 

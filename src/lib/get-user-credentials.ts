@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { decrypt } from '@/lib/encrypt'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -62,13 +63,23 @@ export async function getUserCredentials(userId: string): Promise<UserCredential
     const ga4 = list.find((r) => r.platform === 'ga4')
     const google = list.find((r) => r.platform === 'google')
 
+    const metaAccessTokenRaw = (meta?.access_token ?? fallback.metaAccessToken)?.trim() || fallback.metaAccessToken
+    const tiktokAccessTokenRaw = (tiktok?.access_token ?? fallback.tiktokAccessToken)?.trim() || fallback.tiktokAccessToken
+    const ga4ApiSecretRaw = (ga4?.ga4_api_secret ?? ga4?.access_token ?? fallback.ga4ApiSecret)?.trim() || fallback.ga4ApiSecret
+
+    const [metaAccessToken, tiktokAccessToken, ga4ApiSecret] = await Promise.all([
+      metaAccessTokenRaw ? decrypt(metaAccessTokenRaw) : Promise.resolve(fallback.metaAccessToken),
+      tiktokAccessTokenRaw ? decrypt(tiktokAccessTokenRaw) : Promise.resolve(fallback.tiktokAccessToken),
+      ga4ApiSecretRaw ? decrypt(ga4ApiSecretRaw) : Promise.resolve(fallback.ga4ApiSecret),
+    ])
+
     return {
       metaPixelId: (meta?.pixel_id ?? fallback.metaPixelId)?.trim() || fallback.metaPixelId,
-      metaAccessToken: (meta?.access_token ?? fallback.metaAccessToken)?.trim() || fallback.metaAccessToken,
+      metaAccessToken: metaAccessToken || fallback.metaAccessToken,
       tiktokPixelId: (tiktok?.pixel_id ?? fallback.tiktokPixelId)?.trim() || fallback.tiktokPixelId,
-      tiktokAccessToken: (tiktok?.access_token ?? fallback.tiktokAccessToken)?.trim() || fallback.tiktokAccessToken,
+      tiktokAccessToken: tiktokAccessToken || fallback.tiktokAccessToken,
       ga4MeasurementId: (ga4?.ga4_measurement_id ?? ga4?.tag_id ?? fallback.ga4MeasurementId)?.trim() || fallback.ga4MeasurementId,
-      ga4ApiSecret: (ga4?.ga4_api_secret ?? ga4?.access_token ?? fallback.ga4ApiSecret)?.trim() || fallback.ga4ApiSecret,
+      ga4ApiSecret: ga4ApiSecret || fallback.ga4ApiSecret,
       googleConversionId: (google?.tag_id ?? google?.conversion_id ?? fallback.googleConversionId)?.trim() || fallback.googleConversionId,
       googleConversionLabel: (google?.conversion_label ?? fallback.googleConversionLabel)?.trim() || fallback.googleConversionLabel,
     }

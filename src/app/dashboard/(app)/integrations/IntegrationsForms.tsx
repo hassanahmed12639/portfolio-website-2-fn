@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 type MetaIntegration = { pixel_id: string | null; access_token: string | null; meta_test_event_code?: string | null } | null
@@ -56,6 +57,8 @@ export default function IntegrationsForms({
   const [ga4Saving, setGa4Saving] = useState(false)
   const [ga4Testing, setGa4Testing] = useState(false)
 
+  const router = useRouter()
+
   async function handleMetaSave(e: React.FormEvent) {
     e.preventDefault()
     setMetaSaveMsg(null)
@@ -78,6 +81,7 @@ export default function IntegrationsForms({
         return
       }
       setMetaSaveMsg({ type: 'success', text: 'Saved.' })
+      router.refresh()
       if (metaPixelId.trim() && metaAccessToken.trim()) {
         const testRes = await fetch('/api/integrations/test', {
           method: 'POST',
@@ -153,6 +157,7 @@ export default function IntegrationsForms({
       const data = await res.json().catch(() => ({}))
       if (res.ok) {
         setGoogleSaveMsg({ type: 'success', text: 'Saved.' })
+        router.refresh()
       } else {
         setGoogleSaveMsg({ type: 'error', text: data.error ?? 'Save failed' })
       }
@@ -215,6 +220,7 @@ export default function IntegrationsForms({
         return
       }
       setTiktokSaveMsg({ type: 'success', text: 'Saved.' })
+      router.refresh()
       if (tiktokPixelId.trim() && tiktokAccessToken.trim()) {
         const testRes = await fetch('/api/integrations/test', {
           method: 'POST',
@@ -281,8 +287,8 @@ export default function IntegrationsForms({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           platform: 'ga4',
-          tag_id: ga4MeasurementId.trim() || undefined,
-          access_token: ga4ApiSecret.trim() || undefined,
+          ga4_measurement_id: ga4MeasurementId.trim() || undefined,
+          ga4_api_secret: ga4ApiSecret.trim() || undefined,
         }),
       })
       const saveData = await saveRes.json().catch(() => ({}))
@@ -291,6 +297,7 @@ export default function IntegrationsForms({
         return
       }
       setGa4SaveMsg({ type: 'success', text: 'Saved.' })
+      router.refresh()
       if (ga4MeasurementId.trim() && ga4ApiSecret.trim()) {
         const testRes = await fetch('/api/integrations/test', {
           method: 'POST',

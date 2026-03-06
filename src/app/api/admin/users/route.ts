@@ -1,8 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { rateLimit } from '@/lib/rate-limit'
 
 export const dynamic = 'force-dynamic'
+
+function checkAdminRateLimit(request: NextRequest): NextResponse | null {
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
+  const rateLimitResult = rateLimit(`admin:${ip}`, { windowMs: 60000, maxRequests: 30 })
+  if (!rateLimitResult.success) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+  }
+  return null
+}
 
 async function verifyAdmin() {
   const supabase = await createClient()
@@ -14,8 +24,10 @@ async function verifyAdmin() {
   return { ok: true as const, admin }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const rateLimitResponse = checkAdminRateLimit(request)
+    if (rateLimitResponse) return rateLimitResponse
     const result = await verifyAdmin()
     if (!result.ok) return NextResponse.json({ error: result.status === 401 ? 'Unauthorized' : 'Forbidden' }, { status: result.status })
     const { admin } = result
@@ -32,6 +44,8 @@ export async function GET() {
 
 export async function PUT(req: NextRequest) {
   try {
+    const rateLimitResponse = checkAdminRateLimit(req)
+    if (rateLimitResponse) return rateLimitResponse
     const result = await verifyAdmin()
     if (!result.ok) return NextResponse.json({ error: result.status === 401 ? 'Unauthorized' : 'Forbidden' }, { status: result.status })
     const { admin } = result
@@ -54,6 +68,8 @@ export async function PUT(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
+    const rateLimitResponse = checkAdminRateLimit(req)
+    if (rateLimitResponse) return rateLimitResponse
     const result = await verifyAdmin()
     if (!result.ok) return NextResponse.json({ error: result.status === 401 ? 'Unauthorized' : 'Forbidden' }, { status: result.status })
     const { admin } = result

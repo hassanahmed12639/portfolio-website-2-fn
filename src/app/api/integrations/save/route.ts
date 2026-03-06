@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { createClient as createServerClient } from '@/lib/supabase/server'
+import { encrypt } from '@/lib/encrypt'
 import { NextRequest, NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
@@ -59,7 +60,10 @@ export async function POST(request: NextRequest) {
     is_active: true,
   }
   if (pixel_id !== undefined) row.pixel_id = pixel_id || null
-  if (access_token !== undefined) row.access_token = access_token || null
+  if (access_token !== undefined) {
+    const raw = access_token?.trim() || null
+    row.access_token = raw ? await encrypt(raw) : null
+  }
   if (tag_id !== undefined) row.tag_id = tag_id || null
   if (platform === 'meta' && meta_test_event_code !== undefined) row.meta_test_event_code = meta_test_event_code?.trim() || null
   if (platform === 'google') {
@@ -68,7 +72,10 @@ export async function POST(request: NextRequest) {
   }
   if (platform === 'ga4') {
     if (ga4_measurement_id !== undefined) (row as Record<string, unknown>).ga4_measurement_id = ga4_measurement_id?.trim() || null
-    if (ga4_api_secret !== undefined) (row as Record<string, unknown>).ga4_api_secret = ga4_api_secret?.trim() || null
+    if (ga4_api_secret !== undefined) {
+      const raw = ga4_api_secret?.trim() || null
+      ;(row as Record<string, unknown>).ga4_api_secret = raw ? await encrypt(raw) : null
+    }
   }
 
   const { data: existing } = await supabase
@@ -92,7 +99,10 @@ export async function POST(request: NextRequest) {
     }
     if (platform === 'ga4') {
       if (ga4_measurement_id !== undefined) updatePayload.ga4_measurement_id = ga4_measurement_id?.trim() || null
-      if (ga4_api_secret !== undefined) updatePayload.ga4_api_secret = ga4_api_secret?.trim() || null
+      if (ga4_api_secret !== undefined) {
+        const raw = ga4_api_secret?.trim() || null
+        updatePayload.ga4_api_secret = raw ? await encrypt(raw) : null
+      }
     }
     const { error } = await supabase
       .from('integrations')

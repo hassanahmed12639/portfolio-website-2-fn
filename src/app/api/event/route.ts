@@ -1,7 +1,9 @@
 import { validateEvent } from '@/lib/validate-event'
+import { validateEventPayload, sanitizeString, sanitizeEmail, sanitizeNumber, sanitizeUrl } from '@/lib/validate'
 import { enrichEvent } from '@/lib/enrich-event'
 import { calculateNextRetry } from '@/lib/retry-queue'
 import { getUserCredentials } from '@/lib/get-user-credentials'
+import { rateLimit } from '@/lib/rate-limit'
 import { sendGA4Event } from '@/lib/ga4'
 import { sendTikTokEvent } from '@/lib/tiktok'
 import { sendGoogleEnhancedConversion } from '@/lib/google-ads'
@@ -11,7 +13,6 @@ import { NextRequest, NextResponse } from 'next/server'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
 
 export const dynamic = 'force-dynamic'
 
@@ -25,20 +26,6 @@ export async function OPTIONS() {
   return new NextResponse(null, {
     headers: CORS_HEADERS,
   })
-}
-
-function isRateLimited(identifier: string, limit = 100, windowMs = 60000): boolean {
-  const now = Date.now()
-  const record = rateLimitMap.get(identifier)
-
-  if (!record || now > record.resetAt) {
-    rateLimitMap.set(identifier, { count: 1, resetAt: now + windowMs })
-    return false
-  }
-
-  if (record.count >= limit) return true
-  record.count++
-  return false
 }
 
 function debugLog(...args: unknown[]) {
@@ -70,8 +57,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500, headers: CORS_HEADERS })
     }
 
-    const clientIp = getClientIp(request.headers) ?? request.headers.get('x-real-ip') ?? 'unknown'
-    if (isRateLimited(clientIp)) {
+    const clientIp = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
+    const rateLimitResult = rateLimit(`event:${clientIp}`, { windowMs: 60000, maxRequests: 200 })
+    if (!rateLimitResult.success) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: CORS_HEADERS })
     }
 
@@ -129,6 +117,29 @@ export async function POST(request: NextRequest) {
     } catch {
       return NextResponse.json({ error: 'Invalid JSON' }, { status: 400, headers: CORS_HEADERS })
     }
+
+    const payloadValidation = validateEventPayload(body)
+    if (!payloadValidation.valid) {
+      return NextResponse.json(
+        { error: 'Invalid payload', details: payloadValidation.errors },
+        { status: 400, headers: CORS_HEADERS }
+      )
+    }
+
+    const sanitizedBody = {
+      ...body,
+      event_name: sanitizeString(body.event_name),
+      event_source_url: sanitizeUrl(body.event_source_url),
+      currency: sanitizeString(body.currency),
+      value: sanitizeNumber(body.value),
+      user_data: {
+        em: body.user_data?.em?.map((e: string) => sanitizeEmail(e)).filter(Boolean) || [],
+        ph: body.user_data?.ph?.map((p: string) => sanitizeString(p)).filter(Boolean) || [],
+        fn: body.user_data?.fn?.map((f: string) => sanitizeString(f)).filter(Boolean) || [],
+        ln: body.user_data?.ln?.map((l: string) => sanitizeString(l)).filter(Boolean) || [],
+      },
+    }
+    Object.assign(body, sanitizedBody)
 
   const {
     api_key: bodyApiKey,
