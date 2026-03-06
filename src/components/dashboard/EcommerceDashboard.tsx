@@ -48,42 +48,35 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
         </div>
       </div>
 
-      {/* Row 1 — Key ecom metrics */}
+      {/* Row 1 — Key ecom metrics (overview) */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {[
           {
             label: 'Total Revenue Tracked',
             value: loading ? '...' : `$${Number(stats?.totalRevenue ?? 0).toLocaleString()}`,
-            icon: '💰',
             color: 'bg-[var(--dash-success-soft)] border-[var(--dash-success-border)]',
             textColor: 'text-[var(--dash-success-strong)]'
           },
           {
             label: 'Purchases',
             value: loading ? '...' : Number(stats?.purchases ?? 0),
-            icon: '🛒',
             color: 'bg-[var(--dash-primary-soft)] border-[var(--dash-accent-border)]',
             textColor: 'text-[var(--dash-primary-strong)]'
           },
           {
             label: 'Events This Month',
             value: loading ? '...' : Number(stats?.totalEvents ?? 0).toLocaleString(),
-            icon: '⚡',
             color: 'bg-[var(--dash-card)] border-[var(--dash-border)]',
             textColor: 'text-slate-900'
           },
           {
             label: 'Match Rate',
             value: loading ? '...' : `${stats?.matchRate ?? 0}%`,
-            icon: '🎯',
             color: 'bg-[var(--dash-primary-soft)] border-[var(--dash-accent-border)]',
             textColor: 'text-[var(--dash-primary-strong)]'
           }
         ].map(stat => (
           <div key={stat.label} className={`dash-card dash-card-gradient-top ${stat.color} rounded-2xl border p-5 shadow-[var(--dash-shadow)]`}>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xl">{stat.icon}</span>
-            </div>
             <p className={`text-2xl font-bold ${stat.textColor}`}>{String(stat.value)}</p>
             <p className="text-xs text-slate-500 mt-1">{stat.label}</p>
           </div>
@@ -200,9 +193,9 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
 
         {/* Install snippet */}
         <div className="dash-card bg-[#0F0F0F] rounded-xl p-5 border border-slate-700">
-          <p className="font-bold mb-1 text-white">🔧 Install Tracking Script</p>
+          <p className="font-bold mb-1 text-black">🔧 Install Tracking Script</p>
           <p className="text-slate-400 text-sm mb-3">Add to your website&apos;s &lt;head&gt; tag</p>
-          <div className="bg-slate-800 rounded-lg p-3 font-mono text-xs text-[var(--dash-neon)] mb-3 overflow-x-auto">
+          <div className="bg-slate-800 rounded-lg p-3 font-mono text-xs text-white mb-3 overflow-x-auto">
             {`<script src="https://track.itshassanahmed.com/th.js?id=${firstPixelId || 'YOUR_PIXEL_ID'}"></script>`}
           </div>
           <Link

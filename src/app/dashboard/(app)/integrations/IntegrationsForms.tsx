@@ -385,20 +385,6 @@ export default function IntegrationsForms({
               className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]"
             />
           </div>
-          <div>
-            <label htmlFor="meta-test-event-code" className="block text-sm font-medium text-[var(--dash-muted)] mb-1.5">
-              Test Event Code (optional)
-            </label>
-            <input
-              id="meta-test-event-code"
-              type="text"
-              placeholder="TEST86916"
-              value={metaTestEventCode}
-              onChange={(e) => setMetaTestEventCode(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]"
-            />
-            <p className="mt-1 text-xs text-[var(--dash-muted)]">Only needed during testing. Remove before going live.</p>
-          </div>
           {metaSaveMsg && (
             <p className={metaSaveMsg.type === 'success' ? 'text-[var(--dash-success)] text-sm' : 'text-red-400 text-sm'}>
               {metaSaveMsg.text}

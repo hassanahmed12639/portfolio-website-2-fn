@@ -97,5 +97,27 @@
     "threshold": 70,
     "emailSentTo": "hassanonclouds@gmail.com",
     "status": "failed"
+  },
+  {
+    "id": "08b8b3da-e89f-4c9a-9bec-0ab049ed42fd",
+    "ruleId": "27e71f00-a23a-459f-82fa-0a08f7411d56",
+    "ruleName": "low scroe alert",
+    "triggeredAt": "2026-03-06T02:30:37.706Z",
+    "condition": "score_below",
+    "value": 37,
+    "threshold": 70,
+    "emailSentTo": "hassanonclouds@gmail.com",
+    "status": "sent"
+  },
+  {
+    "id": "04305674-7b38-4cdc-b4d4-0fd56d9b5b5e",
+    "ruleId": "27e71f00-a23a-459f-82fa-0a08f7411d56",
+    "ruleName": "low scroe alert",
+    "triggeredAt": "2026-03-06T02:30:37.881Z",
+    "condition": "score_below",
+    "value": 37,
+    "threshold": 70,
+    "emailSentTo": "hassanonclouds@gmail.com",
+    "status": "sent"
   }
 ]

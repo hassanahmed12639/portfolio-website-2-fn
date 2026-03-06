@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
     page_title?: string
     product_id?: string
     product_name?: string
-    target?: 'both' | 'meta' | 'google' | 'ga4' | 'tiktok'
+    target?: 'all' | 'both' | 'meta' | 'google' | 'ga4' | 'tiktok'
     user_data?: {
       em?: string | string[]
       ph?: string | string[]
@@ -133,8 +133,10 @@ export async function POST(request: NextRequest) {
     currency = 'USD',
     email,
     phone,
-    target = 'both',
+    target,
   } = body
+  const sendToAll = target === 'all' || target === 'both' || !target
+  const effectiveTarget = sendToAll ? 'all' : (target ?? 'all')
   if (!event_name) {
     return NextResponse.json({ error: 'event_name required' }, { status: 400 })
   }
@@ -157,11 +159,11 @@ export async function POST(request: NextRequest) {
     .eq('is_active', true)
 
   let list = integrationsRes.data ?? []
-  if (target === 'meta') {
+  if (effectiveTarget === 'meta') {
     list = list.filter((i) => i.platform === 'meta')
-  } else if (target === 'google') {
+  } else if (effectiveTarget === 'google') {
     list = list.filter((i) => i.platform === 'google')
-  } else if (target === 'ga4' || target === 'tiktok') {
+  } else if (effectiveTarget === 'ga4' || effectiveTarget === 'tiktok') {
     list = []
   }
 
@@ -314,10 +316,10 @@ export async function POST(request: NextRequest) {
   const ln = body.user_data?.ln
   const lastNameStr = typeof ln === 'string' ? ln : Array.isArray(ln) ? ln[0] : body.last_name
 
-  // Fire GA4 / TikTok / Google only when target allows (meta-only skips these)
-  const runGA4 = target === 'both' || target === 'ga4'
-  const runTikTok = target === 'both' || target === 'tiktok'
-  const runGoogle = target === 'both' || target === 'google'
+  // Fire GA4 / TikTok / Google only when target allows (all = every configured platform)
+  const runGA4 = sendToAll || effectiveTarget === 'ga4'
+  const runTikTok = sendToAll || effectiveTarget === 'tiktok'
+  const runGoogle = sendToAll || effectiveTarget === 'google'
 
   const platformPromises: Promise<unknown>[] = []
   if (runGA4) {

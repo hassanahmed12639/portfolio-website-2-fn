@@ -238,7 +238,7 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
         <div className="rounded-xl p-5 border border-slate-700" style={{ background: '#0F0F0F' }}>
           <p className="font-bold mb-1 text-white">Capture Leads from Your Website</p>
           <p className="text-slate-300 text-sm mb-3">Fire Lead events from your form submissions</p>
-          <div className="bg-slate-800 rounded-lg p-3 font-mono text-xs text-[var(--dash-neon)] mb-3 overflow-x-auto">
+          <div className="bg-slate-800 rounded-lg p-3 font-mono text-xs text-white mb-3 overflow-x-auto">
             {`trackhive('track', 'Lead', {
   email: 'user@email.com',
   phone: '+1234567890'

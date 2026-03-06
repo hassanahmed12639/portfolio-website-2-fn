@@ -99,7 +99,7 @@ export default function PlaygroundPage() {
   const [params, setParams] = useState<EventParams>({ ...defaultParams, event_id: generateEventId() })
   const [includeTestEmail, setIncludeTestEmail] = useState(false)
   const [autoGenerateEventId, setAutoGenerateEventId] = useState(true)
-  const [sendTarget, setSendTarget] = useState<'both' | 'meta' | 'google' | 'ga4' | 'tiktok'>('both')
+  const [sendTarget, setSendTarget] = useState<'all' | 'meta' | 'google' | 'ga4' | 'tiktok'>('all')
   const [resultTab, setResultTab] = useState<'response' | 'payload' | 'platform' | 'history'>('response')
   const [lastResponse, setLastResponse] = useState<unknown>(null)
   const [lastPayload, setLastPayload] = useState<unknown>(null)
@@ -108,7 +108,7 @@ export default function PlaygroundPage() {
   const [qualityScore, setQualityScore] = useState<number | null>(null)
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null)
   const [sendConfirm, setSendConfirm] = useState<{ show: boolean; errors: number; warnings: number } | null>(null)
-  const [pendingSendTarget, setPendingSendTarget] = useState<'both' | 'meta' | 'google' | 'ga4' | 'tiktok' | null>(null)
+  const [pendingSendTarget, setPendingSendTarget] = useState<'all' | 'meta' | 'google' | 'ga4' | 'tiktok' | null>(null)
 
   const displayEventName = eventType === 'Custom' ? customEventName.trim() || 'Custom' : eventType
 
@@ -162,7 +162,7 @@ export default function PlaygroundPage() {
     }
   }, [eventType, autoGenerateEventId])
 
-  const doSendTestEvent = async (targetOverride?: 'both' | 'meta' | 'google' | 'ga4' | 'tiktok') => {
+  const doSendTestEvent = async (targetOverride?: 'all' | 'meta' | 'google' | 'ga4' | 'tiktok') => {
     const target = targetOverride ?? sendTarget
     const payload = buildPayload()
     setSending(true)
@@ -207,7 +207,7 @@ export default function PlaygroundPage() {
     }
   }
 
-  const sendTestEvent = (targetOverride?: 'both' | 'meta' | 'google' | 'ga4' | 'tiktok') => {
+  const sendTestEvent = (targetOverride?: 'all' | 'meta' | 'google' | 'ga4' | 'tiktok') => {
     const target = targetOverride ?? sendTarget
     if (validationResult && (validationResult.errors.length > 0 || validationResult.warnings.length > 0)) {
       setSendConfirm({
@@ -593,8 +593,8 @@ export default function PlaygroundPage() {
           </section>
 
           {sendConfirm?.show && (
-            <div className="rounded-xl border border-amber-500/40 bg-[var(--dash-warning)]/10 p-4 flex flex-wrap items-center justify-between gap-3">
-              <p className="text-amber-200 text-sm">
+            <div className="rounded-xl border border-[var(--dash-primary)]/50 bg-[var(--dash-primary)]/10 p-4 flex flex-wrap items-center justify-between gap-3">
+              <p className="text-black text-sm">
                 {sendConfirm.errors > 0 && sendConfirm.warnings > 0
                   ? `${sendConfirm.errors} errors, ${sendConfirm.warnings} warnings found`
                   : sendConfirm.errors > 0
@@ -617,7 +617,7 @@ export default function PlaygroundPage() {
                     setPendingSendTarget(null)
                   }}
                   disabled={sending}
-                  className="px-3 py-2 rounded-lg bg-amber-600 hover:bg-[var(--dash-warning)] text-white text-sm font-medium disabled:opacity-50 transition-colors"
+                  className="px-3 py-2 rounded-lg bg-[var(--dash-primary)] hover:opacity-90 text-white text-sm font-medium disabled:opacity-50 transition-colors"
                 >
                   Send anyway
                 </button>
@@ -627,7 +627,7 @@ export default function PlaygroundPage() {
                     setSendConfirm(null)
                     setPendingSendTarget(null)
                   }}
-                  className="px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-border)] text-[var(--dash-text)] text-sm transition-colors"
+                  className="px-3 py-2 rounded-lg bg-black hover:bg-gray-800 text-white text-sm transition-colors"
                 >
                   Cancel
                 </button>
@@ -644,10 +644,10 @@ export default function PlaygroundPage() {
                 <label className="block text-xs text-[var(--dash-muted)] mb-1">Send to</label>
                 <select
                   value={sendTarget}
-                  onChange={(e) => setSendTarget(e.target.value as 'both' | 'meta' | 'google' | 'ga4' | 'tiktok')}
+                  onChange={(e) => setSendTarget(e.target.value as 'all' | 'meta' | 'google' | 'ga4' | 'tiktok')}
                   className="w-full px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] text-sm"
                 >
-                  <option value="both">Both</option>
+                  <option value="all">All</option>
                   <option value="meta">Meta only</option>
                   <option value="google">Google only</option>
                   <option value="ga4">GA4 only</option>
@@ -657,7 +657,7 @@ export default function PlaygroundPage() {
               <div className="flex flex-wrap gap-2">
                 <button
                   type="button"
-                  onClick={() => sendTestEvent('both')}
+                  onClick={() => sendTestEvent('all')}
                   disabled={sending}
                   className="flex-1 min-w-[140px] px-4 py-3 rounded-lg bg-[var(--dash-success)] hover:bg-[var(--dash-success-strong)] text-white font-medium text-sm disabled:opacity-50 transition-colors"
                 >

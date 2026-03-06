@@ -1,30 +1,40 @@
 import { createClient } from '@/lib/supabase/server'
 import IntegrationsForms from './IntegrationsForms'
 
+export const dynamic = 'force-dynamic'
+
 export default async function IntegrationsPage() {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  const user = session?.user
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    return (
+      <div className="p-6 md:p-8 overflow-auto">
+        <p className="text-[var(--dash-muted)]">Please sign in to view integrations.</p>
+      </div>
+    )
+  }
 
   const { data: integrations } = await supabase
     .from('integrations')
     .select('platform, pixel_id, access_token, tag_id, meta_test_event_code, conversion_label')
-    .eq('user_id', user!.id)
+    .eq('user_id', user.id)
 
   const startOfMonth = new Date()
   startOfMonth.setDate(1)
   startOfMonth.setHours(0, 0, 0, 0)
-  const { count: activePixelsCount } = await supabase
+
+  const { data: activePixels } = await supabase
     .from('pixels')
-    .select('id', { count: 'exact', head: true })
-    .eq('user_id', user!.id)
+    .select('id')
+    .eq('user_id', user.id)
     .eq('platform', 'meta')
     .eq('is_active', true)
+  const activePixelsCount = activePixels?.length ?? 0
 
   const { count: metaFbclidCount } = await supabase
     .from('events')
     .select('id', { count: 'exact', head: true })
-    .eq('user_id', user!.id)
+    .eq('user_id', user.id)
     .not('fbclid', 'is', null)
     .gte('created_at', startOfMonth.toISOString())
 

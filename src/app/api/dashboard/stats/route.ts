@@ -30,7 +30,7 @@ export async function GET() {
         .from('events')
         .select('id, value')
         .eq('user_id', user.id)
-        .eq('event_name', 'Purchase')
+        .or('event_name.eq.Purchase,event_name.eq.TEST_Purchase')
         .gte('created_at', startOfMonthIso),
       supabase
         .from('events')
