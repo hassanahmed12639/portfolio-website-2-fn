@@ -1,102 +1,91 @@
-import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
-import { randomUUID } from 'crypto'
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+import { createClient as createAdmin } from '@supabase/supabase-js'
 
 export const dynamic = 'force-dynamic'
 
-const ONE_BY_ONE_GIF = Buffer.from(
-  'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
-  'base64'
+const supabaseAdmin = createAdmin(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
-export async function GET(request: NextRequest) {
-  if (!serviceRoleKey || !supabaseUrl) {
-    return new NextResponse(ONE_BY_ONE_GIF, {
-      status: 200,
-      headers: { 'Content-Type': 'image/gif' },
-    })
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url)
+  const apiKey = searchParams.get('api_key')
+
+  // Get existing cookie or create new visitor ID
+  const existingId = req.cookies.get('_th_id')?.value
+  const visitorId = existingId || `th_${Date.now()}_${Math.random().toString(36).slice(2)}`
+  const isReturning = !!existingId
+
+  // Get cookie lifetime from user's settings (default 180 days)
+  let cookieLifetimeDays = 180
+
+  try {
+    if (apiKey) {
+      const { data: settings } = await supabaseAdmin
+        .from('cookie_settings')
+        .select('cookie_lifetime_days, is_enabled')
+        .eq('api_key', apiKey)
+        .single()
+
+      if (settings?.cookie_lifetime_days) {
+        cookieLifetimeDays = settings.cookie_lifetime_days
+      }
+
+      // Track visitor in Supabase
+      if (settings?.is_enabled) {
+        await supabaseAdmin
+          .from('visitors')
+          .upsert({
+            visitor_id: visitorId,
+            api_key: apiKey,
+            is_returning: isReturning,
+            last_seen: new Date().toISOString(),
+            visit_count: isReturning ? 1 : 1
+          }, {
+            onConflict: 'visitor_id',
+            ignoreDuplicates: false
+          })
+      }
+    }
+  } catch (err) {
+    console.error('[Cookie] Error:', err)
   }
 
-  const apiKey = request.nextUrl.searchParams.get('api_key')
-  if (!apiKey) {
-    return new NextResponse(ONE_BY_ONE_GIF, {
-      status: 200,
-      headers: { 'Content-Type': 'image/gif' },
-    })
-  }
+  // Create 1x1 transparent GIF response
+  const gif = Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64')
 
-  const supabase = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } })
+  const maxAge = cookieLifetimeDays * 24 * 60 * 60
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('id')
-    .eq('api_key', apiKey)
-    .single()
+  const response = new NextResponse(gif, {
+    status: 200,
+    headers: {
+      'Content-Type': 'image/gif',
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Access-Control-Allow-Origin': '*'
+    }
+  })
 
-  if (!profile) {
-    return new NextResponse(ONE_BY_ONE_GIF, {
-      status: 200,
-      headers: { 'Content-Type': 'image/gif' },
-    })
-  }
+  // Set long-lived server cookie
+  response.cookies.set('_th_id', visitorId, {
+    maxAge: maxAge,
+    path: '/',
+    httpOnly: false,
+    sameSite: 'none',
+    secure: true
+  })
 
-  const { data: settings } = await supabase
-    .from('cookie_settings')
-    .select('cookie_lifetime_days, cookie_name, is_active')
-    .eq('user_id', profile.id)
-    .single()
+  console.log('[Cookie] Set _th_id:', visitorId, 'lifetime:', cookieLifetimeDays, 'days', isReturning ? '(returning)' : '(new)')
 
-  const lifetimeDays = settings?.is_active !== false
-    ? (settings?.cookie_lifetime_days ?? 180)
-    : 7
-  const cookieName = (settings?.cookie_name?.trim() || '_th_uid').replace(/[^a-zA-Z0-9_-]/g, '_') || '_th_uid'
+  return response
+}
 
-  const existingVisitorId = request.cookies.get(cookieName)?.value
-  const visitorId = existingVisitorId || randomUUID()
-  const maxAgeSeconds = lifetimeDays * 24 * 60 * 60
-
-  const headers = new Headers()
-  headers.set('Content-Type', 'image/gif')
-  headers.set(
-    'Set-Cookie',
-    [
-      `${cookieName}=${visitorId}`,
-      `Max-Age=${maxAgeSeconds}`,
-      'Path=/',
-      'HttpOnly=false',
-      'SameSite=Lax',
-      'Secure',
-    ].join('; ')
-  )
-
-  const now = new Date().toISOString()
-  const { data: existing } = await supabase
-    .from('cookie_visitors')
-    .select('id, visit_count')
-    .eq('user_id', profile.id)
-    .eq('visitor_id', visitorId)
-    .single()
-
-  if (existing) {
-    await supabase
-      .from('cookie_visitors')
-      .update({
-        last_seen: now,
-        visit_count: (existing.visit_count ?? 1) + 1,
-      })
-      .eq('id', existing.id)
-  } else {
-    await supabase.from('cookie_visitors').insert({
-      user_id: profile.id,
-      visitor_id: visitorId,
-      first_seen: now,
-      last_seen: now,
-      visit_count: 1,
-    })
-  }
-
-  return new NextResponse(ONE_BY_ONE_GIF, { status: 200, headers })
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type'
+    }
+  })
 }

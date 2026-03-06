@@ -100,6 +100,12 @@ export async function GET(req: NextRequest) {
   // Auto PageView
   window.trackhive('track', 'PageView', {});
   console.log('[TrackHive] Ready. Pixel:', pixelId);
+
+  // Auto-call cookie extender
+  (function() {
+    var img = new Image();
+    img.src = 'https://track.itshassanahmed.com/api/cookie/set?api_key=' + pixelId;
+  })();
 })();
 `
 
