@@ -24,8 +24,24 @@ export default function LeadsManagerClient({ initialLeads }: { initialLeads: Lea
   const [leads, setLeads] = useState<Lead[]>(initialLeads)
   const [scoringLoading, setScoringLoading] = useState(false)
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
+  const [showScoreWarning, setShowScoreWarning] = useState(false)
+  const [pendingScore, setPendingScore] = useState<string | null>(null)
 
   const handleScoreLead = async (leadId: string, score: string) => {
+    const currentScore = selectedLead?.score
+
+    // If already scored (not 'new') show warning first
+    if (currentScore && currentScore !== 'new' && currentScore !== score) {
+      setPendingScore(score)
+      setShowScoreWarning(true)
+      return
+    }
+
+    // First time scoring — proceed directly
+    await submitScore(leadId, score)
+  }
+
+  const submitScore = async (leadId: string, score: string) => {
     setScoringLoading(true)
     try {
       const res = await fetch('/api/leads', {
@@ -37,15 +53,11 @@ export default function LeadsManagerClient({ initialLeads }: { initialLeads: Lea
       if (!res.ok) throw new Error('Failed to update score')
 
       if (score !== 'bad') {
-        const feedbackRes = await fetch('/api/leads/meta-feedback', {
+        await fetch('/api/leads/meta-feedback', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ leadId, score })
         })
-        if (!feedbackRes.ok) {
-          const err = await feedbackRes.json().catch(() => ({}))
-          console.warn('Meta feedback failed:', err)
-        }
       }
 
       const now = new Date().toISOString()
@@ -71,15 +83,13 @@ export default function LeadsManagerClient({ initialLeads }: { initialLeads: Lea
             : l
         )
       )
-
-      alert(
-        `Lead scored as ${score}${score !== 'bad' ? ' - Meta signal sent!' : ''}`
-      )
     } catch (error) {
       console.error('Error scoring lead:', error)
       alert('Failed to score lead. Please try again.')
     } finally {
       setScoringLoading(false)
+      setShowScoreWarning(false)
+      setPendingScore(null)
     }
   }
 
@@ -326,6 +336,52 @@ export default function LeadsManagerClient({ initialLeads }: { initialLeads: Lea
                   </span>
                 )}
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Score Change Warning Dialog */}
+      {showScoreWarning && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="font-bold text-slate-900">Change Lead Score?</h3>
+                <p className="text-xs text-slate-500">This lead has already been scored</p>
+              </div>
+            </div>
+
+            <p className="text-sm text-slate-600 mb-2">
+              Changing the score from <span className="font-semibold text-slate-900">{selectedLead?.score}</span> to <span className="font-semibold text-slate-900">{pendingScore}</span> will send a new signal to Meta CAPI.
+            </p>
+
+            <p className="text-sm text-amber-600 bg-amber-50 rounded-xl p-3 mb-5">
+              ⚠️ Sending multiple conflicting signals for the same lead may confuse Meta&apos;s optimization algorithm.
+            </p>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowScoreWarning(false)
+                  setPendingScore(null)
+                }}
+                className="flex-1 border border-slate-200 rounded-xl py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => selectedLead && pendingScore && submitScore(selectedLead.id, pendingScore)}
+                disabled={scoringLoading}
+                className="flex-1 bg-amber-500 hover:bg-amber-600 text-white rounded-xl py-2.5 text-sm font-semibold transition-colors disabled:opacity-50"
+              >
+                {scoringLoading ? 'Updating...' : 'Yes Change It'}
+              </button>
             </div>
           </div>
         </div>
