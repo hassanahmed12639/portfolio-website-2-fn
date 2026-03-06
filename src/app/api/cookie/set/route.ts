@@ -32,19 +32,41 @@ export async function GET(req: NextRequest) {
         cookieLifetimeDays = settings.cookie_lifetime_days
       }
 
-      // Track visitor in Supabase
+      // Look up which user owns this pixel/api_key
+      const { data: pixel } = await supabaseAdmin
+        .from('pixels')
+        .select('user_id')
+        .eq('pixel_id', apiKey)
+        .single()
+
+      const userId = pixel?.user_id
+
+      // Track visitor in Supabase (when cookie extender is enabled)
       if (settings?.is_enabled) {
+        const visitorRow: {
+          visitor_id: string
+          api_key: string
+          user_id: string | undefined
+          is_returning: boolean
+          first_seen?: string
+          last_seen: string
+          visit_count: number
+        } = {
+          visitor_id: visitorId,
+          api_key: apiKey,
+          user_id: userId,
+          is_returning: isReturning,
+          last_seen: new Date().toISOString(),
+          visit_count: 1,
+        }
+        if (!isReturning) {
+          visitorRow.first_seen = new Date().toISOString()
+        }
         await supabaseAdmin
           .from('visitors')
-          .upsert({
-            visitor_id: visitorId,
-            api_key: apiKey,
-            is_returning: isReturning,
-            last_seen: new Date().toISOString(),
-            visit_count: isReturning ? 1 : 1
-          }, {
+          .upsert(visitorRow, {
             onConflict: 'visitor_id',
-            ignoreDuplicates: false
+            ignoreDuplicates: false,
           })
       }
     }
