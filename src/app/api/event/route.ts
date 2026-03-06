@@ -837,6 +837,36 @@ export async function POST(request: NextRequest) {
     await supabase.from('events').insert(insertRow)
   }
 
+  // After saving to events table, check if it's a lead event and save to leads table
+  const leadEvents = ['Lead', 'CompleteRegistration', 'Subscribe', 'Contact']
+  if (leadEvents.includes(event_name)) {
+    console.log('[Leads] Saving lead event to leads table')
+    const leadData = {
+      user_id: userId,
+      pixel_id: pixelId ?? null,
+      event_id: event_id ?? `th_${Date.now()}`,
+      email: email ?? null,
+      phone: phone ?? null,
+      first_name: first_name ?? null,
+      last_name: last_name ?? null,
+      event_name,
+      value: value ?? 0,
+      currency: currency ?? 'USD',
+      source_url: event_source_url_final ?? null,
+      ip_address: ip,
+      user_agent: userAgent,
+      score: 'new',
+      stage: 'new',
+      raw_data: body,
+    }
+    const { error: leadError } = await supabase.from('leads').insert(leadData)
+    if (leadError) {
+      console.error('[Leads] Error saving lead:', leadError.message)
+    } else {
+      console.log('[Leads] Lead saved successfully')
+    }
+  }
+
   // Fire GA4, TikTok, Google Enhanced Conversions in parallel (user credentials from integrations, ENV fallback)
   const credentials = await getUserCredentials(profile.id)
   const platformResults = await Promise.allSettled([

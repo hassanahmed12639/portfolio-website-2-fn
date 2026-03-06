@@ -73,6 +73,7 @@ export async function POST(request: NextRequest) {
     event_name?: string
     event_id?: string
     event_source_url?: string
+    pixel_id?: string
     value?: number
     currency?: string
     email?: string
@@ -304,6 +305,41 @@ export async function POST(request: NextRequest) {
       data_quality_breakdown: dataQuality.breakdown,
       ...(status === 'failed' && { original_payload: originalPayload }),
     })
+  }
+
+  // When playground sends a Lead event, save to leads table
+  const leadEvents = ['Lead', 'CompleteRegistration', 'Subscribe', 'Contact']
+  if (leadEvents.includes(event_name)) {
+    const em = body.user_data?.em
+    const leadEmail = typeof em === 'string' ? em : Array.isArray(em) ? em[0] : body.email
+    const ph = body.user_data?.ph
+    const leadPhone = typeof ph === 'string' ? ph : Array.isArray(ph) ? ph[0] : body.phone
+    const fn = body.user_data?.fn
+    const leadFirstName = typeof fn === 'string' ? fn : Array.isArray(fn) ? fn[0] : body.first_name
+    const ln = body.user_data?.ln
+    const leadLastName = typeof ln === 'string' ? ln : Array.isArray(ln) ? ln[0] : body.last_name
+    const leadData = {
+      user_id: user.id,
+      pixel_id: body.pixel_id ?? list[0]?.pixel_id ?? null,
+      event_id: event_id ?? `th_${Date.now()}`,
+      email: leadEmail ?? null,
+      phone: leadPhone ?? null,
+      first_name: leadFirstName ?? null,
+      last_name: leadLastName ?? null,
+      event_name,
+      value: value ?? 0,
+      currency: currency ?? 'USD',
+      source_url: event_source_url ?? null,
+      score: 'new',
+      stage: 'new',
+      raw_data: body,
+    }
+    const { error: leadError } = await serviceSupabase.from('leads').insert(leadData)
+    if (leadError) {
+      console.error('[Leads] Error saving lead from playground:', leadError.message)
+    } else {
+      console.log('[Leads] Lead saved from playground successfully')
+    }
   }
 
   const clientIp = body.user_data?.client_ip_address ?? request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? request.headers.get('x-real-ip') ?? undefined
