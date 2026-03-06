@@ -13,7 +13,7 @@ export async function GET() {
 
   const { data: integrations, error } = await supabase
     .from('integrations')
-    .select('platform, pixel_id, access_token, tag_id')
+    .select('platform, pixel_id, access_token, tag_id, meta_test_event_code, conversion_label, conversion_id, ga4_measurement_id, ga4_api_secret')
     .eq('user_id', user.id)
 
   if (error) {

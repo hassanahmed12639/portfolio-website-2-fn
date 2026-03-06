@@ -19,6 +19,9 @@ export async function POST(request: NextRequest) {
     tag_id?: string
     meta_test_event_code?: string
     conversion_label?: string
+    conversion_id?: string
+    ga4_measurement_id?: string
+    ga4_api_secret?: string
   }
 
   try {
@@ -27,7 +30,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
-  const { platform, pixel_id, access_token, tag_id, meta_test_event_code, conversion_label } = body
+  const {
+    platform,
+    pixel_id,
+    access_token,
+    tag_id,
+    meta_test_event_code,
+    conversion_label,
+    conversion_id,
+    ga4_measurement_id,
+    ga4_api_secret,
+  } = body
   if (!platform) {
     return NextResponse.json({ error: 'platform required' }, { status: 400 })
   }
@@ -49,7 +62,14 @@ export async function POST(request: NextRequest) {
   if (access_token !== undefined) row.access_token = access_token || null
   if (tag_id !== undefined) row.tag_id = tag_id || null
   if (platform === 'meta' && meta_test_event_code !== undefined) row.meta_test_event_code = meta_test_event_code?.trim() || null
-  if (platform === 'google' && conversion_label !== undefined) (row as Record<string, unknown>).conversion_label = conversion_label?.trim() || null
+  if (platform === 'google') {
+    if (conversion_label !== undefined) (row as Record<string, unknown>).conversion_label = conversion_label?.trim() || null
+    if (conversion_id !== undefined) (row as Record<string, unknown>).conversion_id = conversion_id?.trim() || null
+  }
+  if (platform === 'ga4') {
+    if (ga4_measurement_id !== undefined) (row as Record<string, unknown>).ga4_measurement_id = ga4_measurement_id?.trim() || null
+    if (ga4_api_secret !== undefined) (row as Record<string, unknown>).ga4_api_secret = ga4_api_secret?.trim() || null
+  }
 
   const { data: existing } = await supabase
     .from('integrations')
@@ -66,7 +86,14 @@ export async function POST(request: NextRequest) {
       is_active: true,
     }
     if (platform === 'meta' && meta_test_event_code !== undefined) updatePayload.meta_test_event_code = meta_test_event_code?.trim() || null
-    if (platform === 'google' && conversion_label !== undefined) updatePayload.conversion_label = conversion_label?.trim() || null
+    if (platform === 'google') {
+      if (conversion_label !== undefined) updatePayload.conversion_label = conversion_label?.trim() || null
+      if (conversion_id !== undefined) updatePayload.conversion_id = conversion_id?.trim() || null
+    }
+    if (platform === 'ga4') {
+      if (ga4_measurement_id !== undefined) updatePayload.ga4_measurement_id = ga4_measurement_id?.trim() || null
+      if (ga4_api_secret !== undefined) updatePayload.ga4_api_secret = ga4_api_secret?.trim() || null
+    }
     const { error } = await supabase
       .from('integrations')
       .update(updatePayload)

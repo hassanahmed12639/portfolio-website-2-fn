@@ -16,7 +16,7 @@ export default async function IntegrationsPage() {
 
   const { data: integrations } = await supabase
     .from('integrations')
-    .select('platform, pixel_id, access_token, tag_id, meta_test_event_code, conversion_label')
+    .select('platform, pixel_id, access_token, tag_id, meta_test_event_code, conversion_label, conversion_id, ga4_measurement_id, ga4_api_secret')
     .eq('user_id', user.id)
 
   const startOfMonth = new Date()
