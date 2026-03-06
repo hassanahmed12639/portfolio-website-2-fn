@@ -31,13 +31,13 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-slate-900">
-            Welcome back{profile?.business_name ? `, ${String(profile.business_name)}` : ''}! 👋
+            Welcome back{profile?.business_name ? `, ${String(profile.business_name)}` : ''}!
           </h1>
           <p className="text-sm text-slate-500">Here&apos;s your e-commerce tracking overview</p>
         </div>
         <div className="flex items-center gap-2">
           <span className="text-xs border px-2.5 py-1 rounded-full font-semibold bg-[var(--dash-primary-soft)] text-[var(--dash-primary-strong)] border-[var(--dash-accent-border)]">
-            🛍️ E-Commerce
+            E-Commerce
           </span>
           <Link
             href="/dashboard/settings"
@@ -86,18 +86,17 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
       {/* Row 2 — Platform status */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         {[
-          { name: 'Meta CAPI', icon: '📘', status: 'connected', events: Number(stats?.metaEvents ?? 0) },
-          { name: 'TikTok Events API', icon: '🎵', status: 'connected', events: Number(stats?.tiktokEvents ?? 0) },
-          { name: 'Google Enhanced', icon: '🔍', status: 'connected', events: Number(stats?.googleEvents ?? 0) }
+          { name: 'Meta CAPI', status: 'connected', events: Number(stats?.metaEvents ?? 0) },
+          { name: 'TikTok Events API', status: 'connected', events: Number(stats?.tiktokEvents ?? 0) },
+          { name: 'Google Enhanced', status: 'connected', events: Number(stats?.googleEvents ?? 0) }
         ].map(platform => (
           <div key={platform.name} className="dash-card dash-card-gradient-top bg-[var(--dash-card)] rounded-2xl border border-[var(--dash-border)] p-5 shadow-[var(--dash-shadow)]">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <span className="text-xl">{platform.icon}</span>
                 <p className="font-semibold text-slate-900 text-sm">{platform.name}</p>
               </div>
               <span className="text-xs bg-[var(--dash-success-soft)] text-[var(--dash-success-strong)] px-2 py-0.5 rounded-full font-semibold">
-                ✅ Live
+                Live
               </span>
             </div>
             <p className="text-2xl font-bold text-slate-900">{loading ? '...' : platform.events.toLocaleString()}</p>
@@ -148,19 +147,18 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
           <p className="font-semibold text-slate-900 mb-4">Quick Actions</p>
           <div className="space-y-2">
             {[
-              { href: '/dashboard/playground', icon: '🧪', label: 'Test an Event', desc: 'Fire a test Purchase or PageView' },
-              { href: '/dashboard/pixels', icon: '📡', label: 'Manage Pixels', desc: 'Add or configure your pixels' },
-              { href: '/dashboard/data-quality', icon: '📊', label: 'Check Match Rate', desc: 'See your Meta match rate' },
-              { href: '/dashboard/live', icon: '🔴', label: 'Live Stream', desc: 'Watch events in real-time' },
-              { href: '/dashboard/validator', icon: '✅', label: 'Validate Payload', desc: 'Check your event data quality' },
-              { href: '/dashboard/billing', icon: '💳', label: 'Upgrade Plan', desc: 'Unlock more events per month' }
+              { href: '/dashboard/playground', label: 'Test an Event', desc: 'Fire a test Purchase or PageView' },
+              { href: '/dashboard/pixels', label: 'Manage Pixels', desc: 'Add or configure your pixels' },
+              { href: '/dashboard/data-quality', label: 'Check Match Rate', desc: 'See your Meta match rate' },
+              { href: '/dashboard/live', label: 'Live Stream', desc: 'Watch events in real-time' },
+              { href: '/dashboard/validator', label: 'Validate Payload', desc: 'Check your event data quality' },
+              { href: '/dashboard/billing', label: 'Upgrade Plan', desc: 'Unlock more events per month' }
             ].map(action => (
               <Link
                 key={action.href}
                 href={action.href}
                 className="flex items-center gap-3 p-3 bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-primary-soft)] rounded-xl transition-colors group"
               >
-                <span className="text-lg">{action.icon}</span>
                 <div className="flex-1">
                   <p className="text-sm font-semibold text-slate-900">{action.label}</p>
                   <p className="text-xs text-slate-400">{action.desc}</p>
@@ -177,11 +175,11 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
 
         {/* Data quality card */}
         <div className="dash-card-hero rounded-xl p-5 border border-[var(--dash-border)]" style={{ background: 'linear-gradient(135deg, rgba(170,255,0,0.2) 0%, rgba(170,255,0,0.06) 50%, rgba(15,15,15,0.04) 100%)' }}>
-          <p className="font-bold text-lg mb-1 text-slate-900">📊 Data Quality Score</p>
+          <p className="font-bold text-lg mb-1 text-slate-900">Data Quality Score</p>
           <p className="text-slate-600 text-sm mb-4">Your current Meta match rate</p>
           <p className="text-5xl font-black mb-1 text-slate-900">{loading ? '...' : `${stats?.matchRate ?? 0}%`}</p>
           <p className="text-slate-600 text-xs mb-4">
-            {Number(stats?.matchRate ?? 0) >= 70 ? '🟢 Good' : Number(stats?.matchRate ?? 0) >= 50 ? '🟡 Average' : '🔴 Needs improvement'}
+            {Number(stats?.matchRate ?? 0) >= 70 ? 'Good' : Number(stats?.matchRate ?? 0) >= 50 ? 'Average' : 'Needs improvement'}
           </p>
           <Link
             href="/dashboard/data-quality"
@@ -193,7 +191,7 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
 
         {/* Install snippet */}
         <div className="dash-card bg-[#0F0F0F] rounded-xl p-5 border border-slate-700">
-          <p className="font-bold mb-1 text-black">🔧 Install Tracking Script</p>
+          <p className="font-bold mb-1 text-black">Install Tracking Script</p>
           <p className="text-slate-400 text-sm mb-3">Add to your website&apos;s &lt;head&gt; tag</p>
           <div className="bg-slate-800 rounded-lg p-3 font-mono text-xs text-white mb-3 overflow-x-auto">
             {`<script src="https://track.itshassanahmed.com/th.js?id=${firstPixelId || 'YOUR_PIXEL_ID'}"></script>`}
