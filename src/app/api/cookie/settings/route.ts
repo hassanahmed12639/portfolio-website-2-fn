@@ -52,17 +52,22 @@ export async function POST(request: NextRequest) {
 
   const admin = createServiceClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } })
 
-  const { error } = await admin
+  const row = {
+    user_id: user.id,
+    cookie_lifetime_days: clampedDays,
+    cookie_name,
+    is_active,
+  }
+
+  const { data: existing } = await admin
     .from('cookie_settings')
-    .upsert(
-      {
-        user_id: user.id,
-        cookie_lifetime_days: clampedDays,
-        cookie_name,
-        is_active,
-      },
-      { onConflict: 'user_id' }
-    )
+    .select('user_id')
+    .eq('user_id', user.id)
+    .maybeSingle()
+
+  const { error } = existing
+    ? await admin.from('cookie_settings').update(row).eq('user_id', user.id)
+    : await admin.from('cookie_settings').insert(row)
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
