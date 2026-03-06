@@ -1,99 +1,90 @@
-import crypto from 'crypto'
-
-function hashData(value: string): string {
-  if (!value) return ''
-  return crypto.createHash('sha256').update(value.toLowerCase().trim()).digest('hex')
-}
-
 export async function sendGoogleEnhancedConversion(
   eventName: string,
-  eventData: Record<string, unknown>,
-  userData: Record<string, string | undefined> & { address?: { street?: string; city?: string; region?: string; postal_code?: string; country?: string } }
+  body: any
 ) {
-  const debugLog = (...args: unknown[]) => {
-    if (process.env.NODE_ENV === 'development') console.log(...args)
-  }
   const conversionId = process.env.GOOGLE_ADS_CONVERSION_ID
   const conversionLabel = process.env.GOOGLE_ADS_CONVERSION_LABEL
-  const ga4MeasurementId = process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID
-  const ga4ApiSecret = process.env.GA4_API_SECRET
+  const measurementId = process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID
+  const apiSecret = process.env.GA4_API_SECRET
 
-  if (!conversionId || !conversionLabel) {
-    debugLog('[Google] Missing credentials, skipping')
+  if (!measurementId || !apiSecret) {
+    console.log('[Google] Missing GA4 credentials')
     return { success: false, error: 'Missing credentials' }
   }
 
-  if (!ga4MeasurementId || !ga4ApiSecret) {
-    debugLog('[Google] Missing GA4 Measurement Protocol credentials, skipping')
-    return { success: false, error: 'Missing GA4 credentials' }
-  }
-
   // Only send for conversion events
-  const conversionEvents = ['Purchase', 'Lead', 'CompleteRegistration', 'InitiateCheckout', 'AddToCart']
+  const conversionEvents = ['Purchase', 'Lead', 'CompleteRegistration', 'Subscribe']
   if (!conversionEvents.includes(eventName)) {
-    debugLog(`[Google] Skipping non-conversion event: ${eventName}`)
-    return { success: true, skipped: true }
+    return { success: false, error: 'Not a conversion event' }
   }
 
-  // Map event names to Google event names
-  const googleEventMap: Record<string, string> = {
-    Purchase: 'purchase',
-    Lead: 'generate_lead',
-    CompleteRegistration: 'sign_up',
-    InitiateCheckout: 'begin_checkout',
-    AddToCart: 'add_to_cart',
+  // Hash function
+  async function hashData(data: string): Promise<string> {
+    const encoder = new TextEncoder()
+    const dataBuffer = encoder.encode(data.trim().toLowerCase())
+    const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer)
+    const hashArray = Array.from(new Uint8Array(hashBuffer))
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
   }
 
-  const googleEventName = googleEventMap[eventName] ?? eventName.toLowerCase()
+  // Build user data with hashed PII
+  const userData: any = {}
 
-  // Build enhanced conversion data with hashed user data
-  const enhancedConversionData: Record<string, unknown> = {}
-  if (userData.email) enhancedConversionData.sha256_email_address = hashData(userData.email)
-  if (userData.phone) enhancedConversionData.sha256_phone_number = hashData(userData.phone)
-  if (userData.first_name) enhancedConversionData.sha256_first_name = hashData(userData.first_name)
-  if (userData.last_name) enhancedConversionData.sha256_last_name = hashData(userData.last_name)
-  if (userData.address) {
-    enhancedConversionData.address = {
-      sha256_street: hashData(userData.address.street ?? ''),
-      sha256_city: hashData(userData.address.city ?? ''),
-      sha256_region: hashData(userData.address.region ?? ''),
-      sha256_postal_code: hashData(userData.address.postal_code ?? ''),
-      sha256_country: hashData(userData.address.country ?? ''),
+  if (body.user_data?.em?.length > 0) {
+    userData.sha256_email_address = await hashData(body.user_data.em[0])
+  }
+  if (body.user_data?.ph?.length > 0) {
+    userData.sha256_phone_number = await hashData(
+      body.user_data.ph[0].replace(/\D/g, '')
+    )
+  }
+  if (body.user_data?.fn?.length > 0) {
+    userData.address = {
+      ...userData.address,
+      sha256_first_name: await hashData(body.user_data.fn[0])
+    }
+  }
+  if (body.user_data?.ln?.length > 0) {
+    userData.address = {
+      ...userData.address,
+      sha256_last_name: await hashData(body.user_data.ln[0])
     }
   }
 
-  // Send via GA4 Measurement Protocol with Google Ads conversion
+  // Build GA4 payload with Google Ads conversion
   const payload = {
-    client_id: (eventData.client_ip_address as string) || `trackhive_${Date.now()}`,
+    client_id: body.fbp || `th_${Date.now()}`,
     events: [
       {
-        name: googleEventName,
+        name: 'conversion',
         params: {
           send_to: `${conversionId}/${conversionLabel}`,
-          value: eventData.value != null ? parseFloat(String(eventData.value)) : 0,
-          currency: (eventData.currency as string) || 'USD',
-          transaction_id: (eventData.order_id as string) || `order_${Date.now()}`,
-          engagement_time_msec: 100,
-          ...enhancedConversionData,
-        },
-      },
+          value: body.value || 0,
+          currency: body.currency || 'USD',
+          transaction_id: body.order_id || body.event_id || `th_${Date.now()}`,
+          ...userData
+        }
+      }
     ],
+    user_data: userData
   }
 
+  console.log('[Google Enhanced] Sending conversion:', eventName, 'to:', `${conversionId}/${conversionLabel}`)
+
   try {
-    const res = await fetch(
-      `https://www.google-analytics.com/mp/collect?measurement_id=${ga4MeasurementId}&api_secret=${ga4ApiSecret}`,
+    const response = await fetch(
+      `https://www.google-analytics.com/mp/collect?measurement_id=${measurementId}&api_secret=${apiSecret}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(payload)
       }
     )
 
-    debugLog(`[Google Enhanced] Event sent: ${googleEventName} → ${res.status}`)
-    return { success: res.ok, status: res.status }
-  } catch (error) {
-    console.error('[Google Enhanced] Error:', error)
-    return { success: false, error }
+    console.log('[Google Enhanced] Response:', response.status)
+    return { success: response.status === 204, status: response.status }
+  } catch (error: any) {
+    console.error('[Google Enhanced] Error:', error.message)
+    return { success: false, error: error.message }
   }
 }

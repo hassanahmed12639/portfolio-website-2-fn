@@ -865,22 +865,19 @@ export async function POST(request: NextRequest) {
       },
       request
     ),
-    sendGoogleEnhancedConversion(
-      event_name,
-      {
-        value,
-        currency,
-        order_id: bodyOrderId,
-        event_source_url: event_source_url_final,
-        client_ip_address: ip,
+    sendGoogleEnhancedConversion(event_name, {
+      fbp,
+      value,
+      currency,
+      order_id: bodyOrderId,
+      event_id,
+      user_data: {
+        em: email ? [email] : [],
+        ph: phone ? [phone] : [],
+        fn: first_name ? [first_name] : [],
+        ln: last_name ? [last_name] : [],
       },
-      {
-        email: email ?? undefined,
-        phone: phone ?? undefined,
-        first_name: first_name ?? undefined,
-        last_name: last_name ?? undefined,
-      }
-    ),
+    }),
   ])
 
   const platformNames = ['GA4', 'TikTok', 'Google']
@@ -895,7 +892,7 @@ export async function POST(request: NextRequest) {
   if (event_id) {
     const ga4Ok = platformResults[0].status === 'fulfilled' && (platformResults[0].value as { success?: boolean })?.success
     const tiktokOk = platformResults[1].status === 'fulfilled' && (platformResults[1].value as { success?: boolean })?.success
-    const googleOk = platformResults[2].status === 'fulfilled' && (platformResults[2].value as { success?: boolean; skipped?: boolean })?.success !== false
+    const googleOk = platformResults[2].status === 'fulfilled' && (platformResults[2].value as { success?: boolean })?.success === true
     await supabase
       .from('events')
       .update({

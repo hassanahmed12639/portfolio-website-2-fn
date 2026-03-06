@@ -366,16 +366,17 @@ export async function POST(request: NextRequest) {
   if (runGoogle) {
     platformPromises.push(
       sendGoogleEnhancedConversion(event_name, {
+        fbp: body.fbp,
         value: body.value,
         currency: body.currency,
         order_id: body.order_id,
-        event_source_url: body.event_source_url || 'https://track.itshassanahmed.com',
-        client_ip_address: clientIp,
-      }, {
-        email: emailStr,
-        phone: phoneStr,
-        first_name: firstNameStr,
-        last_name: lastNameStr,
+        event_id: body.event_id,
+        user_data: {
+          em: emailStr ? [emailStr] : [],
+          ph: phoneStr ? [phoneStr] : [],
+          fn: firstNameStr ? [firstNameStr] : [],
+          ln: lastNameStr ? [lastNameStr] : [],
+        },
       })
     )
   }
