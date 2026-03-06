@@ -1,5 +1,24 @@
 import crypto from 'crypto'
 
+/** Map TrackHive event names to TikTok standard events. Exported for use in event route. */
+export const tiktokEventMap: Record<string, string> = {
+  PageView: 'Pageview',
+  ViewContent: 'ViewContent',
+  AddToCart: 'AddToCart',
+  InitiateCheckout: 'InitiateCheckout',
+  Purchase: 'CompletePayment',
+  Lead: 'SubmitForm',
+  CompleteRegistration: 'CompleteRegistration',
+  Subscribe: 'Subscribe',
+  Contact: 'Contact',
+  Search: 'Search',
+  CustomEvent: 'CustomEvent',
+}
+
+export function getTikTokEventName(eventName: string): string {
+  return tiktokEventMap[eventName] ?? eventName
+}
+
 function hashData(data: string): string {
   return crypto.createHash('sha256').update(data.trim().toLowerCase()).digest('hex')
 }
@@ -37,21 +56,8 @@ export async function sendTikTokEvent(
     return { success: false, error: 'TikTok credentials missing' }
   }
 
-  // Map event names to TikTok standard events
-  const eventMap: Record<string, string> = {
-    Purchase: 'CompletePayment',
-    AddToCart: 'AddToCart',
-    InitiateCheckout: 'InitiateCheckout',
-    ViewContent: 'ViewContent',
-    Lead: 'SubmitForm',
-    CompleteRegistration: 'CompleteRegistration',
-    Search: 'Search',
-    PageView: 'Pageview',
-    Subscribe: 'Subscribe',
-    Contact: 'Contact',
-  }
-
-  const tiktokEventName = eventMap[eventName] || eventName
+  // ALL events fire — no event-type restriction.
+  const tiktokEventName = getTikTokEventName(eventName)
 
   // Get IP and user agent
   const ip =

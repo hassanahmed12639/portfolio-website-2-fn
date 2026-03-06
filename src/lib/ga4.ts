@@ -1,3 +1,22 @@
+/** Map TrackHive event names to GA4 event names. Exported for use in event route. */
+export const ga4EventMap: Record<string, string> = {
+  PageView: 'page_view',
+  ViewContent: 'view_item',
+  AddToCart: 'add_to_cart',
+  InitiateCheckout: 'begin_checkout',
+  Purchase: 'purchase',
+  Lead: 'generate_lead',
+  CompleteRegistration: 'sign_up',
+  Subscribe: 'subscribe',
+  Contact: 'contact',
+  Search: 'search',
+  CustomEvent: 'custom_event',
+}
+
+export function getGA4EventName(eventName: string): string {
+  return ga4EventMap[eventName] ?? eventName.toLowerCase().replace(/\s+/g, '_')
+}
+
 export async function sendGA4Event(
   eventName: string,
   eventData: Record<string, unknown>,
@@ -16,19 +35,8 @@ export async function sendGA4Event(
     return { success: false, error: 'Missing credentials' }
   }
 
-  // Map TrackHive event names to GA4 event names
-  const ga4EventMap: Record<string, string> = {
-    Purchase: 'purchase',
-    PageView: 'page_view',
-    AddToCart: 'add_to_cart',
-    InitiateCheckout: 'begin_checkout',
-    Lead: 'generate_lead',
-    CompleteRegistration: 'sign_up',
-    Search: 'search',
-    ViewContent: 'view_item',
-  }
-
-  const ga4EventName = ga4EventMap[eventName] ?? eventName.toLowerCase()
+  // ALL events fire — no event-type restriction.
+  const ga4EventName = getGA4EventName(eventName)
 
   // Build GA4 event params
   const params: Record<string, unknown> = {

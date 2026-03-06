@@ -1,5 +1,6 @@
 import { validateEvent } from '@/lib/validate-event'
 import { getUserCredentials } from '@/lib/get-user-credentials'
+import { getMetaEventName } from '@/lib/meta'
 import { sendGA4Event } from '@/lib/ga4'
 import { sendTikTokEvent } from '@/lib/tiktok'
 import { sendGoogleEnhancedConversion } from '@/lib/google-ads'
@@ -12,6 +13,21 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
 export const dynamic = 'force-dynamic'
+
+/** All event types that must fire to ALL platforms (Meta, TikTok, GA4, Google). No event-type restriction. */
+const ALL_EVENTS = [
+  'PageView',
+  'ViewContent',
+  'AddToCart',
+  'InitiateCheckout',
+  'Purchase',
+  'Lead',
+  'CompleteRegistration',
+  'Subscribe',
+  'Contact',
+  'Search',
+  'CustomEvent',
+]
 
 function debugLog(...args: unknown[]) {
   if (process.env.NODE_ENV === 'development') {
@@ -256,8 +272,9 @@ export async function POST(request: NextRequest) {
         if (extId) userData.external_id = [hashValue(extId)]
 
         const metaEventId = event_id ?? `th_${Date.now()}_${Math.random().toString(36).slice(2)}`
+        const metaEventName = getMetaEventName(event_name)
         const metaEvent: Record<string, unknown> = {
-          event_name,
+          event_name: metaEventName,
           event_time: eventTime,
           event_id: metaEventId,
           event_source_url: event_source_url ?? '',
@@ -469,6 +486,25 @@ export async function POST(request: NextRequest) {
       debugLog(`[${platformNames[index]}] ❌ Failed:`, result.reason)
     }
   })
+
+  // Detailed logging: all platforms (no event-type restriction — all events fire to all platforms)
+  console.log('[Playground] Results for:', body.event_name)
+  console.log('[Meta]', metaResponse != null ? { status: metaResponse.status, body: metaResponse.body } : 'skipped (no integration or target)')
+  let logIdx = 0
+  if (runGA4) {
+    const r = platformResults[logIdx]
+    console.log('[GA4]', r?.status === 'fulfilled' ? r.value : r?.reason)
+    logIdx++
+  }
+  if (runTikTok) {
+    const r = platformResults[logIdx]
+    console.log('[TikTok]', r?.status === 'fulfilled' ? r.value : r?.reason)
+    logIdx++
+  }
+  if (runGoogle) {
+    const r = platformResults[logIdx]
+    console.log('[Google]', r?.status === 'fulfilled' ? r.value : r?.reason)
+  }
 
   return NextResponse.json({
     success: true,

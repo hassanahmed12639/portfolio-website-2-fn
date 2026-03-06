@@ -4,8 +4,9 @@ import { enrichEvent } from '@/lib/enrich-event'
 import { calculateNextRetry } from '@/lib/retry-queue'
 import { getUserCredentials } from '@/lib/get-user-credentials'
 import { rateLimit } from '@/lib/rate-limit'
-import { sendGA4Event } from '@/lib/ga4'
-import { sendTikTokEvent } from '@/lib/tiktok'
+import { getMetaEventName } from '@/lib/meta'
+import { sendGA4Event, getGA4EventName } from '@/lib/ga4'
+import { sendTikTokEvent, getTikTokEventName } from '@/lib/tiktok'
 import { sendGoogleEnhancedConversion } from '@/lib/google-ads'
 import { createClient } from '@supabase/supabase-js'
 import { createHash } from 'crypto'
@@ -611,8 +612,9 @@ export async function POST(request: NextRequest) {
           contents: bodyContents ?? undefined,
           num_items: bodyNumItems ?? undefined,
         }
+        const metaEventName = getMetaEventName(event_name)
         const metaEvent: Record<string, unknown> = {
-          event_name,
+          event_name: metaEventName,
           event_time: Math.floor(Date.now() / 1000),
           event_id,
           event_source_url: event_source_url_final ?? '',
@@ -688,13 +690,10 @@ export async function POST(request: NextRequest) {
       const pixelId = integration.pixel_id
       const accessToken = integration.access_token
       if (pixelId && accessToken) {
+        const tiktokEventName = getTikTokEventName(event_name)
         const tiktokPayload = {
           pixel_code: pixelId,
-          event: event_name === 'Purchase' ? 'CompletePayment' :
-                 event_name === 'Lead' ? 'SubmitForm' :
-                 event_name === 'AddToCart' ? 'AddToCart' :
-                 event_name === 'ViewContent' ? 'ViewContent' :
-                 event_name === 'PageView' ? 'Pageview' : event_name,
+          event: tiktokEventName,
           event_time: Math.floor(Date.now() / 1000),
           event_id: event_id || crypto.randomUUID(),
           user: {
@@ -767,15 +766,11 @@ export async function POST(request: NextRequest) {
       const measurementId = integration.tag_id
       const apiSecret = integration.access_token
       if (measurementId && apiSecret) {
+        const ga4EventName = getGA4EventName(event_name)
         const ga4Payload = {
           client_id: visitor_id || crypto.randomUUID(),
           events: [{
-            name: event_name === 'Purchase' ? 'purchase' :
-                  event_name === 'Lead' ? 'generate_lead' :
-                  event_name === 'AddToCart' ? 'add_to_cart' :
-                  event_name === 'PageView' ? 'page_view' :
-                  event_name === 'ViewContent' ? 'view_item' :
-                  event_name.toLowerCase(),
+            name: ga4EventName,
             params: {
               currency: currency || 'USD',
               value: value || 0,
@@ -939,11 +934,17 @@ export async function POST(request: NextRequest) {
   ])
 
   const platformNames = ['GA4', 'TikTok', 'Google']
+  // Detailed logging: all platforms (all events fire to all platforms)
+  console.log('[Event API] Results for:', event_name)
+  console.log('[Meta]', metaStatus)
   platformResults.forEach((result, index) => {
+    const name = platformNames[index]
+    const value = result.status === 'fulfilled' ? result.value : result.reason
+    console.log(`[${name}]`, value)
     if (result.status === 'fulfilled') {
-      debugLog(`[${platformNames[index]}] ✅`)
+      debugLog(`[${name}] ✅`)
     } else {
-      debugLog(`[${platformNames[index]}] ❌`, result.reason)
+      debugLog(`[${name}] ❌`, result.reason)
     }
   })
 

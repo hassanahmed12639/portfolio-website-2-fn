@@ -20,9 +20,16 @@ export async function sendGoogleEnhancedConversion(
     return { success: false, error: 'Missing conversion ID or label' }
   }
 
-  // Only send for conversion events
-  const conversionEvents = ['Purchase', 'Lead', 'CompleteRegistration', 'Subscribe']
-  if (!conversionEvents.includes(eventName)) {
+  // Fire Google Enhanced for all conversion events (no other event-type filter)
+  const googleConversionEvents = [
+    'Purchase',
+    'Lead',
+    'CompleteRegistration',
+    'Subscribe',
+    'Contact',
+    'InitiateCheckout',
+  ]
+  if (!googleConversionEvents.includes(eventName)) {
     return { success: false, error: 'Not a conversion event' }
   }
 
