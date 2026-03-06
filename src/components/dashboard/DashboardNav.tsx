@@ -5,24 +5,33 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   Activity,
+  BarChart2,
   Bell,
   Brain,
   Bug,
   ChevronDown,
   ChevronRight,
+  Cookie,
   Copy,
+  Database,
   FileCode,
   Gauge,
   Link2,
+  Lock,
+  PanelTop,
   PlaySquare,
   Radio,
   RefreshCw,
+  RotateCcw,
+  ScanSearch,
   SearchCheck,
   Settings2,
   Shield,
   ShieldCheck,
+  Sparkles,
   User,
   Workflow,
+  Wrench,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
@@ -30,31 +39,46 @@ type NavItem = { label: string; href: string; icon?: LucideIcon }
 
 // Global nav: ALL users see ALL items (only overview page content changes by dashboard_type)
 const nav: NavItem[] = [
+  // GENERAL
   { label: 'Overview', href: '/dashboard', icon: Gauge },
+  { label: 'Setup', href: '/dashboard/setup', icon: Wrench },
   { label: 'Lead Manager', href: '/dashboard/leads', icon: User },
   { label: 'Event Logs', href: '/dashboard/logs', icon: Activity },
   { label: 'Live Stream', href: '/dashboard/live', icon: Radio },
+  { label: 'Event Replay', href: '/dashboard/event-replay', icon: RotateCcw },
+  { label: 'Raw Data', href: '/dashboard/raw-data', icon: Database },
   { label: 'Pixels', href: '/dashboard/pixels', icon: Link2 },
   { label: 'Playground', href: '/dashboard/playground', icon: PlaySquare },
   { label: 'Templates', href: '/dashboard/templates', icon: FileCode },
+  // TOOLS
   { label: 'Data Quality', href: '/dashboard/data-quality', icon: Shield },
   { label: 'Validator', href: '/dashboard/validator', icon: ShieldCheck },
   { label: 'Deduplication', href: '/dashboard/deduplication', icon: Copy },
   { label: 'Retry Queue', href: '/dashboard/retry-queue', icon: RefreshCw },
+  { label: 'HTTP Headers', href: '/dashboard/headers', icon: PanelTop },
+  { label: 'Cookie Lifetime Extender', href: '/dashboard/cookie-extender', icon: Cookie },
   { label: 'AI Analysis', href: '/dashboard/ai-analysis', icon: Brain },
   { label: 'Anomaly Detection', href: '/dashboard/anomalies', icon: Bug },
+  { label: 'Scanner', href: '/dashboard/scanner', icon: ScanSearch },
+  { label: 'Enrichment', href: '/dashboard/enrichment', icon: Sparkles },
   { label: 'Integrations', href: '/dashboard/integrations', icon: Settings2 },
   { label: 'Reverse Proxy', href: '/dashboard/reverse-proxy', icon: Workflow },
+  { label: 'Attribution', href: '/dashboard/attribution', icon: BarChart2 },
+  // SUPPORT
   { label: 'Alerts', href: '/dashboard/alerts', icon: Bell },
+  { label: 'Privacy', href: '/dashboard/privacy', icon: Lock },
   { label: 'Billing', href: '/dashboard/billing', icon: SearchCheck },
   { label: 'Settings', href: '/dashboard/settings', icon: Settings2 },
 ]
 
 const iconByHref: Record<string, LucideIcon> = {
   '/dashboard': Gauge,
+  '/dashboard/setup': Wrench,
   '/dashboard/leads': User,
   '/dashboard/logs': Activity,
   '/dashboard/live': Radio,
+  '/dashboard/event-replay': RotateCcw,
+  '/dashboard/raw-data': Database,
   '/dashboard/pixels': Link2,
   '/dashboard/playground': PlaySquare,
   '/dashboard/templates': FileCode,
@@ -62,19 +86,25 @@ const iconByHref: Record<string, LucideIcon> = {
   '/dashboard/validator': ShieldCheck,
   '/dashboard/deduplication': Copy,
   '/dashboard/retry-queue': RefreshCw,
+  '/dashboard/headers': PanelTop,
+  '/dashboard/cookie-extender': Cookie,
   '/dashboard/ai-analysis': Brain,
   '/dashboard/anomalies': Bug,
+  '/dashboard/scanner': ScanSearch,
+  '/dashboard/enrichment': Sparkles,
   '/dashboard/integrations': Settings2,
   '/dashboard/reverse-proxy': Workflow,
+  '/dashboard/attribution': BarChart2,
   '/dashboard/alerts': Bell,
+  '/dashboard/privacy': Lock,
   '/dashboard/billing': SearchCheck,
   '/dashboard/settings': Settings2,
 }
 
 const sections = [
-  { title: 'GENERAL', from: 0, to: 6 },
-  { title: 'TOOLS', from: 6, to: 15 },
-  { title: 'SUPPORT', from: 15, to: nav.length + 1 },
+  { title: 'GENERAL', from: 0, to: 10 },
+  { title: 'TOOLS', from: 10, to: 23 },
+  { title: 'SUPPORT', from: 23, to: nav.length + 1 },
 ]
 
 export default function DashboardNav({ profile: _profile }: { profile?: { dashboard_type?: string | null } }) {
