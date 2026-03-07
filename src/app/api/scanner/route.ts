@@ -14,6 +14,22 @@ function detectPattern(html: string, patterns: string[]): boolean {
   return patterns.some((p) => lower.includes(p.toLowerCase()))
 }
 
+const detectionPatterns = {
+  metaPixel: [
+    'fbq(',
+    'fbevents.js',
+    'connect.facebook.net',
+    'facebook.net/en_US/fbevents',
+    '_fbq',
+    'fb.init',
+  ],
+  googleTagManager: ['googletagmanager.com/gtm.js', 'GTM-', 'google_tag_manager', 'gtm.js'],
+  googleAnalytics: ['google-analytics.com', 'ga.js', 'analytics.js', 'gtag(', 'G-', 'UA-', 'googletagmanager.com/gtag'],
+  googleAds: ['googleadservices.com', 'AW-', 'google_conversion', 'gtag_report_conversion'],
+  tiktokPixel: ['analytics.tiktok.com', 'TiktokAnalyticsObject', 'ttq.load', 'tiktok-pixel', 'ttq('],
+  trackhive: ['track.itshassanahmed.com/th.js', 'trackhive(', 'window.trackhive', 'th.js'],
+}
+
 export async function POST(request: NextRequest) {
   const supabase = await createClient()
   const {
@@ -62,7 +78,9 @@ export async function POST(request: NextRequest) {
       const res = await fetch(url, {
         headers: {
           'User-Agent':
-            'Mozilla/5.0 (compatible; TrackHiveScanner/1.0)',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          'Accept-Language': 'en-US,en;q=0.5',
         },
         signal: AbortSignal.timeout(15000),
       })
@@ -79,16 +97,36 @@ export async function POST(request: NextRequest) {
     }
 
     const lower = html.toLowerCase()
+    const htmlLower = html.toLowerCase()
 
-    const metaPixel = detectPattern(html, ['fbq', 'connect.facebook.net'])
-    const gtm = detectPattern(html, ['googletagmanager.com'])
-    const ga = detectPattern(html, ['gtag', 'analytics.js'])
-    const googleAds = detectPattern(html, ['googleadservices.com'])
-    const tiktok = detectPattern(html, ['analytics.tiktok.com'])
-    const trackhive = detectPattern(html, ['track.itshassanahmed.com/th.js'])
+    const scriptMatches = html.match(/<script[^>]*>([\s\S]*?)<\/script>/gi) || []
+    const allScriptContent = scriptMatches.join(' ')
+    const scriptSrcMatches = html.match(/src=["']([^"']+)["']/gi) || []
+    const allSrcContent = scriptSrcMatches.join(' ')
+    const fullContent = `${html} ${allScriptContent} ${allSrcContent}`
+    const fullLower = fullContent.toLowerCase()
 
-    const metaCapi = trackhive
-    const googleEnhanced = false
+    const finalResults = {
+      metaPixel: detectionPatterns.metaPixel.some((p) => fullLower.includes(p.toLowerCase())),
+      googleTagManager: detectionPatterns.googleTagManager.some((p) => fullContent.includes(p)),
+      googleAnalytics: detectionPatterns.googleAnalytics.some((p) => fullContent.includes(p)),
+      googleAds: detectionPatterns.googleAds.some((p) => fullContent.includes(p)),
+      tiktokPixel: detectionPatterns.tiktokPixel.some((p) => fullLower.includes(p.toLowerCase())),
+      trackhive: detectionPatterns.trackhive.some((p) => fullLower.includes(p.toLowerCase())),
+    }
+
+    const metaPixel = finalResults.metaPixel
+    const gtm = finalResults.googleTagManager
+    const ga = finalResults.googleAnalytics
+    const googleAds = finalResults.googleAds
+    const tiktok = finalResults.tiktokPixel
+    const trackhive = finalResults.trackhive
+
+    // Server-side CAPI/enhanced signals
+    const metaCapi = trackhive || fullLower.includes('graph.facebook.com')
+    const googleEnhanced = googleAds || fullLower.includes('google-analytics.com/mp/collect')
+
+    console.log('[Scanner] Results for:', url, finalResults)
 
     const scriptTagRegex = /<script\b[^>]*>/gi
     const scriptTags = html.match(scriptTagRegex) ?? []

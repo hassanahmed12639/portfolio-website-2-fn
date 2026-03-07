@@ -1,12 +1,14 @@
+========================================
+1. src/components/Preloader.tsx
+========================================
+
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 
-/** Extra slow sequence so the preloader is clearly visible */
-const PRELOADER_HIDE_DELAY_MS = 18000;
+const PRELOADER_HIDE_DELAY_MS = 17000;
 
-/** Routes where the TrackHive preloader should show */
 function isTrackHiveRoute(pathname: string | null): boolean {
   if (!pathname) return false;
   return (
@@ -17,7 +19,6 @@ function isTrackHiveRoute(pathname: string | null): boolean {
   );
 }
 
-// Ping points: all in front hemisphere (lng -80..80) so every label shows like Meta CAPI
 const EVENTS: [number, number, string, string][] = [
   [40, -65, "Meta CAPI", "#2B5BFF"],
   [50, 8, "Google Ads (GA4)", "#22C55E"],
@@ -40,14 +41,9 @@ export default function Preloader() {
 
   useEffect(() => {
     if (!showPreloader) return;
-
-    const onLoad = () => {
-      setTimeout(() => setHide(true), PRELOADER_HIDE_DELAY_MS);
-    };
-
-    if (document.readyState === "complete") {
-      onLoad();
-    } else {
+    const onLoad = () => setTimeout(() => setHide(true), PRELOADER_HIDE_DELAY_MS);
+    if (document.readyState === "complete") onLoad();
+    else {
       window.addEventListener("load", onLoad);
       return () => window.removeEventListener("load", onLoad);
     }
@@ -55,20 +51,14 @@ export default function Preloader() {
 
   useEffect(() => {
     if (!showPreloader || !canvasRef.current || !labelsRef.current) return;
-
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-    const W = canvas.width;
-    const H = canvas.height;
-    const cx = W / 2;
-    const cy = H / 2;
-    const R = 110;
-
+    const W = canvas.width, H = canvas.height, cx = W / 2, cy = H / 2, R = 110;
     let angle = 0;
-    const SPEED = 0.003;
-
-    const pingSchedule = [2.0, 4.5, 7.0, 9.5, 12.0, 14.5];
+    const SPEED = 0.004;
+    const pingSchedule = [1.8, 3.8, 5.8, 7.8, 9.8, 11.8];
     const pings = EVENTS.map(() => ({ t: 0, active: false }));
 
     const labelEls: HTMLDivElement[] = [];
@@ -82,28 +72,18 @@ export default function Preloader() {
       labelEls.push(el);
     });
 
-    function project(
-      latDeg: number,
-      lngDeg: number,
-      rot: number
-    ): { x: number; y: number; z: number; visible: boolean } {
+    function project(latDeg: number, lngDeg: number, rot: number) {
       const lat = (latDeg * Math.PI) / 180;
       const lng = (lngDeg * Math.PI) / 180 + rot;
       const x3 = Math.cos(lat) * Math.sin(lng);
       const y3 = Math.sin(lat);
       const z3 = Math.cos(lat) * Math.cos(lng);
-      return {
-        x: cx + R * x3,
-        y: cy - R * y3,
-        z: z3,
-        visible: z3 > 0,
-      };
+      return { x: cx + R * x3, y: cy - R * y3, z: z3, visible: z3 > 0 };
     }
 
     function drawGrid(rot: number) {
       ctx.strokeStyle = "rgba(43,91,255,0.09)";
       ctx.lineWidth = 0.8;
-
       for (let latDeg = -60; latDeg <= 60; latDeg += 30) {
         const lat = (latDeg * Math.PI) / 180;
         const r2 = R * Math.cos(lat);
@@ -112,7 +92,6 @@ export default function Preloader() {
         ctx.ellipse(cx, cy + yOff, r2, r2 * 0.18, 0, 0, Math.PI * 2);
         ctx.stroke();
       }
-
       for (let lngDeg = 0; lngDeg < 180; lngDeg += 30) {
         for (let side = 0; side < 2; side++) {
           const lng = ((lngDeg + side * 180) * Math.PI) / 180 + rot;
@@ -123,16 +102,10 @@ export default function Preloader() {
             const x3 = Math.cos(latR) * Math.sin(lng);
             const y3 = Math.sin(latR);
             const z3 = Math.cos(latR) * Math.cos(lng);
-            if (z3 < -0.1) {
-              started = false;
-              continue;
-            }
-            const px = cx + R * x3;
-            const py = cy - R * y3;
-            if (!started) {
-              ctx.moveTo(px, py);
-              started = true;
-            } else ctx.lineTo(px, py);
+            if (z3 < -0.1) { started = false; continue; }
+            const px = cx + R * x3, py = cy - R * y3;
+            if (!started) { ctx.moveTo(px, py); started = true; }
+            else ctx.lineTo(px, py);
           }
           ctx.stroke();
         }
@@ -144,15 +117,13 @@ export default function Preloader() {
       ctx.arc(px, py, 3.5, 0, Math.PI * 2);
       ctx.fillStyle = color;
       ctx.fill();
-
       for (let r = 0; r < 2; r++) {
         const prog = Math.min(1, (t - r * 0.3) * 2.2);
         if (prog <= 0) continue;
         const rr = prog * 22;
         const alpha = (1 - prog) * 0.45;
         const hex = (alpha * 255).toString(16).padStart(2, "0");
-        const colorHex =
-          color.length === 7 ? color + hex : color.slice(0, 7) + hex;
+        const colorHex = color.length === 7 ? color + hex : color.slice(0, 7) + hex;
         ctx.beginPath();
         ctx.arc(px, py, rr, 0, Math.PI * 2);
         ctx.strokeStyle = colorHex;
@@ -164,17 +135,9 @@ export default function Preloader() {
     function frame(ts: number) {
       if (!startTimeRef.current) startTimeRef.current = ts;
       const elapsed = (ts - startTimeRef.current) / 1000;
-
       ctx.clearRect(0, 0, W, H);
 
-      const grd = ctx.createRadialGradient(
-        cx,
-        cy,
-        R * 0.2,
-        cx,
-        cy,
-        R * 1.1
-      );
+      const grd = ctx.createRadialGradient(cx, cy, R * 0.2, cx, cy, R * 1.1);
       grd.addColorStop(0, "rgba(43,91,255,0.04)");
       grd.addColorStop(1, "rgba(43,91,255,0)");
       ctx.fillStyle = grd;
@@ -190,30 +153,18 @@ export default function Preloader() {
       drawGrid(angle);
 
       pingSchedule.forEach((sec, i) => {
-        if (!pings[i].active && elapsed >= sec) {
-          pings[i].active = true;
-          pings[i].t = 0;
-        }
+        if (!pings[i].active && elapsed >= sec) { pings[i].active = true; pings[i].t = 0; }
       });
 
       EVENTS.forEach((ev, i) => {
         if (!pings[i].active) return;
         pings[i].t += 0.016;
-
         const pt = project(ev[0], ev[1], angle);
-        if (!pt.visible) {
-          labelEls[i].style.opacity = "0";
-          return;
-        }
-
+        if (!pt.visible) { labelEls[i].style.opacity = "0"; return; }
         drawPing(pt.x, pt.y, pings[i].t, ev[3]);
-
         const rect = canvas.getBoundingClientRect();
-        const lx = rect.left + pt.x + 10;
-        const ly = rect.top + pt.y - 14;
-        labelEls[i].style.left = `${lx}px`;
-        labelEls[i].style.top = `${ly}px`;
-
+        labelEls[i].style.left = `${rect.left + pt.x + 10}px`;
+        labelEls[i].style.top = `${rect.top + pt.y - 14}px`;
         const labelAlpha = Math.min(1, (pings[i].t - 0.2) * 4);
         labelEls[i].style.opacity = String(Math.max(0, labelAlpha));
       });
@@ -222,70 +173,158 @@ export default function Preloader() {
     }
 
     rafRef.current = requestAnimationFrame(frame);
-
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       labelEls.forEach((l) => l.remove());
     };
   }, [showPreloader]);
 
-  const handleTransitionEnd = () => {
-    setRemoved(true);
-  };
-
+  const handleTransitionEnd = () => setRemoved(true);
   if (!showPreloader || removed) return null;
 
   return (
-    <div
-      id="preloader"
-      className={`preloader-wrap preloader-globe ${hide ? "preloader-hide" : ""}`}
-      onTransitionEnd={handleTransitionEnd}
-      aria-hidden="true"
-    >
+    <div id="preloader" className={`preloader-wrap preloader-globe ${hide ? "preloader-hide" : ""}`} onTransitionEnd={handleTransitionEnd} aria-hidden="true">
       <div className="preloader-globe-logo">
         <div className="preloader-globe-logo-mark">
-          <svg
-            viewBox="0 0 18 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <polyline
-              points="2,13 6,8 10,11 16,4"
-              stroke="white"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <polyline
-              points="12,4 16,4 16,8"
-              stroke="white"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
+          <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="2,13 6,8 10,11 16,4" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <polyline points="12,4 16,4 16,8" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
         <span className="preloader-globe-logo-name">TrackHive</span>
       </div>
-
-      <canvas
-        ref={canvasRef}
-        id="preloader-globe-canvas"
-        width={280}
-        height={280}
-        className="preloader-globe-canvas"
-      />
-
+      <canvas ref={canvasRef} id="preloader-globe-canvas" width={280} height={280} className="preloader-globe-canvas" />
       <div className="preloader-globe-status">
         <div className="preloader-globe-bar-track">
           <div className="preloader-globe-bar-fill" />
         </div>
-        <span className="preloader-globe-status-text">
-          Connecting event streams
-        </span>
+        <span className="preloader-globe-status-text">Connecting event streams</span>
       </div>
-
       <div ref={labelsRef} className="preloader-ping-labels" />
     </div>
   );
+}
+
+
+========================================
+2. Add to globals.css (preloader section)
+========================================
+
+/* ── Preloader (globe #2B5BFF theme) ── */
+#preloader.preloader-wrap.preloader-globe {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #f8faff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  transition: opacity 0.55s cubic-bezier(0.4, 0, 0.2, 1), transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: "Geist", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+#preloader.preloader-wrap.preloader-globe.preloader-hide {
+  opacity: 0;
+  transform: scale(1.03);
+  pointer-events: none;
+}
+#preloader.preloader-wrap.preloader-globe.preloader-hide .preloader-ping-label {
+  opacity: 0 !important;
+}
+.preloader-globe-logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 36px;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: preloader-globe-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.05s forwards;
+}
+.preloader-globe-logo-mark {
+  width: 32px;
+  height: 32px;
+  background: #2B5BFF;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.preloader-globe-logo-mark svg { width: 18px; height: 18px; }
+.preloader-globe-logo-name {
+  font-family: "Syne", "Segoe UI", sans-serif;
+  font-weight: 800;
+  font-size: 19px;
+  color: #0D1733;
+  letter-spacing: -0.3px;
+}
+.preloader-globe-canvas {
+  opacity: 0;
+  transform: scale(0.92);
+  animation: preloader-globe-popIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
+}
+.preloader-globe-status {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  animation: preloader-globe-up 0.5s ease 0.4s forwards;
+}
+.preloader-globe-status-text {
+  font-size: 11.5px;
+  font-weight: 400;
+  letter-spacing: 0.07em;
+  color: #94A3C4;
+  text-transform: uppercase;
+}
+.preloader-globe-bar-track {
+  width: 120px;
+  height: 1.5px;
+  background: rgba(43, 91, 255, 0.12);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.preloader-globe-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: #2B5BFF;
+  border-radius: 99px;
+  animation: preloader-globe-barFill 11s cubic-bezier(0.4, 0, 0.2, 1) 0.6s forwards;
+  box-shadow: 0 0 8px rgba(43, 91, 255, 0.5);
+}
+.preloader-ping-labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.preloader-ping-label {
+  position: fixed;
+  font-size: 10px;
+  font-weight: 500;
+  color: #2B5BFF;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(43, 91, 255, 0.18);
+  padding: 3px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 12px rgba(43, 91, 255, 0.08);
+}
+@keyframes preloader-globe-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes preloader-globe-popIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes preloader-globe-barFill {
+  0% { width: 0%; }
+  40% { width: 55%; }
+  80% { width: 85%; }
+  100% { width: 100%; }
 }

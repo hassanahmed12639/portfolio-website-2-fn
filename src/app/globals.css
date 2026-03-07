@@ -1344,7 +1344,7 @@ a.bg-primary:hover,
   width: 0%;
   background: #2B5BFF;
   border-radius: 99px;
-  animation: preloader-globe-barFill 8s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards;
+  animation: preloader-globe-barFill 13s cubic-bezier(0.4, 0, 0.2, 1) 0.8s forwards;
   box-shadow: 0 0 8px rgba(43, 91, 255, 0.5);
 }
 

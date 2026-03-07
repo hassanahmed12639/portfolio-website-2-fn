@@ -322,6 +322,9 @@ export default function ScannerPage() {
                 </li>
               ))}
             </ul>
+            <p className="px-4 pb-4 text-xs text-slate-400">
+              Note: Some pixels loaded via React or GTM may not be detected in static HTML scan. Server-side pixels (CAPI) are detected separately.
+            </p>
           </section>
 
           {/* Section 3 — CAPI Status */}
