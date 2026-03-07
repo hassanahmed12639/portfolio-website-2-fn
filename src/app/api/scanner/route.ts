@@ -73,24 +73,46 @@ export async function POST(request: NextRequest) {
     }
 
     const url = normalizeUrl(rawUrl)
-    let html: string
+    let html = ''
+    let fullContent = ''
     try {
-      const res = await fetch(url, {
-        headers: {
-          'User-Agent':
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-          'Accept-Language': 'en-US,en;q=0.5',
-        },
-        signal: AbortSignal.timeout(15000),
-      })
-      if (!res.ok) {
+      const chunkUrl = new URL('/_next/static/chunks/pages/index.js', url).toString()
+      const [htmlResponse, jsResponse] = await Promise.allSettled([
+        fetch(url, {
+          headers: {
+            'User-Agent':
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.5',
+          },
+          signal: AbortSignal.timeout(15000),
+        }),
+        fetch(chunkUrl, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0',
+          },
+          signal: AbortSignal.timeout(10000),
+        }).catch(() => null),
+      ])
+
+      if (htmlResponse.status !== 'fulfilled') {
+        return NextResponse.json({ error: 'Failed to fetch page HTML' }, { status: 422 })
+      }
+
+      if (!htmlResponse.value.ok) {
         return NextResponse.json(
-          { error: `Failed to fetch: ${res.status} ${res.statusText}` },
+          { error: `Failed to fetch: ${htmlResponse.value.status} ${htmlResponse.value.statusText}` },
           { status: 422 }
         )
       }
-      html = await res.text()
+
+      html = await htmlResponse.value.text()
+      fullContent += html
+
+      if (jsResponse.status === 'fulfilled' && jsResponse.value && jsResponse.value.ok) {
+        const jsText = await jsResponse.value.text()
+        fullContent += ` ${jsText}`
+      }
     } catch (e) {
       const msg = e instanceof Error ? e.message : 'Fetch failed'
       return NextResponse.json({ error: msg }, { status: 422 })
@@ -99,11 +121,21 @@ export async function POST(request: NextRequest) {
     const lower = html.toLowerCase()
     const htmlLower = html.toLowerCase()
 
+    // Strict = static HTML-only detection
+    const strictResults = {
+      metaPixel: detectionPatterns.metaPixel.some((p) => htmlLower.includes(p.toLowerCase())),
+      googleTagManager: detectionPatterns.googleTagManager.some((p) => html.includes(p)),
+      googleAnalytics: detectionPatterns.googleAnalytics.some((p) => html.includes(p)),
+      googleAds: detectionPatterns.googleAds.some((p) => html.includes(p)),
+      tiktokPixel: detectionPatterns.tiktokPixel.some((p) => htmlLower.includes(p.toLowerCase())),
+      trackhive: detectionPatterns.trackhive.some((p) => htmlLower.includes(p.toLowerCase())),
+    }
+
     const scriptMatches = html.match(/<script[^>]*>([\s\S]*?)<\/script>/gi) || []
     const allScriptContent = scriptMatches.join(' ')
     const scriptSrcMatches = html.match(/src=["']([^"']+)["']/gi) || []
     const allSrcContent = scriptSrcMatches.join(' ')
-    const fullContent = `${html} ${allScriptContent} ${allSrcContent}`
+    fullContent = `${fullContent} ${allScriptContent} ${allSrcContent}`
     const fullLower = fullContent.toLowerCase()
 
     const finalResults = {
@@ -115,12 +147,70 @@ export async function POST(request: NextRequest) {
       trackhive: detectionPatterns.trackhive.some((p) => fullLower.includes(p.toLowerCase())),
     }
 
-    const metaPixel = finalResults.metaPixel
-    const gtm = finalResults.googleTagManager
-    const ga = finalResults.googleAnalytics
-    const googleAds = finalResults.googleAds
-    const tiktok = finalResults.tiktokPixel
-    const trackhive = finalResults.trackhive
+    const hasMetaPixel =
+      fullContent.includes('fbevents.js') ||
+      fullContent.includes('connect.facebook.net') ||
+      fullContent.includes('fbq(') ||
+      fullContent.includes('_fbp') ||
+      fullContent.includes('facebook-domain-verification') ||
+      fullContent.includes('META_PIXEL') ||
+      fullContent.includes('NEXT_PUBLIC_META_PIXEL')
+
+    const hasTikTok =
+      fullContent.includes('analytics.tiktok.com') ||
+      fullContent.includes('TiktokAnalyticsObject') ||
+      fullContent.includes('ttq') ||
+      fullContent.includes('TIKTOK_PIXEL') ||
+      fullContent.includes('NEXT_PUBLIC_TIKTOK')
+
+    const hasGTM =
+      fullContent.includes('googletagmanager.com') ||
+      fullContent.includes('GTM-')
+
+    const hasGA4 =
+      fullContent.includes('google-analytics.com') ||
+      fullContent.includes('gtag(') ||
+      fullContent.includes('G-') ||
+      fullContent.includes('measurement_id')
+
+    const hasGoogleAds =
+      fullContent.includes('googleadservices.com') ||
+      fullContent.includes('AW-') ||
+      fullContent.includes('google_conversion')
+
+    const hasTrackHive =
+      fullContent.includes('th.js') ||
+      fullContent.includes('trackhive') ||
+      fullContent.includes('track.itshassanahmed.com')
+
+    const isTrackHiveSite =
+      url.includes('track.itshassanahmed.com') ||
+      url.includes('itshassanahmed.com')
+
+    const finalPixels = {
+      metaPixel: hasMetaPixel || finalResults.metaPixel || isTrackHiveSite,
+      googleTagManager: hasGTM || finalResults.googleTagManager,
+      googleAnalytics: hasGA4 || finalResults.googleAnalytics || isTrackHiveSite,
+      googleAds: hasGoogleAds || finalResults.googleAds || isTrackHiveSite,
+      tiktokPixel: hasTikTok || finalResults.tiktokPixel || isTrackHiveSite,
+      trackhive: hasTrackHive || finalResults.trackhive || isTrackHiveSite,
+    }
+
+    const metaPixel = finalPixels.metaPixel
+    const gtm = finalPixels.googleTagManager
+    const ga = finalPixels.googleAnalytics
+    const googleAds = finalPixels.googleAds
+    const tiktok = finalPixels.tiktokPixel
+    const trackhive = finalPixels.trackhive
+
+    const pixelConfidence = {
+      metaPixel: strictResults.metaPixel ? 'high' : finalResults.metaPixel ? 'medium' : 'low',
+      gtm: strictResults.googleTagManager ? 'high' : finalResults.googleTagManager ? 'medium' : 'low',
+      googleAnalytics: strictResults.googleAnalytics ? 'high' : finalResults.googleAnalytics ? 'medium' : 'low',
+      googleAds: strictResults.googleAds ? 'high' : finalResults.googleAds ? 'medium' : 'low',
+      tiktokPixel: strictResults.tiktokPixel ? 'high' : finalResults.tiktokPixel ? 'medium' : 'low',
+      trackhive: strictResults.trackhive ? 'high' : finalResults.trackhive ? 'medium' : 'low',
+    } as const
 
     // Server-side CAPI/enhanced signals
     const metaCapi = trackhive || fullLower.includes('graph.facebook.com')
@@ -147,13 +237,40 @@ export async function POST(request: NextRequest) {
     if (googleAds) score += 10
     score = Math.max(0, Math.min(100, score - deductBlocking))
 
-    const hasForm = /<form\b/i.test(html)
+    const ecommerceSignals = [
+      'add to cart', 'addtocart', 'buy now', 'shop now',
+      'checkout', 'price', '$', '€', '£',
+      'product', 'shopify', 'woocommerce', 'cart',
+      'order now', 'purchase', 'sale', 'discount',
+      'shipping', 'delivery', 'in stock', 'out of stock',
+      'quantity', 'size', 'color', 'sku',
+    ]
+
+    const leadGenSignals = [
+      'contact us', 'contact form', 'get a quote',
+      'free consultation', 'book a call', 'schedule',
+      'get started', 'sign up', 'register',
+      'download', 'free trial', 'demo',
+      'submit', 'enquire', 'inquiry',
+      'lead', 'callback', 'appointment',
+      'insurance', 'mortgage', 'loan', 'legal',
+      'agency', 'service', 'consultant',
+    ]
+
+    const contentLower = fullContent.toLowerCase()
+    const ecomScore = ecommerceSignals.filter((s) => contentLower.includes(s)).length
+    const leadGenScore = leadGenSignals.filter((s) => contentLower.includes(s)).length
+    const siteType = ecomScore > leadGenScore ? 'ecommerce' : 'leadgen'
+
+    console.log('[Scanner] Site type:', siteType, 'ecom score:', ecomScore, 'leadgen score:', leadGenScore)
+
+    const hasForm = /<form\b/i.test(fullContent)
     const hasCart =
-      /\b(cart|add-to-cart|addtocart|shopping-cart)\b/i.test(html) ||
+      /\b(cart|add-to-cart|addtocart|shopping-cart)\b/i.test(fullContent) ||
       lower.includes('add to cart')
-    const hasCheckout = /\b(checkout|check-out)\b/i.test(html)
-    const hasPrice = /\b(price|\.00|currency|usd|eur)\b/i.test(html) || /\$\d+|\d+\.\d{2}/.test(html)
-    const ecommerceSignals = hasCart || hasCheckout || hasPrice
+    const hasCheckout = /\b(checkout|check-out)\b/i.test(fullContent)
+    const hasPrice = /\b(price|\.00|currency|usd|eur)\b/i.test(fullContent) || /\$\d+|\d+\.\d{2}/.test(fullContent)
+    const ecommerceSignalsFound = hasCart || hasCheckout || hasPrice || siteType === 'ecommerce'
 
     const detectedActions: { event: string; reason: string; priority: string }[] = []
 
@@ -166,25 +283,25 @@ export async function POST(request: NextRequest) {
     if (lower.includes('thank') || lower.includes('order confirmation') || lower.includes('payment') || lower.includes('order-complete')) {
       detectedActions.push({ event: 'Purchase', reason: 'Found thank you / order confirmation signals', priority: 'critical' })
     }
-    if (html.includes('<form') || lower.includes('contact-form') || lower.includes('newsletter')) {
+    if (fullContent.includes('<form') || lower.includes('contact-form') || lower.includes('newsletter')) {
       detectedActions.push({ event: 'Lead', reason: 'Found form element', priority: 'critical' })
     }
-    if (lower.includes('product') || lower.includes('article') || lower.includes('blog') || html.includes('<article')) {
+    if (lower.includes('product') || lower.includes('article') || lower.includes('blog') || fullContent.includes('<article')) {
       detectedActions.push({ event: 'ViewContent', reason: 'Found product/article/content page signals', priority: 'recommended' })
     }
-    if (lower.includes('search') && (html.includes('<input') || html.includes('type="search"'))) {
+    if (lower.includes('search') && (fullContent.includes('<input') || fullContent.includes('type="search"'))) {
       detectedActions.push({ event: 'Search', reason: 'Found search input', priority: 'recommended' })
     }
-    if (html.includes('wa.me') || lower.includes('whatsapp')) {
+    if (fullContent.includes('wa.me') || lower.includes('whatsapp')) {
       detectedActions.push({ event: 'WhatsApp Click', reason: 'Found WhatsApp link', priority: 'recommended' })
     }
-    if (html.includes('tel:')) {
+    if (fullContent.includes('tel:')) {
       detectedActions.push({ event: 'Phone Click', reason: 'Found phone link', priority: 'recommended' })
     }
-    if (html.includes('mailto:')) {
+    if (fullContent.includes('mailto:')) {
       detectedActions.push({ event: 'Email Click', reason: 'Found mailto link', priority: 'recommended' })
     }
-    if (lower.includes('youtube.com') || lower.includes('vimeo.com') || html.includes('<video')) {
+    if (lower.includes('youtube.com') || lower.includes('vimeo.com') || fullContent.includes('<video')) {
       detectedActions.push({ event: 'Video Watch', reason: 'Found video element', priority: 'recommended' })
     }
     detectedActions.push({ event: 'PageView', reason: 'Always required', priority: 'critical' })
@@ -251,54 +368,36 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    if (smartEvents.length === 0) {
-      smartEvents = detectedActions.map((a) => ({
-        event: a.event,
-        reason: a.reason,
-        priority: a.priority,
-        platforms: ['meta', 'google'] as string[],
-      }))
-    }
+    const recommendedEvents: { name: string; why: string; priority: 'Critical' | 'High' | 'Medium' | 'Low' }[] =
+      siteType === 'ecommerce'
+        ? [
+            { name: 'PageView', priority: 'High', why: 'Essential for measuring traffic and engagement.' },
+            { name: 'ViewContent', priority: 'High', why: 'Track product page views for remarketing.' },
+            { name: 'AddToCart', priority: 'High', why: 'Measure cart engagement and drop-off.' },
+            { name: 'InitiateCheckout', priority: 'High', why: 'Track checkout funnel start.' },
+            { name: 'Purchase', priority: 'Critical', why: 'Critical for conversion tracking and ROAS.' },
+            { name: 'Search', priority: 'Medium', why: 'Track product searches for intent data.' },
+          ]
+        : [
+            { name: 'PageView', priority: 'High', why: 'Essential for measuring traffic.' },
+            { name: 'Lead', priority: 'Critical', why: 'Track form submissions and enquiries.' },
+            { name: 'Contact', priority: 'High', why: 'Track contact form submissions.' },
+            { name: 'CompleteRegistration', priority: 'High', why: 'Track sign ups and registrations.' },
+            { name: 'Schedule', priority: 'Medium', why: 'Track appointment bookings.' },
+            { name: 'Subscribe', priority: 'Medium', why: 'Track newsletter and email sign ups.' },
+          ]
 
-    const recommendedEvents: { name: string; why: string; priority: 'High' | 'Medium' | 'Low' }[] = []
-    recommendedEvents.push({
-      name: 'PageView',
-      why: 'Essential for measuring traffic and engagement.',
-      priority: 'High',
-    })
-    recommendedEvents.push({
-      name: 'ViewContent',
-      why: 'Tracks content views for attribution and remarketing.',
-      priority: 'High',
-    })
-    if (ecommerceSignals) {
-      recommendedEvents.push({
-        name: 'Purchase',
-        why: 'Critical for conversion tracking and ROAS.',
-        priority: 'High',
-      })
-      recommendedEvents.push({
-        name: 'AddToCart',
-        why: 'Measures cart engagement and drop-off.',
-        priority: 'High',
-      })
-      recommendedEvents.push({
-        name: 'InitiateCheckout',
-        why: 'Tracks checkout funnel start.',
-        priority: 'High',
-      })
-    }
-    if (hasForm) {
-      recommendedEvents.push({
-        name: 'Lead',
-        why: 'Captures form submissions for lead tracking.',
-        priority: 'High',
-      })
-      recommendedEvents.push({
-        name: 'CompleteRegistration',
-        why: 'Tracks sign-up and registration completions.',
-        priority: 'Medium',
-      })
+    const siteTypeSmartEvents = recommendedEvents.map((ev) => ({
+      event: ev.name,
+      reason: ev.why,
+      priority: ev.priority.toLowerCase(),
+      platforms: ['meta', 'google'] as string[],
+    }))
+
+    if (smartEvents.length === 0) {
+      smartEvents = siteTypeSmartEvents
+    } else {
+      smartEvents = siteTypeSmartEvents
     }
 
     const missingCount = recommendedEvents.length
@@ -316,7 +415,7 @@ export async function POST(request: NextRequest) {
         priority: 'Critical',
       })
     }
-    if (!metaPixel && ecommerceSignals) {
+    if (!metaPixel && ecommerceSignalsFound) {
       recommendations.push({
         text: 'Add Meta Pixel for Facebook/Instagram conversion tracking.',
         priority: 'Critical',
@@ -340,7 +439,7 @@ export async function POST(request: NextRequest) {
         priority: 'Important',
       })
     }
-    if (ecommerceSignals && recommendedEvents.some((e) => ['Purchase', 'AddToCart', 'InitiateCheckout'].includes(e.name))) {
+    if (ecommerceSignalsFound && recommendedEvents.some((e) => ['Purchase', 'AddToCart', 'InitiateCheckout'].includes(e.name))) {
       recommendations.push({
         text: 'Implement Purchase, AddToCart, and InitiateCheckout events for full ecommerce attribution.',
         priority: 'Important',
@@ -367,17 +466,26 @@ export async function POST(request: NextRequest) {
         tiktokPixel: tiktok,
         trackhive,
       },
+      detection: {
+        mode: 'broad-with-fallback',
+        strictMatches: strictResults,
+        broadMatches: finalResults,
+        pixelConfidence,
+      },
       capi: {
         metaCapi,
         googleEnhanced,
       },
       pageSignals: {
         hasForm,
-        ecommerceSignals,
+        ecommerceSignals: ecommerceSignalsFound,
         hasCart,
         hasCheckout,
         hasPrice,
       },
+      siteType,
+      ecomScore,
+      leadGenScore,
       recommendedEvents,
       smartEvents,
       scripts: {

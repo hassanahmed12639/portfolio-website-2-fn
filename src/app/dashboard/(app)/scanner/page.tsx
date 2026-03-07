@@ -23,6 +23,9 @@ type Report = {
   url: string
   score: number
   summary: string
+  siteType?: 'ecommerce' | 'leadgen'
+  ecomScore?: number
+  leadGenScore?: number
   pixels: {
     metaPixel: boolean
     gtm: boolean
@@ -30,6 +33,33 @@ type Report = {
     googleAds: boolean
     tiktokPixel: boolean
     trackhive: boolean
+  }
+  detection?: {
+    mode: 'strict-html-only' | 'broad-with-fallback' | string
+    strictMatches: {
+      metaPixel: boolean
+      googleTagManager: boolean
+      googleAnalytics: boolean
+      googleAds: boolean
+      tiktokPixel: boolean
+      trackhive: boolean
+    }
+    broadMatches: {
+      metaPixel: boolean
+      googleTagManager: boolean
+      googleAnalytics: boolean
+      googleAds: boolean
+      tiktokPixel: boolean
+      trackhive: boolean
+    }
+    pixelConfidence: {
+      metaPixel: 'high' | 'medium' | 'low'
+      gtm: 'high' | 'medium' | 'low'
+      googleAnalytics: 'high' | 'medium' | 'low'
+      googleAds: 'high' | 'medium' | 'low'
+      tiktokPixel: 'high' | 'medium' | 'low'
+      trackhive: 'high' | 'medium' | 'low'
+    }
   }
   capi: { metaCapi: boolean; googleEnhanced: boolean }
   recommendedEvents: { name: string; why: string; priority: string }[]
@@ -68,6 +98,12 @@ const PIXEL_LABELS: { key: keyof Report['pixels']; label: string }[] = [
   { key: 'tiktokPixel', label: 'TikTok Pixel' },
   { key: 'trackhive', label: 'TrackHive' },
 ]
+
+const CONFIDENCE_CLASS: Record<'high' | 'medium' | 'low', string> = {
+  high: 'bg-emerald-100 text-emerald-700',
+  medium: 'bg-amber-100 text-amber-700',
+  low: 'bg-slate-200 text-slate-600',
+}
 
 function ScoreCircle({ score }: { score: number }) {
   const color =
@@ -291,6 +327,22 @@ export default function ScannerPage() {
 
       {!loading && report && (
         <div className="space-y-6">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-sm text-slate-500">Detected site type:</span>
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-bold ${
+                report.siteType === 'ecommerce'
+                  ? 'bg-blue-100 text-blue-700'
+                  : 'bg-orange-100 text-orange-700'
+              }`}
+            >
+              {report.siteType === 'ecommerce' ? '🛒 E-Commerce' : '📋 Lead Generation'}
+            </span>
+            <span className="text-xs text-slate-400">
+              (confidence: ecom {report.ecomScore ?? 0} vs leadgen {report.leadGenScore ?? 0})
+            </span>
+          </div>
+
           {/* Section 1 — Overall Health Score */}
           <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
             <div className="px-4 py-3 border-b border-[var(--dash-border)]">
@@ -319,9 +371,23 @@ export default function ScannerPage() {
                     <span className="text-red-400">❌</span>
                   )}
                   <span className={report.pixels[key] ? 'text-[var(--dash-text)]' : 'text-[var(--dash-muted)]'}>{label}</span>
+                  {report.detection?.pixelConfidence?.[key] && (
+                    <span
+                      className={`ml-auto rounded px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide ${
+                        CONFIDENCE_CLASS[report.detection.pixelConfidence[key]]
+                      }`}
+                    >
+                      {report.detection.pixelConfidence[key]}
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>
+            {report.detection?.mode && (
+              <p className="px-4 text-[11px] text-slate-500">
+                Detection mode: {report.detection.mode === 'broad-with-fallback' ? 'Broad + script fallback' : report.detection.mode}
+              </p>
+            )}
             <p className="px-4 pb-4 text-xs text-slate-400">
               Note: Some pixels loaded via React or GTM may not be detected in static HTML scan. Server-side pixels (CAPI) are detected separately.
             </p>
@@ -433,7 +499,11 @@ export default function ScannerPage() {
           <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
             <div className="px-4 py-3 border-b border-[var(--dash-border)]">
               <h2 className="text-sm font-medium text-[var(--dash-muted)]">Smart Events Auto-Detection</h2>
-              <p className="text-xs text-[var(--dash-muted)] mt-0.5">Detected actions on website — enable and generate code</p>
+              <p className="text-xs text-[var(--dash-muted)] mt-0.5">
+                {report.siteType === 'ecommerce'
+                  ? 'E-commerce event set detected — enable and generate code'
+                  : 'Lead generation event set detected — enable and generate code'}
+              </p>
             </div>
             <div className="p-4">
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
