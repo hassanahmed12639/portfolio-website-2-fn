@@ -16,12 +16,12 @@ import {
   User,
   Sparkles,
 } from 'lucide-react'
-import type { User } from '@supabase/supabase-js'
+import type { User as SupabaseUser } from '@supabase/supabase-js'
 
 type Profile = { dashboard_type?: string | null } | undefined
 
 type DashboardShellProps = {
-  user: User
+  user: SupabaseUser
   trialExpired: boolean
   profile?: Profile
   children: React.ReactNode

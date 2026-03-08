@@ -264,7 +264,7 @@ export async function POST(request: NextRequest) {
 
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
-    .select('id, events_used, plan, is_trial, trial_expires_at')
+    .select('id, events_used, events_this_month, events_reset_at, plan, is_trial, trial_expires_at')
     .eq('api_key', api_key)
     .single()
 
@@ -278,26 +278,48 @@ export async function POST(request: NextRequest) {
     profile.is_trial &&
     profile.trial_expires_at &&
     new Date(profile.trial_expires_at) > new Date()
-      ? 'trial'
+      ? 'pro'
       : (profile.plan as string) ?? 'free'
-  const eventsLimit =
-    effectivePlan === 'agency'
-      ? -1
-      : effectivePlan === 'pro' || effectivePlan === 'trial'
-        ? 50000
-        : 500
-  const eventsUsed = profile.events_used ?? 0
+  const limits: Record<string, number> = { free: 500, pro: 25000, agency: -1 }
+  const eventsLimit = limits[effectivePlan] ?? 500
+
+  // Use events_this_month when available, else fall back to events_used
+  const profileExt = profile as { events_this_month?: number; events_used?: number; events_reset_at?: string }
+  let eventsThisMonth: number =
+    profileExt.events_this_month ?? profileExt.events_used ?? 0
+
+  // Reset monthly counter if needed
+  const resetAt = profile.events_reset_at
+    ? new Date(profile.events_reset_at)
+    : new Date(0)
+  const now = new Date()
+  if (
+    resetAt.getTime() > 0 &&
+    (now.getMonth() !== resetAt.getMonth() || now.getFullYear() !== resetAt.getFullYear())
+  ) {
+    await supabase
+      .from('profiles')
+      .update({
+        events_this_month: 0,
+        events_reset_at: now.toISOString(),
+      } as Record<string, unknown>)
+      .eq('id', userId)
+    eventsThisMonth = 0
+  }
+
   if (
     !is_test &&
     eventsLimit !== -1 &&
-    eventsUsed >= eventsLimit
+    eventsThisMonth >= eventsLimit
   ) {
     return NextResponse.json(
       {
-        error: 'Monthly event limit reached',
+        error: 'Monthly event limit reached. Please upgrade your plan.',
+        limitReached: true,
         limit: eventsLimit,
-        used: eventsUsed,
-        upgrade_url: 'https://track.itshassanahmed.com/dashboard/billing',
+        used: eventsThisMonth,
+        plan: effectivePlan,
+        upgrade_url: '/pricing',
       },
       { status: 429, headers: CORS_HEADERS }
     )
@@ -438,9 +460,16 @@ export async function POST(request: NextRequest) {
       })
     }
     if (!is_test) {
+      const nextCount = eventsThisMonth + 1
       await supabase
         .from('profiles')
-        .update({ events_used: (profile.events_used ?? 0) + 1 })
+        .update({
+          events_this_month: nextCount,
+          events_reset_at:
+            (profile as { events_reset_at?: string }).events_reset_at ??
+            now.toISOString(),
+          events_used: (profile.events_used ?? 0) + 1,
+        } as Record<string, unknown>)
         .eq('id', profile.id)
     }
     return NextResponse.json(
@@ -965,9 +994,16 @@ export async function POST(request: NextRequest) {
   }
 
   if (!is_test) {
+    const nextCount = eventsThisMonth + 1
     await supabase
       .from('profiles')
-      .update({ events_used: eventsUsed + 1 })
+      .update({
+        events_this_month: nextCount,
+        events_reset_at:
+          (profile as { events_reset_at?: string }).events_reset_at ??
+          new Date().toISOString(),
+        events_used: (profile.events_used ?? 0) + 1,
+      } as Record<string, unknown>)
       .eq('id', profile.id)
   }
 

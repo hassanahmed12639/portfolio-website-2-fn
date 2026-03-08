@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
-import { getEffectivePlan, type PlanName } from '@/lib/plans'
+import { getEffectivePlan } from '@/lib/plans'
+import { FeatureGate } from '@/components/FeatureGate'
 import TemplatesClient from './TemplatesClient'
 
 export default async function TemplatesPage() {
@@ -13,11 +14,14 @@ export default async function TemplatesPage() {
     .eq('id', user!.id)
     .single()
 
-  const effectivePlan = getEffectivePlan(profile ?? {}) as PlanName
-  const planForTemplates =
-    effectivePlan === 'trial' ? 'trial' : (effectivePlan as 'free' | 'pro' | 'agency')
+  const effectivePlan = getEffectivePlan(profile ?? {})
+  const planForTemplates = effectivePlan as 'free' | 'pro' | 'agency'
 
-  return <TemplatesClient userPlan={planForTemplates} />
+  return (
+    <FeatureGate feature="templates" requiredPlan="pro">
+      <TemplatesClient userPlan={planForTemplates} />
+    </FeatureGate>
+  )
 }
 
 

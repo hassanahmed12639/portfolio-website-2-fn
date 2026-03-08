@@ -2,8 +2,18 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { usePlan } from '@/hooks/usePlan'
 
 export default function EcommerceDashboard({ profile }: { profile: Record<string, unknown> | null }) {
+  const {
+    eventsThisMonth,
+    eventsLimit,
+    eventsPercent,
+    isNearLimit,
+    isAtLimit,
+    isUnlimited,
+    plan,
+  } = usePlan()
   const [stats, setStats] = useState<Record<string, unknown> | null>(null)
   const [recentEvents, setRecentEvents] = useState<Array<{ id: string; event_name: string; value?: number; created_at: string; meta_status?: string }>>([])
   const [loading, setLoading] = useState(true)
@@ -46,6 +56,54 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
             Switch mode
           </Link>
         </div>
+      </div>
+
+      {/* Events Usage Bar */}
+      <div className="bg-white dark:bg-zinc-900 rounded-xl border border-slate-100 dark:border-zinc-800 p-6 mb-6">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <h3 className="font-semibold text-slate-900 dark:text-white">
+              Events This Month
+            </h3>
+            <p className="text-sm text-slate-500 dark:text-zinc-400">
+              {isUnlimited
+                ? 'Unlimited'
+                : `${eventsThisMonth.toLocaleString()} / ${eventsLimit.toLocaleString()}`}
+            </p>
+          </div>
+          {!isUnlimited && isNearLimit && !isAtLimit && (
+            <Link
+              href="/pricing"
+              className="bg-orange-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-orange-600"
+            >
+              Upgrade Plan
+            </Link>
+          )}
+          {!isUnlimited && isAtLimit && (
+            <Link
+              href="/pricing"
+              className="bg-red-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-600"
+            >
+              Limit Reached!
+            </Link>
+          )}
+        </div>
+        {!isUnlimited && (
+          <div className="w-full bg-slate-100 dark:bg-zinc-700 rounded-full h-2">
+            <div
+              className={`h-2 rounded-full transition-all ${
+                isAtLimit ? 'bg-red-500' : isNearLimit ? 'bg-orange-400' : 'bg-blue-500'
+              }`}
+              style={{ width: `${eventsPercent}%` }}
+            />
+          </div>
+        )}
+        <p className="text-xs text-slate-400 dark:text-zinc-500 mt-2 capitalize">
+          Current plan: {plan} ·{' '}
+          <Link href="/pricing" className="text-blue-500 hover:underline">
+            Upgrade
+          </Link>
+        </p>
       </div>
 
       {/* Row 1 — Key ecom metrics (overview) */}

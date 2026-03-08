@@ -75,10 +75,10 @@ export default function PricingPage() {
                 $0<span className="text-base font-normal" style={{ color: "#94a3b8" }}>/mo</span>
               </p>
               <p className="text-sm mb-8" style={{ color: "#475569" }}>
-                Perfect to get started
+                Perfect for getting started
               </p>
               <ul className="space-y-4 text-sm flex-1 mb-8" style={{ color: "#475569" }}>
-                {['1,000 events/month', 'Meta CAPI', '1 pixel', 'Basic analytics'].map((item) => (
+                {['500 events/month', 'Meta CAPI only', '1 pixel', 'Basic dashboard', 'Event logs (24hrs)', 'Scanner (3 scans/month)'].map((item) => (
                   <li key={item} className="flex items-center gap-2">
                     <svg className="w-4 h-4 text-blue-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
@@ -113,11 +113,11 @@ export default function PricingPage() {
               </span>
               <p className="font-bold text-xl mb-1 text-white">Pro</p>
               <p className="text-4xl font-extrabold mb-1 text-white">
-                $10<span className="text-base font-normal text-blue-200">/mo</span>
+                $15<span className="text-base font-normal text-blue-200">/mo</span>
               </p>
               <p className="text-sm mb-8 text-blue-200">For growing businesses</p>
               <ul className="space-y-4 text-sm flex-1 mb-8 text-blue-100">
-                {['50,000 events/month', 'All platforms (Meta, Google, TikTok, Snapchat)', '3 pixels', 'AI Analysis', 'Email alerts', 'Anomaly detection', 'Priority support'].map((item) => (
+                {['25,000 events/month', 'All platforms (Meta, TikTok, GA4, Google)', '3 pixels', 'Lead Manager + scoring', 'Live Stream & Event Replay', 'Raw Data access', 'All tools unlocked', 'Email alerts'].map((item) => (
                   <li key={item} className="flex items-center gap-2">
                     <svg className="w-4 h-4 text-blue-200 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
@@ -148,13 +148,13 @@ export default function PricingPage() {
                 Agency
               </p>
               <p className="text-4xl font-extrabold mb-1" style={{ color: "#0f172a" }}>
-                $25<span className="text-base font-normal" style={{ color: "#94a3b8" }}>/mo</span>
+                $45<span className="text-base font-normal" style={{ color: "#94a3b8" }}>/mo</span>
               </p>
               <p className="text-sm mb-8" style={{ color: "#475569" }}>
-                For agencies and teams
+                For agencies & teams
               </p>
               <ul className="space-y-4 text-sm flex-1 mb-8" style={{ color: "#475569" }}>
-                {['Unlimited events', 'All platforms', '10 pixels', 'Everything in Pro', 'White label', '100+ GTM templates', 'Dedicated support'].map((item) => (
+                {['Unlimited events', 'All platforms', '25 pixels', 'Everything in Pro', '5 team members', 'All templates', 'Priority support', 'Early access to features'].map((item) => (
                   <li key={item} className="flex items-center gap-2">
                     <svg className="w-4 h-4 text-blue-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
@@ -164,11 +164,11 @@ export default function PricingPage() {
                 ))}
               </ul>
               <Link
-                href="/dashboard/signup"
+                href="/billing"
                 className="block text-center font-semibold py-3 rounded-xl transition-colors"
                 style={{ backgroundColor: "#f1f5f9", color: "#1e293b" }}
               >
-                Start for free
+                Upgrade to Agency
               </Link>
             </div>
           </div>

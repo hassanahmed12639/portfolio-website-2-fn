@@ -1,32 +1,10 @@
-import { createClient } from '@/lib/supabase/server'
-import { getEffectivePlan, type PlanName } from '@/lib/plans'
 import { FeatureGate } from '@/components/FeatureGate'
 import EnrichmentClient from './EnrichmentClient'
 
-export default async function EnrichmentPage() {
-  const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  const user = session?.user
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('plan, is_trial, trial_expires_at')
-    .eq('id', user!.id)
-    .single()
-
-  const effectivePlan = getEffectivePlan(profile ?? {}) as PlanName
-  const trialExpired =
-    !!profile?.is_trial &&
-    !!profile?.trial_expires_at &&
-    new Date(profile.trial_expires_at) <= new Date()
-
+export default function EnrichmentPage() {
   return (
     <div className="p-6 md:p-8">
-      <FeatureGate
-        feature="enrichment"
-        userPlan={effectivePlan}
-        trialExpired={trialExpired}
-      >
+      <FeatureGate feature="enrichment" requiredPlan="pro">
         <h1 className="text-xl font-semibold text-[var(--dash-text)] mb-2">Real-time Data Enrichment</h1>
         <p className="text-[var(--dash-muted)] text-sm mb-8">
           Automatically enrich every event with geolocation, device type, customer type, LTV, and hashed PII for better attribution.

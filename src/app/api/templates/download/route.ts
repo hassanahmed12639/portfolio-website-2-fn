@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
-import { getEffectivePlan, type PlanName } from '@/lib/plans'
+import { getEffectivePlan } from '@/lib/plans'
 
 export const dynamic = 'force-dynamic'
 import {
@@ -35,9 +35,8 @@ export async function GET(request: Request) {
     .eq('id', user.id)
     .single()
 
-  const effectivePlan = getEffectivePlan(profile ?? {}) as PlanName
-  const planForTemplates =
-    effectivePlan === 'trial' ? 'trial' : (effectivePlan as 'free' | 'pro' | 'agency')
+  const effectivePlan = getEffectivePlan(profile ?? {})
+  const planForTemplates = effectivePlan as 'free' | 'pro' | 'agency'
 
   const template = TEMPLATES.find((t) => t.id === templateId)
   if (!template) {
