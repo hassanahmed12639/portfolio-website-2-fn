@@ -284,10 +284,10 @@ export default function SetupClient({ apiKey }: SetupClientProps) {
           <div className="p-4 text-sm space-y-3">
             <p className="text-[var(--dash-text)]">
               <span className="font-medium">1.</span> Download the{' '}
-              <a href="#" className="text-[var(--dash-text)] underline hover:opacity-80">
+              <a href="/template" className="text-[var(--dash-text)] underline hover:opacity-80">
                 TrackHive GTM template
-              </a>{' '}
-              (link placeholder for now).
+              </a>
+              .
             </p>
             <p className="text-[var(--dash-text)]">
               <span className="font-medium">2.</span> In GTM → Templates → New → Import the .tpl file.

@@ -3,6 +3,63 @@
 import { useState, useEffect } from 'react'
 import PayPalSubscriptionButton from '@/components/PayPalSubscriptionButton'
 
+const PLAN_FEATURES = {
+  free: [
+    { key: 'events', label: '500 events/month', included: true },
+    { key: 'meta', label: 'Meta CAPI', included: true },
+    { key: 'pixels_1', label: '1 pixel', included: true },
+    { key: 'scanner', label: 'Scanner (3 scans/month)', included: true },
+    { key: 'playground', label: 'Playground (5 tests/day)', included: true },
+    { key: 'tiktok', label: 'TikTok Events API', included: false },
+    { key: 'ga4', label: 'GA4 Integration', included: false },
+    { key: 'google', label: 'Google Ads', included: false },
+    { key: 'leads', label: 'Lead Manager', included: false },
+    { key: 'live_stream', label: 'Live Stream', included: false },
+    { key: 'alerts', label: 'Email Alerts', included: false },
+    { key: 'tools', label: 'All Tools', included: false },
+  ],
+  pro: [
+    { key: 'events', label: '25,000 events/month', included: true },
+    { key: 'meta', label: 'Meta CAPI', included: true },
+    { key: 'tiktok', label: 'TikTok Events API', included: true },
+    { key: 'ga4', label: 'GA4 Integration', included: true },
+    { key: 'google', label: 'Google Ads', included: true },
+    { key: 'pixels_3', label: '3 pixels', included: true },
+    { key: 'leads', label: 'Lead Manager + scoring', included: true },
+    { key: 'live_stream', label: 'Live Stream & Event Replay', included: true },
+    { key: 'raw_data', label: 'Raw Data access', included: true },
+    { key: 'cookie', label: 'Cookie Lifetime Extender', included: true },
+    { key: 'proxy', label: 'Reverse Proxy', included: true },
+    { key: 'headers', label: 'HTTP Headers Management', included: true },
+    { key: 'anomaly', label: 'Anomaly Detection', included: true },
+    { key: 'alerts', label: 'Email Alerts', included: true },
+    { key: 'tools', label: 'All Tools Unlocked', included: true },
+    { key: 'support', label: 'Priority Support', included: true },
+    { key: 'team', label: 'Team Members', included: false },
+  ],
+  agency: [
+    { key: 'events', label: 'Unlimited events', included: true },
+    { key: 'meta', label: 'Meta CAPI', included: true },
+    { key: 'tiktok', label: 'TikTok Events API', included: true },
+    { key: 'ga4', label: 'GA4 Integration', included: true },
+    { key: 'google', label: 'Google Ads', included: true },
+    { key: 'pixels_25', label: '25 pixels', included: true },
+    { key: 'leads', label: 'Lead Manager + scoring', included: true },
+    { key: 'live_stream', label: 'Live Stream & Event Replay', included: true },
+    { key: 'raw_data', label: 'Raw Data access', included: true },
+    { key: 'cookie', label: 'Cookie Lifetime Extender', included: true },
+    { key: 'proxy', label: 'Reverse Proxy', included: true },
+    { key: 'headers', label: 'HTTP Headers Management', included: true },
+    { key: 'anomaly', label: 'Anomaly Detection', included: true },
+    { key: 'alerts', label: 'Email Alerts', included: true },
+    { key: 'tools', label: 'All Tools Unlocked', included: true },
+    { key: 'team', label: '5 Team Members', included: true },
+    { key: 'templates', label: 'All GTM Templates', included: true },
+    { key: 'support', label: 'Dedicated Support', included: true },
+    { key: 'early', label: 'Early Access to Features', included: true },
+  ]
+} as const
+
 function SuccessBanner({ selectedPlan }: { selectedPlan: string }) {
   const [show, setShow] = useState(false)
   useEffect(() => {
@@ -28,6 +85,15 @@ export default function BillingClient() {
     plan_activated_at?: string
     email?: string
   } | null>(null)
+  const [usage, setUsage] = useState<{
+    plan?: string
+    eventsThisMonth?: number
+    pixelCount?: number
+    leadCount?: number
+    alertCount?: number
+    teamCount?: number
+    connectedPlatforms?: { meta?: boolean; tiktok?: boolean; ga4?: boolean; google?: boolean }
+  } | null>(null)
 
   useEffect(() => {
     fetch('/api/dashboard/profile')
@@ -41,7 +107,28 @@ export default function BillingClient() {
       .catch(() => {})
   }, [])
 
-  const currentPlan = (profile?.plan as PlanSlug) || 'free'
+  useEffect(() => {
+    fetch('/api/dashboard/usage')
+      .then((r) => r.json())
+      .then((d) => setUsage(d))
+      .catch(() => {})
+  }, [])
+
+  const currentPlan = (profile?.plan as PlanSlug) || (usage?.plan as PlanSlug) || 'free'
+
+  const activeFeatureKeys: Record<string, boolean> = {
+    meta: !!usage?.connectedPlatforms?.meta,
+    tiktok: !!usage?.connectedPlatforms?.tiktok,
+    ga4: !!usage?.connectedPlatforms?.ga4,
+    google: !!usage?.connectedPlatforms?.google,
+    leads: (usage?.leadCount ?? 0) > 0,
+    alerts: (usage?.alertCount ?? 0) > 0,
+    pixels_1: (usage?.pixelCount ?? 0) >= 1,
+    pixels_3: (usage?.pixelCount ?? 0) >= 1,
+    pixels_25: (usage?.pixelCount ?? 0) >= 1,
+    team: (usage?.teamCount ?? 0) > 0,
+    events: (usage?.eventsThisMonth ?? 0) > 0,
+  }
   const proPlanId = process.env.NEXT_PUBLIC_PAYPAL_PRO_PLAN_ID
   const agencyPlanId = process.env.NEXT_PUBLIC_PAYPAL_AGENCY_PLAN_ID
 
@@ -94,13 +181,13 @@ export default function BillingClient() {
                       TrackHive {selectedPlan === 'pro' ? 'Pro' : 'Agency'}
                     </p>
                     <p className="font-bold text-slate-900">
-                      {selectedPlan === 'pro' ? '$10' : '$25'}/mo
+                      {selectedPlan === 'pro' ? '$15' : '$45'}/mo
                     </p>
                   </div>
                   <div className="border-t border-[var(--dash-border)] mt-3 pt-3">
                     <div className="flex justify-between text-sm text-slate-600">
                       <span>Subtotal</span>
-                      <span>{selectedPlan === 'pro' ? '$10.00' : '$25.00'}</span>
+                      <span>{selectedPlan === 'pro' ? '$15.00' : '$45.00'}</span>
                     </div>
                     <div className="flex justify-between text-sm text-slate-600 mt-1">
                       <span>Billed</span>
@@ -108,13 +195,13 @@ export default function BillingClient() {
                     </div>
                     <div className="flex justify-between font-bold text-slate-900 mt-2 pt-2 border-t border-[var(--dash-border)]">
                       <span>Total</span>
-                      <span>{selectedPlan === 'pro' ? '$10.00' : '$25.00'}/mo</span>
+                      <span>{selectedPlan === 'pro' ? '$15.00' : '$45.00'}/mo</span>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* PayPal subscription button (SDK) */}
+              {/* PayPal subscription button (SDK) - shown when a paid plan is selected in left panel */}
               {selectedPlan &&
                 selectedPlan !== 'free' &&
                 currentPlan !== selectedPlan &&
@@ -122,7 +209,7 @@ export default function BillingClient() {
                   <PayPalSubscriptionButton
                     key={selectedPlan}
                     planId={selectedPlan === 'pro' ? proPlanId! : agencyPlanId!}
-                    containerId={`paypal-button-container-${selectedPlan === 'pro' ? proPlanId! : agencyPlanId!}`}
+                    containerId={`paypal-button-container-${selectedPlan}`}
                   />
                 )}
 
@@ -170,184 +257,145 @@ export default function BillingClient() {
           </div>
 
           {/* Right — Plan selection */}
-          <div className="lg:col-span-3 order-1 lg:order-2 space-y-4">
-            <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
+          <div className="lg:col-span-3 order-1 lg:order-2">
+            <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">
               Choose a plan
             </h3>
 
-            {/* Free Plan Card */}
-            <div
-              role="button"
-              tabIndex={0}
-              onClick={() => setSelectedPlan('free')}
-              onKeyDown={(e) => e.key === 'Enter' && setSelectedPlan('free')}
-              className={`bg-white rounded-2xl border-2 p-6 cursor-pointer transition-all ${
-                selectedPlan === 'free'
-                  ? 'border-blue-500 shadow-md shadow-blue-50'
-                  : 'border-slate-100 hover:border-slate-200'
-              }`}
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
-                    <span className="text-lg">🆓</span>
-                  </div>
-                  <div>
-                    <p className="font-bold text-slate-900">Free</p>
-                    <p className="text-xs text-slate-400">Forever free</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <p className="font-bold text-slate-900">
-                    $0<span className="text-xs font-normal text-slate-400">/mo</span>
-                  </p>
-                  <div
-                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                      selectedPlan === 'free' ? 'border-[var(--dash-primary)] bg-[var(--dash-primary)]' : 'border-slate-300'
-                    }`}
-                  >
-                    {selectedPlan === 'free' && <div className="w-2 h-2 rounded-full bg-white" />}
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-1.5">
-                <p className="text-xs text-slate-500 flex items-center gap-2">
-                  <span className="text-green-500">✓</span> 1,000 events/month
-                </p>
-                <p className="text-xs text-slate-500 flex items-center gap-2">
-                  <span className="text-green-500">✓</span> Meta CAPI
-                </p>
-                <p className="text-xs text-slate-500 flex items-center gap-2">
-                  <span className="text-green-500">✓</span> 1 pixel
-                </p>
-                <p className="text-xs text-slate-400 flex items-center gap-2">
-                  <span className="text-red-400">✗</span> AI Analysis
-                </p>
-                <p className="text-xs text-slate-400 flex items-center gap-2">
-                  <span className="text-red-400">✗</span> Email alerts
-                </p>
-              </div>
-            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {(['free', 'pro', 'agency'] as const).map((planId) => {
+                const features = PLAN_FEATURES[planId]
+                const planInfo = {
+                  free: { name: 'Free', price: '$0', period: 'forever', description: 'Perfect for getting started' },
+                  pro: { name: 'Pro', price: '$15', period: '/month', description: 'For growing businesses' },
+                  agency: { name: 'Agency', price: '$45', period: '/month', description: 'For agencies and teams' },
+                }[planId]
+                const isCurrentPlan = currentPlan === planId
 
-            {/* Pro Plan Card */}
-            <div
-              role="button"
-              tabIndex={0}
-              onClick={() => setSelectedPlan('pro')}
-              onKeyDown={(e) => e.key === 'Enter' && setSelectedPlan('pro')}
-              className={`bg-white rounded-2xl border-2 p-6 cursor-pointer transition-all relative ${
-                selectedPlan === 'pro'
-                  ? 'border-blue-500 shadow-md shadow-blue-50'
-                  : 'border-slate-100 hover:border-blue-200'
-              }`}
-            >
-              <span className="absolute -top-3 left-4 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full">
-                MOST POPULAR
-              </span>
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-                    <span className="text-lg">⚡</span>
-                  </div>
-                  <div>
-                    <p className="font-bold text-slate-900">Pro</p>
-                    <p className="text-xs text-slate-400">For growing businesses</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <p className="font-bold text-slate-900">
-                    $10<span className="text-xs font-normal text-slate-400">/mo</span>
-                  </p>
+                return (
                   <div
-                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                      selectedPlan === 'pro' ? 'border-[var(--dash-primary)] bg-[var(--dash-primary)]' : 'border-slate-300'
+                    key={planId}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => setSelectedPlan(planId)}
+                    onKeyDown={(e) => e.key === 'Enter' && setSelectedPlan(planId)}
+                    className={`bg-white rounded-2xl border-2 p-6 flex flex-col cursor-pointer transition-all ${
+                      isCurrentPlan
+                        ? 'border-blue-500 shadow-lg shadow-blue-50'
+                        : planId === 'pro'
+                          ? 'border-slate-200'
+                          : 'border-slate-100'
                     }`}
                   >
-                    {selectedPlan === 'pro' && <div className="w-2 h-2 rounded-full bg-white" />}
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-1.5">
-                <p className="text-xs text-slate-600 flex items-center gap-2">
-                  <span className="text-green-500">✓</span> 50,000 events/month
-                </p>
-                <p className="text-xs text-slate-600 flex items-center gap-2">
-                  <span className="text-green-500">✓</span> All platforms
-                </p>
-                <p className="text-xs text-slate-600 flex items-center gap-2">
-                  <span className="text-green-500">✓</span> 3 pixels
-                </p>
-                <p className="text-xs text-slate-600 flex items-center gap-2">
-                  <span className="text-green-500">✓</span> AI Analysis
-                </p>
-                <p className="text-xs text-slate-600 flex items-center gap-2">
-                  <span className="text-green-500">✓</span> Email alerts
-                </p>
-                <p className="text-xs text-slate-600 flex items-center gap-2">
-                  <span className="text-green-500">✓</span> Priority support
-                </p>
-              </div>
-            </div>
+                    {/* Header */}
+                    <div className="mb-5">
+                      <div className="flex items-center justify-between mb-1">
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-bold text-slate-900 text-lg">{planInfo.name}</h3>
+                          {isCurrentPlan && (
+                            <span className="bg-blue-600 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
+                              Current
+                            </span>
+                          )}
+                          {planId === 'pro' && !isCurrentPlan && (
+                            <span className="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
+                              Popular
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-right">
+                          <span className="text-2xl font-black text-slate-900">{planInfo.price}</span>
+                          <span className="text-slate-400 text-xs"> {planInfo.period}</span>
+                        </div>
+                      </div>
+                      <p className="text-slate-500 text-sm">{planInfo.description}</p>
+                    </div>
 
-            {/* Agency Plan Card */}
-            <div
-              role="button"
-              tabIndex={0}
-              onClick={() => setSelectedPlan('agency')}
-              onKeyDown={(e) => e.key === 'Enter' && setSelectedPlan('agency')}
-              className={`bg-white rounded-2xl border-2 p-6 cursor-pointer transition-all ${
-                selectedPlan === 'agency'
-                  ? 'border-purple-500 shadow-md shadow-purple-50'
-                  : 'border-slate-100 hover:border-purple-200'
-              }`}
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-                    <span className="text-lg">🏢</span>
-                  </div>
-                  <div>
-                    <p className="font-bold text-slate-900">Agency</p>
-                    <p className="text-xs text-slate-400">For agencies & teams</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <p className="font-bold text-slate-900">
-                    $25<span className="text-xs font-normal text-slate-400">/mo</span>
-                  </p>
-                  <div
-                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                      selectedPlan === 'agency'
-                        ? 'border-purple-500 bg-purple-500'
-                        : 'border-slate-300'
-                    }`}
-                  >
-                    {selectedPlan === 'agency' && (
-                      <div className="w-2 h-2 rounded-full bg-white" />
+                    {/* Features */}
+                    <ul className="space-y-2 mb-6 flex-1 min-h-0">
+                      {features.map((feature) => {
+                        const isActive = isCurrentPlan && activeFeatureKeys[feature.key]
+                        return (
+                          <li key={feature.key} className="flex items-center gap-2.5 text-sm">
+                            <div className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold ${
+                              !feature.included
+                                ? 'bg-slate-100 text-slate-300'
+                                : isActive
+                                  ? 'bg-green-500 text-white'
+                                  : 'bg-blue-100 text-blue-600'
+                            }`}>
+                              {!feature.included ? '×' : '✓'}
+                            </div>
+                            <span className={
+                              !feature.included
+                                ? 'text-slate-300 line-through'
+                                : isActive
+                                  ? 'text-slate-900 font-medium'
+                                  : 'text-slate-600'
+                            }>
+                              {feature.label}
+                            </span>
+                            {isActive && (
+                              <span className="ml-auto text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-medium flex-shrink-0">
+                                In use
+                              </span>
+                            )}
+                          </li>
+                        )
+                      })}
+                    </ul>
+
+                    {/* Legend - only show on current plan */}
+                    {isCurrentPlan && (
+                      <div className="flex items-center gap-4 mb-4 text-xs text-slate-400 flex-wrap">
+                        <div className="flex items-center gap-1">
+                          <div className="w-3 h-3 rounded-full bg-green-500" />
+                          <span>Actively using</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <div className="w-3 h-3 rounded-full bg-blue-100 border border-blue-300" />
+                          <span>Available</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <div className="w-3 h-3 rounded-full bg-slate-100" />
+                          <span>Locked</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* CTA */}
+                    {isCurrentPlan ? (
+                      <div className="w-full text-center py-3 bg-blue-50 text-blue-700 rounded-xl text-sm font-semibold border border-blue-200">
+                        Your Current Plan
+                      </div>
+                    ) : planId === 'free' ? (
+                      <div className="w-full text-center py-3 bg-slate-50 text-slate-400 rounded-xl text-sm font-medium cursor-not-allowed">
+                        Downgrade
+                      </div>
+                    ) : (
+                      <div>
+                        <p className="text-xs text-slate-400 text-center mb-2">
+                          Upgrade to {planInfo.name} for {planInfo.price}{planInfo.period}
+                        </p>
+                        {proPlanId && planId === 'pro' && (
+                          <PayPalSubscriptionButton
+                            key={planId}
+                            planId={proPlanId}
+                            containerId={`paypal-button-${planId}`}
+                          />
+                        )}
+                        {agencyPlanId && planId === 'agency' && (
+                          <PayPalSubscriptionButton
+                            key={planId}
+                            planId={agencyPlanId}
+                            containerId={`paypal-button-${planId}`}
+                          />
+                        )}
+                      </div>
                     )}
                   </div>
-                </div>
-              </div>
-              <div className="space-y-1.5">
-                <p className="text-xs text-slate-600 flex items-center gap-2">
-                  <span className="text-green-500">✓</span> Unlimited events
-                </p>
-                <p className="text-xs text-slate-600 flex items-center gap-2">
-                  <span className="text-green-500">✓</span> All platforms
-                </p>
-                <p className="text-xs text-slate-600 flex items-center gap-2">
-                  <span className="text-green-500">✓</span> 10 pixels
-                </p>
-                <p className="text-xs text-slate-600 flex items-center gap-2">
-                  <span className="text-green-500">✓</span> Everything in Pro
-                </p>
-                <p className="text-xs text-slate-600 flex items-center gap-2">
-                  <span className="text-green-500">✓</span> White label
-                </p>
-                <p className="text-xs text-slate-600 flex items-center gap-2">
-                  <span className="text-green-500">✓</span> Dedicated support
-                </p>
-              </div>
+                )
+              })}
             </div>
           </div>
         </div>

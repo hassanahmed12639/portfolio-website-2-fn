@@ -6,7 +6,7 @@ import TrackHivePixel from '@/components/TrackHivePixel'
 import MetaDomainVerification from '@/components/MetaDomainVerification'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import GsapInit from '@/components/GsapInit'
-import Preloader from '@/components/Preloader'
+import PreloaderWrapper from '@/components/PreloaderWrapper'
 
 export const metadata: Metadata = {
   title: 'Next.js GSAP Portfolio',
@@ -44,7 +44,7 @@ export default function RootLayout({
       </head>
       <body className="m-0 p-0 bg-background text-foreground">
         <ThemeProvider>
-          <Preloader />
+          <PreloaderWrapper />
           <GsapInit />
           {children}
           <ChatWidget />

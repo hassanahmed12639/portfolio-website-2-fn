@@ -14,7 +14,6 @@ import { useCallback, useEffect, useState } from 'react'
 const TABS = [
   { id: 'overview', label: 'Truth Score Overview' },
   { id: 'calculator', label: 'Score Calculator' },
-  { id: 'ai', label: 'AI Attribution Analysis' },
 ] as const
 
 type ConversionRow = {
@@ -96,70 +95,6 @@ function ScoreBadge({ score }: { score: number }) {
   )
 }
 
-type AnalyzeResult = {
-  overall_truth_score?: number
-  platform_breakdown?: {
-    meta?: { score?: number; issues?: string[]; recommendation?: string }
-    google?: { score?: number; issues?: string[]; recommendation?: string }
-  }
-  attribution_issues?: Array<{
-    issue: string
-    impact: string
-    fix: string
-    priority: string
-  }>
-  data_quality?: {
-    score?: number
-    missing_signals?: string[]
-    recommendations?: string[]
-  }
-  estimated_revenue_at_risk?: number
-  summary?: string
-}
-
-function FixSnippetModal({
-  issue,
-  onClose,
-}: {
-  issue: { issue: string; impact: string; fix: string; priority: string }
-  onClose: () => void
-}) {
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60"
-      onClick={onClose}
-    >
-      <div
-        className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] shadow-xl max-w-lg w-full max-h-[80vh] overflow-auto"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="p-4 border-b border-[var(--dash-border)] flex items-center justify-between">
-          <h3 className="font-semibold text-[var(--dash-text)]">{issue.issue}</h3>
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-[var(--dash-muted)] hover:text-[var(--dash-text)] p-1 text-xl leading-none"
-            aria-label="Close"
-          >
-            ×
-          </button>
-        </div>
-        <div className="p-4 space-y-3">
-          <p className="text-[var(--dash-muted)] text-sm">
-            <span className="text-[var(--dash-muted)]">Impact:</span> {issue.impact}
-          </p>
-          <p className="text-[var(--dash-muted)] text-sm">
-            <span className="text-[var(--dash-muted)]">Fix:</span> {issue.fix}
-          </p>
-          <pre className="text-xs bg-[var(--dash-surface-hover)] rounded-lg p-4 overflow-auto text-[var(--dash-muted)] border border-[var(--dash-border)] whitespace-pre-wrap">
-            {issue.fix}
-          </pre>
-        </div>
-      </div>
-    </div>
-  )
-}
-
 export default function AttributionClient() {
   const [tab, setTab] = useState<(typeof TABS)[number]['id']>('overview')
   const [conversions, setConversions] = useState<ConversionRow[]>([])
@@ -174,16 +109,6 @@ export default function AttributionClient() {
   const [hasValue, setHasValue] = useState(false)
   const [deduplicated, setDeduplicated] = useState(false)
   const [hasSourceUrl, setHasSourceUrl] = useState(false)
-
-  const [analyzeLoading, setAnalyzeLoading] = useState(false)
-  const [analyzeResult, setAnalyzeResult] = useState<AnalyzeResult | null>(null)
-  const [analyzeError, setAnalyzeError] = useState<string | null>(null)
-  const [fixModal, setFixModal] = useState<{
-    issue: string
-    impact: string
-    fix: string
-    priority: string
-  } | null>(null)
 
   const fetchScores = useCallback(async () => {
     setOverviewError(null)
@@ -217,22 +142,6 @@ export default function AttributionClient() {
     (deduplicated ? 5 : 0) +
     (hasSourceUrl ? 5 : 0)
   const clampedCalculatorScore = Math.min(100, calculatorScore)
-
-  const runAnalyze = useCallback(async () => {
-    setAnalyzeError(null)
-    setAnalyzeResult(null)
-    setAnalyzeLoading(true)
-    try {
-      const res = await fetch('/api/attribution/analyze', { method: 'POST' })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Analysis failed')
-      setAnalyzeResult(data)
-    } catch (e) {
-      setAnalyzeError(e instanceof Error ? e.message : 'Something went wrong')
-    } finally {
-      setAnalyzeLoading(false)
-    }
-  }, [])
 
   const avgScore =
     conversions.length > 0
@@ -502,176 +411,6 @@ export default function AttributionClient() {
         </div>
       )}
 
-      {tab === 'ai' && (
-        <div className="space-y-6">
-          <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
-            <button
-              type="button"
-              onClick={runAnalyze}
-              disabled={analyzeLoading}
-              className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-sm transition-colors shadow-sm"
-            >
-              {analyzeLoading ? 'Analyzing…' : 'Analyze My Attribution'}
-            </button>
-            {analyzeLoading && (
-              <p className="mt-3 text-[var(--dash-muted)] text-sm flex items-center gap-2">
-                <span className="inline-block w-4 h-4 border-2 border-[var(--dash-border-strong)] border-t-[var(--dash-primary)] rounded-full animate-spin" />
-                AI is analyzing your attribution…
-              </p>
-            )}
-          </div>
-          {analyzeError && (
-            <p className="text-red-400 text-sm rounded-lg bg-red-950/30 border border-red-800 p-3">
-              {analyzeError}
-            </p>
-          )}
-          {analyzeResult && (
-            <div className="space-y-6">
-              {analyzeResult.summary && (
-                <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
-                  <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-2">Summary</h2>
-                  <p className="text-[var(--dash-text)]">{analyzeResult.summary}</p>
-                </div>
-              )}
-              {analyzeResult.overall_truth_score != null && (
-                <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-6 flex flex-col items-center">
-                  <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-3">Overall Truth Score</h2>
-                  <TruthScoreRing score={analyzeResult.overall_truth_score} />
-                </div>
-              )}
-              {analyzeResult.estimated_revenue_at_risk != null && (
-                <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
-                  <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-1">
-                    Estimated revenue at risk
-                  </h2>
-                  <p className="text-xl font-semibold text-amber-400">
-                    ${analyzeResult.estimated_revenue_at_risk.toLocaleString()}
-                  </p>
-                </div>
-              )}
-              {analyzeResult.platform_breakdown && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {analyzeResult.platform_breakdown.meta && (
-                    <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
-                      <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-2">Meta</h2>
-                      <p className="text-2xl font-semibold text-[var(--dash-text)]">
-                        {analyzeResult.platform_breakdown.meta.score ?? '—'}
-                      </p>
-                      {analyzeResult.platform_breakdown.meta.issues?.length ? (
-                        <ul className="mt-2 text-sm text-[var(--dash-muted)] list-disc list-inside">
-                          {analyzeResult.platform_breakdown.meta.issues.map((i, idx) => (
-                            <li key={idx}>{i}</li>
-                          ))}
-                        </ul>
-                      ) : null}
-                      {analyzeResult.platform_breakdown.meta.recommendation && (
-                        <p className="mt-2 text-sm text-[var(--dash-success)]">
-                          {analyzeResult.platform_breakdown.meta.recommendation}
-                        </p>
-                      )}
-                    </div>
-                  )}
-                  {analyzeResult.platform_breakdown.google && (
-                    <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
-                      <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-2">Google</h2>
-                      <p className="text-2xl font-semibold text-[var(--dash-text)]">
-                        {analyzeResult.platform_breakdown.google.score ?? '—'}
-                      </p>
-                      {analyzeResult.platform_breakdown.google.issues?.length ? (
-                        <ul className="mt-2 text-sm text-[var(--dash-muted)] list-disc list-inside">
-                          {analyzeResult.platform_breakdown.google.issues.map((i, idx) => (
-                            <li key={idx}>{i}</li>
-                          ))}
-                        </ul>
-                      ) : null}
-                      {analyzeResult.platform_breakdown.google.recommendation && (
-                        <p className="mt-2 text-sm text-[var(--dash-success)]">
-                          {analyzeResult.platform_breakdown.google.recommendation}
-                        </p>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
-              {analyzeResult.data_quality && (
-                <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
-                  <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-2">Data quality</h2>
-                  <p className="text-2xl font-semibold text-[var(--dash-text)]">
-                    {analyzeResult.data_quality.score ?? '—'}
-                  </p>
-                  {analyzeResult.data_quality.missing_signals?.length ? (
-                    <ul className="mt-2 text-sm text-[var(--dash-muted)] list-disc list-inside">
-                      {analyzeResult.data_quality.missing_signals.map((s, idx) => (
-                        <li key={idx}>{s}</li>
-                      ))}
-                    </ul>
-                  ) : null}
-                  {analyzeResult.data_quality.recommendations?.length ? (
-                    <ul className="mt-2 text-sm text-[var(--dash-success)] list-disc list-inside">
-                      {analyzeResult.data_quality.recommendations.map((r, idx) => (
-                        <li key={idx}>{r}</li>
-                      ))}
-                    </ul>
-                  ) : null}
-                </div>
-              )}
-              {analyzeResult.attribution_issues && analyzeResult.attribution_issues.length > 0 && (
-                <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
-                  <h2 className="px-4 py-3 border-b border-[var(--dash-border)] text-sm font-medium text-[var(--dash-muted)]">
-                    Attribution issues
-                  </h2>
-                  <ul className="divide-y divide-[var(--dash-border)]">
-                    {analyzeResult.attribution_issues.map((item, i) => (
-                      <li key={i} className="px-4 py-3">
-                        <div className="flex flex-wrap items-start justify-between gap-2">
-                          <span className="font-medium text-[var(--dash-text)]">{item.issue}</span>
-                          <span
-                            className={`text-xs font-medium px-2 py-0.5 rounded border ${
-                              item.priority === 'high'
-                                ? 'bg-[var(--dash-danger)]/20 text-red-400 border-red-500/50'
-                                : item.priority === 'medium'
-                                  ? 'bg-[var(--dash-warning)]/20 text-amber-400 border-amber-500/50'
-                                  : 'bg-[var(--dash-surface-hover)] text-[var(--dash-muted)] border-[var(--dash-border-strong)]'
-                            }`}
-                          >
-                            {item.priority}
-                          </span>
-                        </div>
-                        <p className="text-[var(--dash-muted)] text-sm mt-1">
-                          <span className="text-[var(--dash-muted)]">Impact:</span> {item.impact}
-                        </p>
-                        <p className="text-[var(--dash-muted)] text-sm mt-0.5">
-                          <span className="text-[var(--dash-muted)]">Fix:</span> {item.fix}
-                        </p>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setFixModal({
-                              issue: item.issue,
-                              impact: item.impact,
-                              fix: item.fix,
-                              priority: item.priority,
-                            })
-                          }
-                          className="mt-2 px-3 py-1.5 rounded-md bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-border)] text-[var(--dash-text)] text-sm font-medium transition-colors"
-                        >
-                          Show code snippet
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          )}
-          {fixModal && (
-            <FixSnippetModal
-              issue={fixModal}
-              onClose={() => setFixModal(null)}
-            />
-          )}
-        </div>
-      )}
     </div>
   )
 }

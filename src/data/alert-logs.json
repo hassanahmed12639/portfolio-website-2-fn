@@ -130,5 +130,27 @@
     "threshold": 70,
     "emailSentTo": "hassanonclouds@gmail.com",
     "status": "sent"
+  },
+  {
+    "id": "74765290-4e8a-4256-b3ae-03ee3bdfae77",
+    "ruleId": "test",
+    "ruleName": "Test Alert",
+    "triggeredAt": "2026-03-08T23:09:53.390Z",
+    "condition": "score_below",
+    "value": 55,
+    "threshold": 70,
+    "emailSentTo": "hassanonclouds@gmail.com",
+    "status": "sent"
+  },
+  {
+    "id": "65e1e1da-876e-4f15-b106-e2f18a45afa0",
+    "ruleId": "test",
+    "ruleName": "Test Alert",
+    "triggeredAt": "2026-03-08T23:10:00.565Z",
+    "condition": "score_below",
+    "value": 55,
+    "threshold": 70,
+    "emailSentTo": "hassanonclouds@gmail.com",
+    "status": "sent"
   }
 ]

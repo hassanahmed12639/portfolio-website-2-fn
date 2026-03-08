@@ -8,46 +8,46 @@ const ALERT_CONDITIONS = [
   {
     group: 'Performance',
     conditions: [
-      { value: 'data_quality_below', label: 'Data Quality Score drops below', description: 'Alert when overall data quality score drops', fields: ['threshold_percent'] as const, icon: '📊' },
-      { value: 'match_rate_below', label: 'Match Rate drops below', description: 'Alert when Meta CAPI match rate drops', fields: ['threshold_percent', 'platform'] as const, icon: '🎯' },
-      { value: 'event_volume_drops', label: 'Event volume drops below', description: 'Alert when events per hour/day drop unexpectedly', fields: ['threshold_number', 'time_window'] as const, icon: '📉' },
-      { value: 'event_volume_spikes', label: 'Event volume spikes above', description: 'Alert on suspicious traffic spikes', fields: ['threshold_number', 'time_window'] as const, icon: '📈' },
+      { value: 'data_quality_below', label: 'Data Quality Score drops below', description: 'Alert when overall data quality score drops', fields: ['threshold_percent'] as const },
+      { value: 'match_rate_below', label: 'Match Rate drops below', description: 'Alert when Meta CAPI match rate drops', fields: ['threshold_percent', 'platform'] as const },
+      { value: 'event_volume_drops', label: 'Event volume drops below', description: 'Alert when events per hour/day drop unexpectedly', fields: ['threshold_number', 'time_window'] as const },
+      { value: 'event_volume_spikes', label: 'Event volume spikes above', description: 'Alert on suspicious traffic spikes', fields: ['threshold_number', 'time_window'] as const },
     ],
   },
   {
     group: 'Errors',
     conditions: [
-      { value: 'error_count_exceeds', label: 'Error count exceeds', description: 'Alert when API errors exceed threshold', fields: ['threshold_number', 'time_window'] as const, icon: '❌' },
-      { value: 'retry_queue_exceeds', label: 'Retry queue size exceeds', description: 'Alert when failed events pile up in retry queue', fields: ['threshold_number'] as const, icon: '🔄' },
-      { value: 'platform_down', label: 'Platform stops receiving events', description: 'Alert when a platform has no events for X minutes', fields: ['platform', 'time_window'] as const, icon: '🔴' },
-      { value: 'dedup_rate_high', label: 'Duplicate event rate exceeds', description: 'Alert when too many duplicate events detected', fields: ['threshold_percent'] as const, icon: '♻️' },
+      { value: 'error_count_exceeds', label: 'Error count exceeds', description: 'Alert when API errors exceed threshold', fields: ['threshold_number', 'time_window'] as const },
+      { value: 'retry_queue_exceeds', label: 'Retry queue size exceeds', description: 'Alert when failed events pile up in retry queue', fields: ['threshold_number'] as const },
+      { value: 'platform_down', label: 'Platform stops receiving events', description: 'Alert when a platform has no events for X minutes', fields: ['platform', 'time_window'] as const },
+      { value: 'dedup_rate_high', label: 'Duplicate event rate exceeds', description: 'Alert when too many duplicate events detected', fields: ['threshold_percent'] as const },
     ],
   },
   {
     group: 'Leads',
     conditions: [
-      { value: 'new_lead', label: 'New lead received', description: 'Get notified every time a new lead comes in', fields: ['pixel_id'] as const, icon: '👤' },
-      { value: 'lead_score_changed', label: 'Lead marked as Hot or Converted', description: 'Alert when a lead status changes to hot or converted', fields: ['pixel_id'] as const, icon: '🔥' },
-      { value: 'no_leads_for', label: 'No new leads for', description: 'Alert when no leads received in X hours', fields: ['threshold_hours', 'pixel_id'] as const, icon: '😶' },
+      { value: 'new_lead', label: 'New lead received', description: 'Get notified every time a new lead comes in', fields: ['pixel_id'] as const },
+      { value: 'lead_score_changed', label: 'Lead marked as Hot or Converted', description: 'Alert when a lead status changes to hot or converted', fields: ['pixel_id'] as const },
+      { value: 'no_leads_for', label: 'No new leads for', description: 'Alert when no leads received in X hours', fields: ['threshold_hours', 'pixel_id'] as const },
     ],
   },
   {
     group: 'Revenue',
     conditions: [
-      { value: 'revenue_drops', label: 'Daily revenue drops below', description: 'Alert when tracked purchase revenue drops', fields: ['threshold_number', 'currency'] as const, icon: '💰' },
-      { value: 'high_value_purchase', label: 'High value purchase detected', description: 'Alert when a purchase exceeds a value', fields: ['threshold_number', 'currency'] as const, icon: '💎' },
+      { value: 'revenue_drops', label: 'Daily revenue drops below', description: 'Alert when tracked purchase revenue drops', fields: ['threshold_number', 'currency'] as const },
+      { value: 'high_value_purchase', label: 'High value purchase detected', description: 'Alert when a purchase exceeds a value', fields: ['threshold_number', 'currency'] as const },
     ],
   },
   {
     group: 'Plan',
     conditions: [
-      { value: 'events_limit_warning', label: 'Monthly events limit reaches', description: 'Alert when approaching monthly event limit', fields: ['threshold_percent'] as const, icon: '⚠️' },
+      { value: 'events_limit_warning', label: 'Monthly events limit reaches', description: 'Alert when approaching monthly event limit', fields: ['threshold_percent'] as const },
     ],
   },
   {
     group: 'Custom',
     conditions: [
-      { value: 'custom', label: 'Custom Alert', description: 'Build your own alert with custom conditions', fields: ['custom_event_name', 'custom_field', 'custom_operator', 'custom_value'] as const, icon: '⚙️' },
+      { value: 'custom', label: 'Custom Alert', description: 'Build your own alert with custom conditions', fields: ['custom_event_name', 'custom_field', 'custom_operator', 'custom_value'] as const },
     ],
   },
 ]
@@ -102,6 +102,7 @@ export default function AlertsPage() {
   const [loadingLogs, setLoadingLogs] = useState(true)
   const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
   const [testEmail, setTestEmail] = useState('')
+  const [testEmailSent, setTestEmailSent] = useState(false)
 
   const [pixels, setPixels] = useState<{ pixel_id: string; name?: string }[]>([])
   const [conditionDropdownOpen, setConditionDropdownOpen] = useState(false)
@@ -157,6 +158,11 @@ export default function AlertsPage() {
     if (conditionDropdownOpen) document.addEventListener('click', handleClickOutside)
     return () => document.removeEventListener('click', handleClickOutside)
   }, [conditionDropdownOpen])
+  useEffect(() => {
+    if (!testEmailSent) return
+    const t = setTimeout(() => setTestEmailSent(false), 15000)
+    return () => clearTimeout(t)
+  }, [testEmailSent])
 
   useEffect(() => {
     if (!toast) return
@@ -242,6 +248,7 @@ export default function AlertsPage() {
   }
 
   const sendTest = () => {
+    if (testEmailSent) return
     const email = testEmail || rules.find((r) => r.enabled)?.notifyEmail
     if (!email) {
       setToast({ type: 'error', message: 'Enter an email or create an enabled rule first.' })
@@ -262,6 +269,7 @@ export default function AlertsPage() {
       .then((r) => {
         if (!r.ok) throw new Error('Send failed')
         fetchLogs()
+        setTestEmailSent(true)
         setToast({ type: 'success', message: 'Test email sent.' })
       })
       .catch(() => setToast({ type: 'error', message: 'Failed to send test email.' }))
@@ -312,7 +320,7 @@ export default function AlertsPage() {
                   ? (() => {
                       for (const g of ALERT_CONDITIONS) {
                         const c = g.conditions.find((x) => x.value === form.condition)
-                        if (c) return `${c.icon} ${c.label}`
+                        if (c) return c.label
                       }
                       return form.condition
                     })()
@@ -322,12 +330,12 @@ export default function AlertsPage() {
             </button>
             {conditionDropdownOpen && (
               <div
-                className="absolute top-full left-0 right-0 mt-1 z-50 max-h-72 overflow-y-auto rounded-lg border border-[var(--dash-border)] bg-white shadow-lg"
+                className="alerts-condition-dropdown absolute top-full left-0 right-0 mt-1 z-50 max-h-72 overflow-y-auto rounded-lg border border-[var(--dash-border)] bg-white shadow-lg [scrollbar-width:none] [-ms-overflow-style:none]"
                 style={{ minWidth: '100%' }}
               >
                 {ALERT_CONDITIONS.map((group) => (
                   <div key={group.group}>
-                    <div className="px-3 py-2 text-xs font-semibold text-[var(--dash-muted)] bg-[var(--dash-surface-hover)]/50 border-b border-[var(--dash-border)]/50 sticky top-0">
+                    <div className="px-3 py-2 text-xs font-semibold text-[var(--dash-muted)] bg-[var(--dash-surface-hover)]/50 border-b border-[var(--dash-border)]/50">
                       {group.group}
                     </div>
                     {group.conditions.map((c) => (
@@ -342,7 +350,6 @@ export default function AlertsPage() {
                           form.condition === c.value ? 'bg-[var(--dash-success-soft)]/30 text-[var(--dash-success)]' : 'text-[var(--dash-text)]'
                         }`}
                       >
-                        <span>{c.icon}</span>
                         <span>{c.label}</span>
                       </button>
                     ))}
@@ -577,7 +584,7 @@ export default function AlertsPage() {
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-medium text-[var(--dash-text)]">🔔 {rule.name}</span>
+                      <span className="font-medium text-[var(--dash-text)]">{rule.name}</span>
                       <button
                         type="button"
                         onClick={() => toggleRule(rule)}
@@ -664,7 +671,7 @@ export default function AlertsPage() {
       <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-6">
         <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">Send Test Alert</h2>
         <p className="text-[var(--dash-muted)] text-sm mb-3">
-          Send a test email to verify your Resend setup. Use the email below or from your first enabled rule.
+          Send a test email. Use the email below or from your first enabled rule.
         </p>
         <div className="flex flex-wrap items-center gap-3">
           <input
@@ -677,9 +684,12 @@ export default function AlertsPage() {
           <button
             type="button"
             onClick={sendTest}
-            className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm transition-colors shadow-sm"
+            disabled={testEmailSent}
+            className={`px-4 py-2 rounded-lg text-white font-medium text-sm transition-colors shadow-sm ${
+              testEmailSent ? 'bg-green-600 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+            }`}
           >
-            Send Test Email
+            {testEmailSent ? 'Test Email Sent' : 'Send Test Email'}
           </button>
         </div>
       </section>

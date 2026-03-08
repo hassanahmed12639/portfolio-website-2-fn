@@ -6,12 +6,10 @@ import { usePathname } from "next/navigation";
 /** Extra slow sequence so the preloader is clearly visible */
 const PRELOADER_HIDE_DELAY_MS = 18000;
 
-/** Routes where the TrackHive preloader should show */
-function isTrackHiveRoute(pathname: string | null): boolean {
+/** Routes where the old globe preloader should show (dashboard only; TrackHive uses TrackHiveLoader) */
+function isDashboardRoute(pathname: string | null): boolean {
   if (!pathname) return false;
   return (
-    pathname === "/trackhive" ||
-    pathname.startsWith("/trackhive/") ||
     pathname === "/dashboard" ||
     pathname.startsWith("/dashboard/")
   );
@@ -36,7 +34,7 @@ export default function Preloader() {
   const rafRef = useRef<number>(0);
   const startTimeRef = useRef<number | null>(null);
 
-  const showPreloader = isTrackHiveRoute(pathname);
+  const showPreloader = isDashboardRoute(pathname);
 
   useEffect(() => {
     if (!showPreloader) return;
