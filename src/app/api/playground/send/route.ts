@@ -110,6 +110,7 @@ export async function POST(request: NextRequest) {
     order_id?: string
     external_id?: string
     ttclid?: string
+    visitor_id?: string
     content_ids?: string[]
     content_type?: string
     content_name?: string

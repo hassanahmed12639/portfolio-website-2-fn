@@ -15,7 +15,7 @@ export async function GET() {
 
   const { data: profile, error } = await supabase
     .from('profiles')
-    .select('plan, plan_activated_at')
+    .select('plan, plan_activated_at, dashboard_type')
     .eq('id', user.id)
     .single()
 
@@ -27,6 +27,8 @@ export async function GET() {
     profile: {
       plan: profile?.plan ?? 'free',
       plan_activated_at: profile?.plan_activated_at ?? null,
+      dashboard_type: profile?.dashboard_type ?? 'ecommerce',
     },
+    dashboard_type: profile?.dashboard_type ?? 'ecommerce',
   })
 }
