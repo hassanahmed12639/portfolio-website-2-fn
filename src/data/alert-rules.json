@@ -9,5 +9,24 @@
     "cooldownMinutes": 60,
     "lastTriggeredAt": "2026-03-06T02:30:39.608Z",
     "createdAt": "2026-03-02T16:04:22.741Z"
+  },
+  {
+    "id": "188e6a5d-c6a8-4f36-8de1-a558cc5fba1d",
+    "name": "da",
+    "enabled": true,
+    "condition": "data_quality_below",
+    "threshold": 70,
+    "notifyEmail": "hassanonclouds@gmail.com",
+    "cooldownMinutes": 60,
+    "lastTriggeredAt": null,
+    "createdAt": "2026-03-08T23:04:00.141Z",
+    "platform": "all",
+    "pixel_id": "all",
+    "time_window": "1hour",
+    "currency": "USD",
+    "threshold_hours": 24,
+    "custom_field": "value",
+    "custom_operator": "greater_than",
+    "frequency": "immediately"
   }
 ]

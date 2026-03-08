@@ -119,5 +119,16 @@
     "threshold": 70,
     "emailSentTo": "hassanonclouds@gmail.com",
     "status": "sent"
+  },
+  {
+    "id": "c574d440-567d-4191-8892-3dde1e5367d8",
+    "ruleId": "test",
+    "ruleName": "Test Alert",
+    "triggeredAt": "2026-03-08T23:04:10.331Z",
+    "condition": "score_below",
+    "value": 55,
+    "threshold": 70,
+    "emailSentTo": "hassanonclouds@gmail.com",
+    "status": "sent"
   }
 ]
