@@ -7,7 +7,6 @@ import {
   Activity,
   BarChart2,
   Bell,
-  Brain,
   Bug,
   ChevronDown,
   ChevronRight,
@@ -57,7 +56,6 @@ const nav: NavItem[] = [
   { label: 'Retry Queue', href: '/dashboard/retry-queue', icon: RefreshCw },
   { label: 'HTTP Headers', href: '/dashboard/headers', icon: PanelTop },
   { label: 'Cookie Lifetime Extender', href: '/dashboard/cookie-extender', icon: Cookie },
-  { label: 'AI Analysis', href: '/dashboard/ai-analysis', icon: Brain },
   { label: 'Anomaly Detection', href: '/dashboard/anomalies', icon: Bug },
   { label: 'Scanner', href: '/dashboard/scanner', icon: ScanSearch },
   { label: 'Enrichment', href: '/dashboard/enrichment', icon: Sparkles },
@@ -88,7 +86,6 @@ const iconByHref: Record<string, LucideIcon> = {
   '/dashboard/retry-queue': RefreshCw,
   '/dashboard/headers': PanelTop,
   '/dashboard/cookie-extender': Cookie,
-  '/dashboard/ai-analysis': Brain,
   '/dashboard/anomalies': Bug,
   '/dashboard/scanner': ScanSearch,
   '/dashboard/enrichment': Sparkles,
@@ -103,8 +100,8 @@ const iconByHref: Record<string, LucideIcon> = {
 
 const sections = [
   { title: 'GENERAL', from: 0, to: 10 },
-  { title: 'TOOLS', from: 10, to: 23 },
-  { title: 'SUPPORT', from: 23, to: nav.length + 1 },
+  { title: 'TOOLS', from: 10, to: 22 },
+  { title: 'SUPPORT', from: 22, to: nav.length + 1 },
 ]
 
 export default function DashboardNav({ profile: _profile }: { profile?: { dashboard_type?: string | null } }) {
