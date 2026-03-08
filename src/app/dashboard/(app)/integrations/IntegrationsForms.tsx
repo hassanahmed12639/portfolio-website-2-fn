@@ -353,6 +353,19 @@ export default function IntegrationsForms({
     }
   }
 
+  // Sync form state when server props change (e.g. after router.refresh() or navigation)
+  useEffect(() => {
+    setMetaPixelId(meta?.pixel_id ?? '')
+    setMetaAccessToken(meta?.access_token ?? '')
+    setMetaTestEventCode(meta?.meta_test_event_code ?? '')
+    setGoogleTagId(google?.tag_id ?? '')
+    setGoogleConversionLabel(google?.conversion_label ?? '')
+    setTiktokPixelId(tiktok?.pixel_id ?? '')
+    setTiktokAccessToken(tiktok?.access_token ?? '')
+    setGa4MeasurementId(ga4?.tag_id ?? '')
+    setGa4ApiSecret(ga4?.access_token ?? '')
+  }, [meta?.pixel_id, meta?.access_token, meta?.meta_test_event_code, google?.tag_id, google?.conversion_label, tiktok?.pixel_id, tiktok?.access_token, ga4?.tag_id, ga4?.access_token])
+
   useEffect(() => {
     fetch('/api/meta/match-rate')
       .then((r) => r.json())

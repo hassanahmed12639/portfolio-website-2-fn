@@ -20,6 +20,7 @@ type Stats = {
   mobilePct: number
   desktopPct: number
   tabletPct: number
+  period?: 'today' | 'last7days'
 }
 
 type EnrichedEvent = {
@@ -181,7 +182,9 @@ export default function EnrichmentClient() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
               <div className="rounded-lg border border-[var(--dash-border)] bg-[var(--dash-bg)] p-4">
-                <p className="text-xs text-[var(--dash-muted)] uppercase tracking-wider">Events Enriched Today</p>
+                <p className="text-xs text-[var(--dash-muted)] uppercase tracking-wider">
+                  {stats?.period === 'last7days' ? 'Events Enriched (Last 7 days)' : 'Events Enriched Today'}
+                </p>
                 <p className="text-2xl font-semibold text-[var(--dash-text)] mt-1">{stats?.eventsEnrichedToday ?? 0}</p>
               </div>
               <div className="rounded-lg border border-[var(--dash-border)] bg-[var(--dash-bg)] p-4">
@@ -291,29 +294,35 @@ export default function EnrichmentClient() {
                     </td>
                   </tr>
                 ) : (
-                  events.map((ev) => (
-                    <tr key={ev.id} className="border-b border-[var(--dash-border)]/80">
+                  events.map((ev) => {
+                    const country = ev.country ?? ev.enriched_data?.geo?.country ?? null
+                    const city = ev.city ?? ev.enriched_data?.geo?.city ?? null
+                    const deviceType = ev.device_type ?? ev.enriched_data?.device?.type ?? null
+                    const customerType = ev.customer_type ?? ev.enriched_data?.customer?.type ?? null
+                    const countryCode = ev.enriched_data?.geo?.countryCode ?? ''
+                    return (
+                    <tr key={ev.id}>
                       <td className="px-4 py-3 text-[var(--dash-muted)]">{ev.event_name}</td>
                       <td className="px-4 py-3">
                         <span className="inline-flex items-center gap-1.5">
-                          <span>{ev.country ? countryCodeToFlag(ev.enriched_data?.geo?.countryCode ?? '') : '—'}</span>
-                          <span className="text-[var(--dash-muted)]">{ev.country || '—'}</span>
+                          <span>{country ? countryCodeToFlag(countryCode || country) : '—'}</span>
+                          <span className="text-[var(--dash-muted)]">{country || '—'}</span>
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-[var(--dash-muted)]">{ev.city || '—'}</td>
+                      <td className="px-4 py-3 text-[var(--dash-muted)]">{city || '—'}</td>
                       <td className="px-4 py-3">
-                        <span className="text-[var(--dash-muted)] capitalize">{ev.device_type || '—'}</span>
+                        <span className="text-[var(--dash-muted)] capitalize">{deviceType || '—'}</span>
                       </td>
                       <td className="px-4 py-3">
-                        {ev.customer_type ? (
+                        {customerType ? (
                           <span
                             className={`text-xs font-medium px-2 py-0.5 rounded ${
-                              ev.customer_type === 'returning'
+                              customerType === 'returning'
                                 ? 'bg-[var(--dash-primary-soft)] text-[var(--dash-primary)]'
                                 : 'bg-[var(--dash-success-soft)] text-[var(--dash-success)]'
                             }`}
                           >
-                            {ev.customer_type === 'returning' ? 'Returning' : 'New'}
+                            {customerType === 'returning' ? 'Returning' : 'New'}
                           </span>
                         ) : (
                           '—'
@@ -333,7 +342,8 @@ export default function EnrichmentClient() {
                         </span>
                       </td>
                     </tr>
-                  ))
+                    )
+                  })
                 )}
               </tbody>
             </table>

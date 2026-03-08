@@ -1,4 +1,5 @@
 import { validateEvent } from '@/lib/validate-event'
+import { enrichEvent } from '@/lib/enrich-event'
 import { getUserCredentials } from '@/lib/get-user-credentials'
 import { getMetaEventName } from '@/lib/meta'
 import { sendGA4Event } from '@/lib/ga4'
@@ -231,6 +232,47 @@ export async function POST(request: NextRequest) {
   })
   debugLog('[DQ]', dataQuality)
 
+  const clientIp =
+    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
+    request.headers.get('x-real-ip') ??
+    request.headers.get('cf-connecting-ip') ??
+    '127.0.0.1'
+  const clientUserAgent =
+    request.headers.get('user-agent') ?? body.user_data?.client_user_agent ?? body.client_user_agent ?? ''
+
+  const { data: enrichmentSettingsRow } = await serviceSupabase
+    .from('enrichment_settings')
+    .select('*')
+    .eq('user_id', profile.id)
+    .single()
+  const enrichmentSettings = enrichmentSettingsRow
+    ? {
+        geo_enabled: enrichmentSettingsRow.geo_enabled ?? true,
+        device_enabled: enrichmentSettingsRow.device_enabled ?? true,
+        customer_type_enabled: enrichmentSettingsRow.customer_type_enabled ?? true,
+        ltv_enabled: enrichmentSettingsRow.ltv_enabled ?? true,
+        email_hash_enabled: enrichmentSettingsRow.email_hash_enabled ?? true,
+        phone_hash_enabled: enrichmentSettingsRow.phone_hash_enabled ?? true,
+      }
+    : {}
+  let enrichmentData: Awaited<ReturnType<typeof enrichEvent>> | null = null
+  try {
+    enrichmentData = await enrichEvent(
+      enrichmentSettings,
+      {
+        ip: clientIp,
+        userAgent: clientUserAgent,
+        visitorId: body.visitor_id ?? null,
+        email: email ?? null,
+        phone: phone ?? null,
+        userId: profile.id,
+      },
+      serviceSupabase
+    )
+  } catch {
+    // continue without enrichment
+  }
+
   for (const integration of list) {
     let status: 'success' | 'failed' = 'failed'
     let originalPayload: Record<string, unknown> = {}
@@ -245,13 +287,6 @@ export async function POST(request: NextRequest) {
       console.log('[Meta] Access Token:', accessToken ? 'found' : 'missing')
       console.log('[Meta] Test event code:', testEventCode || 'none')
       if (pixelId && accessToken) {
-        const clientIp =
-          request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
-          request.headers.get('x-real-ip') ??
-          request.headers.get('cf-connecting-ip') ??
-          '127.0.0.1'
-        const clientUserAgent =
-          request.headers.get('user-agent') ?? body.user_data?.client_user_agent ?? body.client_user_agent ?? ''
 
         const userData: Record<string, string | string[]> = {}
         userData.client_ip_address = clientIp
@@ -320,7 +355,7 @@ export async function POST(request: NextRequest) {
     }
 
     const logEventName = `TEST_${event_name}`
-    await serviceSupabase.from('events').insert({
+    const insertRow: Record<string, unknown> = {
       user_id: profile.id,
       event_name: logEventName,
       platform: integration.platform,
@@ -335,7 +370,15 @@ export async function POST(request: NextRequest) {
       data_quality_label: dataQuality.label,
       data_quality_breakdown: dataQuality.breakdown,
       ...(status === 'failed' && { original_payload: originalPayload }),
-    })
+    }
+    if (enrichmentData) {
+      insertRow.country = enrichmentData.geo.country || null
+      insertRow.city = enrichmentData.geo.city || null
+      insertRow.device_type = enrichmentData.device.type || null
+      insertRow.customer_type = enrichmentData.customer.type || null
+      insertRow.enriched_data = enrichmentData
+    }
+    await serviceSupabase.from('events').insert(insertRow)
   }
 
   // When playground sends a Lead event, save to leads table
@@ -375,8 +418,6 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  const clientIp = body.user_data?.client_ip_address ?? request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? request.headers.get('x-real-ip') ?? undefined
-  const clientUserAgent = body.user_data?.client_user_agent ?? request.headers.get('user-agent') ?? undefined
   const em = body.user_data?.em
   const emailStr = typeof em === 'string' ? em : Array.isArray(em) ? em[0] : body.email
   const ph = body.user_data?.ph

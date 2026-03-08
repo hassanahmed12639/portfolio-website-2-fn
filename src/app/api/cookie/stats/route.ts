@@ -24,28 +24,12 @@ export async function GET() {
 
   const admin = createServiceClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } })
 
-  // Get cookie stats for current user's pixels
-  const { data: pixels } = await admin
-    .from('pixels')
-    .select('pixel_id')
-    .eq('user_id', user.id)
-
-  const pixelIds = pixels?.map((p) => p.pixel_id).filter(Boolean) || []
-
-  if (pixelIds.length === 0) {
-    return NextResponse.json({
-      total_visitors: 0,
-      returning_visitors: 0,
-      avg_cookie_age_days: 0,
-      visitors_saved: 0,
-    })
-  }
-
-  // Get visitor stats from visitors table (api_key = pixel_id)
+  // Get visitor stats from visitors table by user_id
+  // Visitors are keyed by user_id (resolved from profile.api_key or pixel when cookie/set is called)
   const { data: visitors } = await admin
     .from('visitors')
     .select('*')
-    .in('api_key', pixelIds)
+    .eq('user_id', user.id)
 
   const totalVisitors = visitors?.length ?? 0
   const returningVisitors = visitors?.filter((v) => v.is_returning).length ?? 0

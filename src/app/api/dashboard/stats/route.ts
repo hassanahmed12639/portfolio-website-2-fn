@@ -50,10 +50,15 @@ export async function GET() {
     const tiktokEvents = events.filter(e => e.platform === 'tiktok').length
     const googleEvents = events.filter(e => e.platform === 'google' || e.platform === 'ga4').length
 
-    const metaQualityScores = (metaMatchResult.data ?? []).map(e => e.data_quality_score ?? 0).filter(Boolean)
-    const matchRate = metaQualityScores.length
-      ? Math.round(metaQualityScores.reduce((a, b) => a + b, 0) / metaQualityScores.length)
-      : 0
+    // Average data_quality_score across ALL Meta events this month (include 0 so it reflects actual user data)
+    const metaEventsForScore = metaMatchResult.data ?? []
+    const matchRate =
+      metaEventsForScore.length > 0
+        ? Math.round(
+            metaEventsForScore.reduce((sum, e) => sum + (Number(e.data_quality_score) ?? 0), 0) /
+              metaEventsForScore.length
+          )
+        : 0
 
     // Lead stats (leads table may not exist yet)
     let totalLeads = 0

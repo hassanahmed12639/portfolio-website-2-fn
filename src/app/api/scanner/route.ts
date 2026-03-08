@@ -379,7 +379,6 @@ export async function POST(request: NextRequest) {
             { name: 'Search', priority: 'Medium', why: 'Track product searches for intent data.' },
           ]
         : [
-            { name: 'PageView', priority: 'High', why: 'Essential for measuring traffic.' },
             { name: 'Lead', priority: 'Critical', why: 'Track form submissions and enquiries.' },
             { name: 'Contact', priority: 'High', why: 'Track contact form submissions.' },
             { name: 'CompleteRegistration', priority: 'High', why: 'Track sign ups and registrations.' },

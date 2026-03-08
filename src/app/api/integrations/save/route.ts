@@ -86,12 +86,15 @@ export async function POST(request: NextRequest) {
     .single()
 
   if (existing) {
-    const updatePayload: Record<string, unknown> = {
-      pixel_id: row.pixel_id,
-      access_token: row.access_token,
-      tag_id: row.tag_id,
-      is_active: true,
+    // Only update fields that were explicitly sent - never overwrite with undefined
+    // to avoid wiping saved credentials (e.g. if form sent partial data)
+    const updatePayload: Record<string, unknown> = { is_active: true }
+    if (pixel_id !== undefined) updatePayload.pixel_id = pixel_id?.trim() || null
+    if (access_token !== undefined) {
+      const raw = access_token?.trim() || null
+      updatePayload.access_token = raw ? await encrypt(raw) : null
     }
+    if (tag_id !== undefined) updatePayload.tag_id = tag_id?.trim() || null
     if (platform === 'meta' && meta_test_event_code !== undefined) updatePayload.meta_test_event_code = meta_test_event_code?.trim() || null
     if (platform === 'google') {
       if (conversion_label !== undefined) updatePayload.conversion_label = conversion_label?.trim() || null

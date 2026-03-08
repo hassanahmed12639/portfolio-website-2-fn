@@ -26,13 +26,19 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
   const [recentLeads, setRecentLeads] = useState<Lead[]>([])
   const [loading, setLoading] = useState(true)
 
+  const [firstPixelId, setFirstPixelId] = useState<string | null>(null)
+
   useEffect(() => {
     Promise.all([
       fetch('/api/dashboard/stats').then(r => r.json()),
-      fetch('/api/leads?limit=5').then(r => r.json())
-    ]).then(([statsData, leadsData]) => {
+      fetch('/api/leads?limit=5').then(r => r.json()),
+      fetch('/api/pixels').then(r => r.json())
+    ]).then(([statsData, leadsData, pixelsData]) => {
       setStats(statsData)
       setRecentLeads((leadsData.leads as Lead[]) || [])
+      const pixels = pixelsData?.pixels ?? []
+      const first = pixels.find((p: { platform: string }) => p.platform === 'meta') ?? pixels[0]
+      setFirstPixelId(first?.pixel_id ?? null)
       setLoading(false)
     })
   }, [])
@@ -60,18 +66,42 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
         </div>
       </div>
 
-      {/* Row 1 — Lead stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+      {/* Row 1 — Lead stats + Events this month + Match rate */}
+      <div className="grid grid-cols-2 lg:grid-cols-7 gap-4 mb-6">
         {[
           { label: 'Total Leads', value: stats?.totalLeads ?? 0, color: 'bg-[var(--dash-card)] border-[var(--dash-border)]' },
           { label: 'Hot Leads', value: stats?.hotLeads ?? 0, color: 'bg-[var(--dash-primary-soft)] border-[var(--dash-accent-border)]' },
           { label: 'Good Leads', value: stats?.goodLeads ?? 0, color: 'bg-[var(--dash-success-soft)] border-[var(--dash-success-border)]' },
           { label: 'Converted', value: stats?.convertedLeads ?? 0, color: 'bg-[var(--dash-primary-soft)] border-[var(--dash-accent-border)]' },
-          { label: 'Meta Signals Sent', value: stats?.metaFeedbackSent ?? 0, color: 'bg-[var(--dash-primary-soft)] border-[var(--dash-accent-border)]' }
+          { label: 'Meta Signals Sent', value: stats?.metaFeedbackSent ?? 0, color: 'bg-[var(--dash-card)] border-[var(--dash-border)]' },
+          { label: 'Events This Month', value: Number(stats?.totalEvents ?? 0).toLocaleString(), color: 'bg-[var(--dash-card)] border-[var(--dash-border)]' },
+          { label: 'Match Rate', value: `${stats?.matchRate ?? 0}%`, color: 'bg-[var(--dash-primary-soft)] border-[var(--dash-accent-border)]' }
         ].map(stat => (
           <div key={stat.label} className={`dash-card dash-card-gradient-top ${stat.color} rounded-2xl border p-4 shadow-[var(--dash-shadow)]`}>
-            <p className="text-2xl font-bold text-slate-900">{loading ? '...' : Number(stat.value)}</p>
+            <p className="text-2xl font-bold text-slate-900">{loading ? '...' : String(stat.value)}</p>
             <p className="text-xs text-slate-500 mt-1">{stat.label}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Row 2 — Platform status: Meta CAPI, TikTok Events API, Google Enhanced */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+        {[
+          { name: 'Meta CAPI', status: 'connected', events: Number(stats?.metaEvents ?? 0) },
+          { name: 'TikTok Events API', status: 'connected', events: Number(stats?.tiktokEvents ?? 0) },
+          { name: 'Google Enhanced Data Quality', status: 'connected', events: Number(stats?.googleEvents ?? 0) }
+        ].map(platform => (
+          <div key={platform.name} className="dash-card dash-card-gradient-top bg-[var(--dash-card)] rounded-2xl border border-[var(--dash-border)] p-5 shadow-[var(--dash-shadow)]">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <p className="font-semibold text-slate-900 text-sm">{platform.name}</p>
+              </div>
+              <span className="text-xs bg-[var(--dash-success-soft)] text-[var(--dash-success-strong)] px-2 py-0.5 rounded-full font-semibold">
+                Live
+              </span>
+            </div>
+            <p className="text-2xl font-bold text-slate-900">{loading ? '...' : platform.events.toLocaleString()}</p>
+            <p className="text-xs text-slate-400 mt-1">Events sent this month</p>
           </div>
         ))}
       </div>
@@ -157,7 +187,8 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
               { href: '/dashboard/leads', icon: 'user', label: 'Lead Manager', desc: 'Score and manage your leads' },
               { href: '/dashboard/playground', icon: 'flask', label: 'Send Test Lead', desc: 'Fire a test Lead event' },
               { href: '/dashboard/logs', icon: 'clipboard', label: 'Event Logs', desc: 'See all captured events' },
-              { href: '/dashboard/pixels', icon: 'settings', label: 'Manage Pixels', desc: 'Configure your tracking pixels' },
+              { href: '/dashboard/pixels', icon: 'settings', label: 'Manage Pixels', desc: 'Add or configure your pixels' },
+              { href: '/dashboard/data-quality', icon: 'chart', label: 'Check Match Rate', desc: 'See your Meta match rate' },
               { href: '/dashboard/live', icon: 'live', label: 'Live Stream', desc: 'Watch leads come in real-time' },
               { href: '/dashboard/billing', icon: 'upgrade', label: 'Upgrade Plan', desc: 'Unlock more leads per month' }
             ].map(action => (
@@ -188,6 +219,11 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                   )}
+                  {action.icon === 'chart' && (
+                    <svg className="w-4 h-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                  )}
                   {action.icon === 'live' && (
                     <span className="w-2.5 h-2.5 bg-red-500 rounded-full" />
                   )}
@@ -208,47 +244,37 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
         </div>
       </div>
 
-      {/* Row 4 — Meta feedback loop explainer + install */}
+      {/* Row 4 — Meta match rate (Data Quality) + Install Tracking Script */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
-        {/* Meta feedback loop */}
+        {/* Meta match rate / Data quality */}
         <div className="dash-card-hero rounded-xl p-5 border border-[var(--dash-border)]" style={{ background: 'linear-gradient(135deg, rgba(170,255,0,0.2) 0%, rgba(170,255,0,0.06) 50%, rgba(15,15,15,0.04) 100%)' }}>
-          <p className="font-bold text-lg mb-1 text-slate-900">Meta Feedback Loop</p>
-          <p className="text-slate-600 text-sm mb-4">Send lead quality signals back to Meta</p>
-          <div className="space-y-2 mb-4">
-            {[
-              { label: 'Signals sent this month', value: loading ? '...' : (stats?.metaFeedbackSent ?? 0) },
-              { label: 'Conversion rate', value: loading ? '...' : `${stats?.conversionRate ?? 0}%` }
-            ].map(item => (
-              <div key={item.label} className="flex justify-between text-sm">
-                <span className="text-slate-600">{item.label}</span>
-                <span className="font-bold text-slate-900">{String(item.value)}</span>
-              </div>
-            ))}
-          </div>
+          <p className="font-bold text-lg mb-1 text-slate-900">Data Quality Score</p>
+          <p className="text-slate-600 text-sm mb-4">Your current Meta match rate</p>
+          <p className="text-5xl font-black mb-1 text-slate-900">{loading ? '...' : `${stats?.matchRate ?? 0}%`}</p>
+          <p className="text-slate-600 text-xs mb-4">
+            {Number(stats?.matchRate ?? 0) >= 70 ? 'Good' : Number(stats?.matchRate ?? 0) >= 50 ? 'Average' : 'Needs improvement'}
+          </p>
           <Link
-            href="/dashboard/leads"
+            href="/dashboard/data-quality"
             className="bg-[var(--dash-primary)] hover:bg-[var(--dash-accent-hover)] text-[#0F0F0F] text-sm font-semibold px-4 py-2 rounded-lg transition-colors inline-block"
           >
-            Score Your Leads →
+            Improve Score →
           </Link>
         </div>
 
-        {/* Install snippet */}
-        <div className="rounded-xl p-5 border border-slate-700" style={{ background: '#0F0F0F' }}>
-          <p className="font-bold mb-1 text-white">Capture Leads from Your Website</p>
-          <p className="text-slate-300 text-sm mb-3">Fire Lead events from your form submissions</p>
+        {/* Install Tracking Script */}
+        <div className="dash-card bg-[#0F0F0F] rounded-xl p-5 border border-slate-700">
+          <p className="font-bold mb-1 text-white">Install Tracking Script</p>
+          <p className="text-slate-400 text-sm mb-3">Add to your website&apos;s &lt;head&gt; tag</p>
           <div className="bg-slate-800 rounded-lg p-3 font-mono text-xs text-white mb-3 overflow-x-auto">
-            {`trackhive('track', 'Lead', {
-  email: 'user@email.com',
-  phone: '+1234567890'
-});`}
+            {`<script src="https://track.itshassanahmed.com/th.js?id=${firstPixelId || 'YOUR_PIXEL_ID'}"></script>`}
           </div>
           <Link
-            href="/docs"
+            href="/dashboard/pixels"
             className="bg-[var(--dash-primary)] hover:bg-[var(--dash-accent-hover)] text-[#0F0F0F] text-sm font-semibold px-4 py-2 rounded-lg transition-colors inline-block"
           >
-            View Documentation →
+            Get Your Pixel ID →
           </Link>
         </div>
       </div>

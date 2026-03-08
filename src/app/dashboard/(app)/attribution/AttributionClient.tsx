@@ -339,7 +339,7 @@ export default function AttributionClient() {
                         {conversions.slice(0, 50).map((row) => (
                           <tr
                             key={row.conversion_id}
-                            className="border-b border-[var(--dash-border)]/80 hover:bg-[var(--dash-surface-hover)]/30"
+                            className="hover:bg-[var(--dash-surface-hover)]/30"
                           >
                             <td className="px-4 py-3 text-[var(--dash-text)]">{row.event_name}</td>
                             <td className="px-4 py-3 text-[var(--dash-muted)]">

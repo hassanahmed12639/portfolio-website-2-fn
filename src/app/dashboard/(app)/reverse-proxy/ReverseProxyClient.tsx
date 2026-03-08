@@ -62,15 +62,15 @@ const STORAGE_KEY = 'trackhive_reverse_proxy'
 type Stored = { enabled: boolean; domain: string }
 
 function getStored(): Stored {
-  if (typeof window === 'undefined') return { enabled: false, domain: 'theirsite.com' }
+  if (typeof window === 'undefined') return { enabled: false, domain: '' }
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw) {
       const p = JSON.parse(raw) as Stored
-      return { enabled: p.enabled ?? false, domain: p.domain || 'theirsite.com' }
+      return { enabled: p.enabled ?? false, domain: p.domain ?? '' }
     }
   } catch {}
-  return { enabled: false, domain: 'theirsite.com' }
+  return { enabled: false, domain: '' }
 }
 
 function CopyBtn({ text, showCheck = false }: { text: string; showCheck?: boolean }) {
@@ -268,7 +268,7 @@ export default function ReverseProxyClient({ apiKey = '' }: { apiKey?: string })
               type="text"
               value={domain}
               onChange={(e) => setDomain(e.target.value)}
-              placeholder="theirsite.com"
+              placeholder="add your website url"
               className="w-full max-w-md rounded-lg border border-[var(--dash-border)] bg-[var(--dash-surface-hover)] px-3 py-2 text-sm text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:border-[var(--dash-primary)] focus:outline-none"
             />
           </div>

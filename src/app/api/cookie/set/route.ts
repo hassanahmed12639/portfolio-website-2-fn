@@ -22,31 +22,45 @@ export async function GET(req: NextRequest) {
 
   try {
     if (apiKey) {
-      const { data: settings } = await supabaseAdmin
-        .from('cookie_settings')
-        .select('cookie_lifetime_days, is_enabled')
+      // Resolve user_id: api_key can be profile.api_key (TrackHive key) or pixel_id (Meta pixel ID)
+      let userId: string | undefined
+      const { data: profile } = await supabaseAdmin
+        .from('profiles')
+        .select('id')
         .eq('api_key', apiKey)
         .single()
-
-      if (settings?.cookie_lifetime_days) {
-        cookieLifetimeDays = settings.cookie_lifetime_days
+      if (profile?.id) {
+        userId = profile.id
+      } else {
+        const { data: pixel } = await supabaseAdmin
+          .from('pixels')
+          .select('user_id')
+          .eq('pixel_id', apiKey)
+          .single()
+        userId = pixel?.user_id
       }
 
-      // Look up which user owns this pixel/api_key
-      const { data: pixel } = await supabaseAdmin
-        .from('pixels')
-        .select('user_id')
-        .eq('pixel_id', apiKey)
-        .single()
+      // Get cookie settings by user_id (cookie_settings has user_id, not api_key)
+      let isEnabled = true
+      if (userId) {
+        const { data: settings } = await supabaseAdmin
+          .from('cookie_settings')
+          .select('cookie_lifetime_days, is_active')
+          .eq('user_id', userId)
+          .single()
 
-      const userId = pixel?.user_id
+        if (settings?.cookie_lifetime_days) {
+          cookieLifetimeDays = settings.cookie_lifetime_days
+        }
+        isEnabled = settings?.is_active ?? true
+      }
 
       // Track visitor in Supabase (when cookie extender is enabled)
-      if (settings?.is_enabled) {
+      if (isEnabled && userId) {
         const visitorRow: {
           visitor_id: string
           api_key: string
-          user_id: string | undefined
+          user_id: string
           is_returning: boolean
           first_seen?: string
           last_seen: string

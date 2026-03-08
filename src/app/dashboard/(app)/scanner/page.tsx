@@ -78,8 +78,11 @@ const EVENT_ICONS: Record<string, string> = {
   InitiateCheckout: '💳',
   Purchase: '💰',
   Lead: '👤',
+  Contact: '📞',
   ViewContent: '👀',
   Search: '🔍',
+  Schedule: '📅',
+  Subscribe: '📧',
   'WhatsApp Click': '📱',
   'Phone Click': '📞',
   'Email Click': '📧',
@@ -167,10 +170,15 @@ export default function ScannerPage() {
   const [generatingCode, setGeneratingCode] = useState(false)
   const [copyDone, setCopyDone] = useState(false)
 
-  const smartEvents = (report?.smartEvents ?? []).reduce<SmartEvent[]>((acc, ev) => {
-    if (!acc.some((e) => e.event === ev.event)) acc.push(ev)
-    return acc
-  }, [])
+  // Use API response directly — no hardcoded event arrays
+  const recommendedEvents = report?.recommendedEvents ?? []
+  const siteType = report?.siteType ?? 'ecommerce'
+  const smartEvents: SmartEvent[] = recommendedEvents.map((ev) => ({
+    event: ev.name,
+    reason: ev.why,
+    priority: ev.priority.toLowerCase(),
+    platforms: ['meta', 'google'],
+  }))
   const enabledSet = new Set(enabledEvents)
 
   function toggleEvent(eventName: string) {
@@ -184,7 +192,7 @@ export default function ScannerPage() {
 
   function enableAllRecommended() {
     const recommended = smartEvents.filter(
-      (e) => e.priority === 'critical' || e.priority === 'recommended'
+      (e) => e.priority === 'critical' || e.priority === 'high'
     )
     setEnabledEvents((prev) => {
       const next = new Set(prev)
@@ -500,7 +508,7 @@ export default function ScannerPage() {
             <div className="px-4 py-3 border-b border-[var(--dash-border)]">
               <h2 className="text-sm font-medium text-[var(--dash-muted)]">Smart Events Auto-Detection</h2>
               <p className="text-xs text-[var(--dash-muted)] mt-0.5">
-                {report.siteType === 'ecommerce'
+                {siteType === 'ecommerce'
                   ? 'E-commerce event set detected — enable and generate code'
                   : 'Lead generation event set detected — enable and generate code'}
               </p>
@@ -513,7 +521,7 @@ export default function ScannerPage() {
                   const priorityClass =
                     ev.priority === 'critical'
                       ? 'bg-[var(--dash-danger)]/20 text-red-400'
-                      : ev.priority === 'recommended'
+                      : ev.priority === 'high'
                         ? 'bg-[var(--dash-warning)]/20 text-amber-400'
                         : 'bg-[var(--dash-surface-hover)] text-[var(--dash-muted)]'
                   return (
