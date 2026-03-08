@@ -58,8 +58,8 @@ export default function TemplatesClient({
   const [upgradeModal, setUpgradeModal] = useState<{
     open: boolean
     templateName: string
-    requiredPlan: string
-  }>({ open: false, templateName: '', requiredPlan: '' })
+    requiredPlan: 'pro' | 'agency'
+  }>({ open: false, templateName: '', requiredPlan: 'pro' })
   const [copied, setCopied] = useState(false)
 
   const filtered = useMemo(() => {
@@ -107,7 +107,7 @@ export default function TemplatesClient({
       setUpgradeModal({
         open: true,
         templateName: t.name,
-        requiredPlan: t.requiredPlan.toUpperCase(),
+        requiredPlan: t.requiredPlan === 'free' ? 'pro' : t.requiredPlan,
       })
       return
     }
@@ -119,7 +119,7 @@ export default function TemplatesClient({
           setUpgradeModal({
             open: true,
             templateName: t.name,
-            requiredPlan: t.requiredPlan.toUpperCase(),
+            requiredPlan: t.requiredPlan === 'free' ? 'pro' : t.requiredPlan,
           })
           return
         }
@@ -480,7 +480,7 @@ export default function TemplatesClient({
         onClose={() =>
           setUpgradeModal((prev) => ({ ...prev, open: false }))
         }
-        featureName={upgradeModal.templateName}
+        feature={upgradeModal.templateName}
         requiredPlan={upgradeModal.requiredPlan}
       />
     </div>

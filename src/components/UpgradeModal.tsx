@@ -5,14 +5,14 @@ import Link from 'next/link'
 type UpgradeModalProps = {
   isOpen: boolean
   onClose: () => void
-  featureName: string
-  requiredPlan: string
+  feature: string
+  requiredPlan: 'pro' | 'agency'
 }
 
 export function UpgradeModal({
   isOpen,
   onClose,
-  featureName,
+  feature,
   requiredPlan,
 }: UpgradeModalProps) {
   if (!isOpen) return null
@@ -43,7 +43,7 @@ export function UpgradeModal({
         <div className="flex items-center gap-3 mb-4">
           <span className="text-2xl" aria-hidden>🔒</span>
           <h2 className="text-lg font-semibold text-white">
-            Unlock {featureName}
+            Unlock {feature}
           </h2>
         </div>
         <p className="text-sm text-zinc-400 mb-6">
