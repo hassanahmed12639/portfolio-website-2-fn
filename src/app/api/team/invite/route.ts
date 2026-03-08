@@ -104,12 +104,7 @@ export async function POST(req: NextRequest) {
     const ownerName = profile?.full_name || profile?.email || 'Someone'
     const roleLabel = role || 'viewer'
 
-    const { error: emailError } = await resend.emails.send({
-      from:
-        process.env.INVITE_FROM_EMAIL || 'TrackHive <onboarding@resend.dev>',
-      to: email.trim(),
-      subject: `${ownerName} invited you to TrackHive`,
-      html: `
+    const emailHtml = `
         <!DOCTYPE html>
         <html>
         <head>
@@ -155,8 +150,19 @@ export async function POST(req: NextRequest) {
           </div>
         </body>
         </html>
-      `,
+      `
+
+    const { data: emailData, error: emailError } = await resend.emails.send({
+      from: 'TrackHive <noreply@itshassanahmed.com>',
+      to: [email.trim()],
+      subject: `You've been invited to TrackHive`,
+      html: emailHtml,
     })
+
+    console.log('[Team Invite] From address used: noreply@itshassanahmed.com')
+    console.log('[Team Invite] To:', email)
+    console.log('[Team Invite] Email result:', JSON.stringify(emailData))
+    console.log('[Team Invite] Email error:', JSON.stringify(emailError))
 
     if (emailError) {
       console.error('[Team Invite] Email error:', emailError)
@@ -166,8 +172,6 @@ export async function POST(req: NextRequest) {
         emailError: emailError.message,
       })
     }
-
-    console.log('[Team Invite] Sent to:', email)
 
     const { data: members } = await admin
       .from('team_members')
