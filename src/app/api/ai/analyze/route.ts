@@ -37,9 +37,10 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  const apiKey = process.env.GROQ_API_KEY
-  if (!apiKey) {
-    return NextResponse.json({ error: 'Groq API key not configured' }, { status: 500 })
+  const groqApiKey = process.env.GROQ_API_KEY
+  console.log('[AI Analysis] Groq API key found:', !!groqApiKey)
+  if (!groqApiKey) {
+    return NextResponse.json({ error: 'AI service not configured' }, { status: 500 })
   }
 
   let body: { events?: unknown[]; uploadedLog?: string }
@@ -63,11 +64,11 @@ export async function POST(request: NextRequest) {
   const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${apiKey}`,
+      Authorization: `Bearer ${groqApiKey}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'llama-3.1-8b-instant',
+      model: 'llama3-8b-8192',
       messages: [
         {
           role: 'system',
@@ -95,15 +96,16 @@ Event data: ${JSON.stringify(payload)}`,
     }),
   })
 
+  const data = await response.json()
+  console.log('[AI Analysis] Groq response status:', response.status)
+
   if (!response.ok) {
-    const errText = await response.text()
+    console.error('[AI Analysis] Groq error:', data)
     return NextResponse.json(
-      { error: 'Groq request failed', details: errText },
-      { status: 502 }
+      { error: `Groq API error: ${(data as { error?: { message?: string } }).error?.message ?? response.status}` },
+      { status: 500 }
     )
   }
-
-  const data = await response.json()
   const content = data.choices?.[0]?.message?.content
   if (typeof content !== 'string') {
     return NextResponse.json({ error: 'Invalid Groq response' }, { status: 502 })
