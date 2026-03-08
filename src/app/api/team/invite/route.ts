@@ -98,9 +98,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: insertError.message }, { status: 500 })
     }
 
-    const baseUrl =
-      process.env.NEXT_PUBLIC_APP_URL || 'https://track.itshassanahmed.com'
-    const inviteUrl = `${baseUrl.replace(/\/$/, '')}/invite?token=${inviteToken}`
+    const inviteUrl = `https://track.itshassanahmed.com/invite?token=${inviteToken}`
     const ownerName = profile?.full_name || profile?.email || 'Someone'
     const roleLabel = role || 'viewer'
 
