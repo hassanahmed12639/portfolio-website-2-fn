@@ -279,32 +279,27 @@ export default function SetupClient({ apiKey }: SetupClientProps) {
         {/* Section 6 — GTM Instructions */}
         <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
           <div className="px-4 py-3 border-b border-[var(--dash-border)]">
-            <h2 className="text-sm font-medium text-[var(--dash-text-soft)]">Google Tag Manager</h2>
+            <h2 className="text-sm font-medium text-[var(--dash-text)]">Google Tag Manager</h2>
           </div>
-          <div className="p-4 text-[var(--dash-text)] text-sm space-y-3">
-            <p>
-              <span className="text-[var(--dash-text-soft)] font-medium">1.</span> Download the{' '}
-              <a
-                href="#"
-                className="text-[var(--dash-primary)] underline hover:text-[var(--dash-primary-strong)]"
-              >
+          <div className="p-4 text-sm space-y-3">
+            <p className="text-[var(--dash-text)]">
+              <span className="font-medium">1.</span> Download the{' '}
+              <a href="#" className="text-[var(--dash-text)] underline hover:opacity-80">
                 TrackHive GTM template
               </a>{' '}
               (link placeholder for now).
             </p>
-            <p>
-              <span className="text-[var(--dash-text-soft)] font-medium">2.</span> In GTM → Templates → New → Import
-              the .tpl file.
+            <p className="text-[var(--dash-text)]">
+              <span className="font-medium">2.</span> In GTM → Templates → New → Import the .tpl file.
             </p>
-            <p>
-              <span className="text-[var(--dash-text-soft)] font-medium">3.</span> Create a new tag using the TrackHive
-              template.
+            <p className="text-[var(--dash-text)]">
+              <span className="font-medium">3.</span> Create a new tag using the TrackHive template.
             </p>
-            <p>
-              <span className="text-[var(--dash-text-soft)] font-medium">4.</span> Enter your API key shown above.
+            <p className="text-[var(--dash-text)]">
+              <span className="font-medium">4.</span> Enter your API key shown above.
             </p>
-            <p>
-              <span className="text-[var(--dash-text-soft)] font-medium">5.</span> Set your trigger and publish.
+            <p className="text-[var(--dash-text)]">
+              <span className="font-medium">5.</span> Set your trigger and publish.
             </p>
           </div>
         </section>

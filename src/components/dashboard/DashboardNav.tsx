@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation'
 import {
   Activity,
   BarChart2,
-  Bell,
   Bug,
   ChevronDown,
   ChevronRight,
@@ -23,7 +22,6 @@ import {
   RefreshCw,
   RotateCcw,
   ScanSearch,
-  SearchCheck,
   Settings2,
   Shield,
   ShieldCheck,
@@ -62,11 +60,7 @@ const nav: NavItem[] = [
   { label: 'Integrations', href: '/dashboard/integrations', icon: Settings2 },
   { label: 'Reverse Proxy', href: '/dashboard/reverse-proxy', icon: Workflow },
   { label: 'Attribution', href: '/dashboard/attribution', icon: BarChart2 },
-  // SUPPORT
-  { label: 'Alerts', href: '/dashboard/alerts', icon: Bell },
   { label: 'Privacy', href: '/dashboard/privacy', icon: Lock },
-  { label: 'Billing', href: '/dashboard/billing', icon: SearchCheck },
-  { label: 'Settings', href: '/dashboard/settings', icon: Settings2 },
 ]
 
 const iconByHref: Record<string, LucideIcon> = {
@@ -92,43 +86,34 @@ const iconByHref: Record<string, LucideIcon> = {
   '/dashboard/integrations': Settings2,
   '/dashboard/reverse-proxy': Workflow,
   '/dashboard/attribution': BarChart2,
-  '/dashboard/alerts': Bell,
   '/dashboard/privacy': Lock,
-  '/dashboard/billing': SearchCheck,
-  '/dashboard/settings': Settings2,
 }
 
 const sections = [
-  { title: 'GENERAL', from: 0, to: 10 },
-  { title: 'TOOLS', from: 10, to: 22 },
-  { title: 'SUPPORT', from: 22, to: nav.length + 1 },
+  { title: 'General', from: 0, to: 10 },
+  { title: 'Tools', from: 10, to: nav.length },
 ]
 
 export default function DashboardNav({ profile: _profile }: { profile?: { dashboard_type?: string | null } }) {
   const pathname = usePathname()
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    GENERAL: true,
-    TOOLS: true,
-    SUPPORT: true,
+    General: true,
+    Tools: true,
   })
 
   const toggleSection = (title: string) => {
     setOpenSections((prev) => ({ ...prev, [title]: !prev[title] }))
   }
 
-  const items = [
-    ...nav.map(({ label, href, icon }) => ({
-      label,
-      href,
-      icon: icon ?? iconByHref[href],
-      isLogout: false,
-    })),
-    { label: 'Logout', href: '/dashboard/logout', icon: SearchCheck, isLogout: true },
-  ]
+  const items = nav.map(({ label, href, icon }) => ({
+    label,
+    href,
+    icon: icon ?? iconByHref[href],
+  }))
 
   return (
-    <nav className="flex-1 overflow-y-auto px-3 pt-4 pb-1">
-      <div className="space-y-4">
+    <nav className="flex-1 overflow-y-auto px-3 pt-4 pb-2">
+      <div className="space-y-5">
         {sections.map((section) => {
           const isOpen = openSections[section.title]
           const sectionItems = items.slice(section.from, section.to)
@@ -137,36 +122,46 @@ export default function DashboardNav({ profile: _profile }: { profile?: { dashbo
               <button
                 type="button"
                 onClick={() => toggleSection(section.title)}
-                className="mb-1.5 flex w-full items-center gap-1.5 px-2 py-0.5 text-left text-sm font-bold tracking-wide text-slate-700 transition-colors hover:text-slate-900"
+                className="mb-2 flex w-full items-center gap-2 px-2 py-1 text-left text-xs font-medium uppercase tracking-wider text-[var(--dash-muted)] transition-colors hover:text-[var(--dash-text)]"
               >
                 {isOpen ? (
-                  <ChevronDown className="h-3 w-3 shrink-0" />
+                  <ChevronDown className="h-3.5 w-3.5 shrink-0" />
                 ) : (
-                  <ChevronRight className="h-3 w-3 shrink-0" />
+                  <ChevronRight className="h-3.5 w-3.5 shrink-0" />
                 )}
                 <span>{section.title}</span>
               </button>
               {isOpen && (
-                <div className="space-y-0.5">
-                  {sectionItems.map(({ label, href, icon: Icon, isLogout }) => {
+                <div className="relative space-y-0.5 pl-1">
+                  {/* Vertical connector line */}
+                  <div
+                    className="absolute left-[11px] top-2 bottom-2 w-px bg-[var(--dash-border)]"
+                    aria-hidden
+                  />
+                  {sectionItems.map(({ label, href, icon: Icon }) => {
                     const isActive =
-                      !isLogout &&
-                      (pathname === href ||
-                        (href !== '/dashboard' && pathname.startsWith(href + '/')))
+                      pathname === href || (href !== '/dashboard' && pathname.startsWith(href + '/'))
                     return (
                       <Link
                         key={href}
                         href={href}
                         prefetch={false}
-                        className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors ${
+                        className={`relative flex items-center gap-3 rounded-lg pl-4 pr-2 py-2 text-sm transition-colors ${
                           isActive
                             ? 'font-semibold text-[var(--dash-primary-strong)]'
-                            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                            : 'text-[var(--dash-text)] hover:bg-[var(--dash-surface-hover)]'
                         }`}
                         style={isActive ? { background: 'var(--dash-gradient-sidebar-active)' } : undefined}
                       >
-                        {Icon && <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? 'text-[var(--dash-primary-strong)]' : 'text-slate-700'}`} />}
-                        <span className="truncate">{label}</span>
+                        {Icon && (
+                          <Icon
+                            className={`h-4 w-4 shrink-0 ${isActive ? 'text-[var(--dash-primary-strong)]' : 'text-[var(--dash-muted)]'}`}
+                          />
+                        )}
+                        <span className="flex-1 truncate">{label}</span>
+                        <ChevronRight
+                          className={`h-3.5 w-3.5 shrink-0 ${isActive ? 'text-[var(--dash-primary-strong)]' : 'text-[var(--dash-muted)]'}`}
+                        />
                       </Link>
                     )
                   })}

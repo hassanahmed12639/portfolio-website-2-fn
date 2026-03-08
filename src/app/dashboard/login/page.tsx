@@ -1,9 +1,23 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import LoginRadar from './LoginRadar'
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Separator } from '@/components/ui/separator'
+import { Eye, EyeOff, Lock, Mail, ArrowRight, Chrome } from 'lucide-react'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -11,6 +25,66 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  useEffect(() => {
+    const canvas = canvasRef.current
+    const ctx = canvas?.getContext('2d')
+    if (!canvas || !ctx) return
+
+    const setSize = () => {
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+    }
+    setSize()
+
+    type P = { x: number; y: number; v: number; o: number }
+    let ps: P[] = []
+    let raf = 0
+
+    const make = () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      v: Math.random() * 0.25 + 0.05,
+      o: Math.random() * 0.35 + 0.15,
+    })
+
+    const init = () => {
+      ps = []
+      const count = Math.floor((canvas.width * canvas.height) / 9000)
+      for (let i = 0; i < count; i++) ps.push(make())
+    }
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      ps.forEach((p) => {
+        p.y -= p.v
+        if (p.y < 0) {
+          p.x = Math.random() * canvas.width
+          p.y = canvas.height + Math.random() * 40
+          p.v = Math.random() * 0.25 + 0.05
+          p.o = Math.random() * 0.35 + 0.15
+        }
+        ctx.fillStyle = `rgba(15,23,42,${p.o})`
+        ctx.fillRect(p.x, p.y, 0.7, 2.2)
+      })
+      raf = requestAnimationFrame(draw)
+    }
+
+    const onResize = () => {
+      setSize()
+      init()
+    }
+
+    window.addEventListener('resize', onResize)
+    init()
+    raf = requestAnimationFrame(draw)
+    return () => {
+      window.removeEventListener('resize', onResize)
+      cancelAnimationFrame(raf)
+    }
+  }, [])
 
   async function handleGoogleSignIn() {
     setError(null)
@@ -20,7 +94,10 @@ export default function LoginPage() {
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : undefined,
+          redirectTo:
+            typeof window !== 'undefined'
+              ? `${window.location.origin}/auth/callback`
+              : undefined,
         },
       })
       if (oauthError) {
@@ -54,7 +131,7 @@ export default function LoginPage() {
 
       const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim().toLowerCase(),
-        password
+        password,
       })
 
       if (error) {
@@ -67,20 +144,17 @@ export default function LoginPage() {
         return
       }
 
-      // Explicitly set session so cookie is written (same key as server: trackhive-auth-token)
       await supabase.auth.setSession({
         access_token: data.session.access_token,
-        refresh_token: data.session.refresh_token
+        refresh_token: data.session.refresh_token,
       })
 
-      // Check onboarding status
       const { data: profile } = await supabase
         .from('profiles')
         .select('onboarding_completed, dashboard_type')
         .eq('id', data.user.id)
         .single()
 
-      // Brief delay so cookie is committed before full-page redirect
       await new Promise((resolve) => setTimeout(resolve, 500))
 
       if (!profile?.onboarding_completed) {
@@ -91,8 +165,14 @@ export default function LoginPage() {
     } catch (err) {
       console.error('[Login] Error:', err)
       const message = err instanceof Error ? err.message : String(err)
-      if (message.includes('Supabase') || message.includes('URL') || message.includes('API key')) {
-        setError('Auth is not configured. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to .env.local and restart the dev server.')
+      if (
+        message.includes('Supabase') ||
+        message.includes('URL') ||
+        message.includes('API key')
+      ) {
+        setError(
+          'Auth is not configured. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to .env.local and restart the dev server.'
+        )
       } else {
         setError(message || 'Something went wrong. Please try again.')
       }
@@ -107,87 +187,181 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="dashboard-shell min-h-screen flex flex-col md:flex-row bg-[var(--dash-bg)]">
-      <div className="flex-1 flex items-center justify-center px-4 py-8 md:py-12">
-        <div className="w-full max-w-sm">
-          <h1 className="text-2xl font-semibold text-[var(--dash-text)] mb-1">TrackHive</h1>
-          <p className="text-[var(--dash-muted)] text-sm mb-8">Sign in to your account</p>
+    <div className="dashboard-shell min-h-screen flex flex-col md:flex-row bg-[var(--dash-bg)] relative overflow-hidden">
+      <style>{`
+        .login-accent-lines{position:absolute;inset:0;pointer-events:none;opacity:.7}
+        .login-hline,.login-vline{position:absolute;background:var(--dash-border);will-change:transform,opacity}
+        .login-hline{left:0;right:0;height:1px;transform:scaleX(0);transform-origin:50% 50%;animation:loginDrawX .8s cubic-bezier(.22,.61,.36,1) forwards}
+        .login-vline{top:0;bottom:0;width:1px;transform:scaleY(0);transform-origin:50% 0%;animation:loginDrawY .9s cubic-bezier(.22,.61,.36,1) forwards}
+        .login-hline:nth-child(1){top:18%;animation-delay:.12s}
+        .login-hline:nth-child(2){top:50%;animation-delay:.22s}
+        .login-hline:nth-child(3){top:82%;animation-delay:.32s}
+        .login-vline:nth-child(4){left:22%;animation-delay:.42s}
+        .login-vline:nth-child(5){left:50%;animation-delay:.54s}
+        .login-vline:nth-child(6){left:78%;animation-delay:.66s}
+        @keyframes loginDrawX{0%{transform:scaleX(0);opacity:0}60%{opacity:.95}100%{transform:scaleX(1);opacity:.7}}
+        @keyframes loginDrawY{0%{transform:scaleY(0);opacity:0}60%{opacity:.95}100%{transform:scaleY(1);opacity:.7}}
+        .login-card-animate{opacity:0;transform:translateY(20px);animation:loginFadeUp 0.8s cubic-bezier(.22,.61,.36,1) 0.4s forwards}
+        @keyframes loginFadeUp{to{opacity:1;transform:translateY(0)}}
+      `}</style>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-[var(--dash-text)] mb-1.5">
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                autoComplete="email"
-                className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)] focus:border-transparent transition-colors"
-                placeholder="you@example.com"
-              />
-            </div>
+      <div className="absolute inset-0 pointer-events-none [background:radial-gradient(80%_60%_at_50%_30%,rgba(29,78,216,0.06),transparent_60%)]" />
+      <div className="login-accent-lines">
+        <div className="login-hline" />
+        <div className="login-hline" />
+        <div className="login-hline" />
+        <div className="login-vline" />
+        <div className="login-vline" />
+        <div className="login-vline" />
+      </div>
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full opacity-40 mix-blend-multiply pointer-events-none"
+      />
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-[var(--dash-text)] mb-1.5">
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                autoComplete="current-password"
-                className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)] focus:border-transparent transition-colors"
-                placeholder="••••••••"
-              />
-            </div>
+      <header className="absolute left-0 right-0 top-0 flex items-center justify-between px-6 py-4 border-b border-[var(--dash-border)]">
+        <span className="text-xs tracking-[0.14em] uppercase text-[var(--dash-muted)]">
+          TrackHive
+        </span>
+        <Link href="/contact">
+          <Button
+            variant="outline"
+            className="h-9 rounded-lg border-[var(--dash-border)] bg-[var(--dash-surface)] text-[var(--dash-text)] hover:bg-[var(--dash-surface-hover)]"
+          >
+            <span className="mr-2">Contact</span>
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </Link>
+      </header>
 
-            {error && (
-              <p className="text-sm text-[var(--dash-danger)] bg-[var(--dash-danger-soft)] border border-[var(--dash-danger-border)] rounded-lg px-4 py-2.5">
-                {error}
-              </p>
-            )}
+      <div className="flex-1 flex items-center justify-center px-4 py-8 md:py-12 relative z-10">
+        <Card className="login-card-animate w-full max-w-sm border-[var(--dash-border)] bg-[var(--dash-card)] shadow-[var(--dash-shadow)]">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl text-[var(--dash-text)]">
+              Welcome back
+            </CardTitle>
+            <CardDescription className="text-[var(--dash-muted)]">
+              Sign in to your account
+            </CardDescription>
+          </CardHeader>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-2.5 rounded-lg bg-[var(--dash-primary)] text-white font-medium hover:bg-[var(--dash-primary-strong)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {loading ? 'Signing in…' : 'Sign In'}
-            </button>
-          </form>
-
-          <p className="mt-6 text-center text-sm text-[var(--dash-muted)]">
-            Don&apos;t have an account?{' '}
-            <Link href="/dashboard/signup" className="text-[var(--dash-primary)] hover:underline font-medium">
-              Create account
-            </Link>
-          </p>
-
-          <div className="mt-6">
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-[var(--dash-border)]" />
+          <CardContent className="grid gap-5">
+            <form onSubmit={handleSubmit} className="grid gap-5">
+              <div className="grid gap-2">
+                <Label htmlFor="email" className="text-[var(--dash-text)]">
+                  Email
+                </Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--dash-muted)]" />
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    required
+                    autoComplete="email"
+                    className="pl-10 bg-[var(--dash-surface)] border-[var(--dash-border)] text-[var(--dash-text)] placeholder:text-[var(--dash-muted)]"
+                  />
+                </div>
               </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-[var(--dash-bg)] text-[var(--dash-muted)]">or</span>
+
+              <div className="grid gap-2">
+                <Label htmlFor="password" className="text-[var(--dash-text)]">
+                  Password
+                </Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--dash-muted)]" />
+                  <Input
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                    autoComplete="current-password"
+                    className="pl-10 pr-10 bg-[var(--dash-surface)] border-[var(--dash-border)] text-[var(--dash-text)] placeholder:text-[var(--dash-muted)]"
+                  />
+                  <button
+                    type="button"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-md text-[var(--dash-muted)] hover:text-[var(--dash-text)]"
+                    onClick={() => setShowPassword((v) => !v)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
               </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="remember"
+                    className="border-[var(--dash-border)] rounded checked:bg-[var(--dash-primary)] checked:border-[var(--dash-primary)]"
+                  />
+                  <Label
+                    htmlFor="remember"
+                    className="text-[var(--dash-muted)] text-sm font-normal cursor-pointer"
+                  >
+                    Remember me
+                  </Label>
+                </div>
+                <a
+                  href="#"
+                  className="text-sm text-[var(--dash-muted)] hover:text-[var(--dash-primary)]"
+                >
+                  Forgot password?
+                </a>
+              </div>
+
+              {error && (
+                <p className="text-sm text-[var(--dash-danger)] bg-[var(--dash-danger-soft)] border border-[var(--dash-danger-border)] rounded-lg px-4 py-2.5">
+                  {error}
+                </p>
+              )}
+
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full h-10 rounded-lg bg-[var(--dash-primary)] text-white hover:bg-[var(--dash-primary-strong)] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? 'Signing in…' : 'Continue'}
+              </Button>
+            </form>
+
+            <div className="relative">
+              <Separator className="bg-[var(--dash-border)]" />
+              <span className="absolute left-1/2 -translate-x-1/2 -top-3 bg-[var(--dash-card)] px-2 text-[11px] uppercase tracking-widest text-[var(--dash-muted)]">
+                or
+              </span>
             </div>
-            <button
+
+            <Button
               type="button"
+              variant="outline"
               onClick={handleGoogleSignIn}
               disabled={googleLoading}
-              className="w-full flex items-center justify-center gap-3 py-2.5 rounded-lg bg-[var(--dash-surface)] border border-[var(--dash-border)] text-[var(--dash-text)] font-medium hover:bg-[var(--dash-bg)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-border)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-full h-10 rounded-lg border-[var(--dash-border)] bg-[var(--dash-surface)] text-[var(--dash-text)] hover:bg-[var(--dash-surface-hover)] disabled:opacity-50"
             >
-              <GoogleIcon />
+              <Chrome className="h-4 w-4 mr-2" />
               {googleLoading ? 'Signing in…' : 'Continue with Google'}
-            </button>
-          </div>
-        </div>
+            </Button>
+          </CardContent>
+
+          <CardFooter className="flex items-center justify-center text-sm text-[var(--dash-muted)]">
+            Don&apos;t have an account?{' '}
+            <Link
+              href="/dashboard/signup"
+              className="ml-1 text-[var(--dash-primary)] hover:underline font-medium"
+            >
+              Create one
+            </Link>
+          </CardFooter>
+        </Card>
       </div>
 
       <div className="hidden md:flex flex-1 relative min-w-0 md:min-w-[420px] min-h-[320px] md:min-h-screen bg-gradient-to-b from-[var(--dash-primary-soft)] to-[var(--dash-primary-soft-strong)] items-center justify-center overflow-hidden rounded-l-2xl">
@@ -196,30 +370,3 @@ export default function LoginPage() {
     </div>
   )
 }
-
-function GoogleIcon() {
-  return (
-    <svg className="w-5 h-5" viewBox="0 0 24 24" aria-hidden>
-      <path
-        fill="#4285F4"
-        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-      />
-      <path
-        fill="#34A853"
-        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-      />
-      <path
-        fill="#FBBC05"
-        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-      />
-      <path
-        fill="#EA4335"
-        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-      />
-    </svg>
-  )
-}
-
-
-
-
