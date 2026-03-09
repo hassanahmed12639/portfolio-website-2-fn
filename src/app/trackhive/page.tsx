@@ -185,101 +185,125 @@ export default function TrackHivePage() {
                 href="/dashboard/signup"
                 className="inline-flex w-full max-w-[240px] items-center justify-center rounded-md bg-[#0f172a] px-6 py-3 text-sm font-semibold uppercase tracking-wide text-white transition-colors hover:bg-[#1e293b] sm:w-auto sm:max-w-none"
               >
-                Launch App
+                TrackHive
               </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Feature Cards Section - 1 row 3 cards, clean minimal SaaS style */}
-      <section id="features" className="py-24 bg-white">
+      {/* Feature Cards Section - updated card count/content and responsive grid */}
+      <section id="features" className="py-24 bg-white font-sans">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <span className="text-xs font-semibold text-blue-600 uppercase tracking-widest bg-blue-50 px-3 py-1.5 rounded-full">
+          <div className="text-center mb-14">
+            <span className="inline-flex items-center rounded-full bg-blue-50 px-4 py-1.5 text-xs font-semibold text-blue-700">
               Everything You Need
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mt-4 mb-4">
+            <h2 className="mt-5 text-3xl font-bold leading-tight text-slate-900 sm:text-4xl md:text-5xl">
               Built for serious advertisers
             </h2>
-            <p className="text-slate-500 max-w-xl mx-auto text-lg">
+            <p className="mx-auto mt-4 max-w-2xl text-sm text-slate-500 sm:text-base">
               Stop losing conversions to ad blockers and browser restrictions. TrackHive sends your data server-side, every time.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-slate-50 rounded-2xl p-7 border border-slate-100 hover:border-blue-200 hover:shadow-md transition-all duration-200 group">
-              <div className="w-8 h-0.5 bg-blue-600 mb-6 group-hover:w-12 transition-all duration-200" />
-              <h3 className="text-lg font-bold text-slate-900 mb-3">
-                Server-Side Tracking
-              </h3>
-              <p className="text-slate-500 text-sm leading-relaxed">
-                Send events directly from your server to Meta, TikTok and Google. Ad blockers, iOS 14 restrictions and browser privacy settings cannot interfere.
+          <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:snap-none sm:pb-0 lg:grid-cols-4">
+            <article className="min-w-full snap-start rounded-3xl bg-blue-700 p-5 text-white shadow-sm shadow-blue-200/60 sm:min-w-0">
+              <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/20">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8L10 18l-4-4-3 3" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold leading-tight sm:text-2xl">Beat Ad Blockers Forever</h3>
+              <p className="mt-2.5 text-sm leading-6 text-blue-100">
+                Browser pixels lose 40% of conversions to ad blockers and iOS. TrackHive fires from your server - invisible to every blocker, every time.
               </p>
-            </div>
+            </article>
 
-            <div className="bg-slate-50 rounded-2xl p-7 border border-slate-100 hover:border-blue-200 hover:shadow-md transition-all duration-200 group">
-              <div className="w-8 h-0.5 bg-blue-600 mb-6 group-hover:w-12 transition-all duration-200" />
-              <h3 className="text-lg font-bold text-slate-900 mb-3">
-                85%+ Match Rate
-              </h3>
-              <p className="text-slate-500 text-sm leading-relaxed">
-                Achieve industry-leading match rates on Meta CAPI with automatic fbp, fbc and fbclid capture. Better matching means better optimization.
+            <article className="min-w-full snap-start rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_1px_4px_rgba(15,23,42,0.06)] sm:min-w-0">
+              <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-blue-700">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V7.618a1 1 0 01.553-.894L9 4m0 16l6-3m-6 3V4m6 13l6 3m-6-3V4m6 16V4" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold leading-tight text-slate-900 sm:text-2xl">90%+ Meta Match Rate</h3>
+              <p className="mt-2.5 text-sm leading-6 text-slate-500">
+                Most pixels match at 50-60%. TrackHive captures fbp, fbc, email and phone automatically to hit 90%+ - so Meta finds buyers, not browsers.
               </p>
-            </div>
+            </article>
 
-            <div className="bg-slate-50 rounded-2xl p-7 border border-slate-100 hover:border-blue-200 hover:shadow-md transition-all duration-200 group">
-              <div className="w-8 h-0.5 bg-blue-600 mb-6 group-hover:w-12 transition-all duration-200" />
-              <h3 className="text-lg font-bold text-slate-900 mb-3">
-                All Platforms, One Tool
-              </h3>
-              <p className="text-slate-500 text-sm leading-relaxed">
-                Meta CAPI, TikTok Events API, Google Enhanced Conversions and GA4 all fire simultaneously from a single event. No duplicate setup needed.
+            <article className="min-w-full snap-start rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_1px_4px_rgba(15,23,42,0.06)] sm:min-w-0">
+              <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-blue-700">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.243-4.243a8 8 0 1111.313 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold leading-tight text-slate-900 sm:text-2xl">One Event. Four Platforms.</h3>
+              <p className="mt-2.5 text-sm leading-6 text-slate-500">
+                Meta CAPI, TikTok, Google Ads and GA4 all fire from a single event. No duplicate code. No missed conversions.
               </p>
-            </div>
+            </article>
 
-            <div className="bg-slate-50 rounded-2xl p-7 border border-slate-100 hover:border-blue-200 hover:shadow-md transition-all duration-200 group">
-              <div className="w-8 h-0.5 bg-blue-600 mb-6 group-hover:w-12 transition-all duration-200" />
-              <h3 className="text-lg font-bold text-slate-900 mb-3">
-                Lead Scoring & Feedback Loop
-              </h3>
-              <p className="text-slate-500 text-sm leading-relaxed">
-                Score leads as Good, Bad or Hot and send quality signals back to Meta automatically. Train the algorithm to find more buyers, not just form fillers.
+            <article className="min-w-full snap-start rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_1px_4px_rgba(15,23,42,0.06)] sm:min-w-0">
+              <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-blue-700">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold leading-tight text-slate-900 sm:text-2xl">Tell Meta Who Actually Buys</h3>
+              <p className="mt-2.5 text-sm leading-6 text-slate-500">
+                Score leads as Hot, Good or Bad and send the signal back to Meta. Lower CPL, higher ROAS - automatically.
               </p>
-            </div>
+            </article>
 
-            <div className="bg-slate-50 rounded-2xl p-7 border border-slate-100 hover:border-blue-200 hover:shadow-md transition-all duration-200 group">
-              <div className="w-8 h-0.5 bg-blue-600 mb-6 group-hover:w-12 transition-all duration-200" />
-              <h3 className="text-lg font-bold text-slate-900 mb-3">
-                Real-Time Monitoring
-              </h3>
-              <p className="text-slate-500 text-sm leading-relaxed">
-                Watch events fire live, detect anomalies instantly and receive email alerts before tracking issues hurt your ROAS. Full visibility at all times.
+            <article className="min-w-full snap-start rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_1px_4px_rgba(15,23,42,0.06)] sm:min-w-0">
+              <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-blue-700">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold leading-tight text-slate-900 sm:text-2xl">Know Before Your ROAS Drops</h3>
+              <p className="mt-2.5 text-sm leading-6 text-slate-500">
+                Live event stream and anomaly detection catch tracking failures instantly - not three days later when your CPA has already doubled.
               </p>
-            </div>
+            </article>
 
-            <div className="bg-slate-50 rounded-2xl p-7 border border-slate-100 hover:border-blue-200 hover:shadow-md transition-all duration-200 group">
-              <div className="w-8 h-0.5 bg-blue-600 mb-6 group-hover:w-12 transition-all duration-200" />
-              <h3 className="text-lg font-bold text-slate-900 mb-3">
-                Live in 5 Minutes
-              </h3>
-              <p className="text-slate-500 text-sm leading-relaxed">
-                Add one script tag to your website and you are tracking server-side immediately. No complex infrastructure, no DevOps knowledge required.
+            <article className="min-w-full snap-start rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_1px_4px_rgba(15,23,42,0.06)] sm:min-w-0">
+              <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-blue-700">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold leading-tight text-slate-900 sm:text-2xl">Live in Under 5 Minutes</h3>
+              <p className="mt-2.5 text-sm leading-6 text-slate-500">
+                Paste one script tag and you are tracking server-side across every platform. No developers, no infrastructure, no complicated setup.
               </p>
-            </div>
-          </div>
+            </article>
 
-          <div className="text-center mt-12">
-            <Link
-              href="/dashboard/signup"
-              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors text-sm"
-            >
-              Start tracking for free
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </Link>
-            <p className="text-xs text-slate-400 mt-3">Free forever. No credit card required.</p>
+            <article className="min-w-full snap-start rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_1px_4px_rgba(15,23,42,0.06)] sm:min-w-0">
+              <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-blue-700">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 11c0 1.105-.672 2-1.5 2S9 12.105 9 11s.672-2 1.5-2 1.5.895 1.5 2zm9 0c0 4.418-4.03 8-9 8a10.943 10.943 0 01-4-.75L3 20l1.25-3.75A7.59 7.59 0 013 11c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold leading-tight text-slate-900 sm:text-2xl">Cookies That Last 180 Days</h3>
+              <p className="mt-2.5 text-sm leading-6 text-slate-500">
+                Safari and Firefox kill cookies in 1-7 days. TrackHive sets server-side cookies that survive ITP, ETP and every browser restriction.
+              </p>
+            </article>
+
+            <article className="min-w-full snap-start rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_1px_4px_rgba(15,23,42,0.06)] sm:min-w-0">
+              <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-blue-700">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5V9H2v11h5m10 0v-6a3 3 0 00-3-3H10a3 3 0 00-3 3v6m10 0H7" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold leading-tight text-slate-900 sm:text-2xl">Built for Agencies</h3>
+              <p className="mt-2.5 text-sm leading-6 text-slate-500">
+                Manage 25 pixels across multiple clients from one dashboard. Invite your team and keep every client's data completely isolated.
+              </p>
+            </article>
           </div>
         </div>
       </section>

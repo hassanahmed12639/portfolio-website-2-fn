@@ -24,6 +24,9 @@ const ICONS = [
   "/landing-google-ads.png",
   "/landing-tiktok-ads.png",
   "https://cdn.simpleicons.org/googleanalytics/E37400",
+  "https://cdn.simpleicons.org/googletagmanager/4285F4",
+  "/landing-shopify-ads.png",
+  "https://cdn.simpleicons.org/zapier/FF4A00",
 ]
 
 const LEFT_LANES: Lane[] = [
@@ -62,7 +65,8 @@ function cubicPoint(t: number, lane: Lane) {
 }
 
 function pickIcon(loop: number, id: number) {
-  const idx = Math.abs((loop * 7 + id * 11 + loop * loop) % ICONS.length)
+  // Deterministic rotation with a larger icon pool to reduce visible duplicates.
+  const idx = Math.abs((loop * 3 + id) % ICONS.length)
   return ICONS[idx]
 }
 
