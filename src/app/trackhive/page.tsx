@@ -3,6 +3,8 @@ import type { Metadata } from 'next'
 import TrackHiveNavbar from "@/components/trackhive/Navbar"
 import TrackHiveFooter from "@/components/trackhive/Footer"
 import WireFlowIcons from "@/components/trackhive/WireFlowIcons"
+import TestimonialSection from "@/components/trackhive/TestimonialSection"
+import PricingSection from "@/components/trackhive/PricingSection"
 
 export const metadata: Metadata = {
   title: 'TrackHive — Server-Side Tracking for Meta, TikTok & Google',
@@ -440,122 +442,41 @@ export default function TrackHivePage() {
       </section>
 
       {/* Testimonial + Stats */}
-      <section className="py-12 md:py-16 bg-white">
-        <div className="max-w-4xl mx-auto px-5 md:px-6 text-center mb-8 md:mb-12">
-          <p className="text-5xl md:text-7xl font-serif leading-none mb-4 md:mb-6" style={{ color: "#1d4ed8" }}>&ldquo;</p>
-          <blockquote className="text-2xl md:text-3xl font-bold leading-snug mb-8" style={{ color: "#0f172a" }}>
-            TrackHive is helping us recover conversions we were losing to ad blockers and iOS, while improving Meta match rates and attribution across our whole funnel.
-          </blockquote>
-          <div className="flex flex-col items-center gap-2">
-            <div className="w-14 h-14 rounded-full bg-slate-200 flex items-center justify-center text-lg font-bold" style={{ color: "#475569" }}>
-              DR
-            </div>
-            <p className="font-semibold" style={{ color: "#0f172a" }}>Darlene Robertson</p>
-            <p className="text-sm" style={{ color: "#64748b" }}>Head of Performance at E‑commerce Co.</p>
-          </div>
-        </div>
+      <TestimonialSection />
 
-        {/* Stats box */}
-        <div
-          className="max-w-4xl mx-auto px-5 md:px-6 rounded-2xl p-7 md:p-12 border"
-          style={{ backgroundColor: "#f8fafc", borderColor: "#e5e7eb", boxShadow: "0 1px 2px rgba(15,23,42,0.05)" }}
-        >
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div>
-              <p className="text-4xl font-bold mb-1" style={{ color: "#1d4ed8" }}>2024</p>
-              <p className="text-sm" style={{ color: "#475569" }}>TrackHive Launched</p>
-            </div>
-            <div>
-              <p className="text-4xl font-bold mb-1" style={{ color: "#1d4ed8" }}>50K+</p>
-              <p className="text-sm" style={{ color: "#475569" }}>Events Processed</p>
-            </div>
-            <div>
-              <p className="text-4xl font-bold mb-1" style={{ color: "#1d4ed8" }}>1K+</p>
-              <p className="text-sm" style={{ color: "#475569" }}>Marketers Trust Us</p>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Pricing Section */}
+      <PricingSection />
 
-      {/* Pricing preview - keep existing pricing cards */}
-      <section className="py-12 md:py-16" style={{ backgroundColor: "#f8fafc" }}>
-        <div className="max-w-5xl mx-auto px-5 md:px-6 text-center">
-          <h2 className="text-4xl font-extrabold mb-4" style={{ color: "#0f172a" }}>
-            Simple pricing.
-          </h2>
-          <p className="text-lg mb-10 md:mb-16" style={{ color: "#475569" }}>
-            No hidden fees. Cancel anytime.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="rounded-2xl border p-8 text-left bg-white" style={{ borderColor: "#e5e7eb", boxShadow: "0 1px 2px rgba(15,23,42,0.05)" }}>
-              <p className="font-bold text-lg mb-1" style={{ color: "#0f172a" }}>Free</p>
-              <p className="text-4xl font-extrabold mb-1" style={{ color: "#0f172a" }}>$0<span className="text-base font-normal" style={{ color: "#94a3b8" }}>/mo</span></p>
-              <p className="text-sm mb-6" style={{ color: "#475569" }}>Perfect to get started</p>
-              <ul className="space-y-3 text-sm mb-8" style={{ color: "#475569" }}>
-                {['1,000 events/month', 'Meta CAPI', '1 pixel', 'Basic analytics'].map((item) => (
-                  <li key={item} className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-blue-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                    </svg>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <Link href="/dashboard/signup" className="block text-center font-semibold py-2.5 rounded-lg transition-colors bg-slate-100" style={{ color: "#1e293b" }}>Start for free</Link>
-            </div>
-            <div className="rounded-2xl p-8 text-left relative border" style={{ backgroundColor: "#1d4ed8", borderColor: "rgba(147,197,253,0.35)", boxShadow: "0 8px 20px rgba(29,78,216,0.2)" }}>
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-bold px-3 py-1 rounded-full bg-amber-400" style={{ color: "#78350f" }}>MOST POPULAR</span>
-              <p className="font-bold text-lg mb-1 text-white">Pro</p>
-              <p className="text-4xl font-extrabold mb-1 text-white">$10<span className="text-base font-normal text-blue-200">/mo</span></p>
-              <p className="text-sm mb-6 text-blue-200">For growing businesses</p>
-              <ul className="space-y-3 text-sm mb-8 text-blue-100">
-                {['50,000 events/month', 'All platforms', '3 pixels', 'AI Analysis', 'Email alerts', 'Priority support'].map((item) => (
-                  <li key={item} className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-blue-200 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                    </svg>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <Link href="/billing" className="block text-center bg-white font-semibold py-2.5 rounded-lg transition-colors hover:bg-blue-50 text-blue-600">Upgrade to Pro</Link>
-            </div>
-            <div className="rounded-2xl border p-8 text-left bg-white" style={{ borderColor: "#e5e7eb", boxShadow: "0 1px 2px rgba(15,23,42,0.05)" }}>
-              <p className="font-bold text-lg mb-1" style={{ color: "#0f172a" }}>Agency</p>
-              <p className="text-4xl font-extrabold mb-1" style={{ color: "#0f172a" }}>$25<span className="text-base font-normal" style={{ color: "#94a3b8" }}>/mo</span></p>
-              <p className="text-sm mb-6" style={{ color: "#475569" }}>For agencies and teams</p>
-              <ul className="space-y-3 text-sm mb-8" style={{ color: "#475569" }}>
-                {['Unlimited events', 'All platforms', '10 pixels', 'Everything in Pro', 'White label', 'Dedicated support'].map((item) => (
-                  <li key={item} className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-blue-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                    </svg>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <Link href="/dashboard/signup" className="block text-center font-semibold py-2.5 rounded-lg bg-slate-100 transition-colors" style={{ color: "#1e293b" }}>Start for free</Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA - dark strip: Discover full scale... + Get a Demo / Start for Free */}
-      <section className="py-10 md:py-14" style={{ backgroundColor: "#1e3a5f" }}>
-        <div className="max-w-6xl mx-auto px-5 md:px-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6 md:gap-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-white max-w-xl">
-            Discover the full scale of{" "}
-            <span className="relative inline-block">
-              TrackHive capabilities
-              <span className="absolute bottom-1 left-0 w-full h-1 rounded" style={{ backgroundColor: "#93c5fd" }} />
-            </span>
-          </h2>
-          <div className="flex flex-wrap gap-4 shrink-0">
-            <Link href="/features" className="font-semibold px-6 py-3 rounded-xl border border-white text-white hover:bg-white/10 transition-colors">
-              Get a Demo
-            </Link>
-            <Link href="/dashboard/signup" className="font-semibold px-6 py-3 rounded-xl bg-white hover:bg-slate-100 transition-colors" style={{ color: "#1d4ed8" }}>
-              Start for Free
+      {/* CTA - Airlume style: light bg, white panel, heading + subtitle + pill CTA + decorative icons */}
+      <section className="py-12 md:py-16 relative overflow-hidden" style={{ backgroundColor: "#f0f4f8" }}>
+        <div className="max-w-4xl mx-auto px-5 md:px-8">
+          <div
+            className="relative rounded-3xl px-6 py-12 md:px-12 md:py-14 text-center"
+            style={{
+              backgroundColor: "#ffffff",
+              boxShadow: "0 4px 24px rgba(15,23,42,0.06), 0 0 0 1px rgba(15,23,42,0.04)",
+            }}
+          >
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold leading-tight mb-4" style={{ color: "#0f172a" }}>
+              Ready To Track Smarter With TrackHive?
+            </h2>
+            <p className="text-base md:text-lg max-w-xl mx-auto mb-8" style={{ color: "#64748b" }}>
+              from setup to insights to real-time events, trackhive makes every part of your attribution effortless.
+            </p>
+            <Link
+              href="/dashboard/signup"
+              className="inline-flex items-center gap-0 rounded-full font-semibold text-white transition-all hover:opacity-95 pl-8 pr-[6px] py-2"
+              style={{ background: "linear-gradient(180deg, #0f172a 0%, #1e293b 100%)", boxShadow: "0 2px 12px rgba(15,23,42,0.2)" }}
+            >
+              <span className="pr-6 py-1.5">Start for Free</span>
+              <span
+                className="flex items-center justify-center w-11 h-11 rounded-full border-2 shrink-0 -mr-1"
+                style={{ borderColor: "#0f172a", backgroundColor: "#ffffff", color: "#0f172a" }}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </span>
             </Link>
           </div>
         </div>

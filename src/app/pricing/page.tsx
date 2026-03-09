@@ -2,6 +2,7 @@ import Link from "next/link"
 import type { Metadata } from 'next'
 import TrackHiveNavbar from "@/components/trackhive/Navbar"
 import TrackHiveFooter from "@/components/trackhive/Footer"
+import PricingSection from "@/components/trackhive/PricingSection"
 
 export const metadata: Metadata = {
   title: 'TrackHive Pricing — Server-Side Tracking Plans',
@@ -42,7 +43,7 @@ export default function PricingPage() {
 
       {/* Hero */}
       <section
-        className="pt-32 pb-16"
+        className="pt-32 pb-10"
         style={{ background: "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f8fafc 100%)" }}
       >
         <div className="max-w-4xl mx-auto px-6 text-center">
@@ -55,125 +56,8 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* Pricing cards */}
-      <section className="py-16">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Free */}
-            <div
-              className="rounded-2xl border p-8 flex flex-col"
-              style={{
-                backgroundColor: "#ffffff",
-                borderColor: "#e2e8f0",
-                boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04)",
-              }}
-            >
-              <p className="font-bold text-xl mb-1" style={{ color: "#0f172a" }}>
-                Free
-              </p>
-              <p className="text-4xl font-extrabold mb-1" style={{ color: "#0f172a" }}>
-                $0<span className="text-base font-normal" style={{ color: "#94a3b8" }}>/mo</span>
-              </p>
-              <p className="text-sm mb-8" style={{ color: "#475569" }}>
-                Perfect for getting started
-              </p>
-              <ul className="space-y-4 text-sm flex-1 mb-8" style={{ color: "#475569" }}>
-                {['500 events/month', 'Meta CAPI only', '1 pixel', 'Basic dashboard', 'Event logs (24hrs)', 'Scanner (3 scans/month)'].map((item) => (
-                  <li key={item} className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-blue-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                    </svg>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href="/dashboard/signup"
-                className="block text-center font-semibold py-3 rounded-xl transition-colors"
-                style={{ backgroundColor: "#f1f5f9", color: "#1e293b" }}
-              >
-                Start for free
-              </Link>
-            </div>
-
-            {/* Pro — highlighted */}
-            <div
-              className="rounded-2xl p-8 flex flex-col relative shadow-xl"
-              style={{
-                backgroundColor: "#2563eb",
-                boxShadow: "0 25px 50px -12px rgba(37, 99, 235, 0.25)",
-                border: "2px solid #2563eb",
-              }}
-            >
-              <span
-                className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-bold px-3 py-1 rounded-full"
-                style={{ backgroundColor: "#fbbf24", color: "#78350f" }}
-              >
-                MOST POPULAR
-              </span>
-              <p className="font-bold text-xl mb-1 text-white">Pro</p>
-              <p className="text-4xl font-extrabold mb-1 text-white">
-                $15<span className="text-base font-normal text-blue-200">/mo</span>
-              </p>
-              <p className="text-sm mb-8 text-blue-200">For growing businesses</p>
-              <ul className="space-y-4 text-sm flex-1 mb-8 text-blue-100">
-                {['25,000 events/month', 'All platforms (Meta, TikTok, GA4, Google)', '3 pixels', 'Lead Manager + scoring', 'Live Stream & Event Replay', 'Raw Data access', 'All tools unlocked', 'Email alerts'].map((item) => (
-                  <li key={item} className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-blue-200 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                    </svg>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href="/billing"
-                className="block text-center bg-white font-semibold py-3 rounded-xl transition-colors hover:bg-blue-50"
-                style={{ color: "#2563eb" }}
-              >
-                Upgrade to Pro
-              </Link>
-            </div>
-
-            {/* Agency */}
-            <div
-              className="rounded-2xl border p-8 flex flex-col"
-              style={{
-                backgroundColor: "#ffffff",
-                borderColor: "#e2e8f0",
-                boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04)",
-              }}
-            >
-              <p className="font-bold text-xl mb-1" style={{ color: "#0f172a" }}>
-                Agency
-              </p>
-              <p className="text-4xl font-extrabold mb-1" style={{ color: "#0f172a" }}>
-                $45<span className="text-base font-normal" style={{ color: "#94a3b8" }}>/mo</span>
-              </p>
-              <p className="text-sm mb-8" style={{ color: "#475569" }}>
-                For agencies & teams
-              </p>
-              <ul className="space-y-4 text-sm flex-1 mb-8" style={{ color: "#475569" }}>
-                {['Unlimited events', 'All platforms', '25 pixels', 'Everything in Pro', '5 team members', 'All templates', 'Priority support', 'Early access to features'].map((item) => (
-                  <li key={item} className="flex items-center gap-2">
-                    <svg className="w-4 h-4 text-blue-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                    </svg>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href="/billing"
-                className="block text-center font-semibold py-3 rounded-xl transition-colors"
-                style={{ backgroundColor: "#f1f5f9", color: "#1e293b" }}
-              >
-                Upgrade to Agency
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Pricing cards — shared with trackhive */}
+      <PricingSection showHeader={false} />
 
       {/* FAQ */}
       <section className="py-24" style={{ backgroundColor: "#f8fafc" }}>
