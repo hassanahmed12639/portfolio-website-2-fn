@@ -43,24 +43,30 @@
     }
   };
 
-  // 2. Get or create _fbc cookie
-  // Format: fb.1.{timestamp}.{fbclid}
-  TrackHive.getFbc = function() {
-    var existing = TrackHive.getCookie('_fbc');
-    if (existing) return existing;
-
-    var fbclid = TrackHive.fbclid;
+  // 2. Capture fbclid and persist _fbc
+  TrackHive.captureFbc = function() {
+    var fbclid = TrackHive.getFbclid();
     if (fbclid) {
       var fbc = 'fb.1.' + Date.now() + '.' + fbclid;
       TrackHive.setCookie('_fbc', fbc, 90);
       return fbc;
     }
-    return null;
+    return TrackHive.getCookie('_fbc');
   };
 
-  // 3. Get or create _fbp cookie
-  // Format: fb.1.{timestamp}.{random_number}
+  // 3. Read _fbc cookie
+  TrackHive.getFbc = function() {
+    return TrackHive.getCookie('_fbc');
+  };
+
+  // 4. Read _fbp cookie
   TrackHive.getFbp = function() {
+    return TrackHive.getCookie('_fbp');
+  };
+
+  // 5. Get or create _fbp cookie
+  // Format: fb.1.{timestamp}.{random_number}
+  TrackHive.generateFbp = function() {
     var existing = TrackHive.getCookie('_fbp');
     if (existing) return existing;
 
@@ -70,11 +76,20 @@
     return fbp;
   };
 
-  // 4. Capture all Meta signals on load
+  TrackHive.getTrackingParams = function() {
+    return {
+      fbp: TrackHive.getFbp(),
+      fbc: TrackHive.getFbc(),
+      url: window.location.href,
+      referrer: document.referrer || null
+    };
+  };
+
+  // 6. Capture all Meta signals on load
   TrackHive.captureMetaSignals = function() {
     TrackHive.fbclid = TrackHive.getFbclid();
-    TrackHive.fbc = TrackHive.getFbc();
-    TrackHive.fbp = TrackHive.getFbp();
+    TrackHive.fbc = TrackHive.captureFbc();
+    TrackHive.fbp = TrackHive.generateFbp();
 
     // Persist fbclid in sessionStorage so it survives page navigations
     if (TrackHive.fbclid) {
@@ -110,11 +125,14 @@
     // Auto-generate event_id for deduplication if not provided
     var eventId = data.event_id || (eventName + '_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9));
 
+    var trackingParams = TrackHive.getTrackingParams();
     var payload = {
       api_key: TrackHive.key,
       event_name: eventName,
       event_id: eventId,
-      event_source_url: window.location.href,
+      event_source_url: trackingParams.url,
+      source_url: trackingParams.url,
+      referrer: trackingParams.referrer,
       value: data.value || null,
       currency: data.currency || 'USD',
       email: data.email || null,
@@ -129,9 +147,10 @@
       gender: data.gender || null,
       visitor_id: TrackHive.visitorId || null,
       // Meta signals — auto-included from page signals
-      fbc: TrackHive.fbc || null,
-      fbp: TrackHive.fbp || null,
-      fbclid: TrackHive.fbclid || null
+      fbc: trackingParams.fbc || null,
+      fbp: trackingParams.fbp || null,
+      fbclid: TrackHive.fbclid || null,
+      external_id: data.external_id || data.user_id || null
     };
 
     fetch('https://track.itshassanahmed.com/api/event', {

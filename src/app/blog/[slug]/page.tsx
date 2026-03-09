@@ -256,6 +256,23 @@ export default async function BlogPostPage({ params }: Props) {
     .neq('id', post.id)
     .limit(3)
 
+  // Use explicit featured image fields first; otherwise pull first <img> from HTML content.
+  const firstContentImage = post.content?.match(/<img[^>]+src=["']([^"']+)["'][^>]*>/i)
+  const firstContentImageTag = firstContentImage?.[0]
+  const firstContentImageSrc = firstContentImage?.[1]
+  const featuredImage =
+    post.featured_image ||
+    post.featured_image_url ||
+    post.cover_image ||
+    post.image ||
+    post.image_url ||
+    post.thumbnail_url ||
+    firstContentImageSrc
+  const articleContent =
+    firstContentImageTag && firstContentImageSrc && featuredImage === firstContentImageSrc
+      ? post.content.replace(firstContentImageTag, '')
+      : post.content
+
   return (
     <div className="min-h-screen bg-slate-50">
       <TrackHiveNavbar />
@@ -311,6 +328,24 @@ export default async function BlogPostPage({ params }: Props) {
 
           {/* Main article column */}
           <article>
+            {/* Featured image */}
+            <div className="mb-8 overflow-hidden rounded-2xl border border-slate-200 bg-slate-100">
+              {featuredImage ? (
+                <img
+                  src={featuredImage}
+                  alt={post.title}
+                  className="w-full h-[220px] md:h-[340px] object-cover"
+                  loading="eager"
+                />
+              ) : (
+                <div className="h-[220px] md:h-[340px] bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center px-6 text-center">
+                  <p className="text-white text-2xl md:text-3xl font-extrabold leading-tight max-w-3xl">
+                    {post.title}
+                  </p>
+                </div>
+              )}
+            </div>
+
             {/* Breadcrumb */}
             <div className="flex items-center gap-2 text-xs text-slate-400 mb-4">
               <Link href="/blog" className="hover:text-blue-600">
@@ -372,7 +407,7 @@ export default async function BlogPostPage({ params }: Props) {
             prose-pre:bg-slate-950 prose-pre:text-green-400 prose-pre:rounded-xl
             prose-ul:text-slate-600 prose-li:mb-1
             prose-blockquote:border-blue-500 prose-blockquote:bg-blue-50 prose-blockquote:rounded-r-xl prose-blockquote:py-2"
-              dangerouslySetInnerHTML={{ __html: post.content }}
+              dangerouslySetInnerHTML={{ __html: articleContent }}
             />
 
             {/* CTA Box */}

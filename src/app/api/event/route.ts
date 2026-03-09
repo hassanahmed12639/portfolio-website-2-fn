@@ -106,6 +106,8 @@ export async function POST(request: NextRequest) {
     consent_rejected?: boolean
     order_id?: string
     external_id?: string
+    user_id?: string
+    referrer?: string
     ttclid?: string
     content_ids?: string[]
     content_type?: string
@@ -169,8 +171,10 @@ export async function POST(request: NextRequest) {
     content_type: bodyContentType,
     contents: bodyContents,
     num_items: bodyNumItems,
+    user_id: bodyUserId,
+    referrer: bodyReferrer,
   } = body
-  const event_source_url = bodySourceUrl ?? request.headers.get('referer') ?? undefined
+  const event_source_url = bodySourceUrl ?? bodyReferrer ?? request.headers.get('referer') ?? undefined
 
   // Support th.js payload: extract from user_data arrays if present
   const email = bodyEmail ?? userData?.em?.[0] ?? undefined
@@ -183,7 +187,7 @@ export async function POST(request: NextRequest) {
   const userCountry = body.country ?? userData?.country?.[0] ?? undefined
   const date_of_birth = body.date_of_birth ?? userData?.db?.[0] ?? undefined
   const gender = body.gender ?? userData?.ge?.[0] ?? undefined
-  const external_id = body.external_id ?? userData?.external_id?.[0] ?? undefined
+  const external_id = body.external_id ?? bodyUserId ?? userData?.external_id?.[0] ?? undefined
   const event_id = bodyEventId ?? `th_${Date.now()}_${Math.random().toString(36).slice(2)}`
 
   let api_key = bodyApiKey
@@ -606,22 +610,28 @@ export async function POST(request: NextRequest) {
         const hashedEmail = enrichmentData?.hashes?.email_hash ?? (email ? sha256(email) : undefined)
         const hashedPhone = enrichmentData?.hashes?.phone_hash ?? (phone ? sha256(phone.replace(/\D/g, '')) : undefined)
 
-        const userData: Record<string, string | string[]> = {}
-        if (ip) userData.client_ip_address = ip
-        if (userAgent) userData.client_user_agent = userAgent
-        if (fbp) userData.fbp = fbp
-        if (fbc) userData.fbc = fbc
-        if (hashedEmail) userData.em = [hashedEmail]
-        if (hashedPhone) userData.ph = [hashedPhone]
-        if (first_name) userData.fn = [hashValue(first_name.toLowerCase().trim())]
-        if (last_name) userData.ln = [hashValue(last_name.toLowerCase().trim())]
-        if (city) userData.ct = [hashValue(city.toLowerCase().trim().replace(/\s/g, ''))]
-        if (state) userData.st = [hashValue(state.toLowerCase().trim().replace(/\s/g, ''))]
-        if (zip) userData.zp = [hashValue(zip.replace(/\D/g, ''))]
-        if (userCountry) userData.country = [hashValue(userCountry.toLowerCase().trim())]
-        if (date_of_birth) userData.db = [hashValue(date_of_birth.replace(/-/g, ''))]
-        if (gender) userData.ge = [hashValue(gender.toLowerCase().trim())]
-        if (external_id) userData.external_id = [hashValue(external_id)]
+        const userData: Record<string, string | string[] | undefined> = {
+          em: hashedEmail ? [hashedEmail] : undefined,
+          ph: hashedPhone ? [hashedPhone] : undefined,
+          fn: first_name ? [hashValue(first_name.toLowerCase().trim())] : undefined,
+          ln: last_name ? [hashValue(last_name.toLowerCase().trim())] : undefined,
+          ct: city ? [hashValue(city.toLowerCase().trim().replace(/\s/g, ''))] : undefined,
+          st: state ? [hashValue(state.toLowerCase().trim().replace(/\s/g, ''))] : undefined,
+          zp: zip ? [hashValue(zip.replace(/\D/g, ''))] : undefined,
+          country: userCountry ? [hashValue(userCountry.toLowerCase().trim())] : undefined,
+          db: date_of_birth ? [hashValue(date_of_birth.replace(/-/g, ''))] : undefined,
+          ge: gender ? [hashValue(gender.toLowerCase().trim())] : undefined,
+          client_ip_address: ip,
+          client_user_agent: userAgent,
+          fbp: fbp || undefined,
+          fbc: fbc || undefined,
+          external_id: external_id ? [hashValue(external_id)] : undefined,
+        }
+        Object.keys(userData).forEach((key) => {
+          if (userData[key] === undefined) {
+            delete userData[key]
+          }
+        })
         if (enrichmentData?.geo?.countryCode && !userData.country) {
           userData.country = [enrichmentData.geo.countryCode.toLowerCase()]
         }
@@ -651,6 +661,14 @@ export async function POST(request: NextRequest) {
           user_data: userData,
           custom_data: customData,
         }
+        console.log('[Meta CAPI] user_data params:', {
+          has_fbp: !!fbp,
+          has_fbc: !!fbc,
+          has_ip: !!ip,
+          has_external_id: !!external_id,
+          has_email: !!userData.em,
+          has_phone: !!userData.ph,
+        })
 
         const testEventCode = (integration as { meta_test_event_code?: string | null }).meta_test_event_code?.trim() || null
         const metaRequestBody: { data: Record<string, unknown>[]; test_event_code?: string } = { data: [metaEvent] }

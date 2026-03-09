@@ -22,23 +22,39 @@ export async function GET(req: NextRequest) {
     document.cookie = name + '=' + encodeURIComponent(value) + '; path=/; max-age=' + (days * 86400) + '; SameSite=Lax';
   }
 
-  // Get or create fbp
-  var fbp = getCookie('_fbp');
-  if (!fbp) {
-    fbp = 'fb.1.' + Date.now() + '.' + Math.floor(Math.random() * 1000000000);
-    setCookie('_fbp', fbp, 90);
+  function captureFbc() {
+    var urlParams = new URLSearchParams(window.location.search);
+    var fbclid = urlParams.get('fbclid');
+    if (fbclid) {
+      var fbc = 'fb.1.' + Date.now() + '.' + fbclid;
+      setCookie('_fbc', fbc, 90);
+      return fbc;
+    }
+    return getCookie('_fbc');
   }
 
-  // Get fbc from URL or cookie
-  var urlParams = new URLSearchParams(window.location.search);
-  var fbclid = urlParams.get('fbclid');
-  var fbc = getCookie('_fbc');
-  if (fbclid) {
-    fbc = 'fb.1.' + Date.now() + '.' + fbclid;
-    setCookie('_fbc', fbc, 90);
+  function getFbp() {
+    return getCookie('_fbp');
   }
+
+  function getFbc() {
+    return getCookie('_fbc');
+  }
+
+  function generateFbp() {
+    var existing = getFbp();
+    if (existing) return existing;
+    var fbp = 'fb.1.' + Date.now() + '.' + Math.floor(Math.random() * 1000000000);
+    setCookie('_fbp', fbp, 90);
+    return fbp;
+  }
+
+  captureFbc();
+  generateFbp();
 
   // Get ttclid from URL or cookie
+  var urlParams = new URLSearchParams(window.location.search);
+  var fbclid = urlParams.get('fbclid');
   var ttclid = urlParams.get('ttclid');
   if (ttclid) {
     setCookie('ttclid', ttclid, 30);
@@ -56,15 +72,16 @@ export async function GET(req: NextRequest) {
       event_name: eventName,
       event_source_url: window.location.href,
       page_url: window.location.href,
+      referrer: document.referrer || undefined,
       event_id: eventId,
-      fbp: fbp,
-      fbc: fbc || undefined,
+      fbp: getFbp() || undefined,
+      fbc: getFbc() || undefined,
       fbclid: fbclid || undefined,
       ttclid: savedTtclid || undefined,
       client_user_agent: navigator.userAgent,
       value: params.value || 0,
       currency: params.currency || 'USD',
-      external_id: params.external_id || params.order_id || undefined,
+      external_id: params.external_id || params.user_id || params.order_id || undefined,
       order_id: params.order_id || undefined,
       content_ids: params.content_ids || undefined,
       content_type: params.content_type || undefined,
