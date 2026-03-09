@@ -117,7 +117,7 @@ export default function DashboardShell({ user, trialExpired, profile, children }
                   Upgrade to Pro
                 </Link>
                 <Link
-                  href="/dashboard"
+                  href="/dashboard/account"
                   onClick={() => setUserMenuOpen(false)}
                   className="flex items-center gap-2 px-3 py-2 text-sm text-[var(--dash-text)] hover:bg-[var(--dash-surface-hover)]"
                 >
