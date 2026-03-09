@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { createAdminClient } from '@/lib/supabase/admin'
 
-const BASE_URL = 'https://track.itshassanahmed.com'
+const BASE_URL = 'https://track.itshassanhamed.com'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Static pages
