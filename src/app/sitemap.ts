@@ -67,5 +67,36 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('[Sitemap] Error fetching blog posts:', err)
   }
 
-  return [...staticPages, ...blogPages]
+  // pSEO pages from Supabase
+  let pseoUrls: MetadataRoute.Sitemap = []
+  try {
+    const supabase = createAdminClient()
+    const { data: pseoPages } = await supabase
+      .from('pseo_pages')
+      .select('type, slug, updated_at')
+      .eq('published', true)
+
+    if (pseoPages?.length) {
+      pseoUrls = pseoPages.map((p) => {
+        const path =
+          p.type === 'integration'
+            ? `/integrations/${p.slug}`
+            : p.type === 'compare'
+              ? `/compare/${p.slug}`
+              : p.type === 'usecase'
+                ? `/for/${p.slug}`
+                : `/blog/${p.slug}`
+        return {
+          url: `${BASE_URL}${path}`,
+          lastModified: new Date(p.updated_at ?? ''),
+          changeFrequency: 'monthly' as const,
+          priority: 0.8,
+        }
+      })
+    }
+  } catch (err) {
+    console.error('[Sitemap] Error fetching pSEO pages:', err)
+  }
+
+  return [...staticPages, ...blogPages, ...pseoUrls]
 }
