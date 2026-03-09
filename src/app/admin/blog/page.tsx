@@ -11,6 +11,9 @@ export default function AdminBlogPage() {
     slug: '',
     excerpt: '',
     content: '',
+    meta_title: '',
+    meta_description: '',
+    primary_keyword: '',
     category: 'Server-Side Tracking',
     author: 'TrackHive Team',
     read_time: 5,
@@ -52,6 +55,9 @@ export default function AdminBlogPage() {
       slug: '',
       excerpt: '',
       content: '',
+      meta_title: '',
+      meta_description: '',
+      primary_keyword: '',
       category: 'Server-Side Tracking',
       author: 'TrackHive Team',
       read_time: 5,
@@ -248,42 +254,117 @@ export default function AdminBlogPage() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                  Category
-                </label>
-                <select
-                  value={form.category}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, category: e.target.value }))
-                  }
-                  className="w-full mt-1 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option>Server-Side Tracking</option>
-                  <option>Meta CAPI</option>
-                  <option>TikTok</option>
-                  <option>Google</option>
-                  <option>Analytics</option>
-                  <option>Tutorial</option>
-                </select>
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                  Read Time (mins)
-                </label>
-                <input
-                  type="number"
-                  value={form.read_time}
-                  onChange={(e) =>
-                    setForm((f) => ({
-                      ...f,
-                      read_time: parseInt(e.target.value) || 5,
-                    }))
-                  }
-                  className="w-full mt-1 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+            <div>
+              <label className="text-sm font-medium text-slate-700 block mb-1">
+                SEO Meta Title
+              </label>
+              <input
+                type="text"
+                placeholder="Under 60 characters — shown in Google results"
+                value={form.meta_title || ''}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, meta_title: e.target.value }))
+                }
+                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <p className="text-xs text-slate-400 mt-1">
+                {(form.meta_title || '').length}/60 characters
+              </p>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-slate-700 block mb-1">
+                SEO Meta Description
+              </label>
+              <textarea
+                placeholder="Under 160 characters — shown in Google search results"
+                value={form.meta_description || ''}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, meta_description: e.target.value }))
+                }
+                rows={2}
+                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <p className="text-xs text-slate-400 mt-1">
+                {(form.meta_description || '').length}/160 characters
+              </p>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-slate-700 block mb-1">
+                Primary Keyword
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. meta capi setup shopify"
+                value={form.primary_keyword || ''}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, primary_keyword: e.target.value }))
+                }
+                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-slate-700 block mb-1">
+                Category
+              </label>
+              <select
+                value={form.category || ''}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, category: e.target.value }))
+                }
+                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select category</option>
+                <option value="Facebook Ads">Facebook Ads</option>
+                <option value="TikTok Ads">TikTok Ads</option>
+                <option value="Google Ads">Google Ads</option>
+                <option value="Conversion Tracking">Conversion Tracking</option>
+                <option value="Tracking & Analytics">Tracking & Analytics</option>
+                <option value="Agency">Agency</option>
+                <option value="Tutorials">Tutorials</option>
+                <option value="Server-Side Tracking">Server-Side Tracking</option>
+                <option value="Meta CAPI">Meta CAPI</option>
+                <option value="TikTok">TikTok</option>
+                <option value="Google">Google</option>
+                <option value="Analytics">Analytics</option>
+                <option value="Tutorial">Tutorial</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-slate-700 block mb-1">
+                Read Time (minutes)
+              </label>
+              <input
+                type="number"
+                min={1}
+                max={30}
+                value={form.read_time ?? 5}
+                onChange={(e) =>
+                  setForm((f) => ({
+                    ...f,
+                    read_time: parseInt(e.target.value, 10) || 5,
+                  }))
+                }
+                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-slate-700 block mb-1">
+                Author
+              </label>
+              <input
+                type="text"
+                placeholder="TrackHive Team"
+                value={form.author || ''}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, author: e.target.value }))
+                }
+                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
             </div>
 
             <div>

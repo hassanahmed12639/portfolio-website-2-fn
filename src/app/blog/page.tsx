@@ -62,17 +62,23 @@ export default async function BlogPage() {
                   </div>
                 </div>
                 <div className="p-8 flex flex-col justify-center">
-                  <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded-full w-fit mb-3">
-                    {featured.category}
-                  </span>
+                  {featured.category && (
+                    <span className="text-xs font-semibold bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full w-fit mb-3">
+                      {featured.category}
+                    </span>
+                  )}
                   <h2 className="text-2xl font-bold text-slate-900 mb-3">
                     {featured.title}
                   </h2>
                   <p className="text-slate-500 mb-4">{featured.excerpt}</p>
                   <div className="flex items-center gap-3 text-xs text-slate-400">
                     <span>{featured.author}</span>
-                    <span>•</span>
-                    <span>{featured.read_time} min read</span>
+                    {featured.read_time != null && (
+                      <>
+                        <span>•</span>
+                        <span>{featured.read_time} min read</span>
+                      </>
+                    )}
                     <span>•</span>
                     <span>
                       {new Date(featured.created_at).toLocaleDateString(
@@ -100,9 +106,11 @@ export default async function BlogPage() {
                   <div className="w-10 h-10 border-2 border-white/30 rounded-xl" />
                 </div>
                 <div className="p-5">
-                  <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">
-                    {post.category}
-                  </span>
+                  {post.category && (
+                    <span className="text-xs font-semibold bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full">
+                      {post.category}
+                    </span>
+                  )}
                   <h3 className="font-bold text-slate-900 mt-2 mb-2 line-clamp-2">
                     {post.title}
                   </h3>
@@ -110,7 +118,9 @@ export default async function BlogPage() {
                     {post.excerpt}
                   </p>
                   <div className="flex items-center justify-between text-xs text-slate-400">
-                    <span>{post.read_time} min read</span>
+                    {post.read_time != null && (
+                      <span className="text-xs text-slate-400">{post.read_time} min read</span>
+                    )}
                     <span>
                       {new Date(post.created_at).toLocaleDateString()}
                     </span>

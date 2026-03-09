@@ -730,21 +730,15 @@ const PSEO_PAGES = [
 ]
 
   for (const post of BLOG_POSTS) {
-    const row = {
-      title: post.title,
-      slug: post.slug,
-      excerpt: post.excerpt,
-      content: post.content,
-      author: post.author,
-      category: post.category,
-      tags: post.tags,
-      published: post.published,
-      read_time: post.read_time,
-      updated_at: new Date().toISOString(),
-    }
     const { error } = await supabaseAdmin
       .from('blog_posts')
-      .upsert(row, { onConflict: 'slug' })
+      .upsert(
+        {
+          ...post,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: 'slug' }
+      )
     if (error) console.error('Blog post error:', post.slug, error.message)
     else console.log('Inserted blog post:', post.slug)
   }

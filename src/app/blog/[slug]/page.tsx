@@ -12,18 +12,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const supabase = await createClient()
   const { data: post } = await supabase
     .from('blog_posts')
-    .select('*')
+    .select('title, meta_title, meta_description, excerpt, primary_keyword, author, slug')
     .eq('slug', slug)
+    .eq('published', true)
     .single()
 
-  if (!post) return { title: 'Post Not Found' }
+  if (!post) return {}
 
   return {
-    title: `${post.title} — TrackHive Blog`,
-    description: post.excerpt ?? undefined,
+    title: post.meta_title || post.title + ' | TrackHive',
+    description: (post.meta_description || post.excerpt) ?? undefined,
+    keywords: post.primary_keyword ?? undefined,
+    authors: [{ name: post.author || 'TrackHive Team' }],
     openGraph: {
-      title: post.title,
-      description: post.excerpt ?? undefined,
+      title: post.meta_title || post.title,
+      description: (post.meta_description || post.excerpt) ?? undefined,
       url: `https://track.itshassanahmed.com/blog/${post.slug}`,
       type: 'article',
     },
