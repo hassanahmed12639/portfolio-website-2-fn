@@ -2,6 +2,7 @@ import Link from "next/link"
 import type { Metadata } from 'next'
 import TrackHiveNavbar from "@/components/trackhive/Navbar"
 import TrackHiveFooter from "@/components/trackhive/Footer"
+import WireFlowIcons from "@/components/trackhive/WireFlowIcons"
 
 export const metadata: Metadata = {
   title: 'TrackHive — Server-Side Tracking for Meta, TikTok & Google',
@@ -134,55 +135,59 @@ export default function TrackHivePage() {
         </div>
       </section>
 
-      {/* About - Ibnésia-style: pill header, highlighted text block, short viewport */}
-      <section
-        className="py-12 md:py-16 relative overflow-hidden min-h-[320px] md:min-h-[360px] flex flex-col justify-center"
-        style={{
-          background: "linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 35%, #f8fafc 70%, #ffffff 100%)",
-          backgroundImage: `
-            linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 35%, #f8fafc 70%, #ffffff 100%),
-            radial-gradient(ellipse 80% 50% at 20% 40%, rgba(147, 197, 253, 0.08) 0%, transparent 50%),
-            radial-gradient(ellipse 60% 40% at 80% 60%, rgba(191, 219, 254, 0.06) 0%, transparent 50%)
-          `,
-        }}
-      >
-        {/* Subtle background shapes */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -left-20 -top-20 w-80 h-64 rounded-[3rem] border border-slate-200/40" />
-          <div className="absolute right-10 top-1/4 w-72 h-56 rounded-[2.5rem] border border-slate-200/30" />
-          <div className="absolute left-1/3 -bottom-10 w-64 h-48 rounded-[2rem] border border-slate-200/25" />
+      {/* About/Brand statement section recreated from provided reference */}
+      <section className="relative overflow-hidden bg-white py-10 md:py-14 lg:py-16">
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-5xl text-center">
+            <h2 className="text-3xl font-bold leading-[1.1] tracking-tight text-[#0f172a] sm:text-4xl md:text-5xl lg:text-6xl">
+              <span className="bg-gradient-to-r from-[#0f172a] via-[#2563eb] to-[#93c5fd] bg-clip-text text-transparent">
+                Audited. Open-source.
+              </span>
+              <br />
+              <span className="text-[#0f172a]">Stress-tested.</span>{" "}
+              <span className="text-[#93c5fd]">Countless times.</span>
+            </h2>
+          </div>
         </div>
 
-        <div className="max-w-4xl mx-auto px-5 md:px-6 relative">
-          {/* Pill header */}
-          <div className="flex justify-center mb-8 md:mb-10">
-            <div
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-white border"
-              style={{ backgroundColor: "#3B82F6", borderColor: "#2563eb" }}
+        {/* Connected wire motif + centered CTA */}
+        <div className="relative mt-8 h-[220px] overflow-hidden sm:h-[260px] md:h-[300px]">
+          <div className="pointer-events-none absolute inset-0">
+            <svg
+              className="h-full w-full"
+              viewBox="0 0 1200 320"
+              preserveAspectRatio="none"
+              aria-hidden="true"
             >
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
-              ABOUT TRACKHIVE
+              {/* Center axis */}
+              <path d="M0 160 L1200 160" stroke="#e2e8f0" strokeWidth="1" />
+
+              {/* Primary outer wires */}
+              <path d="M0 16 C180 16, 300 158, 600 160" fill="none" stroke="#334155" strokeOpacity="0.45" strokeWidth="1.2" />
+              <path d="M1200 16 C1020 16, 900 158, 600 160" fill="none" stroke="#334155" strokeOpacity="0.45" strokeWidth="1.2" />
+              <path d="M0 304 C180 304, 300 162, 600 160" fill="none" stroke="#334155" strokeOpacity="0.45" strokeWidth="1.2" />
+              <path d="M1200 304 C1020 304, 900 162, 600 160" fill="none" stroke="#334155" strokeOpacity="0.45" strokeWidth="1.2" />
+
+              {/* Secondary inner wires */}
+              <path d="M0 74 C220 74, 350 157, 600 160" fill="none" stroke="#64748b" strokeOpacity="0.28" strokeWidth="1" strokeDasharray="2.5 4.5" />
+              <path d="M1200 74 C980 74, 850 157, 600 160" fill="none" stroke="#64748b" strokeOpacity="0.28" strokeWidth="1" strokeDasharray="2.5 4.5" />
+              <path d="M0 246 C220 246, 350 163, 600 160" fill="none" stroke="#64748b" strokeOpacity="0.28" strokeWidth="1" strokeDasharray="2.5 4.5" />
+              <path d="M1200 246 C980 246, 850 163, 600 160" fill="none" stroke="#64748b" strokeOpacity="0.28" strokeWidth="1" strokeDasharray="2.5 4.5" />
+
+            </svg>
+          </div>
+
+          <WireFlowIcons />
+
+          <div className="absolute left-1/2 top-1/2 z-10 w-full -translate-x-1/2 -translate-y-1/2 px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-center">
+              <Link
+                href="/dashboard/signup"
+                className="inline-flex w-full max-w-[240px] items-center justify-center rounded-md bg-[#0f172a] px-6 py-3 text-sm font-semibold uppercase tracking-wide text-white transition-colors hover:bg-[#1e293b] sm:w-auto sm:max-w-none"
+              >
+                Launch App
+              </Link>
             </div>
-          </div>
-
-          {/* Main content with highlighted words */}
-          <div className="text-center mb-8">
-            <p className="text-2xl md:text-3xl lg:text-4xl font-bold leading-snug text-slate-900 max-w-3xl mx-auto">
-              Advanced{" "}
-              <span style={{ color: "#3B82F6" }}>server-side tracking</span>
-              {" "}infrastructure built to deliver{" "}
-              <span style={{ color: "#0ea5e9" }}>accurate data</span>
-              {" "}and maximize{" "}
-              <span style={{ color: "#ec4899" }}>marketing performance</span>
-            </p>
-          </div>
-
-          {/* Bottom tagline */}
-          <div className="flex justify-end">
-            <p className="text-xs font-medium text-slate-500 tracking-wide flex items-center gap-2">
-              <span className="w-8 h-px bg-slate-400" />
-              ENJOY THE EASE EXPERIENCE WITH TRACKHIVE
-            </p>
           </div>
         </div>
       </section>
