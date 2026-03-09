@@ -185,7 +185,7 @@ export default function TrackHivePage() {
             <div className="flex justify-center">
               <Link
                 href="/dashboard/signup"
-                className="inline-flex w-full max-w-[240px] items-center justify-center rounded-md bg-[#0f172a] px-6 py-3 text-sm font-semibold uppercase tracking-wide text-white transition-colors hover:bg-[#1e293b] sm:w-auto sm:max-w-none"
+                className="inline-flex w-auto shrink-0 items-center justify-center rounded-md bg-[#0f172a] px-6 py-3 text-sm font-semibold uppercase tracking-wide text-white transition-colors hover:bg-[#1e293b]"
               >
                 TrackHive
               </Link>

@@ -75,16 +75,16 @@ export default function WireFlowIcons() {
 
   const movers = useMemo<Mover[]>(
     () => [
-      { id: 0, side: "left", laneIndex: 0, durationMs: 5400, delayMs: 0 },
-      { id: 1, side: "left", laneIndex: 1, durationMs: 6200, delayMs: 420 },
-      { id: 2, side: "left", laneIndex: 2, durationMs: 5000, delayMs: 760 },
-      { id: 3, side: "left", laneIndex: 3, durationMs: 6400, delayMs: 1100 },
-      { id: 4, side: "left", laneIndex: 4, durationMs: 5600, delayMs: 1450 },
-      { id: 5, side: "right", laneIndex: 0, durationMs: 5800, delayMs: 260 },
-      { id: 6, side: "right", laneIndex: 1, durationMs: 6500, delayMs: 620 },
-      { id: 7, side: "right", laneIndex: 2, durationMs: 5100, delayMs: 920 },
-      { id: 8, side: "right", laneIndex: 3, durationMs: 6100, delayMs: 1300 },
-      { id: 9, side: "right", laneIndex: 4, durationMs: 5700, delayMs: 1680 },
+      { id: 0, side: "left", laneIndex: 0, durationMs: 5100, delayMs: 0 },
+      { id: 1, side: "left", laneIndex: 1, durationMs: 5800, delayMs: 420 },
+      { id: 2, side: "left", laneIndex: 2, durationMs: 4700, delayMs: 760 },
+      { id: 3, side: "left", laneIndex: 3, durationMs: 6000, delayMs: 1100 },
+      { id: 4, side: "left", laneIndex: 4, durationMs: 5300, delayMs: 1450 },
+      { id: 5, side: "right", laneIndex: 0, durationMs: 5500, delayMs: 260 },
+      { id: 6, side: "right", laneIndex: 1, durationMs: 6100, delayMs: 620 },
+      { id: 7, side: "right", laneIndex: 2, durationMs: 4800, delayMs: 920 },
+      { id: 8, side: "right", laneIndex: 3, durationMs: 5700, delayMs: 1300 },
+      { id: 9, side: "right", laneIndex: 4, durationMs: 5400, delayMs: 1680 },
     ],
     []
   )
