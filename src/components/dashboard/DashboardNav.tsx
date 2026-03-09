@@ -13,7 +13,6 @@ import {
   Copy,
   Database,
   FileCode,
-  FileText,
   Gauge,
   Link2,
   Lock,
@@ -46,9 +45,9 @@ type NavItem = {
 }
 
 export default function DashboardNav({
-  profile,
+  profile: _profile,
 }: {
-  profile?: { dashboard_type?: string | null; is_admin?: boolean }
+  profile?: { dashboard_type?: string | null }
 }) {
   const pathname = usePathname()
   const { can, plan } = usePlan()
@@ -213,16 +212,6 @@ export default function DashboardNav({
           },
         ]
       : []),
-    ...(profile?.is_admin
-      ? [
-          {
-            label: 'pSEO Pages',
-            href: '/dashboard/admin/pseo',
-            icon: FileText,
-            locked: false,
-          },
-        ]
-      : []),
   ]
 
   const iconByHref: Record<string, LucideIcon> = {
@@ -250,21 +239,11 @@ export default function DashboardNav({
     '/dashboard/attribution': BarChart2,
     '/dashboard/privacy': Lock,
     '/dashboard/team': Users,
-    '/dashboard/admin/pseo': FileText,
   }
 
-  const adminStart = nav.findIndex((item) => item.href === '/dashboard/admin/pseo')
-  const hasAdminSection = adminStart >= 0
   const sections = [
     { title: 'General', from: 0, to: 10 },
-    {
-      title: 'Tools',
-      from: 10,
-      to: hasAdminSection ? adminStart : nav.length,
-    },
-    ...(hasAdminSection
-      ? [{ title: 'Admin', from: adminStart, to: nav.length }]
-      : []),
+    { title: 'Tools', from: 10, to: nav.length },
   ]
 
   const handleNavClick = (item: NavItem) => {

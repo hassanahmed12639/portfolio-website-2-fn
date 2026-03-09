@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
 
 const PAGE_TYPES = [
   { value: 'integration', label: 'Integration Page', desc: '/integrations/[platform]' },
@@ -442,11 +441,9 @@ export default function PSEOAdmin() {
                   <input
                     type="text"
                     placeholder="Section title"
-                    value={
-                      form[
-                        section.titleKey as keyof typeof form
-                      ]?.toString() ?? ''
-                    }
+                    value={String(
+                      form[section.titleKey as keyof typeof form] ?? ''
+                    )}
                     onChange={(e) =>
                       setForm({
                         ...form,
