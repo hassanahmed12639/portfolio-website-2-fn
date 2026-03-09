@@ -8,7 +8,7 @@ export default function MetaDomainVerification() {
   useEffect(() => {
     const hostname = window.location.hostname
     if (
-      hostname.includes('track.itshassanahmed.com') ||
+      hostname.includes('track.itshassanhamed.com') ||
       hostname.includes('localhost') // remove this line after testing
     ) {
       const meta = document.createElement('meta')
