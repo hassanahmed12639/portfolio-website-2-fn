@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import AvatarPicker from '@/components/dashboard/AvatarPicker'
 
 export default function AccountPage() {
   const [profile, setProfile] = useState<any>(null)
@@ -11,12 +12,17 @@ export default function AccountPage() {
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [avatarType, setAvatarType] = useState<string>('initials')
+  const [avatarUrl, setAvatarUrl] = useState<string>('')
+  const [uploadingAvatar, setUploadingAvatar] = useState(false)
 
   useEffect(() => {
     fetch('/api/dashboard/profile')
       .then((r) => r.json())
       .then((d) => {
         setProfile(d)
+        setAvatarType(d?.avatar_type ?? 'initials')
+        setAvatarUrl(d?.avatar_url ?? '')
         setLoading(false)
       })
   }, [])
@@ -43,6 +49,46 @@ export default function AccountPage() {
       alert('Password updated successfully!')
     } else {
       alert('Error: ' + error.message)
+    }
+  }
+
+  const handleImageUpload = async (file: File | null) => {
+    if (!file) {
+      setAvatarUrl('')
+      setAvatarType('initials')
+      await fetch('/api/dashboard/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...profile,
+          avatar_type: 'initials',
+          avatar_url: '',
+        }),
+      })
+      setProfile((p: any) => ({ ...p, avatar_type: 'initials', avatar_url: '' }))
+      return
+    }
+
+    setUploadingAvatar(true)
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      const res = await fetch('/api/dashboard/avatar', {
+        method: 'POST',
+        body: formData,
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        alert('Upload failed: ' + (data.error || 'Unknown error'))
+        return
+      }
+      setAvatarUrl(data.url)
+      setAvatarType('image')
+      setProfile((p: any) => ({ ...p, avatar_type: 'image', avatar_url: data.url }))
+    } catch (err) {
+      alert('Upload error: ' + (err instanceof Error ? err.message : 'Unknown error'))
+    } finally {
+      setUploadingAvatar(false)
     }
   }
 
@@ -84,11 +130,17 @@ export default function AccountPage() {
         <div className="space-y-4">
           {/* Avatar */}
           <div className="flex items-center gap-4 pb-4 border-b border-slate-100">
-            <div className="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center text-white text-xl font-bold flex-shrink-0">
-              {profile?.full_name?.[0]?.toUpperCase() ||
+            <AvatarPicker
+              currentType={avatarType}
+              currentUrl={avatarUrl}
+              initials={
+                profile?.full_name?.[0]?.toUpperCase() ||
                 profile?.email?.[0]?.toUpperCase() ||
-                'U'}
-            </div>
+                'U'
+              }
+              onImageUpload={handleImageUpload}
+              uploading={uploadingAvatar}
+            />
             <div>
               <p className="font-semibold text-slate-900">
                 {profile?.full_name || 'No name set'}

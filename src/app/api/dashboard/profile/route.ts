@@ -17,7 +17,7 @@ export async function GET() {
   const { data: profile, error } = await supabase
     .from('profiles')
     .select(
-      'id, email, full_name, api_key, plan, plan_activated_at, dashboard_type, business_name, website_url, business_type, events_this_month, events_used, events_reset_at, created_at'
+      'id, email, full_name, api_key, plan, plan_activated_at, dashboard_type, business_name, website_url, business_type, events_this_month, events_used, events_reset_at, created_at, avatar_type, avatar_url'
     )
     .eq('id', user.id)
     .single()
@@ -46,6 +46,8 @@ export async function GET() {
     events_used: profile?.events_used ?? 0,
     events_reset_at: profile?.events_reset_at ?? null,
     created_at: profile?.created_at ?? user.created_at ?? null,
+    avatar_type: profile?.avatar_type ?? 'initials',
+    avatar_url: profile?.avatar_url ?? null,
   }
 
   // Return flat object for account page; nested profile for billing and other consumers
@@ -82,6 +84,8 @@ export async function POST(req: NextRequest) {
         website_url: body.website_url ?? undefined,
         business_type: body.business_type ?? undefined,
         dashboard_type: body.dashboard_type ?? undefined,
+        avatar_type: body.avatar_type ?? undefined,
+        avatar_url: body.avatar_url ?? undefined,
         updated_at: new Date().toISOString(),
       })
       .eq('id', user.id)
