@@ -82,7 +82,8 @@ export default function AccountPage() {
         alert('Upload failed: ' + (data.error || 'Unknown error'))
         return
       }
-      setAvatarUrl(data.url)
+      const urlWithBust = `${data.url}?t=${Date.now()}`
+      setAvatarUrl(urlWithBust)
       setAvatarType('image')
       setProfile((p: any) => ({ ...p, avatar_type: 'image', avatar_url: data.url }))
     } catch (err) {

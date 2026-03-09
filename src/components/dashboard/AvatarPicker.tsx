@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useMemo } from 'react'
 
 interface AvatarPickerProps {
   currentType: string
@@ -23,21 +23,24 @@ export default function AvatarPicker({
     const file = e.target.files?.[0]
     if (!file) return
 
-    // Max 5MB
     if (file.size > 5 * 1024 * 1024) {
       alert('Image must be under 5MB')
+      e.target.value = ''
       return
     }
 
-    // Only allow jpg, png, webp
     const allowed = ['image/jpeg', 'image/png', 'image/webp']
     if (!allowed.includes(file.type)) {
       alert('Only JPG, PNG or WebP images allowed')
+      e.target.value = ''
       return
     }
 
     onImageUpload(file)
+    e.target.value = ''
   }
+
+  const cacheBuster = useMemo(() => Date.now(), [currentUrl])
 
   return (
     <div className="flex items-center gap-5">
@@ -47,7 +50,7 @@ export default function AvatarPicker({
         <div className="w-20 h-20 rounded-full overflow-hidden flex items-center justify-center bg-blue-600 text-white text-2xl font-bold">
           {currentType === 'image' && currentUrl ? (
             <img
-              src={currentUrl}
+              src={`${currentUrl}${currentUrl.includes('?') ? '&' : '?'}t=${cacheBuster}`}
               alt="Profile"
               className="w-full h-full object-cover"
             />
