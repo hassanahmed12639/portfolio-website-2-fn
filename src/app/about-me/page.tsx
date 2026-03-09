@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
 
-export default function AboutMe() {
+export default function AboutMePage() {
   redirect('/')
 }
