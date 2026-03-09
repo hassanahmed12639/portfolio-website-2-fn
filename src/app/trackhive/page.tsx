@@ -358,8 +358,12 @@ export default function TrackHivePage() {
             {/* Left: dashboard-style card */}
             <div className="order-2 lg:order-1">
               <div
-                className="rounded-2xl bg-white p-6 shadow-lg border border-slate-100 overflow-hidden"
-                style={{ boxShadow: "0 4px 24px -4px rgba(15,23,42,0.08), 0 0 0 1px rgba(15,23,42,0.04)" }}
+                className="rounded-2xl bg-white p-6 shadow-lg border border-slate-100 overflow-hidden transition-all duration-200 hover:border-indigo-200 hover:shadow-[0_8px_30px_rgba(30,58,138,0.12)] cursor-pointer"
+                style={{
+                  boxShadow: "0 4px 24px -4px rgba(15,23,42,0.08), 0 0 0 1px rgba(15,23,42,0.04)",
+                }}
+                role="region"
+                aria-label="Ecommerce conversion tracking dashboard"
               >
                 <h3 className="text-lg font-bold text-slate-900 mb-4">Ecommerce conversion tracking</h3>
                 <p className="text-2xl font-bold text-slate-900 mb-1">85.2<span className="text-sm font-normal text-slate-500 ml-1">% match rate</span></p>
@@ -414,7 +418,7 @@ export default function TrackHivePage() {
                 Read more about it
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
               </Link>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {[
                   { value: "85%+", label: "Match rate" },
                   { value: "5 min", label: "Setup time" },
