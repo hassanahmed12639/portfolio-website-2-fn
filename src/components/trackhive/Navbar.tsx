@@ -27,12 +27,12 @@ export default function TrackHiveNavbar() {
         </Link>
 
         {/* Nav links - center */}
-        <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-7">
+        <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-10">
           {navLinks.map(({ href, label }) => (
             <Link
               key={href}
               href={href}
-              className="text-sm text-slate-700 hover:text-slate-900 transition-colors no-underline"
+              className="text-sm text-slate-700 hover:text-slate-900 transition-colors no-underline whitespace-nowrap py-2 px-1 border-b-2 border-transparent hover:border-slate-300"
             >
               {label}
             </Link>
@@ -40,16 +40,16 @@ export default function TrackHiveNavbar() {
         </div>
 
         {/* Right: Sign in + CTA */}
-        <div className="hidden md:flex items-center gap-4 shrink-0">
+        <div className="hidden md:flex items-center gap-5 shrink-0">
           <Link
             href="/dashboard/login"
-            className="text-sm text-slate-600 hover:text-slate-900 transition-colors"
+            className="text-sm text-slate-600 hover:text-slate-900 transition-colors no-underline py-2 px-1"
           >
             Sign in
           </Link>
           <Link
             href="/dashboard/signup"
-            className="text-sm font-medium px-4 py-2.5 rounded-lg bg-[#1e293b] text-white hover:bg-[#334155] transition-colors shadow-sm"
+            className="text-sm font-medium px-4 py-2.5 rounded-lg bg-[#1e293b] text-white hover:bg-[#334155] transition-colors shadow-sm no-underline"
           >
             Start for free
           </Link>

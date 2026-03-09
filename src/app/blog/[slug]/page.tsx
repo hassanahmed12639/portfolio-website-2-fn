@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { notFound } from 'next/navigation'
 import TrackHiveNavbar from '@/components/trackhive/Navbar'
 import TrackHiveFooter from '@/components/trackhive/Footer'
@@ -17,17 +18,40 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .eq('published', true)
     .single()
 
-  if (!post) return {}
+  if (post) {
+    return {
+      title: post.meta_title || post.title + ' | TrackHive',
+      description: (post.meta_description || post.excerpt) ?? undefined,
+      keywords: post.primary_keyword ?? undefined,
+      authors: [{ name: post.author || 'TrackHive Team' }],
+      openGraph: {
+        title: post.meta_title || post.title,
+        description: (post.meta_description || post.excerpt) ?? undefined,
+        url: `https://track.itshassanahmed.com/blog/${post.slug}`,
+        type: 'article',
+      },
+    }
+  }
+
+  // Fallback: problem-type pSEO pages are shown under /blog/[slug] in admin
+  const admin = createAdminClient()
+  const { data: problemPage } = await admin
+    .from('pseo_pages')
+    .select('meta_title, meta_description, title, slug')
+    .eq('slug', slug)
+    .eq('type', 'problem')
+    .eq('published', true)
+    .single()
+
+  if (!problemPage) return {}
 
   return {
-    title: post.meta_title || post.title + ' | TrackHive',
-    description: (post.meta_description || post.excerpt) ?? undefined,
-    keywords: post.primary_keyword ?? undefined,
-    authors: [{ name: post.author || 'TrackHive Team' }],
+    title: problemPage.meta_title || problemPage.title + ' | TrackHive',
+    description: problemPage.meta_description ?? undefined,
     openGraph: {
-      title: post.meta_title || post.title,
-      description: (post.meta_description || post.excerpt) ?? undefined,
-      url: `https://track.itshassanahmed.com/blog/${post.slug}`,
+      title: problemPage.meta_title || problemPage.title,
+      description: problemPage.meta_description ?? undefined,
+      url: `https://track.itshassanahmed.com/blog/${problemPage.slug}`,
       type: 'article',
     },
   }
@@ -36,6 +60,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params
   const supabase = await createClient()
+  const admin = createAdminClient()
 
   const { data: post } = await supabase
     .from('blog_posts')
@@ -44,7 +69,103 @@ export default async function BlogPostPage({ params }: Props) {
     .eq('published', true)
     .single()
 
-  if (!post) notFound()
+  // Fallback: serve problem-type pSEO pages under /blog/[slug] (admin shows them as /blog/...)
+  if (!post) {
+    const { data: problemPage } = await admin
+      .from('pseo_pages')
+      .select('*')
+      .eq('slug', slug)
+      .eq('type', 'problem')
+      .eq('published', true)
+      .single()
+
+    if (problemPage) {
+      return (
+        <div className="trackhive-flow min-h-screen bg-white antialiased" style={{ color: '#0f172a' }}>
+          <TrackHiveNavbar />
+          <main className="max-w-4xl mx-auto px-4 pt-28 pb-16">
+            <div className="text-center mb-12">
+              <span className="text-xs font-bold bg-amber-100 text-amber-700 px-3 py-1 rounded-full">
+                Solution Guide
+              </span>
+              <h1 className="text-4xl md:text-5xl font-black text-slate-900 mt-4 mb-4">
+                {problemPage.h1 || problemPage.title}
+              </h1>
+              <p className="text-lg text-slate-500 max-w-2xl mx-auto">
+                {problemPage.hero_subtitle}
+              </p>
+              <div className="flex items-center justify-center gap-4 mt-6">
+                <Link
+                  href="/dashboard/signup"
+                  className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-700 transition-colors"
+                >
+                  {problemPage.cta_button_text || 'Get Started Free'}
+                </Link>
+                <Link href="/blog" className="text-slate-600 font-medium hover:text-slate-900">
+                  Blog →
+                </Link>
+              </div>
+            </div>
+            {problemPage.stat_1_number && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-12">
+                {[
+                  { number: problemPage.stat_1_number, label: problemPage.stat_1_label },
+                  { number: problemPage.stat_2_number, label: problemPage.stat_2_label },
+                  { number: problemPage.stat_3_number, label: problemPage.stat_3_label },
+                ]
+                  .filter((s) => s.number)
+                  .map((stat) => (
+                    <div
+                      key={String(stat.number)}
+                      className="bg-white border border-slate-100 rounded-xl p-5 text-center shadow-sm"
+                    >
+                      <p className="text-3xl font-black text-blue-600">{stat.number}</p>
+                      <p className="font-semibold text-slate-900 text-sm mt-1">{stat.label}</p>
+                    </div>
+                  ))}
+              </div>
+            )}
+            {problemPage.section_1_title && (
+              <section className="mb-12">
+                <h2 className="text-2xl font-black text-slate-900 mb-4">
+                  {problemPage.section_1_title}
+                </h2>
+                <p className="text-slate-600 leading-relaxed whitespace-pre-line">
+                  {problemPage.section_1_body}
+                </p>
+              </section>
+            )}
+            {problemPage.section_2_title && (
+              <section className="mb-12">
+                <h2 className="text-2xl font-black text-slate-900 mb-4">
+                  {problemPage.section_2_title}
+                </h2>
+                <p className="text-slate-600 leading-relaxed whitespace-pre-line">
+                  {problemPage.section_2_body}
+                </p>
+              </section>
+            )}
+            <section className="bg-slate-900 rounded-2xl p-8 text-center text-white">
+              <h2 className="text-2xl font-black mb-2">
+                {problemPage.cta_title || 'Get Started'}
+              </h2>
+              <p className="text-slate-400 mb-6">
+                {problemPage.cta_subtitle || 'Free plan available. No credit card required.'}
+              </p>
+              <Link
+                href="/dashboard/signup"
+                className="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition-colors inline-block"
+              >
+                {problemPage.cta_button_text || 'Get Started Free'}
+              </Link>
+            </section>
+          </main>
+          <TrackHiveFooter />
+        </div>
+      )
+    }
+    notFound()
+  }
 
   // Increment view count (fire-and-forget)
   supabase

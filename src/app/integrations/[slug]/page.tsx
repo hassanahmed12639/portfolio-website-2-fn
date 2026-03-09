@@ -70,7 +70,7 @@ export default async function IntegrationPage({ params }: Props) {
 
         {/* Stats */}
         {page.stat_1_number && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-12">
             {[
               { number: page.stat_1_number, label: page.stat_1_label },
               { number: page.stat_2_number, label: page.stat_2_label },
@@ -80,7 +80,7 @@ export default async function IntegrationPage({ params }: Props) {
               .map((stat) => (
                 <div
                   key={stat.number}
-                  className="bg-white border border-slate-100 rounded-xl p-5 text-center"
+                  className="bg-white border border-slate-100 rounded-xl p-5 text-center shadow-sm"
                 >
                   <p className="text-3xl font-black text-blue-600">{stat.number}</p>
                   <p className="font-semibold text-slate-900 text-sm mt-1">

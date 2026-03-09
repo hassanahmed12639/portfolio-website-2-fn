@@ -1,5 +1,3 @@
-import { redirect } from 'next/navigation'
-
 export default function AboutMePage() {
-  redirect('/')
+  return null
 }
