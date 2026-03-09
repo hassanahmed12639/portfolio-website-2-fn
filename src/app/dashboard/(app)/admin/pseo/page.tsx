@@ -369,7 +369,7 @@ export default function PSEOAdmin() {
                   <input
                     type="text"
                     placeholder={field.placeholder}
-                    value={form[field.key as keyof typeof form] ?? ''}
+                    value={String(form[field.key as keyof typeof form] ?? '')}
                     onChange={(e) =>
                       setForm({ ...form, [field.key]: e.target.value })
                     }
@@ -389,11 +389,9 @@ export default function PSEOAdmin() {
                       <input
                         type="text"
                         placeholder={`Stat ${n} number`}
-                        value={
-                          form[
-                            `stat_${n}_number` as keyof typeof form
-                          ]?.toString() ?? ''
-                        }
+                        value={String(
+                          form[`stat_${n}_number` as keyof typeof form] ?? ''
+                        )}
                         onChange={(e) =>
                           setForm({
                             ...form,
@@ -405,11 +403,9 @@ export default function PSEOAdmin() {
                       <input
                         type="text"
                         placeholder={`Stat ${n} label`}
-                        value={
-                          form[
-                            `stat_${n}_label` as keyof typeof form
-                          ]?.toString() ?? ''
-                        }
+                        value={String(
+                          form[`stat_${n}_label` as keyof typeof form] ?? ''
+                        )}
                         onChange={(e) =>
                           setForm({
                             ...form,
@@ -461,10 +457,9 @@ export default function PSEOAdmin() {
                   />
                   <textarea
                     placeholder="Section body content"
-                    value={
-                      form[section.bodyKey as keyof typeof form]?.toString() ??
-                      ''
-                    }
+                    value={String(
+                      form[section.bodyKey as keyof typeof form] ?? ''
+                    )}
                     onChange={(e) =>
                       setForm({
                         ...form,
