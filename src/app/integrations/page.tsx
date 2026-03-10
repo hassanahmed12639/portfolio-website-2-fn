@@ -12,18 +12,16 @@ const INTEGRATION_GROUPS = [
   {
     title: "Ad Platforms",
     items: [
-      { name: "Meta CAPI", description: "Conversions API for Facebook & Instagram ads", badge: { letter: "M", bg: "bg-blue-600" }, status: "Live" },
-      { name: "Google Enhanced Conversions", description: "Server-side conversion tracking for Google Ads", badge: { letter: "G", bg: "bg-green-600" }, status: "Live" },
-      { name: "TikTok Events API", description: "Server-side events for TikTok Ads", badge: { letter: "TT", bg: "bg-black" }, status: "Live" },
-      { name: "Snapchat CAPI", description: "Conversions API for Snapchat Ads", badge: { letter: "S", bg: "bg-amber-500" }, status: "Live" },
-      { name: "Pinterest", description: "Conversions API for Pinterest Ads", badge: { letter: "P", bg: "bg-red-600" }, status: "Coming Soon" },
+      { name: "Meta CAPI", description: "Conversions API for Facebook & Instagram ads", badge: { letter: "M", bg: "bg-white", icon: "/landing-meta.png" }, status: "Live" },
+      { name: "Google Enhanced Conversions", description: "Server-side conversion tracking for Google Ads", badge: { letter: "G", bg: "bg-white", icon: "/landing-google-ads.png" }, status: "Live" },
+      { name: "TikTok Events API", description: "Server-side events for TikTok Ads", badge: { letter: "TT", bg: "bg-white", icon: "/landing-tiktok-ads.png" }, status: "Live" },
     ],
   },
   {
     title: "Tag Managers",
     items: [
-      { name: "Google Tag Manager", description: "Client-side GTM integration", badge: { letter: "GTM", bg: "bg-slate-600" }, status: "Live" },
-      { name: "Server-side GTM", description: "Server-side tag manager support", badge: { letter: "sGTM", bg: "bg-slate-700" }, status: "Live" },
+      { name: "Google Tag Manager", description: "Client-side GTM integration", badge: { letter: "GTM", bg: "bg-white", icon: "/landing-gtm.jpg" }, status: "Live" },
+      { name: "Server-side GTM", description: "Server-side tag manager support", badge: { letter: "sGTM", bg: "bg-white", icon: "/landing-gtm.jpg" }, status: "Live" },
     ],
   },
   {
@@ -78,9 +76,13 @@ export default function IntegrationsPage() {
                     }}
                   >
                     <div
-                      className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${item.badge.bg}`}
+                      className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 overflow-hidden ${item.badge.bg}`}
                     >
-                      <span className="text-white text-xs font-bold">{item.badge.letter}</span>
+                      {"icon" in item.badge && item.badge.icon ? (
+                        <img src={item.badge.icon} alt="" className="w-7 h-7 object-contain" />
+                      ) : (
+                        <span className="text-white text-xs font-bold">{item.badge.letter}</span>
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold" style={{ color: "#0f172a" }}>

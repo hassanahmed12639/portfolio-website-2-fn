@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { BlogContentEditor } from '@/components/admin/BlogContentEditor'
 
 export default function AdminBlogPage() {
   const [posts, setPosts] = useState<any[]>([])
@@ -11,6 +12,7 @@ export default function AdminBlogPage() {
     slug: '',
     excerpt: '',
     content: '',
+    featured_image: '',
     meta_title: '',
     meta_description: '',
     primary_keyword: '',
@@ -55,6 +57,7 @@ export default function AdminBlogPage() {
       slug: '',
       excerpt: '',
       content: '',
+      featured_image: '',
       meta_title: '',
       meta_description: '',
       primary_keyword: '',
@@ -222,7 +225,7 @@ export default function AdminBlogPage() {
               <input
                 value={form.title}
                 onChange={(e) => handleTitleChange(e.target.value)}
-                className="w-full mt-1 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full mt-1 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter post title"
               />
             </div>
@@ -234,7 +237,7 @@ export default function AdminBlogPage() {
               <input
                 value={form.slug}
                 onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
-                className="w-full mt-1 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                className="w-full mt-1 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
                 placeholder="post-url-slug"
               />
             </div>
@@ -248,10 +251,37 @@ export default function AdminBlogPage() {
                 onChange={(e) =>
                   setForm((f) => ({ ...f, excerpt: e.target.value }))
                 }
-                className="w-full mt-1 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full mt-1 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 rows={2}
                 placeholder="Brief description for SEO and previews"
               />
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                Featured image
+              </label>
+              <input
+                type="url"
+                value={form.featured_image || ''}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, featured_image: e.target.value }))
+                }
+                className="w-full mt-1 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="https://... (image URL for post hero)"
+              />
+              {form.featured_image && (
+                <div className="mt-2 rounded-lg border border-slate-200 overflow-hidden bg-slate-50 max-w-md">
+                  <img
+                    src={form.featured_image}
+                    alt="Featured preview"
+                    className="w-full h-32 object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none'
+                    }}
+                  />
+                </div>
+              )}
             </div>
 
             <div>
@@ -265,7 +295,7 @@ export default function AdminBlogPage() {
                 onChange={(e) =>
                   setForm((f) => ({ ...f, meta_title: e.target.value }))
                 }
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <p className="text-xs text-slate-400 mt-1">
                 {(form.meta_title || '').length}/60 characters
@@ -283,7 +313,7 @@ export default function AdminBlogPage() {
                   setForm((f) => ({ ...f, meta_description: e.target.value }))
                 }
                 rows={2}
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500 bg-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <p className="text-xs text-slate-400 mt-1">
                 {(form.meta_description || '').length}/160 characters
@@ -301,7 +331,7 @@ export default function AdminBlogPage() {
                 onChange={(e) =>
                   setForm((f) => ({ ...f, primary_keyword: e.target.value }))
                 }
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -314,7 +344,7 @@ export default function AdminBlogPage() {
                 onChange={(e) =>
                   setForm((f) => ({ ...f, category: e.target.value }))
                 }
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select category</option>
                 <option value="Facebook Ads">Facebook Ads</option>
@@ -348,7 +378,7 @@ export default function AdminBlogPage() {
                     read_time: parseInt(e.target.value, 10) || 5,
                   }))
                 }
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -363,22 +393,23 @@ export default function AdminBlogPage() {
                 onChange={(e) =>
                   setForm((f) => ({ ...f, author: e.target.value }))
                 }
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-1">
                 Content (HTML)
               </label>
-              <textarea
+              <p className="text-xs text-slate-400 mb-2">
+                Use the toolbar for bold, link, image, bullet list, numbered list, table, and headings (H1–H6). You can also type HTML directly.
+              </p>
+              <BlogContentEditor
                 value={form.content}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, content: e.target.value }))
+                onChange={(content) =>
+                  setForm((f) => ({ ...f, content }))
                 }
-                className="w-full mt-1 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
                 rows={20}
-                placeholder="Write your blog post content in HTML..."
               />
             </div>
 

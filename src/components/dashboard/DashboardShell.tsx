@@ -48,7 +48,7 @@ export default function DashboardShell({ user, trialExpired, profile, children }
   }
 
   return (
-    <div className="dashboard-shell min-h-screen flex bg-[var(--dash-bg)] text-[var(--dash-text)]">
+    <div className="dashboard-shell min-h-screen flex bg-[var(--dash-bg)] text-[var(--dash-text)]" style={{ fontFamily: "'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" }}>
       <aside
         className={`shrink-0 flex flex-col border-r border-[var(--dash-border)] bg-[var(--dash-sidebar)] transition-all duration-200 ease-in-out ${
           sidebarCollapsed ? 'w-0 overflow-hidden border-r-0' : 'w-60'

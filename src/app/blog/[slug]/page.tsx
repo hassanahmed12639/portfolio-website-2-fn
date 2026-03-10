@@ -4,9 +4,21 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { notFound } from 'next/navigation'
 import TrackHiveNavbar from '@/components/trackhive/Navbar'
 import TrackHiveFooter from '@/components/trackhive/Footer'
+import { CtaCard } from '@/components/ui/cta-card'
+import { BlogSidebar } from '@/components/blog/BlogSidebar'
+import { extractHeadingsAndInjectIds } from '@/lib/blog-utils'
 import type { Metadata } from 'next'
 
 type Props = { params: Promise<{ slug: string }> }
+
+function shuffleAndTake<T>(arr: T[], count: number): T[] {
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a.slice(0, count)
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
@@ -80,59 +92,31 @@ export default async function BlogPostPage({ params }: Props) {
       .single()
 
     if (problemPage) {
+      const { data: pseoFeatured } = await supabase
+        .from('blog_posts')
+        .select('id, slug, title, category, read_time')
+        .eq('published', true)
+      const featuredPseo = shuffleAndTake(pseoFeatured || [], 3)
       return (
         <div className="trackhive-flow font-sans min-h-screen bg-white antialiased" style={{ color: '#0f172a' }}>
           <TrackHiveNavbar />
           <main className="max-w-6xl mx-auto px-4 lg:px-8 pt-28 pb-16">
             <div className="lg:grid lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-12">
-              {/* Sidebar: table of contents + share */}
-              <aside className="hidden lg:block">
-                <div className="sticky top-28 space-y-8 text-sm">
-                  <div>
-                    <p className="text-xs font-semibold tracking-wide text-slate-400 uppercase mb-2">
-                      Table of Contents
-                    </p>
-                    <nav className="space-y-2 text-slate-600">
-                      {problemPage.section_1_title && (
-                        <a href="#section-1" className="block hover:text-blue-600">
-                          {problemPage.section_1_title}
-                        </a>
-                      )}
-                      {problemPage.section_2_title && (
-                        <a href="#section-2" className="block hover:text-blue-600">
-                          {problemPage.section_2_title}
-                        </a>
-                      )}
-                    </nav>
-                  </div>
-
-                  <div>
-                    <p className="text-xs font-semibold tracking-wide text-slate-400 uppercase mb-2">
-                      Share this article
-                    </p>
-                    <div className="flex flex-col gap-2">
-                      <button className="inline-flex items-center gap-2 text-xs font-medium text-slate-600 hover:text-blue-600">
-                        <span className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-[11px]">
-                          in
-                        </span>
-                        LinkedIn
-                      </button>
-                      <button className="inline-flex items-center gap-2 text-xs font-medium text-slate-600 hover:text-blue-600">
-                        <span className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-[11px]">
-                          X
-                        </span>
-                        X (Twitter)
-                      </button>
-                      <button className="inline-flex items-center gap-2 text-xs font-medium text-slate-600 hover:text-blue-600">
-                        <span className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-[11px]">
-                          f
-                        </span>
-                        Facebook
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </aside>
+              <BlogSidebar
+                toc={[
+                  ...(problemPage.section_1_title
+                    ? [{ text: problemPage.section_1_title, id: 'section-1', level: 2 as const }]
+                    : []),
+                  ...(problemPage.section_2_title
+                    ? [{ text: problemPage.section_2_title, id: 'section-2', level: 2 as const }]
+                    : []),
+                ]}
+                publishedDate={new Date(
+                  problemPage.updated_at || problemPage.created_at || new Date()
+                ).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                readTime={problemPage.read_time}
+                shareTitle={problemPage.h1 || problemPage.title}
+              />
 
               {/* Main article */}
               <article>
@@ -216,20 +200,38 @@ export default async function BlogPostPage({ params }: Props) {
                   </section>
                 )}
 
-                <section className="bg-slate-900 rounded-2xl p-8 text-center text-white">
-                  <h2 className="text-2xl font-black mb-2">
-                    {problemPage.cta_title || 'Get Started'}
-                  </h2>
-                  <p className="text-slate-400 mb-6">
-                    {problemPage.cta_subtitle || 'Free plan available. No credit card required.'}
-                  </p>
-                  <Link
-                    href="/dashboard/signup"
-                    className="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition-colors inline-block"
-                  >
-                    {problemPage.cta_button_text || 'Get Started Free'}
-                  </Link>
+                <section className="mt-0">
+                  <CtaCard
+                    title={problemPage.cta_title || 'Get Started'}
+                    description={problemPage.cta_subtitle || 'Free plan available. No credit card required.'}
+                    buttonText={problemPage.cta_button_text || 'Get Started Free'}
+                  />
                 </section>
+
+                {featuredPseo.length > 0 && (
+                  <div className="mt-12">
+                    <h3 className="text-lg font-bold text-slate-900 mb-4">
+                      Featured articles
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {featuredPseo.map((r) => (
+                        <Link key={r.id} href={`/blog/${r.slug}`}>
+                          <div className="bg-white rounded-xl border border-slate-100 p-4 hover:shadow-md transition-shadow">
+                            <span className="text-xs text-blue-600 font-semibold">
+                              {r.category}
+                            </span>
+                            <p className="text-sm font-semibold text-slate-900 mt-1 line-clamp-2">
+                              {r.title}
+                            </p>
+                            <p className="text-xs text-slate-400 mt-2">
+                              {r.read_time != null ? `${r.read_time} min read` : null}
+                            </p>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </article>
             </div>
           </main>
@@ -247,14 +249,13 @@ export default async function BlogPostPage({ params }: Props) {
     .eq('id', post.id)
     .then(() => {})
 
-  // Get related posts
-  const { data: related } = await supabase
+  // Get 2–3 random featured articles (excluding current post)
+  const { data: allPosts } = await supabase
     .from('blog_posts')
-    .select('*')
+    .select('id, slug, title, category, read_time, excerpt')
     .eq('published', true)
-    .eq('category', post.category)
     .neq('id', post.id)
-    .limit(3)
+  const featured = shuffleAndTake(allPosts || [], 3)
 
   // Use explicit featured image fields first; otherwise pull first <img> from HTML content.
   const firstContentImage = post.content?.match(/<img[^>]+src=["']([^"']+)["'][^>]*>/i)
@@ -268,10 +269,17 @@ export default async function BlogPostPage({ params }: Props) {
     post.image_url ||
     post.thumbnail_url ||
     firstContentImageSrc
-  const articleContent =
+  const rawContent =
     firstContentImageTag && firstContentImageSrc && featuredImage === firstContentImageSrc
       ? post.content.replace(firstContentImageTag, '')
       : post.content
+  const { html: articleContent, toc } = extractHeadingsAndInjectIds(rawContent || '')
+
+  const publishedDate = new Date(post.created_at).toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  })
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -279,52 +287,12 @@ export default async function BlogPostPage({ params }: Props) {
 
       <div className="max-w-6xl mx-auto px-4 lg:px-8 pt-24 pb-16">
         <div className="lg:grid lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-12">
-          {/* Sidebar (share / meta) */}
-          <aside className="hidden lg:block">
-            <div className="sticky top-28 space-y-6 text-sm">
-              <div>
-                <p className="text-xs font-semibold tracking-wide text-slate-400 uppercase mb-2">
-                  Published
-                </p>
-                <p className="text-slate-600">
-                  {new Date(post.created_at).toLocaleDateString('en-US', {
-                    month: 'long',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })}
-                </p>
-                {post.read_time != null && (
-                  <p className="text-slate-500 mt-1">{post.read_time} min read</p>
-                )}
-              </div>
-
-              <div>
-                <p className="text-xs font-semibold tracking-wide text-slate-400 uppercase mb-2">
-                  Share this article
-                </p>
-                <div className="flex flex-col gap-2">
-                  <button className="inline-flex items-center gap-2 text-xs font-medium text-slate-600 hover:text-blue-600">
-                    <span className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-[11px]">
-                      in
-                    </span>
-                    LinkedIn
-                  </button>
-                  <button className="inline-flex items-center gap-2 text-xs font-medium text-slate-600 hover:text-blue-600">
-                    <span className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-[11px]">
-                      X
-                    </span>
-                    X (Twitter)
-                  </button>
-                  <button className="inline-flex items-center gap-2 text-xs font-medium text-slate-600 hover:text-blue-600">
-                    <span className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-[11px]">
-                      f
-                    </span>
-                    Facebook
-                  </button>
-                </div>
-              </div>
-            </div>
-          </aside>
+          <BlogSidebar
+            toc={toc}
+            publishedDate={publishedDate}
+            readTime={post.read_time}
+            shareTitle={post.title}
+          />
 
           {/* Main article column */}
           <article>
@@ -396,7 +364,7 @@ export default async function BlogPostPage({ params }: Props) {
 
             {/* Post content */}
             <div
-              className="prose prose-slate max-w-none
+              className="prose prose-slate font-sans max-w-none
             prose-headings:font-bold prose-headings:text-slate-900
             prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4
             prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3
@@ -410,30 +378,23 @@ export default async function BlogPostPage({ params }: Props) {
               dangerouslySetInnerHTML={{ __html: articleContent }}
             />
 
-            {/* CTA Box */}
-            <div className="mt-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-8 text-center">
-              <h3 className="text-xl font-bold text-white mb-2">
-                Ready to implement server-side tracking?
-              </h3>
-              <p className="text-blue-200 mb-4 text-sm">
-                TrackHive makes it easy. Set up in 5 minutes, free forever.
-              </p>
-              <Link
-                href="/dashboard/signup"
-                className="inline-block bg-white text-blue-600 font-bold px-6 py-2.5 rounded-xl hover:bg-blue-50 transition-colors text-sm"
-              >
-                Start for free →
-              </Link>
+            {/* CTA */}
+            <div className="mt-12">
+              <CtaCard
+                title="Ready to implement server-side tracking?"
+                description="TrackHive makes it easy. Set up in 5 minutes, free forever."
+                buttonText="Start for free"
+              />
             </div>
 
-            {/* Related posts */}
-            {related && related.length > 0 && (
+            {/* Featured articles */}
+            {featured.length > 0 && (
               <div className="mt-12">
                 <h3 className="text-lg font-bold text-slate-900 mb-4">
-                  Related Articles
+                  Featured articles
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {related.map((r) => (
+                  {featured.map((r) => (
                     <Link key={r.id} href={`/blog/${r.slug}`}>
                       <div className="bg-white rounded-xl border border-slate-100 p-4 hover:shadow-md transition-shadow">
                         <span className="text-xs text-blue-600 font-semibold">
@@ -443,7 +404,7 @@ export default async function BlogPostPage({ params }: Props) {
                           {r.title}
                         </p>
                         <p className="text-xs text-slate-400 mt-2">
-                          {r.read_time} min read
+                          {r.read_time != null ? `${r.read_time} min read` : null}
                         </p>
                       </div>
                     </Link>

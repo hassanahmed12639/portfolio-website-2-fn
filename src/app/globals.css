@@ -1,3 +1,29 @@
+/* Global font override — Segoe UI for all TrackHive pages */
+*, *::before, *::after {
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+html, body {
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 700;
+}
+
+p, span, a, li, td, th, label, input, textarea, button, select {
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Restore monospace for code blocks */
+code, pre, kbd {
+  font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace !important;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,19 +33,6 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-}
-
-body,
-* {
-  font-family: "Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-code,
-pre,
-kbd {
-  font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
 }
 
 html,
@@ -158,8 +171,29 @@ nav a {
 }
 
 ::selection {
-  background: #AAFF00;
-  color: #0F0F0F;
+  background: #2563eb;
+  color: #fff;
+}
+::-moz-selection {
+  background: #2563eb;
+  color: #fff;
+}
+
+/* Admin panel: ensure inputs have readable dark text on light background */
+.admin-main input,
+.admin-main textarea,
+.admin-main select {
+  color: #0f172a !important;
+  background-color: #ffffff !important;
+}
+.admin-main input::placeholder,
+.admin-main textarea::placeholder {
+  color: #64748b !important;
+}
+
+/* Fix Tailwind Typography font override (keep code/pre monospace) */
+.prose, .prose *:not(code):not(pre):not(kbd) {
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif !important;
 }
 
 /* TrackHive flow + dashboard: enforce Segoe UI font sitewide */
@@ -1274,7 +1308,7 @@ a.bg-primary:hover,
   gap: 0;
   transition: opacity 0.55s cubic-bezier(0.4, 0, 0.2, 1),
     transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
-  font-family: "Geist", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
 }
 
 #preloader.preloader-wrap.preloader-globe.preloader-hide {
@@ -1313,7 +1347,7 @@ a.bg-primary:hover,
 }
 
 .preloader-globe-logo-name {
-  font-family: "Syne", "Segoe UI", sans-serif;
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
   font-weight: 800;
   font-size: 19px;
   color: #0D1733;

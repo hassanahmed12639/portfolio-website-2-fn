@@ -47,7 +47,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             🔒 Internal Only
           </span>
         </header>
-        <main className="flex-1 p-6 pl-12">
+        <main className="admin-main flex-1 p-6 pl-12">
           {children}
         </main>
       </div>

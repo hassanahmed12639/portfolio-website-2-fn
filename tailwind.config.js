@@ -8,7 +8,7 @@ module.exports = {
   theme: {
   	extend: {
   		fontFamily: {
-  			sans: ['"Segoe UI"', '"Segoe UI Variable"', '-apple-system', 'BlinkMacSystemFont', '"Helvetica Neue"', 'Arial', 'sans-serif'],
+  			sans: ['Segoe UI', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Helvetica Neue', 'Arial', 'sans-serif'],
   			playfair: ['Playfair Display', 'serif'],
   			overusedGrotesk: ['Overused Grotesk', 'sans-serif']
   		},
@@ -64,6 +64,7 @@ module.exports = {
   			}
   		},
   		animation: {
+  			'gradient-shift': 'gradientShift 6s ease-in-out infinite',
   			move: 'move 5s linear infinite',
   			'float-gentle': 'floatGentle 4s ease-in-out infinite',
   			marquee: 'marquee 30s linear infinite',
@@ -72,6 +73,10 @@ module.exports = {
   			'slide-down': 'slideDown 0.3s ease-out'
   		},
   		keyframes: {
+  			gradientShift: {
+  				'0%, 100%': { backgroundPosition: '0% 50%' },
+  				'50%': { backgroundPosition: '100% 50%' }
+  			},
   			marquee: {
   				'0%': { transform: 'translateX(0)' },
   				'100%': { transform: 'translateX(-25%)' }

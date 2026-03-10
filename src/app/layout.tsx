@@ -36,17 +36,13 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Geist:wght@300;400;500&display=swap"
-          rel="stylesheet"
-        />
         <meta
           name="google-site-verification"
           content="EWMl3iYHe0Ccf67EQ-MwhClivAY1DUTy8HM5ijTPU5Q"
         />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="m-0 p-0 bg-background text-foreground">
+      <body className="m-0 p-0 bg-background text-foreground" style={{ fontFamily: "'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" }}>
         <ThemeProvider>
           <PreloaderWrapper />
           <GsapInit />

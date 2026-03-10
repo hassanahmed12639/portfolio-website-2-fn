@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import TrackHiveNavbar from '@/components/trackhive/Navbar'
 import TrackHiveFooter from '@/components/trackhive/Footer'
+import { CtaCard } from '@/components/ui/cta-card'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -147,20 +148,12 @@ export default async function BlogPage() {
         )}
 
         {/* CTA Section */}
-        <div className="mt-16 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-10 text-center">
-          <h2 className="text-2xl font-bold text-white mb-2">
-            Ready to recover lost conversions?
-          </h2>
-          <p className="text-blue-200 mb-6">
-            Start tracking server-side with TrackHive. Free forever, no credit
-            card needed.
-          </p>
-          <Link
-            href="/dashboard/signup"
-            className="inline-block bg-white text-blue-600 font-bold px-6 py-3 rounded-xl hover:bg-blue-50 transition-colors"
-          >
-            Start for free →
-          </Link>
+        <div className="mt-16">
+          <CtaCard
+            title="Ready to recover lost conversions?"
+            description="Start tracking server-side with TrackHive. Free forever, no credit card needed."
+            buttonText="Start for free"
+          />
         </div>
       </div>
 

@@ -7,5 +7,9 @@ export const metadata: Metadata = {
 }
 
 export default function TrackHiveLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>
+  return (
+    <div style={{ fontFamily: "'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" }}>
+      {children}
+    </div>
+  )
 }
