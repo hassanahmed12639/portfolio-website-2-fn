@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { FeatureGate } from '@/components/FeatureGate'
 import HeadersClient from './HeadersClient'
 

@@ -1,6 +1,9 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import { useState } from 'react'
+import { Search } from 'lucide-react'
 import { REGEX_PATTERNS, RegexPattern } from '@/data/regex-patterns'
 import { usePlan } from '@/hooks/usePlan'
 import { UpgradeModal } from '@/components/UpgradeModal'
@@ -53,27 +56,25 @@ export default function RegexLibraryPage() {
       <div className="mb-8">
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div>
-            <h1 className="text-2xl font-black text-slate-900 mb-1">
+            <h1 className="text-2xl font-black text-[var(--dash-text)] mb-1">
               Regex Pattern Library
             </h1>
-            <p className="text-slate-500 text-sm">
+            <p className="text-[var(--dash-muted)] text-sm">
               Ready-to-use regex patterns for GA4, Search Console and GTM. Copy and paste directly.
             </p>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <button
               onClick={() => setShowGuide(true)}
-              className="flex items-center gap-2 bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-bold hover:border-slate-300 hover:bg-slate-50 transition-all"
+              className="flex items-center gap-2 bg-[var(--dash-surface)] border border-[var(--dash-border)] text-[var(--dash-text)] px-4 py-2 rounded-xl text-sm font-bold hover:bg-[var(--dash-surface-hover)] transition-all"
             >
-              <span>📖</span>
               How to Use
             </button>
             {!isPaidPlan && (
               <button
                 onClick={() => setShowUpgrade(true)}
-                className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-xl text-sm font-bold hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm"
+                className="flex items-center gap-2 bg-[var(--dash-primary)] text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-[var(--dash-primary-strong)] transition-all shadow-sm"
               >
-                <span>⚡</span>
                 Unlock {proCount} Pro Patterns
               </button>
             )}
@@ -83,13 +84,13 @@ export default function RegexLibraryPage() {
         {/* Stats row */}
         <div className="grid grid-cols-3 gap-3 mt-6">
           {[
-            { label: 'Total Patterns', value: REGEX_PATTERNS.length, color: 'text-slate-900' },
-            { label: 'Free Patterns', value: freeCount, color: 'text-green-600' },
-            { label: 'Pro Patterns', value: proCount, color: 'text-blue-600' },
+            { label: 'Total Patterns', value: REGEX_PATTERNS.length, color: 'text-[var(--dash-text)]' },
+            { label: 'Free Patterns', value: freeCount, color: 'text-[var(--dash-success)]' },
+            { label: 'Pro Patterns', value: proCount, color: 'text-[var(--dash-primary)]' },
           ].map(stat => (
-            <div key={stat.label} className="bg-white rounded-xl border border-slate-200 p-4 text-center">
+            <div key={stat.label} className="bg-[var(--dash-card)] rounded-xl border border-[var(--dash-border)] p-4 text-center">
               <p className={`text-2xl font-black ${stat.color}`}>{stat.value}</p>
-              <p className="text-xs text-slate-500 mt-0.5 font-medium">{stat.label}</p>
+              <p className="text-xs text-[var(--dash-muted)] mt-0.5 font-medium">{stat.label}</p>
             </div>
           ))}
         </div>
@@ -98,13 +99,13 @@ export default function RegexLibraryPage() {
       {/* Search and filter */}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <div className="relative flex-1">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">🔍</span>
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--dash-muted)]" />
           <input
             type="text"
             placeholder="Search patterns..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full pl-9 pr-4 py-2.5 bg-[var(--dash-surface)] border border-[var(--dash-border)] rounded-xl text-sm text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]"
           />
         </div>
         <div className="flex gap-2 flex-wrap">
@@ -114,13 +115,13 @@ export default function RegexLibraryPage() {
               onClick={() => setActiveTool(tool)}
               className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all border ${
                 activeTool === tool
-                  ? 'bg-slate-900 text-white border-slate-900'
-                  : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
+                  ? 'bg-[var(--dash-text)] text-white border-[var(--dash-text)]'
+                  : 'bg-[var(--dash-surface)] text-[var(--dash-text)] border-[var(--dash-border)] hover:bg-[var(--dash-surface-hover)]'
               }`}
             >
               {tool}
               <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${
-                activeTool === tool ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'
+                activeTool === tool ? 'bg-white/20 text-white' : 'bg-[var(--dash-surface-hover)] text-[var(--dash-muted)]'
               }`}>
                 {tool === 'All'
                   ? REGEX_PATTERNS.length
@@ -133,8 +134,8 @@ export default function RegexLibraryPage() {
 
       {/* Pattern grid */}
       {filtered.length === 0 ? (
-        <div className="text-center py-16 text-slate-400">
-          <p className="text-4xl mb-3">🔍</p>
+        <div className="text-center py-16 text-[var(--dash-muted)]">
+          <Search className="h-12 w-12 mx-auto mb-3 opacity-50" />
           <p className="font-semibold">No patterns found for that search</p>
           <p className="text-sm mt-1">Try a different keyword or clear the search</p>
         </div>
@@ -145,10 +146,10 @@ export default function RegexLibraryPage() {
             return (
               <div
                 key={pattern.id}
-                className={`bg-white rounded-2xl border p-5 flex flex-col gap-3 transition-all ${
+                className={`bg-[var(--dash-card)] rounded-2xl border p-5 flex flex-col gap-3 transition-all ${
                   isLocked
-                    ? 'border-slate-200 opacity-90'
-                    : 'border-slate-200 hover:border-blue-200 hover:shadow-sm'
+                    ? 'border-[var(--dash-border)] opacity-90'
+                    : 'border-[var(--dash-border)] hover:border-[var(--dash-accent-border)] hover:shadow-sm'
                 }`}
               >
                 {/* Card header */}
@@ -158,34 +159,34 @@ export default function RegexLibraryPage() {
                       <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${toolColors[pattern.tool]}`}>
                         {pattern.tool}
                       </span>
-                      <span className="text-xs text-slate-400 font-medium">
+                      <span className="text-xs text-[var(--dash-muted)] font-medium">
                         {pattern.category}
                       </span>
                     </div>
-                    <h3 className="font-bold text-slate-900 text-sm leading-snug">
+                    <h3 className="font-bold text-[var(--dash-text)] text-sm leading-snug">
                       {pattern.name}
                     </h3>
                   </div>
                   {pattern.isPro && (
                     <span className={`flex-shrink-0 text-xs font-black px-2 py-0.5 rounded-full ${
                       isPaidPlan
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'bg-amber-100 text-amber-700'
+                        ? 'bg-[var(--dash-primary-soft)] text-[var(--dash-primary)]'
+                        : 'bg-[var(--dash-surface-hover)] text-[var(--dash-warning)]'
                     }`}>
-                      {isPaidPlan ? 'PRO' : '🔒 PRO'}
+                      {isPaidPlan ? 'PRO' : 'PRO'}
                     </span>
                   )}
                 </div>
 
                 {/* Description */}
-                <p className="text-xs text-slate-500 leading-relaxed">
+                <p className="text-xs text-[var(--dash-muted)] leading-relaxed">
                   {pattern.description}
                 </p>
 
                 {/* Regex pattern */}
                 <div className="relative">
-                  <div className={`bg-slate-950 rounded-xl p-3 ${isLocked ? 'blur-sm select-none' : ''}`}>
-                    <p className="text-xs text-green-400 font-mono break-all leading-relaxed">
+                  <div className={`bg-[var(--dash-text)] rounded-xl p-3 ${isLocked ? 'blur-sm select-none' : ''}`}>
+                    <p className="text-xs text-[var(--dash-success)] font-mono break-all leading-relaxed">
                       {pattern.pattern}
                     </p>
                   </div>
@@ -193,9 +194,9 @@ export default function RegexLibraryPage() {
                     <div className="absolute inset-0 flex items-center justify-center">
                       <button
                         onClick={() => setShowUpgrade(true)}
-                        className="bg-white border border-slate-200 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 transition-all"
+                        className="bg-[var(--dash-surface)] border border-[var(--dash-border)] text-[var(--dash-text)] text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm hover:bg-[var(--dash-primary-soft)] hover:text-[var(--dash-primary)] transition-all"
                       >
-                        🔒 Unlock with Pro
+                        Unlock with Pro
                       </button>
                     </div>
                   )}
@@ -203,14 +204,14 @@ export default function RegexLibraryPage() {
 
                 {/* Where to use */}
                 <div>
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">
+                  <p className="text-xs font-bold text-[var(--dash-muted)] uppercase tracking-wide mb-1.5">
                     Where to use
                   </p>
                   <div className="flex flex-wrap gap-1">
                     {pattern.whereToUse.map((step, i) => (
                       <span
                         key={i}
-                        className="text-xs bg-slate-50 text-slate-600 px-2 py-1 rounded-lg border border-slate-100"
+                        className="text-xs bg-[var(--dash-surface-hover)] text-[var(--dash-text)] px-2 py-1 rounded-lg border border-[var(--dash-border)]"
                       >
                         {step}
                       </span>
@@ -223,16 +224,16 @@ export default function RegexLibraryPage() {
                   onClick={() => handleCopy(pattern)}
                   className={`w-full py-2 rounded-xl text-xs font-bold transition-all mt-auto ${
                     isLocked
-                      ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800'
+                      ? 'bg-[var(--dash-primary)] text-white hover:bg-[var(--dash-primary-strong)]'
                       : copiedId === pattern.id
-                        ? 'bg-green-600 text-white'
-                        : 'bg-slate-900 text-white hover:bg-slate-700'
+                        ? 'bg-[var(--dash-success)] text-white'
+                        : 'bg-[var(--dash-text)] text-white hover:opacity-90'
                   }`}
                 >
                   {isLocked
-                    ? '⚡ Upgrade to Copy'
+                    ? 'Upgrade to Copy'
                     : copiedId === pattern.id
-                      ? '✓ Copied!'
+                      ? 'Copied'
                       : 'Copy Pattern'}
                 </button>
 
@@ -244,57 +245,56 @@ export default function RegexLibraryPage() {
 
       {/* Bottom upgrade banner — only for free users */}
       {!isPaidPlan && (
-        <div className="mt-10 bg-gradient-to-r from-slate-900 to-blue-900 rounded-2xl p-8 text-center text-white">
-          <p className="text-2xl mb-2">⚡</p>
+        <div className="mt-10 bg-[var(--dash-text)] rounded-2xl p-8 text-center text-white">
           <h2 className="text-xl font-black mb-2">
             Unlock {proCount} Pro Regex Patterns
           </h2>
-          <p className="text-slate-300 text-sm mb-6 max-w-md mx-auto">
+          <p className="text-white/80 text-sm mb-6 max-w-md mx-auto">
             Get advanced filters for bot exclusion, dynamic product URLs, checkout funnel tracking, keyword intent analysis and more.
           </p>
           <button
             onClick={() => setShowUpgrade(true)}
-            className="bg-blue-600 text-white font-black px-8 py-3 rounded-xl hover:bg-blue-500 transition-colors text-sm"
+            className="bg-[var(--dash-primary)] text-white font-black px-8 py-3 rounded-xl hover:bg-[var(--dash-primary-strong)] transition-colors text-sm"
           >
             Upgrade to Pro — $15/month
           </button>
-          <p className="text-slate-500 text-xs mt-3">Cancel anytime · Instant access</p>
+          <p className="text-white/60 text-xs mt-3">Cancel anytime · Instant access</p>
         </div>
       )}
 
       {/* How to Use Guide Modal */}
       {showGuide && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl">
+          <div className="bg-[var(--dash-card)] rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl border border-[var(--dash-border)]">
 
             {/* Modal header */}
-            <div className="sticky top-0 bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between rounded-t-2xl z-10">
+            <div className="sticky top-0 bg-[var(--dash-card)] border-b border-[var(--dash-border)] px-6 py-4 flex items-center justify-between rounded-t-2xl z-10">
               <div>
-                <h2 className="text-lg font-black text-slate-900">How to Use Regex Patterns</h2>
-                <p className="text-xs text-slate-500 mt-0.5">Step-by-step guides for GA4, Search Console and GTM</p>
+                <h2 className="text-lg font-black text-[var(--dash-text)]">How to Use Regex Patterns</h2>
+                <p className="text-xs text-[var(--dash-muted)] mt-0.5">Step-by-step guides for GA4, Search Console and GTM</p>
               </div>
               <button
                 onClick={() => setShowGuide(false)}
-                className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition-colors text-slate-500 font-bold text-sm"
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-border)] transition-colors text-[var(--dash-muted)] font-bold text-sm"
               >
-                ✕
+                &times;
               </button>
             </div>
 
             <div className="p-6 space-y-8">
 
               {/* What is Regex */}
-              <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5">
-                <h3 className="font-black text-blue-900 mb-2 flex items-center gap-2">
-                  <span>💡</span> What is a Regex Pattern?
+              <div className="bg-[var(--dash-primary-soft)] border border-[var(--dash-accent-border)] rounded-2xl p-5">
+                <h3 className="font-black text-[var(--dash-text)] mb-2">
+                  What is a Regex Pattern?
                 </h3>
-                <p className="text-sm text-blue-800 leading-relaxed">
+                <p className="text-sm text-[var(--dash-text)] leading-relaxed">
                   Regex (Regular Expression) is a pattern matching language. In analytics tools it lets you match multiple URLs, keywords or values at once using a single filter. Instead of adding 10 separate filters, one regex pattern can match all of them simultaneously.
                 </p>
-                <div className="mt-3 bg-white rounded-xl p-3 border border-blue-100">
-                  <p className="text-xs text-slate-500 mb-1 font-bold">Example:</p>
-                  <code className="text-xs text-green-700 font-mono">/(pricing|checkout|thank-you).*</code>
-                  <p className="text-xs text-slate-500 mt-1">This matches any URL containing pricing, checkout or thank-you — all in one filter.</p>
+                <div className="mt-3 bg-[var(--dash-surface)] rounded-xl p-3 border border-[var(--dash-border)]">
+                  <p className="text-xs text-[var(--dash-muted)] mb-1 font-bold">Example:</p>
+                  <code className="text-xs text-[var(--dash-success)] font-mono">/(pricing|checkout|thank-you).*</code>
+                  <p className="text-xs text-[var(--dash-muted)] mt-1">This matches any URL containing pricing, checkout or thank-you — all in one filter.</p>
                 </div>
               </div>
 
@@ -302,13 +302,13 @@ export default function RegexLibraryPage() {
               <div>
                 <div className="flex items-center gap-2 mb-4">
                   <span className="bg-orange-100 text-orange-700 text-xs font-black px-2.5 py-1 rounded-full border border-orange-200">GA4</span>
-                  <h3 className="font-black text-slate-900 text-base">How to Use Regex in Google Analytics 4</h3>
+                  <h3 className="font-black text-[var(--dash-text)] text-base">How to Use Regex in Google Analytics 4</h3>
                 </div>
 
                 <div className="space-y-4">
 
-                  <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
-                    <p className="text-sm font-black text-slate-800 mb-3">Method 1 — Exploration Reports (most common)</p>
+                  <div className="bg-[var(--dash-surface-hover)] rounded-xl p-4 border border-[var(--dash-border)]">
+                    <p className="text-sm font-black text-[var(--dash-text)] mb-3">Method 1 — Exploration Reports (most common)</p>
                     <ol className="space-y-2">
                       {[
                         'Open Google Analytics 4 and go to Explore in the left sidebar',
@@ -319,7 +319,7 @@ export default function RegexLibraryPage() {
                         'Paste your regex pattern from TrackHive into the value field',
                         'Click Apply — your report now shows only matching data',
                       ].map((step, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-slate-600">
+                        <li key={i} className="flex items-start gap-3 text-sm text-[var(--dash-muted)]">
                           <span className="w-5 h-5 rounded-full bg-orange-100 text-orange-700 text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5">
                             {i + 1}
                           </span>
@@ -329,8 +329,8 @@ export default function RegexLibraryPage() {
                     </ol>
                   </div>
 
-                  <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
-                    <p className="text-sm font-black text-slate-800 mb-3">Method 2 — Audience Builder (for remarketing)</p>
+                  <div className="bg-[var(--dash-surface-hover)] rounded-xl p-4 border border-[var(--dash-border)]">
+                    <p className="text-sm font-black text-[var(--dash-text)] mb-3">Method 2 — Audience Builder (for remarketing)</p>
                     <ol className="space-y-2">
                       {[
                         'Go to Admin → Audiences → New Audience',
@@ -341,7 +341,7 @@ export default function RegexLibraryPage() {
                         'Name your audience and click Save',
                         'Link to Google Ads to use for remarketing campaigns',
                       ].map((step, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-slate-600">
+                        <li key={i} className="flex items-start gap-3 text-sm text-[var(--dash-muted)]">
                           <span className="w-5 h-5 rounded-full bg-orange-100 text-orange-700 text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5">
                             {i + 1}
                           </span>
@@ -351,8 +351,8 @@ export default function RegexLibraryPage() {
                     </ol>
                   </div>
 
-                  <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
-                    <p className="text-sm font-black text-slate-800 mb-3">Method 3 — Data Filters (permanent filters)</p>
+                  <div className="bg-[var(--dash-surface-hover)] rounded-xl p-4 border border-[var(--dash-border)]">
+                    <p className="text-sm font-black text-[var(--dash-text)] mb-3">Method 3 — Data Filters (permanent filters)</p>
                     <ol className="space-y-2">
                       {[
                         'Go to Admin → Data Filters → Create Filter',
@@ -362,7 +362,7 @@ export default function RegexLibraryPage() {
                         'Set filter state to Active and click Save',
                         'This permanently removes matching traffic from all reports',
                       ].map((step, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-slate-600">
+                        <li key={i} className="flex items-start gap-3 text-sm text-[var(--dash-muted)]">
                           <span className="w-5 h-5 rounded-full bg-orange-100 text-orange-700 text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5">
                             {i + 1}
                           </span>
@@ -372,8 +372,8 @@ export default function RegexLibraryPage() {
                     </ol>
                   </div>
 
-                  <div className="bg-amber-50 border border-amber-100 rounded-xl p-4">
-                    <p className="text-xs font-black text-amber-800 mb-1">⚠️ GA4 Regex Tips</p>
+                  <div className="bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] rounded-xl p-4">
+                    <p className="text-xs font-black text-[var(--dash-text)] mb-1">GA4 Regex Tips</p>
                     <ul className="space-y-1">
                       {[
                         'GA4 regex is case sensitive by default — use lowercase patterns',
@@ -381,7 +381,7 @@ export default function RegexLibraryPage() {
                         'Use ^ to match start of string and $ to match end',
                         'Test your pattern on a small date range before applying permanently',
                       ].map((tip, i) => (
-                        <li key={i} className="text-xs text-amber-700 flex items-start gap-1.5">
+                        <li key={i} className="text-xs text-[var(--dash-muted)] flex items-start gap-1.5">
                           <span className="mt-0.5">•</span>{tip}
                         </li>
                       ))}
@@ -395,13 +395,13 @@ export default function RegexLibraryPage() {
               <div>
                 <div className="flex items-center gap-2 mb-4">
                   <span className="bg-green-100 text-green-700 text-xs font-black px-2.5 py-1 rounded-full border border-green-200">Search Console</span>
-                  <h3 className="font-black text-slate-900 text-base">How to Use Regex in Google Search Console</h3>
+                  <h3 className="font-black text-[var(--dash-text)] text-base">How to Use Regex in Google Search Console</h3>
                 </div>
 
                 <div className="space-y-4">
 
-                  <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
-                    <p className="text-sm font-black text-slate-800 mb-3">Filter Queries with Regex</p>
+                  <div className="bg-[var(--dash-surface-hover)] rounded-xl p-4 border border-[var(--dash-border)]">
+                    <p className="text-sm font-black text-[var(--dash-text)] mb-3">Filter Queries with Regex</p>
                     <ol className="space-y-2">
                       {[
                         'Open Google Search Console and click Performance in the left sidebar',
@@ -413,7 +413,7 @@ export default function RegexLibraryPage() {
                         'Click Apply — the report instantly filters to matching queries only',
                         'Export to Google Sheets for deeper analysis',
                       ].map((step, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-slate-600">
+                        <li key={i} className="flex items-start gap-3 text-sm text-[var(--dash-muted)]">
                           <span className="w-5 h-5 rounded-full bg-green-100 text-green-700 text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5">
                             {i + 1}
                           </span>
@@ -423,8 +423,8 @@ export default function RegexLibraryPage() {
                     </ol>
                   </div>
 
-                  <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
-                    <p className="text-sm font-black text-slate-800 mb-3">Filter Pages with Regex</p>
+                  <div className="bg-[var(--dash-surface-hover)] rounded-xl p-4 border border-[var(--dash-border)]">
+                    <p className="text-sm font-black text-[var(--dash-text)] mb-3">Filter Pages with Regex</p>
                     <ol className="space-y-2">
                       {[
                         'In the Performance report click the Pages tab',
@@ -433,7 +433,7 @@ export default function RegexLibraryPage() {
                         'Paste your URL pattern to filter specific page groups',
                         'Combine with the Queries tab to see keywords for specific page types',
                       ].map((step, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-slate-600">
+                        <li key={i} className="flex items-start gap-3 text-sm text-[var(--dash-muted)]">
                           <span className="w-5 h-5 rounded-full bg-green-100 text-green-700 text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5">
                             {i + 1}
                           </span>
@@ -443,8 +443,8 @@ export default function RegexLibraryPage() {
                     </ol>
                   </div>
 
-                  <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
-                    <p className="text-sm font-black text-slate-800 mb-3">Pro Workflow — Find Quick Win Keywords</p>
+                  <div className="bg-[var(--dash-surface-hover)] rounded-xl p-4 border border-[var(--dash-border)]">
+                    <p className="text-sm font-black text-[var(--dash-text)] mb-3">Pro Workflow — Find Quick Win Keywords</p>
                     <ol className="space-y-2">
                       {[
                         'Open Performance → Queries tab',
@@ -455,7 +455,7 @@ export default function RegexLibraryPage() {
                         'Update page titles, meta descriptions and H1s for these pages',
                         'Check back in 2 weeks to see position improvements',
                       ].map((step, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-slate-600">
+                        <li key={i} className="flex items-start gap-3 text-sm text-[var(--dash-muted)]">
                           <span className="w-5 h-5 rounded-full bg-green-100 text-green-700 text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5">
                             {i + 1}
                           </span>
@@ -465,8 +465,8 @@ export default function RegexLibraryPage() {
                     </ol>
                   </div>
 
-                  <div className="bg-amber-50 border border-amber-100 rounded-xl p-4">
-                    <p className="text-xs font-black text-amber-800 mb-1">⚠️ Search Console Regex Tips</p>
+                  <div className="bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] rounded-xl p-4">
+                    <p className="text-xs font-black text-[var(--dash-text)] mb-1">Search Console Regex Tips</p>
                     <ul className="space-y-1">
                       {[
                         'Search Console regex is case insensitive — no need to worry about uppercase',
@@ -475,7 +475,7 @@ export default function RegexLibraryPage() {
                         'Export filtered data to Sheets for pivot tables and deeper analysis',
                         'Regex filters do not permanently change your data — they are view only',
                       ].map((tip, i) => (
-                        <li key={i} className="text-xs text-amber-700 flex items-start gap-1.5">
+                        <li key={i} className="text-xs text-[var(--dash-muted)] flex items-start gap-1.5">
                           <span className="mt-0.5">•</span>{tip}
                         </li>
                       ))}
@@ -489,13 +489,13 @@ export default function RegexLibraryPage() {
               <div>
                 <div className="flex items-center gap-2 mb-4">
                   <span className="bg-blue-100 text-blue-700 text-xs font-black px-2.5 py-1 rounded-full border border-blue-200">GTM</span>
-                  <h3 className="font-black text-slate-900 text-base">How to Use Regex in Google Tag Manager</h3>
+                  <h3 className="font-black text-[var(--dash-text)] text-base">How to Use Regex in Google Tag Manager</h3>
                 </div>
 
                 <div className="space-y-4">
 
-                  <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
-                    <p className="text-sm font-black text-slate-800 mb-3">Create a Regex Trigger in GTM</p>
+                  <div className="bg-[var(--dash-surface-hover)] rounded-xl p-4 border border-[var(--dash-border)]">
+                    <p className="text-sm font-black text-[var(--dash-text)] mb-3">Create a Regex Trigger in GTM</p>
                     <ol className="space-y-2">
                       {[
                         'Open Google Tag Manager and go to Triggers in the left menu',
@@ -507,7 +507,7 @@ export default function RegexLibraryPage() {
                         'Name your trigger clearly e.g. PV - Checkout Pages Only',
                         'Click Save and attach this trigger to your conversion tags',
                       ].map((step, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-slate-600">
+                        <li key={i} className="flex items-start gap-3 text-sm text-[var(--dash-muted)]">
                           <span className="w-5 h-5 rounded-full bg-blue-100 text-blue-700 text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5">
                             {i + 1}
                           </span>
@@ -517,8 +517,8 @@ export default function RegexLibraryPage() {
                     </ol>
                   </div>
 
-                  <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
-                    <p className="text-sm font-black text-slate-800 mb-3">Add a Regex Exception (Exclusion Trigger)</p>
+                  <div className="bg-[var(--dash-surface-hover)] rounded-xl p-4 border border-[var(--dash-border)]">
+                    <p className="text-sm font-black text-[var(--dash-text)] mb-3">Add a Regex Exception (Exclusion Trigger)</p>
                     <ol className="space-y-2">
                       {[
                         'Create a new trigger and choose Page View',
@@ -530,7 +530,7 @@ export default function RegexLibraryPage() {
                         'Select the exclusion trigger you just created',
                         'Now the tag fires everywhere except admin and dashboard pages',
                       ].map((step, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-slate-600">
+                        <li key={i} className="flex items-start gap-3 text-sm text-[var(--dash-muted)]">
                           <span className="w-5 h-5 rounded-full bg-blue-100 text-blue-700 text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5">
                             {i + 1}
                           </span>
@@ -540,8 +540,8 @@ export default function RegexLibraryPage() {
                     </ol>
                   </div>
 
-                  <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
-                    <p className="text-sm font-black text-slate-800 mb-3">Test Your GTM Regex with Preview Mode</p>
+                  <div className="bg-[var(--dash-surface-hover)] rounded-xl p-4 border border-[var(--dash-border)]">
+                    <p className="text-sm font-black text-[var(--dash-text)] mb-3">Test Your GTM Regex with Preview Mode</p>
                     <ol className="space-y-2">
                       {[
                         'Before publishing always click Preview in the top right of GTM',
@@ -551,7 +551,7 @@ export default function RegexLibraryPage() {
                         'Navigate to a page it should NOT match and verify it shows as Not Fired',
                         'Once confirmed click Submit in GTM to publish your changes',
                       ].map((step, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-slate-600">
+                        <li key={i} className="flex items-start gap-3 text-sm text-[var(--dash-muted)]">
                           <span className="w-5 h-5 rounded-full bg-blue-100 text-blue-700 text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5">
                             {i + 1}
                           </span>
@@ -561,8 +561,8 @@ export default function RegexLibraryPage() {
                     </ol>
                   </div>
 
-                  <div className="bg-amber-50 border border-amber-100 rounded-xl p-4">
-                    <p className="text-xs font-black text-amber-800 mb-1">⚠️ GTM Regex Tips</p>
+                  <div className="bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] rounded-xl p-4">
+                    <p className="text-xs font-black text-[var(--dash-text)] mb-1">GTM Regex Tips</p>
                     <ul className="space-y-1">
                       {[
                         'Always test in Preview Mode before publishing — a wrong regex can break all tracking',
@@ -571,7 +571,7 @@ export default function RegexLibraryPage() {
                         'Escape special characters — dots, slashes and question marks need a backslash prefix',
                         'Name triggers clearly so the team knows what each regex does',
                       ].map((tip, i) => (
-                        <li key={i} className="text-xs text-amber-700 flex items-start gap-1.5">
+                        <li key={i} className="text-xs text-[var(--dash-muted)] flex items-start gap-1.5">
                           <span className="mt-0.5">•</span>{tip}
                         </li>
                       ))}
@@ -583,8 +583,8 @@ export default function RegexLibraryPage() {
 
               {/* Quick reference */}
               <div>
-                <h3 className="font-black text-slate-900 text-base mb-4">📋 Regex Quick Reference</h3>
-                <div className="bg-slate-950 rounded-xl p-5">
+                <h3 className="font-black text-[var(--dash-text)] text-base mb-4">Regex Quick Reference</h3>
+                <div className="bg-[var(--dash-text)] rounded-xl p-5">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {[
                       { symbol: '^', meaning: 'Start of string', example: '^/blog' },
@@ -599,10 +599,10 @@ export default function RegexLibraryPage() {
                       { symbol: '{n,}', meaning: 'n or more of previous', example: '(\\S+\\s){4,}' },
                     ].map(row => (
                       <div key={row.symbol} className="flex items-center gap-3">
-                        <code className="text-green-400 font-mono text-xs w-20 flex-shrink-0">{row.symbol}</code>
+                        <code className="text-[var(--dash-success)] font-mono text-xs w-20 flex-shrink-0">{row.symbol}</code>
                         <div>
-                          <p className="text-slate-300 text-xs">{row.meaning}</p>
-                          <code className="text-slate-500 font-mono text-xs">{row.example}</code>
+                          <p className="text-white/80 text-xs">{row.meaning}</p>
+                          <code className="text-white/60 font-mono text-xs">{row.example}</code>
                         </div>
                       </div>
                     ))}
@@ -613,7 +613,7 @@ export default function RegexLibraryPage() {
               {/* Close button */}
               <button
                 onClick={() => setShowGuide(false)}
-                className="w-full py-3 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-700 transition-colors text-sm"
+                className="w-full py-3 bg-[var(--dash-text)] text-white font-bold rounded-xl hover:opacity-90 transition-colors text-sm"
               >
                 Close Guide
               </button>

@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import { useState, useEffect } from 'react'
 import { usePlan } from '@/hooks/usePlan'
 import { FeatureGate } from '@/components/FeatureGate'

@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { createClient } from '@/lib/supabase/server'
 import { FeatureGate } from '@/components/FeatureGate'
 import ReverseProxyClient from './ReverseProxyClient'

@@ -113,6 +113,22 @@ export const REGEX_PATTERNS: RegexPattern[] = [
     whereToUse: ['GA4 Explore', 'Session Campaign filter', 'Matches Regex'],
     isPro: true,
   },
+  {
+    id: 'ga4-ai-assistant-traffic',
+    name: 'Track AI Assistant & Chatbot Traffic',
+    tool: 'GA4',
+    category: 'Traffic Sources',
+    description: 'Measure traffic coming from AI assistants and chatbots — ChatGPT, Gemini, Copilot, Perplexity, Bard and other AI platforms. Use with GA4 Custom Channel Groups to isolate AI referral traffic.',
+    pattern: '.*ai.*|.*openai.*|.*chatgpt.*|.*gemini.*|.*gpt.*|.*copilot.*|.*perplexity.*|.*google.*bard.*|.*bard.*google.*|.*bard.*|.*gemini.*google.*',
+    whereToUse: [
+      'GA4 Admin',
+      'Data Settings → Channel Groups',
+      'Create Custom Channel → Add condition',
+      'Source → Matches Regex',
+      'Name channel: AI Assistant Traffic',
+    ],
+    isPro: true,
+  },
 
   // ── SEARCH CONSOLE FREE ──
   {

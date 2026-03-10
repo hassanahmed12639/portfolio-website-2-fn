@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import './dashboard-theme.css'
 
 export default function DashboardLayout({

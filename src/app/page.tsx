@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import Footer from '../components/layout/Footer'
 import { FloatingIconsHero } from '../components/sections/Hero'
 import { FeaturesHeadingSection } from '../components/sections/FeaturesHeadingSection'
