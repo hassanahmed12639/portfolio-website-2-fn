@@ -40,7 +40,7 @@ const INTEGRATIONS: { name: string; src: string }[] = [
 
 export default function TrackHivePage() {
   return (
-    <div className="trackhive-flow min-h-screen bg-white antialiased" style={{ color: "#0f172a" }}>
+    <div className="trackhive-flow font-sans min-h-screen bg-white antialiased" style={{ color: "#0f172a" }}>
       <TrackHiveNavbar />
 
       {/* Hero - Aigen style: light blue gradient, two-column, headline + card + social proof */}
@@ -63,11 +63,8 @@ export default function TrackHivePage() {
                 <svg className="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" /></svg>
                 TRACK FOR FAST
               </div>
-              <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-[3.25rem] font-bold leading-tight mb-4 md:mb-6 text-slate-900">
-                One tool to{" "}
-                <span className="text-[#3B82F6]">track</span>
-                {" "}conversions and your{" "}
-                <span className="text-[#3B82F6]">ads.</span>
+              <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-[3.25rem] font-bold leading-tight mb-4 md:mb-6 bg-gradient-to-r from-[#0f172a] via-[#2563eb] to-[#93c5fd] bg-clip-text text-transparent">
+                One tool to track conversions and your ads.
               </h1>
               <p className="text-base md:text-lg lg:text-xl text-slate-600 max-w-xl mb-8 md:mb-10">
                 TrackHive helps marketing teams work faster and smarter, delivering server-side events to Meta, Google, TikTok and Snapchat—so you get the visibility and match rates you need.
@@ -143,11 +140,11 @@ export default function TrackHivePage() {
           <div className="mx-auto max-w-5xl text-center">
             <h2 className="text-3xl font-bold leading-[1.1] tracking-tight text-[#0f172a] sm:text-4xl md:text-5xl lg:text-6xl">
               <span className="bg-gradient-to-r from-[#0f172a] via-[#2563eb] to-[#93c5fd] bg-clip-text text-transparent">
-                Audited. Open-source.
+                Track events
               </span>
               <br />
-              <span className="text-[#0f172a]">Stress-tested.</span>{" "}
-              <span className="text-[#93c5fd]">Countless times.</span>
+              <span className="text-[#0f172a]">server-side with</span>{" "}
+              <span className="text-[#93c5fd]">full data control.</span>
             </h2>
           </div>
         </div>

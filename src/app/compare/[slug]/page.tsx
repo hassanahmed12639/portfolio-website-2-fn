@@ -46,7 +46,7 @@ export default async function ComparePage({ params }: Props) {
   const rows = compareRows ?? []
 
   return (
-    <div className="trackhive-flow min-h-screen bg-white antialiased" style={{ color: '#0f172a' }}>
+    <div className="trackhive-flow font-sans min-h-screen bg-white antialiased" style={{ color: '#0f172a' }}>
       <TrackHiveNavbar />
       <main className="max-w-4xl mx-auto px-4 pt-28 pb-16">
         {/* Hero */}

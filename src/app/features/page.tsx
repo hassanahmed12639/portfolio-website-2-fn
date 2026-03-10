@@ -103,7 +103,7 @@ const FEATURE_SECTIONS = [
 
 export default function FeaturesPage() {
   return (
-    <div className="trackhive-flow min-h-screen bg-white antialiased" style={{ color: "#0f172a" }}>
+    <div className="trackhive-flow font-sans min-h-screen bg-white antialiased" style={{ color: "#0f172a" }}>
       <TrackHiveNavbar />
 
       {/* Hero */}

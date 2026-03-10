@@ -162,6 +162,14 @@ nav a {
   color: #0F0F0F;
 }
 
+/* TrackHive flow + dashboard: enforce Segoe UI font sitewide */
+.trackhive-flow,
+.trackhive-flow *:not(code):not(pre):not(kbd),
+.dashboard-shell,
+.dashboard-shell *:not(code):not(pre):not(kbd) {
+  font-family: "Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif !important;
+}
+
 /* TrackHive flow + dashboard: no neon green — use blue for selection and scrollbar */
 .trackhive-flow ::selection,
 .dashboard-shell ::selection {

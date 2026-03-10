@@ -81,7 +81,7 @@ export default async function BlogPostPage({ params }: Props) {
 
     if (problemPage) {
       return (
-        <div className="trackhive-flow min-h-screen bg-white antialiased" style={{ color: '#0f172a' }}>
+        <div className="trackhive-flow font-sans min-h-screen bg-white antialiased" style={{ color: '#0f172a' }}>
           <TrackHiveNavbar />
           <main className="max-w-6xl mx-auto px-4 lg:px-8 pt-28 pb-16">
             <div className="lg:grid lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-12">

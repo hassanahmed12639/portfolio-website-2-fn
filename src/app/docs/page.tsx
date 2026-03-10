@@ -57,7 +57,7 @@ export default function DocsPage() {
   const [activeSection, setActiveSection] = useState("quick-start")
 
   return (
-    <div className="trackhive-flow min-h-screen bg-white antialiased" style={{ color: "#0f172a" }}>
+    <div className="trackhive-flow font-sans min-h-screen bg-white antialiased" style={{ color: "#0f172a" }}>
       <TrackHiveNavbar />
 
       <div className="pt-24 flex flex-col lg:flex-row min-h-[calc(100vh-4rem)]">
