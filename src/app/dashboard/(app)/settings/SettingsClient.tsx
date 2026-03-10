@@ -35,8 +35,8 @@ export default function SettingsClient({ profile, userId }: { profile: Profile; 
         <p className="text-sm text-slate-500 mb-4">Switch between E-Commerce and Lead Gen dashboard views</p>
         <div className="grid grid-cols-2 gap-3">
           {[
-            { type: 'ecommerce', emoji: '🛍️', label: 'E-Commerce', desc: 'Purchase tracking, revenue, ROAS' },
-            { type: 'leadgen', emoji: '🎯', label: 'Lead Generation', desc: 'Lead scoring, funnel, Meta feedback' }
+            { type: 'ecommerce', label: 'E-Commerce', desc: 'Purchase tracking, revenue, ROAS' },
+            { type: 'leadgen', label: 'Lead Generation', desc: 'Lead scoring, funnel, Meta feedback' }
           ].map(option => (
             <button
               key={option.type}
@@ -49,7 +49,6 @@ export default function SettingsClient({ profile, userId }: { profile: Profile; 
                   : 'border-slate-100 hover:border-blue-200'
               }`}
             >
-              <p className="text-2xl mb-2">{option.emoji}</p>
               <p className="font-bold text-slate-900 text-sm">{option.label}</p>
               <p className="text-xs text-slate-500 mt-1">{option.desc}</p>
               {currentDashboardType === option.type && (
