@@ -7,8 +7,9 @@ import GlowingCardSection from '../components/sections/GlowingCardSection'
 import ParallaxSection from '../components/sections/ParallaxSection'
 import ScrollRevealSection from '../components/sections/ScrollRevealSection'
 import CaseStudySection from '../components/sections/CaseStudySection'
+import { Testimonials } from '../components/sections/Testimonials'
+import { HomeCTA } from '../components/sections/HomeCTA'
 import ScrambleIntroWrapper from '../components/ScrambleIntroWrapper'
-import { HeroWithMarquee } from '../components/sections/HeroWithMarquee'
 
 export default function Home() {
   return (
@@ -26,7 +27,8 @@ export default function Home() {
       <ParallaxSection />
       <ScrollRevealSection />
       <CaseStudySection />
-      <HeroWithMarquee />
+      <Testimonials />
+      <HomeCTA />
       <Footer />
     </main>
   )

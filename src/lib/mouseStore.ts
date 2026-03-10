@@ -9,9 +9,12 @@ export const mouseStore = {
 };
 
 if (typeof window !== 'undefined') {
-  const handler = (e: MouseEvent) => {
-    mouseStore.x = (e.clientX / window.innerWidth) * 2 - 1;
-    mouseStore.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  const update = (clientX: number, clientY: number) => {
+    mouseStore.x = (clientX / window.innerWidth) * 2 - 1;
+    mouseStore.y = -(clientY / window.innerHeight) * 2 + 1;
   };
-  window.addEventListener('mousemove', handler, { passive: true });
+  const mouseHandler = (e: MouseEvent) => update(e.clientX, e.clientY);
+  const pointerHandler = (e: PointerEvent) => update(e.clientX, e.clientY);
+  window.addEventListener('mousemove', mouseHandler, { passive: true });
+  window.addEventListener('pointermove', pointerHandler, { passive: true });
 }

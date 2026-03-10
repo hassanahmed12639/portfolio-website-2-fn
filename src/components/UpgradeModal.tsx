@@ -53,13 +53,13 @@ export function UpgradeModal({
           <button
             type="button"
             onClick={handleStartTrial}
-            className="flex-1 py-2.5 rounded-lg font-medium bg-emerald-500 text-emerald-950 hover:bg-emerald-400 transition-colors"
+            className="flex-1 min-w-0 px-4 py-2.5 rounded-lg font-medium bg-emerald-500 text-emerald-950 hover:bg-emerald-400 transition-colors"
           >
             Start 7-Day Free Trial
           </button>
           <Link
             href="/dashboard/billing"
-            className="flex-1 py-2.5 rounded-lg font-medium text-center border border-zinc-500 text-zinc-200 hover:bg-zinc-800 transition-colors"
+            className="flex-1 min-w-0 px-4 py-2.5 rounded-lg font-medium text-center border border-zinc-500 text-zinc-200 hover:bg-zinc-800 transition-colors whitespace-nowrap"
           >
             Upgrade to Pro — $10/mo
           </Link>

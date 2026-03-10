@@ -44,7 +44,7 @@ function WordLine({ words }: { words: typeof line1 }) {
 export default function ScrollRevealSection() {
   return (
     <section
-      className="relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-12 py-16 md:py-20 gap-10 md:gap-12 bg-[#0a0a0a]"
+      className="relative min-h-screen min-h-[100dvh] flex flex-col items-center justify-center px-4 sm:px-6 lg:px-12 py-12 md:py-16 gap-10 md:gap-12 bg-[#0a0a0a]"
       aria-labelledby="scroll-reveal-heading"
     >
       <h2 id="scroll-reveal-heading" className="sr-only">

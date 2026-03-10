@@ -278,7 +278,7 @@ export default function DashboardNav({
                 <button
                   type="button"
                   onClick={() => toggleSection(section.title)}
-                  className="mb-2 flex w-full items-center gap-2 px-2 py-1 text-left text-xs font-medium uppercase tracking-wider text-[var(--dash-muted)] transition-colors hover:text-[var(--dash-text)]"
+                  className="mb-2 flex w-full items-center gap-2 px-2 py-1 text-left text-xs font-medium uppercase tracking-wider text-slate-600 transition-colors hover:text-slate-900"
                 >
                   {isOpen ? (
                     <ChevronDown className="h-3.5 w-3.5 shrink-0" />
@@ -307,7 +307,7 @@ export default function DashboardNav({
                               className={`relative flex w-full items-center gap-3 rounded-lg pl-4 pr-2 py-2 text-sm transition-colors text-left ${
                                 isActive
                                   ? 'font-semibold text-[var(--dash-primary-strong)]'
-                                  : 'text-[var(--dash-text)] hover:bg-[var(--dash-surface-hover)]'
+                                  : 'text-slate-900 hover:bg-[var(--dash-surface-hover)]'
                               }`}
                               style={
                                 isActive
@@ -322,15 +322,15 @@ export default function DashboardNav({
                                   className={`h-4 w-4 shrink-0 ${
                                     isActive
                                       ? 'text-[var(--dash-primary-strong)]'
-                                      : 'text-[var(--dash-muted)]'
+                                      : 'text-slate-600'
                                   }`}
                                 />
                               )}
                               <span className="flex-1 truncate">{item.label}</span>
-                              <span className="text-xs bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 px-1.5 py-0.5 rounded font-medium shrink-0">
+                              <span className="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded font-medium shrink-0">
                                 PRO
                               </span>
-                              <ChevronRight className="h-3.5 w-3.5 shrink-0 text-[var(--dash-muted)]" />
+                              <ChevronRight className="h-3.5 w-3.5 shrink-0 text-slate-500" />
                             </button>
                           ) : (
                             <Link
@@ -339,7 +339,7 @@ export default function DashboardNav({
                               className={`relative flex items-center gap-3 rounded-lg pl-4 pr-2 py-2 text-sm transition-colors w-full ${
                                 isActive
                                   ? 'font-semibold text-[var(--dash-primary-strong)]'
-                                  : 'text-[var(--dash-text)] hover:bg-[var(--dash-surface-hover)]'
+                                  : 'text-slate-900 hover:bg-[var(--dash-surface-hover)]'
                               }`}
                               style={
                                 isActive
@@ -354,7 +354,7 @@ export default function DashboardNav({
                                   className={`h-4 w-4 shrink-0 ${
                                     isActive
                                       ? 'text-[var(--dash-primary-strong)]'
-                                      : 'text-[var(--dash-muted)]'
+                                      : 'text-slate-600'
                                   }`}
                                 />
                               )}
@@ -363,7 +363,7 @@ export default function DashboardNav({
                                 className={`h-3.5 w-3.5 shrink-0 ${
                                   isActive
                                     ? 'text-[var(--dash-primary-strong)]'
-                                    : 'text-[var(--dash-muted)]'
+                                    : 'text-slate-500'
                                 }`}
                               />
                             </Link>

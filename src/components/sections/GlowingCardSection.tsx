@@ -118,7 +118,7 @@ export default function GlowingCardSection() {
   return (
     <section
       className={cn(
-        'w-full overflow-hidden py-12 sm:py-16 md:py-20 px-4 sm:px-6',
+        'w-full overflow-hidden min-h-0 py-12 md:py-16 px-4 sm:px-6',
         'flex flex-col items-center justify-center'
       )}
       style={{ backgroundColor: BG_DARK }}

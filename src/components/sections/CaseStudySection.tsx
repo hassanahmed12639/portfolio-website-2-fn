@@ -17,12 +17,12 @@ const cases = [
 export default function CaseStudySection() {
   return (
     <section
-      className="relative w-full py-20 md:py-28 px-4 sm:px-6 lg:px-12 bg-black"
+      className="relative w-full min-h-screen min-h-[100dvh] flex flex-col justify-start sm:justify-center py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-black"
       aria-labelledby="case-studies-heading"
     >
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto w-full">
         {/* Header */}
-        <div className="mb-12 md:mb-16 text-center">
+        <div className="mb-8 sm:mb-12 md:mb-16 text-center">
           <h2
             id="case-studies-heading"
             className="text-white font-extrabold tracking-tight"
@@ -36,12 +36,12 @@ export default function CaseStudySection() {
           </h2>
         </div>
 
-        {/* Cards: simple 2-column grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+        {/* Cards: simple 2-column grid, mobile: one card per viewport for scroll-by-scroll */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-4 md:gap-6">
           {cases.map((c) => (
-            <Link key={c.brand} href={`/project/${c.slug}`}>
+            <Link key={c.brand} href={`/project/${c.slug}`} className="block">
               <article
-                className="group relative rounded-2xl border overflow-hidden min-h-[280px] md:min-h-[320px] cursor-pointer"
+                className="group relative rounded-2xl border overflow-hidden min-h-[72dvh] sm:min-h-[280px] md:min-h-[320px] cursor-pointer touch-manipulation active:scale-[0.98] transition-transform"
                 style={{ backgroundColor: CARD_BG, borderColor: BORDER }}
               >
                 <div className="absolute inset-0">
@@ -52,9 +52,9 @@ export default function CaseStudySection() {
                     sizes="(max-width: 640px) 100vw, 50vw"
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
                   />
-                  {/* Hover overlay: black layer rises from below */}
+                  {/* Hover/tap overlay: black layer rises from below (group-active for mobile tap) */}
                   <div
-                    className="absolute inset-x-0 bottom-0 top-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out flex flex-col items-center justify-end pb-6"
+                    className="absolute inset-x-0 bottom-0 top-0 translate-y-full group-hover:translate-y-0 group-active:translate-y-0 transition-transform duration-300 ease-out flex flex-col items-center justify-end pb-6"
                     style={{
                       background: 'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)',
                     }}

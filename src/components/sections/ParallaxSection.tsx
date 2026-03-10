@@ -37,7 +37,7 @@ export default function ParallaxSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen flex flex-col justify-start items-end pt-16 md:pt-24 pb-16 md:pb-24 px-4 sm:px-6 lg:px-12 overflow-visible"
+      className="relative min-h-screen min-h-[100dvh] flex flex-col justify-start items-end py-12 md:py-16 px-4 sm:px-6 lg:px-12 overflow-visible"
       aria-labelledby="parallax-section-heading"
     >
       {/* Fixed shader via portal – renders at body level so it sits behind all sections */}

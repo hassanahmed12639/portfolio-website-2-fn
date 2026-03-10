@@ -23,7 +23,7 @@ const FloatingIconsHero = React.forwardRef<
     <section
       ref={ref}
       className={cn(
-        'relative w-full flex flex-col items-center overflow-hidden bg-background pb-20 md:pb-24 lg:pb-28',
+        'relative w-full min-h-0 flex flex-col items-center overflow-hidden bg-background pb-12 md:pb-16',
         className
       )}
       {...props}

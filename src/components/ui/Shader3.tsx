@@ -256,7 +256,7 @@ export function Shader3({
 
   return (
     <div
-      className={cn(className, 'absolute inset-0 h-full w-full')}
+      className={cn(className, 'absolute inset-0 h-full w-full pointer-events-none')}
       style={{ minHeight: '100vh', minWidth: '100%' }}
     >
       <Canvas
@@ -264,7 +264,7 @@ export function Shader3({
         dpr={[1, 2]}
         frameloop="always"
         gl={{ alpha: false }}
-        style={{ width: '100%', height: '100%', display: 'block' }}
+        style={{ width: '100%', height: '100%', display: 'block', pointerEvents: 'none' }}
       >
         <ShaderPlane
           vertexShader={vertexShader}

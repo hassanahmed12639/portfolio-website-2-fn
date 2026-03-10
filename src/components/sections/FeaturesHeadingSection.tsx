@@ -11,6 +11,7 @@ const LIME = '#b3f000';
 const HEADING =
   'Data-driven performance marketing strategies designed to scale results fast.';
 const FIRST_VISIBLE_WORDS = 3;
+const WORDS_PER_SCROLL = 2;
 const HIGHLIGHT_WORDS = new Set(['scale', 'fast.']);
 
 export function FeaturesHeadingSection({ className }: { className?: string }) {
@@ -18,8 +19,8 @@ export function FeaturesHeadingSection({ className }: { className?: string }) {
   const [scrollProgress, setScrollProgress] = React.useState(0);
 
   const words = HEADING.split(' ');
-  const wordsToReveal = Math.max(words.length - FIRST_VISIBLE_WORDS, 1);
-  const scrollSteps = wordsToReveal; // one step per word after the first 3
+  const wordsToReveal = Math.max(words.length - FIRST_VISIBLE_WORDS, 0);
+  const scrollSteps = Math.ceil(wordsToReveal / WORDS_PER_SCROLL) || 1;
 
   React.useEffect(() => {
     registerGsapPlugins();
@@ -28,27 +29,28 @@ export function FeaturesHeadingSection({ className }: { className?: string }) {
 
     const st = ScrollTrigger.create({
       trigger: section,
-      start: 'top 65%',
-      end: 'bottom 55%', // shorter range = faster progress per scroll
+      start: 'top top', // lock when section reaches top – fills viewport, text centers in middle
+      end: `+=${400 * scrollSteps}`, // ~400px per scroll-step (2 words)
+      pin: true,
+      pinSpacing: true,
       onUpdate: (self) => setScrollProgress(self.progress),
     });
 
     return () => {
       st.kill();
     };
-  }, []);
+  }, [scrollSteps]);
 
   return (
     <section
       ref={sectionRef}
       className={cn(
-        'w-full overflow-hidden min-h-[45vh] flex flex-col justify-center px-4 sm:px-6',
-        'py-12 sm:py-16 md:py-20 pb-16',
+        'w-full overflow-hidden min-h-screen min-h-[100dvh] flex flex-col justify-center py-12 md:py-16 px-4 sm:px-6',
         className
       )}
       style={{ backgroundColor: '#0a0a0a' }}
     >
-      <div className="mx-auto max-w-3xl text-center -mt-16 sm:-mt-20 md:-mt-24">
+      <div className="mx-auto max-w-3xl text-center">
         {/* Heading: 3 words visible by default, rest reveal on scroll */}
         <h2
           className={cn(
@@ -64,8 +66,9 @@ export function FeaturesHeadingSection({ className }: { className?: string }) {
             {words.map((word, i) => {
               const isFirstBatch = i < FIRST_VISIBLE_WORDS;
               const wordIndex = i - FIRST_VISIBLE_WORDS;
+              const stepIndex = Math.floor(wordIndex / WORDS_PER_SCROLL);
               const threshold =
-                scrollSteps > 1 ? wordIndex / (scrollSteps - 1) : 0;
+                scrollSteps > 1 ? (stepIndex + 1) / scrollSteps : 1;
               const revealed = isFirstBatch || scrollProgress >= threshold;
 
               const isHighlight = HIGHLIGHT_WORDS.has(word);
