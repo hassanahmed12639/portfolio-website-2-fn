@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import '@/lib/mouseStore'
 import ChatWidget from '@/components/ChatWidget'
 import ChatbotWrapper from '@/components/ChatbotWrapper'
 import TrackHivePixel from '@/components/TrackHivePixel'
@@ -44,9 +45,11 @@ export default function RootLayout({
       </head>
       <body className="m-0 p-0 bg-background text-foreground" style={{ fontFamily: "'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" }}>
         <ThemeProvider>
-          <PreloaderWrapper />
-          <GsapInit />
-          {children}
+          <div className="relative z-[1]">
+            <PreloaderWrapper />
+            <GsapInit />
+            {children}
+          </div>
           <ChatWidget />
           <ChatbotWrapper />
           <TrackHivePixel />

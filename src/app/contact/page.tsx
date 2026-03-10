@@ -181,20 +181,20 @@ function ContactContent() {
           <span
             style={{
               display: "inline-block",
+              fontFamily: '"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif',
               background: LIME,
               color: "#0a0a0a",
               fontWeight: 800,
               padding: "4px 14px",
               borderRadius: 12,
               boxShadow: LIME_GLOW,
-              textShadow: "0.5px 0 0 rgba(255,80,80,0.4), -0.5px 0 0 rgba(80,150,255,0.4)",
               transition: "opacity 0.25s ease",
             }}
           >
             {ROTATING_WORDS[rotatingIndex]}
           </span>
         </h1>
-        <p style={{ color:"#777", fontSize:16, maxWidth:480, margin:"20px auto 0", lineHeight:1.7 }}>
+        <p style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', color:"#777", fontSize:16, maxWidth:480, margin:"20px auto 0", lineHeight:1.7 }}>
           Whether you have a project in mind or just want to explore — I&apos;m here. Drop a message or book a call directly.
         </p>
       </div>
@@ -225,8 +225,8 @@ function ContactContent() {
               <div key={item.label} style={{ display:"flex", alignItems:"center", gap:14, marginBottom:18 }}>
                 <div style={{ width:40, height:40, background:"#191919", borderRadius:12, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>{item.icon}</div>
                 <div>
-                  <div style={{ fontSize:11, color:"#555", textTransform:"uppercase", letterSpacing:1, marginBottom:2 }}>{item.label}</div>
-                  <div style={{ fontSize:14, color:"#ccc" }}>{item.val}</div>
+                  <div style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', fontSize:11, color:"#555", textTransform:"uppercase", letterSpacing:1, marginBottom:2 }}>{item.label}</div>
+                  <div style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', fontSize:14, color:"#ccc" }}>{item.val}</div>
                 </div>
               </div>
             ))}
@@ -237,7 +237,7 @@ function ContactContent() {
             {["Paid Social & Paid Search","Funnel Strategy & CRO","Marketing Automation","Analytics & Attribution","Campaign Audits"].map(s => (
               <div key={s} style={{ display:"flex", alignItems:"center", gap:10, marginBottom:12 }}>
                 <div style={{ width:6, height:6, borderRadius:"50%", background:LIME, boxShadow:LIME_GLOW, flexShrink:0 }}/>
-                <span style={{ fontSize:14, color:"#bbb" }}>{s}</span>
+                <span style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', fontSize:14, color:"#bbb" }}>{s}</span>
               </div>
             ))}
           </div>
@@ -245,7 +245,7 @@ function ContactContent() {
           <div style={{ background:`linear-gradient(135deg, ${LIME}22 0%, #0a0a0a 100%)`, border:`1px solid ${LIME}33`, borderRadius:20, padding:28 }}>
             <div style={{ fontSize:28, marginBottom:8 }}>🚀</div>
             <p style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', fontSize:18, fontWeight:600, marginBottom:8 }}>Free Campaign Audit</p>
-            <p style={{ fontSize:13, color:"#999", lineHeight:1.6, marginBottom:16 }}>Book a free 45-min audit call and I&apos;ll review your existing campaigns live — no strings attached.</p>
+            <p style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', fontSize:13, color:"#999", lineHeight:1.6, marginBottom:16 }}>Book a free 45-min audit call and I&apos;ll review your existing campaigns live — no strings attached.</p>
             <button className="lime-btn" style={{ padding:"10px 22px", fontSize:13 }} type="button" onClick={()=>{ setActiveTab("calendar"); setSelectedType("audit"); }}>
               Claim Free Audit →
             </button>

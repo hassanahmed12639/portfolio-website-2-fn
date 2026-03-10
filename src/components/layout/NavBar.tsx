@@ -51,16 +51,18 @@ function NavLinkItem({
     isActive && "bg-muted text-[#AAFF00]"
   )
   const highlightClass = cn(
-    "flex items-center gap-1.5 text-emerald-500 border border-emerald-500/50",
-    "hover:shadow-[0_0_14px_rgba(16,185,129,0.35)] hover:border-emerald-400/70 hover:text-emerald-400",
-    isMobile && "text-emerald-400"
+    "flex items-center gap-1.5 bg-[#1a1a1a] text-white/90",
+    "hover:bg-[#252525] hover:text-white border-0",
+    isMobile && "text-white"
   )
 
   const content = (
     <>
-      {isHighlight && <span className="text-base leading-none" aria-hidden>⚡</span>}
+      {isHighlight && (
+        <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 w-10 h-1.5 bg-[#b3f000] rounded-t-full shadow-[0_0_12px_2px_rgba(179,240,0,0.7),0_0_24px_4px_rgba(179,240,0,0.3)]" />
+      )}
       {item.badge && (
-        <span className="absolute -top-1.5 -right-1 text-[9px] font-bold uppercase tracking-wider text-emerald-500 bg-emerald-500/15 px-1.5 py-0.5 rounded">
+        <span className="absolute -top-1.5 -right-1 text-[9px] font-bold uppercase tracking-wider text-[#b3f000] bg-[#b3f000]/15 px-1.5 py-0.5 rounded">
           {item.badge}
         </span>
       )}

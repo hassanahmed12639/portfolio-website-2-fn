@@ -1,32 +1,29 @@
-/* Global font override — Segoe UI for all TrackHive pages */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Font consistency: Segoe UI sitewide (must come after Tailwind) ─────────── */
 *, *::before, *::after {
   font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif !important;
 }
-
 html, body {
-  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+/* Headings */
+h1, h2, h3, h4, h5, h6,
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6,
+.trackhive-flow h1, .trackhive-flow h2, .trackhive-flow h3, .trackhive-flow h4, .trackhive-flow h5, .trackhive-flow h6 {
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif !important;
   font-weight: 700;
 }
-
-p, span, a, li, td, th, label, input, textarea, button, select {
-  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
-}
-
-/* Restore monospace for code blocks */
-code, pre, kbd {
+/* Monospace for code only (overrides * above) */
+code, pre, kbd,
+.font-mono, [class*="font-mono"] {
   font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace !important;
 }
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 /* Root reset + full-width (no gaps at viewport edges) */
 * {
@@ -81,6 +78,7 @@ main > * {
 
 /* Design tokens */
 :root {
+  --font-sans: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
   font-size: clamp(16px, 1.2vw + 2px, 18px);
   --neon: #AAFF00;
   --neon-dim: rgba(170, 255, 0, 0.15);
@@ -1452,4 +1450,15 @@ a.bg-primary:hover,
   100% {
     width: 100%;
   }
+}
+
+/* Glowing effect (mouse-follow conic gradient border) */
+.glowing-effect-inner::after {
+  mask-image: linear-gradient(#0000, #0000),
+    conic-gradient(
+      from calc((var(--start) - var(--spread)) * 1deg),
+      #00000000 0deg,
+      #fff,
+      #00000000 calc(var(--spread) * 2deg)
+    );
 }

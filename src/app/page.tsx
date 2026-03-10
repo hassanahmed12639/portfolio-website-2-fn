@@ -1,13 +1,16 @@
 import Footer from '../components/layout/Footer'
 import { FloatingIconsHero } from '../components/sections/Hero'
 import { FeaturesHeadingSection } from '../components/sections/FeaturesHeadingSection'
-import WhatIDoSection from '../components/sections/WhatIDoSection'
+import GlowingCardSection from '../components/sections/GlowingCardSection'
+import ParallaxSection from '../components/sections/ParallaxSection'
+import ScrollRevealSection from '../components/sections/ScrollRevealSection'
+import CaseStudySection from '../components/sections/CaseStudySection'
 import ScrambleIntroWrapper from '../components/ScrambleIntroWrapper'
 import { HeroWithMarquee } from '../components/sections/HeroWithMarquee'
 
 export default function Home() {
   return (
-    <main className="w-full min-h-screen m-0 p-0 pt-14 lg:pt-0 bg-transparent">
+    <main className="w-full min-h-screen m-0 p-0 pt-14 lg:pt-0 bg-transparent overflow-x-hidden">
       <ScrambleIntroWrapper />
       <FloatingIconsHero
         id="hero"
@@ -17,7 +20,10 @@ export default function Home() {
         ctaHref="#"
       />
       <FeaturesHeadingSection />
-      <WhatIDoSection />
+      <GlowingCardSection />
+      <ParallaxSection />
+      <ScrollRevealSection />
+      <CaseStudySection />
       <HeroWithMarquee />
       <Footer />
     </main>

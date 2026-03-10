@@ -9,9 +9,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 const LIME = '#b3f000';
 const HEADING =
-  'Advanced tools and data-driven strategies that scale results fast.';
+  'Data-driven performance marketing strategies designed to scale results fast.';
 const FIRST_VISIBLE_WORDS = 3;
-const HIGHLIGHT_WORDS = new Set(['tools', 'scale', 'fast.']);
+const HIGHLIGHT_WORDS = new Set(['scale', 'fast.']);
 
 export function FeaturesHeadingSection({ className }: { className?: string }) {
   const sectionRef = React.useRef<HTMLElement>(null);
@@ -43,7 +43,7 @@ export function FeaturesHeadingSection({ className }: { className?: string }) {
       ref={sectionRef}
       className={cn(
         'w-full overflow-hidden min-h-[45vh] flex flex-col justify-center px-4 sm:px-6',
-        'py-12 sm:py-16 md:py-20 pb-16', // reduced height and bottom padding for tighter spacing
+        'py-12 sm:py-16 md:py-20 pb-16',
         className
       )}
       style={{ backgroundColor: '#0a0a0a' }}

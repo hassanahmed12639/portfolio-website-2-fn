@@ -1,128 +1,86 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import Image from 'next/image';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { registerGsapPlugins } from '../../lib/gsap';
+import dynamic from 'next/dynamic';
+import { createPortal } from 'react-dom';
+import { motion, useInView } from 'framer-motion';
+import { useRef, useEffect, useState } from 'react';
 
-const LINES = [
-  'When I see a business struggling to scale, my first thought is always,',
-  '"where\'s the data, and what\'s it telling us?"',
-  "That's how I approach performance marketing, cutting through guesswork to drive measurable growth",
-  'through precision targeting, relentless testing, and campaigns that convert.',
+const Shader3 = dynamic(
+  () => import('@/components/ui/Shader3').then((mod) => mod.Shader3),
+  { ssr: false }
+);
+
+const LIME = '#b3f000';
+
+const lines = [
+  'When I see a tough problem, my first thought is always',
+  '"how can data drive the solution?"',
+  "That's why I focus on performance marketing – to bring the power of data to bear on growth.",
 ];
-
-const PIN_SCROLL_DISTANCE = 900;
-
-const PARALLAX_IMAGE =
-  'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1600&q=80';
 
 export default function ParallaxSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const pinRef = useRef<HTMLDivElement>(null);
-  const nameRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(sectionRef, { once: true, amount: 0.3 });
+  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    registerGsapPlugins();
-    const section = sectionRef.current;
-    const content = contentRef.current;
-    const pinEl = pinRef.current;
-    const nameEl = nameRef.current;
-    if (!section || !content || !pinEl) return;
+  useEffect(() => setMounted(true), []);
 
-    const lines = content.querySelectorAll('.parallax-line');
-    if (lines.length === 0) return;
-
-    gsap.set(lines, { x: 80, opacity: 0 });
-    if (nameEl) gsap.set(nameEl, { x: -80, opacity: 0 });
-
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: section,
-        start: 'top top',
-        end: `+=${PIN_SCROLL_DISTANCE}`,
-        scrub: 1.6,
-        pin: pinEl,
-        pinSpacing: true,
-        anticipatePin: 1.2,
-      },
-    });
-
-    // Phase 1: reveal all quote lines.
-    lines.forEach((line) => {
-      tl.to(line, { x: 0, opacity: 1, duration: 0.2, ease: 'power2.out' });
-    });
-
-    // Phase 2: name/role slides in from left to right.
-    if (nameEl) {
-      tl.to(nameEl, { x: 0, opacity: 1, duration: 0.3, ease: 'power2.out' });
-    }
-
-    // Keep full text visible briefly before releasing to next section.
-    tl.to({}, { duration: 1.2 });
-
-    const st = tl.scrollTrigger;
-    return () => {
-      st?.kill();
-    };
-  }, []);
+  const shaderEl = (
+    <div
+      className="fixed inset-0 pointer-events-none"
+      style={{ minHeight: '100vh', minWidth: '100%', zIndex: 0 }}
+    >
+      <Shader3 color={LIME} />
+    </div>
+  );
 
   return (
     <section
       ref={sectionRef}
-      className="parallax-section relative z-20 min-h-screen w-full overflow-hidden"
-      style={{ backgroundColor: '#0F0F0F' }}
+      className="relative min-h-screen flex flex-col justify-start items-end pt-16 md:pt-24 pb-16 md:pb-24 px-4 sm:px-6 lg:px-12 overflow-visible"
+      aria-labelledby="parallax-section-heading"
     >
-      <div
-        ref={pinRef}
-        className="parallax min-h-screen w-full flex items-center justify-start md:items-start md:justify-end md:pt-10 px-6 md:px-[10%] relative"
-      >
-        {/* Background image and overlay live inside pinned div so they stay visible when GSAP pins */}
-        <Image
-          src={PARALLAX_IMAGE}
-          alt=""
-          fill
-          className="object-cover pointer-events-none"
-          style={{ zIndex: 0 }}
-          sizes="100vw"
-          priority
-        />
+      {/* Fixed shader via portal – renders at body level so it sits behind all sections */}
+      {mounted && typeof document !== 'undefined' && createPortal(shaderEl, document.body)}
+
+      <h2 id="parallax-section-heading" className="sr-only">
+        Parallax quote section
+      </h2>
+      <div className="relative z-10 max-w-4xl ml-auto flex flex-col gap-8 md:gap-12">
         <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ zIndex: 0, backgroundColor: 'rgba(15,15,15,0.72)' }}
-          aria-hidden
-        />
-        <div
-          ref={contentRef}
-          className="parallax-quote relative z-10 max-w-xl text-left md:max-w-2xl text-[#FFFFFF]"
+          className="text-white text-base sm:text-lg md:text-xl lg:text-2xl font-medium leading-relaxed flex flex-col gap-3"
+          style={{ textShadow: '0 2px 20px rgba(0,0,0,0.5)' }}
         >
-          <div className="space-y-1" style={{ textShadow: '2px 2px 10px rgba(0,0,0,0.7)' }}>
-            {LINES.map((text, i) => (
-              <div
-                key={i}
-                className="parallax-line text-lg leading-snug md:text-2xl lg:text-3xl font-medium"
-              >
-                {i === 1 ? (
-                  <span className="text-[#AAFF00]">{text}</span>
-                ) : (
-                  text
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-        <div
-          ref={nameRef}
-          className="absolute bottom-6 left-6 right-6 md:bottom-10 md:left-[10%] md:right-auto z-10 text-sm text-[#AAFF00] md:text-base"
-          style={{ textShadow: '2px 2px 10px rgba(0,0,0,0.7)' }}
-        >
-          Hassan Ahmed
-          <br />
-          Performance Marketer
+          {lines.map((line, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, x: 120 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: false, amount: 0.1 }}
+              transition={{
+                duration: 0.8,
+                delay: i * 0.15,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              style={i === 1 ? { color: LIME } : undefined}
+            >
+              {line}
+            </motion.div>
+          ))}
         </div>
       </div>
+
+      <motion.div
+        initial={{ opacity: 0, x: -40 }}
+        animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -40 }}
+        transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+        className="absolute bottom-6 md:bottom-8 left-4 sm:left-6 lg:left-12 z-10 text-white/90 text-base md:text-lg"
+        style={{ textShadow: '0 1px 10px rgba(0,0,0,0.5)' }}
+      >
+        Hassan Ahmed
+        <br />
+        <span style={{ color: LIME }}>Performance Marketer</span>
+      </motion.div>
     </section>
   );
 }

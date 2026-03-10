@@ -5,6 +5,7 @@ import {
   motion,
 } from "framer-motion";
 import React, { useEffect, useRef, useState } from "react";
+import { TextRotate } from "@/components/ui/text-rotate";
 
 const LIME = "#C8FF00";
 
@@ -241,7 +242,8 @@ const resumeData = [
 
 // ─── Timeline Component ───────────────────────────────────────────────────────
 
-type TimelineItem = { title: string; content: React.ReactNode }
+type TimelineItem = { title: string; content: React.ReactNode };
+
 export const Timeline = ({ data }: { data: TimelineItem[] }) => {
   const isMobile = useIsMobile();
   const ref = useRef<HTMLDivElement | null>(null);
@@ -249,11 +251,17 @@ export const Timeline = ({ data }: { data: TimelineItem[] }) => {
   const [height, setHeight] = useState(0);
 
   useEffect(() => {
-    if (ref.current) {
-      const rect = ref.current.getBoundingClientRect();
+    const el = ref.current;
+    if (!el) return;
+    const update = () => {
+      const rect = el.getBoundingClientRect();
       setHeight(rect.height);
-    }
-  }, [ref]);
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [data]);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -266,14 +274,8 @@ export const Timeline = ({ data }: { data: TimelineItem[] }) => {
   return (
     <div
       ref={containerRef}
-      style={{
-        width: "100%",
-        background: "#000",
-        fontFamily: '"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif',
-        padding: isMobile ? "0 12px" : "0 20px",
-      }}
+      className="w-full bg-black dark:bg-[#0a0a0a] font-sans px-4 sm:px-6 md:px-10"
     >
-
       {/* ── Hero Header ── */}
       <div style={{ maxWidth: "1200px", margin: "0 auto", padding: isMobile ? "60px 0 32px" : "80px 0 40px" }}>
 
@@ -294,22 +296,22 @@ export const Timeline = ({ data }: { data: TimelineItem[] }) => {
             <h1 style={{ fontSize: "clamp(40px, 6vw, 80px)", fontWeight: 900, color: "#fff", margin: "0 0 8px", lineHeight: 1 }}>
               Hassan Ahmed
             </h1>
-            <div style={{ marginTop: "16px" }}>
+            <div style={{ marginTop: "16px", display: "flex", alignItems: "center", flexWrap: "wrap", gap: "0.25em" }}>
               <span style={{ fontSize: "clamp(20px, 3vw, 32px)", color: "#fff", fontWeight: 300 }}>
                 I build systems that{" "}
               </span>
-              <span style={{
-                fontSize: "clamp(20px, 3vw, 32px)",
-                fontWeight: 900,
-                color: "#000",
-                background: LIME,
-                padding: "2px 14px",
-                borderRadius: "6px",
-                boxShadow: `0 0 24px ${LIME}88`,
-                display: "inline-block",
-              }}>
-                Grow!
-              </span>
+              <TextRotate
+                texts={['Convert!', 'Scale!', 'Perform!', 'Grow!', 'Sell!', 'Win!', 'Deliver!']}
+                mainClassName="text-[#0F0F0F] text-[32px] sm:text-[38px] md:text-4xl lg:text-5xl font-extrabold px-1.5 sm:px-2 md:px-2.5 bg-[#AAFF00] overflow-hidden py-0.5 sm:py-0.5 md:py-1 justify-center rounded-lg leading-tight shadow-[0_0_25px_rgba(170,255,0,0.5),0_0_60px_rgba(170,255,0,0.2)]"
+                staggerFrom="last"
+                initial={{ y: '100%' }}
+                animate={{ y: 0 }}
+                exit={{ y: '-120%' }}
+                staggerDuration={0.025}
+                splitLevelClassName="overflow-hidden pb-0.5 sm:pb-1 md:pb-1"
+                transition={{ type: 'spring', damping: 30, stiffness: 400 }}
+                rotationInterval={2000}
+              />
             </div>
           </div>
 
@@ -389,95 +391,72 @@ export const Timeline = ({ data }: { data: TimelineItem[] }) => {
         </div>
       </div>
 
+      {/* ── Timeline Header (Aceternity-style) ── */}
+      <div className="max-w-7xl mx-auto py-12 md:py-20 px-4 md:px-8 lg:px-10">
+        <h2 className="text-lg md:text-3xl lg:text-4xl mb-4 text-white dark:text-white max-w-4xl font-bold">
+          Changelog from my journey
+        </h2>
+        <p className="text-neutral-400 dark:text-neutral-400 text-sm md:text-base max-w-sm">
+          I&apos;ve been working in performance marketing for 5+ years. Here&apos;s
+          a timeline of my journey.
+        </p>
+      </div>
+
       {/* ── Timeline ── */}
-      <div ref={ref} style={{ position: "relative", maxWidth: "1200px", margin: "0 auto", paddingBottom: "80px" }}>
+      <div ref={ref} className="relative max-w-7xl mx-auto pb-20">
         {data.map((item, index) => (
           <div
             key={index}
-            style={{
-              display: "flex",
-              flexDirection: isMobile ? "column" : "row",
-              justifyContent: "flex-start",
-              paddingTop: isMobile ? "40px" : "clamp(40px, 8vw, 160px)",
-              gap: isMobile ? "0" : "40px",
-            }}
+            className="flex flex-col md:flex-row justify-start pt-10 md:pt-20 lg:pt-40 md:gap-10"
           >
-
-            {/* Left: year label */}
-            <div style={{
-              position: isMobile ? "relative" : "sticky",
-              top: "160px",
-              alignSelf: "flex-start",
-              display: "flex",
-              alignItems: "center",
-              minWidth: isMobile ? "auto" : "160px",
-              flexShrink: 0,
-              marginBottom: isMobile ? "16px" : 0,
-            }}>
-              <div style={{
-                position: "absolute",
-                left: "0",
-                width: "40px",
-                height: "40px",
-                borderRadius: "50%",
-                background: "#000",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                zIndex: 40,
-              }}>
-                <div style={{
-                  width: "14px",
-                  height: "14px",
-                  borderRadius: "50%",
-                  background: LIME,
-                  boxShadow: `0 0 12px ${LIME}`,
-                }} />
+            {/* Left: sticky year label + dot (Aceternity layout) */}
+            <div className="sticky flex flex-col md:flex-row z-40 items-center top-32 md:top-40 self-start max-w-xs lg:max-w-sm md:w-full">
+              <div
+                className="h-10 absolute left-3 md:left-2 w-10 rounded-full flex items-center justify-center shrink-0"
+                style={{ background: "#0a0a0a" }}
+              >
+                <div
+                  className="h-4 w-4 rounded-full border shrink-0"
+                  style={{
+                    background: LIME,
+                    borderColor: "rgba(200,255,0,0.3)",
+                    boxShadow: `0 0 12px ${LIME}`,
+                  }}
+                />
               </div>
-              <h3 style={{
-                paddingLeft: "56px",
-                fontSize: isMobile ? "32px" : "clamp(24px, 4vw, 48px)",
-                fontWeight: 900,
-                color: "#1f1f1f",
-                margin: 0,
-                lineHeight: 1,
-              }}>
+              <h3 className="hidden md:block text-xl md:pl-16 lg:pl-20 md:text-3xl lg:text-5xl font-bold text-neutral-500 dark:text-neutral-500">
                 {item.title}
               </h3>
             </div>
 
             {/* Right: content */}
-            <div style={{ flex: 1, minWidth: 0 }}>
+            <div className="relative pl-14 md:pl-4 pr-4 w-full min-w-0">
+              <h3 className="md:hidden block text-2xl mb-4 text-left font-bold text-neutral-500 dark:text-neutral-500">
+                {item.title}
+              </h3>
               {item.content}
             </div>
           </div>
         ))}
 
-        {/* Scrolling line */}
-        <div style={{
-          position: "absolute",
-          left: isMobile ? "8px" : "20px",
-          top: 0,
-          width: "2px",
-          height: height + "px",
-          background: "linear-gradient(to bottom, transparent 0%, #1f1f1f 10%, #1f1f1f 90%, transparent 100%)",
-          maskImage: "linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)",
-          WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)",
-          overflow: "hidden",
-        }}>
+        {/* Scrolling progress line */}
+        <div
+          className="absolute left-6 md:left-8 top-0 overflow-hidden w-[2px] rounded-full"
+          style={{
+            height: height + "px",
+            background: "linear-gradient(to bottom, transparent 0%, #333 10%, #333 90%, transparent 100%)",
+            maskImage: "linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)",
+          }}
+        >
           <motion.div
             style={{
               height: heightTransform,
               opacity: opacityTransform,
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              width: "2px",
-              background: `linear-gradient(to bottom, ${LIME}, ${LIME}66, transparent)`,
+              background: `linear-gradient(to top, ${LIME}, ${LIME}99, transparent)`,
               boxShadow: `0 0 8px ${LIME}`,
-              borderRadius: "9999px",
             }}
+            className="absolute inset-x-0 top-0 w-[2px] rounded-full"
           />
         </div>
       </div>
