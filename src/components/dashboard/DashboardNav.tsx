@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import {
   Activity,
   BarChart2,
+  Braces,
   Bug,
   ChevronDown,
   ChevronRight,
@@ -169,6 +170,7 @@ export default function DashboardNav({
       feature: 'anomaly_detection',
     },
     { label: 'Scanner', href: '/dashboard/scanner', icon: ScanSearch },
+    { label: 'Regex Library', href: '/dashboard/regex-library', icon: Braces },
     {
       label: 'Enrichment',
       href: '/dashboard/enrichment',
@@ -233,6 +235,7 @@ export default function DashboardNav({
     '/dashboard/cookie-extender': Cookie,
     '/dashboard/anomalies': Bug,
     '/dashboard/scanner': ScanSearch,
+    '/dashboard/regex-library': Braces,
     '/dashboard/enrichment': Sparkles,
     '/dashboard/integrations': Settings2,
     '/dashboard/reverse-proxy': Workflow,
