@@ -185,8 +185,8 @@ export default function RegexLibraryPage() {
 
                 {/* Regex pattern */}
                 <div className="relative">
-                  <div className={`bg-[var(--dash-text)] rounded-xl p-3 ${isLocked ? 'blur-sm select-none' : ''}`}>
-                    <p className="text-xs text-[var(--dash-success)] font-mono break-all leading-relaxed">
+                  <div className={`bg-[var(--dash-primary-soft)] border border-[var(--dash-accent-border)] rounded-xl p-3 ${isLocked ? 'blur-sm select-none' : ''}`}>
+                    <p className="text-xs text-[var(--dash-text)] font-mono break-all leading-relaxed">
                       {pattern.pattern}
                     </p>
                   </div>
