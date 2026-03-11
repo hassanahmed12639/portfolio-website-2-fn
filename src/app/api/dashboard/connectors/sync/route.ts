@@ -4,48 +4,114 @@ import { createAdminClient } from '@/lib/supabase/admin'
 
 const supabaseAdmin = createAdminClient()
 
-async function syncMeta(connection: { id: string; account_id: string; access_token: string }, userId: string) {
-  const since = new Date()
-  since.setDate(since.getDate() - 30)
-  const dateStr = since.toISOString().split('T')[0]
-  const untilStr = new Date().toISOString().split('T')[0]
-  const accountId = connection.account_id.startsWith('act_') ? connection.account_id : `act_${connection.account_id}`
+function getActionValue(actions: { action_type: string; value: string }[] | undefined, type: string | ((t: string) => boolean)): number {
+  if (!actions?.length) return 0
+  const match = typeof type === 'string'
+    ? actions.find((a) => a.action_type === type)
+    : actions.find((a) => type(a.action_type))
+  return parseFloat(match?.value || '0')
+}
 
-  const res = await fetch(
-    `https://graph.facebook.com/v18.0/${accountId}/insights` +
-    `?fields=campaign_name,spend,impressions,clicks,actions,ctr,cpc,cpm` +
-    `&level=campaign&time_range={"since":"${dateStr}","until":"${untilStr}"}` +
-    `&access_token=${connection.access_token}`
-  )
+async function syncMeta(connection: any, userId: string) {
+  const params = new URLSearchParams({
+    fields: [
+      'campaign_name',
+      'spend',
+      'impressions',
+      'clicks',
+      'actions',
+      'action_values',
+      'cost_per_action_type',
+      'ctr',
+      'cpc',
+      'cpm',
+      'reach',
+      'frequency',
+      'inline_link_clicks',
+    ].join(','),
+    level: 'campaign',
+    date_preset: 'maximum',
+    access_token: connection.access_token,
+    limit: '500',
+  })
+
+  const url = `https://graph.facebook.com/v18.0/act_${connection.account_id}/insights?${params}`
+  console.log('Meta sync URL:', url.replace(connection.access_token, 'TOKEN_HIDDEN'))
+
+  const res = await fetch(url)
   const data = await res.json()
+  console.log('Meta sync full response:', JSON.stringify(data, null, 2))
+  console.log('Meta campaigns count:', data.data?.length ?? 0)
+
   if (data.error) throw new Error(data.error.message)
 
-  const campaigns = (data.data || []).map((c: { campaign_name?: string; spend?: string; impressions?: string; clicks?: string; actions?: { action_type: string; value: string }[]; ctr?: string; cpc?: string; cpm?: string }) => {
-    const conversions = (c.actions || []).find((a: { action_type: string }) => a.action_type === 'purchase')?.value || 0
-    const spend = parseFloat(c.spend || '0')
-    const revenue = Number(conversions) * 50
+  // Also try fetching campaigns directly to verify account access
+  const campaignsRes = await fetch(
+    `https://graph.facebook.com/v18.0/act_${connection.account_id}/campaigns?fields=name,status,objective&access_token=${connection.access_token}`
+  )
+  const campaignsData = await campaignsRes.json()
+  console.log('Meta campaigns direct:', JSON.stringify(campaignsData, null, 2))
+
+  const campaigns = (data.data || []).map((c: any) => {
+    const actions = c.actions || []
+    const costPerAction = c.cost_per_action_type || []
+
+    const conversions = getActionValue(actions, 'purchase') || getActionValue(actions, 'omni_purchase')
+    const leads = getActionValue(actions, 'lead') || getActionValue(actions, (t) => t?.includes('lead'))
+    const messages =
+      getActionValue(actions, (t) => t?.includes('messaging_conversation')) ||
+      getActionValue(actions, (t) => t?.includes('messaging_first_reply'))
+    const addToCart = getActionValue(actions, 'add_to_cart') || getActionValue(actions, (t) => t?.includes('add_to_cart'))
+    const initiateCheckout =
+      getActionValue(actions, 'initiate_checkout') || getActionValue(actions, (t) => t?.includes('initiate_checkout'))
+
+    const costPerLead =
+      parseFloat(costPerAction.find((a: any) => a.action_type === 'lead')?.value || '0') ||
+      parseFloat(costPerAction.find((a: any) => a.action_type?.includes('lead'))?.value || '0')
+    const costPerMessage =
+      parseFloat(costPerAction.find((a: any) => a.action_type?.includes('messaging'))?.value || '0')
+    const costPerPurchase =
+      parseFloat(costPerAction.find((a: any) => a.action_type === 'purchase')?.value || '0') ||
+      parseFloat(costPerAction.find((a: any) => a.action_type === 'omni_purchase')?.value || '0')
+
+    const spend = parseFloat(c.spend || 0)
+    const revenue = parseFloat(String(conversions)) * 50
+
     return {
       user_id: userId,
       connection_id: connection.id,
       platform: 'meta',
-      campaign_name: c.campaign_name || 'Unknown',
+      campaign_name: c.campaign_name,
       spend,
-      impressions: parseInt(c.impressions || '0', 10),
-      clicks: parseInt(c.clicks || '0', 10),
+      impressions: parseInt(c.impressions || 0),
+      clicks: parseInt(c.clicks || 0),
       conversions: parseFloat(String(conversions)),
       roas: spend > 0 ? revenue / spend : 0,
-      ctr: parseFloat(c.ctr || '0'),
-      cpc: parseFloat(c.cpc || '0'),
-      cpm: parseFloat(c.cpm || '0'),
-      date_start: dateStr,
-      date_end: untilStr,
+      ctr: parseFloat(c.ctr || 0),
+      cpc: parseFloat(c.cpc || 0),
+      cpm: parseFloat(c.cpm || 0),
+      leads: parseFloat(String(leads)),
+      cost_per_lead: costPerLead,
+      messages: parseFloat(String(messages)),
+      cost_per_message: costPerMessage,
+      reach: parseInt(c.reach || 0),
+      frequency: parseFloat(c.frequency || 0),
+      link_clicks: parseInt(c.inline_link_clicks || c.clicks || 0),
+      add_to_cart: parseFloat(String(addToCart)),
+      initiate_checkout: parseFloat(String(initiateCheckout)),
+      cost_per_purchase: costPerPurchase,
+      date_start: null,
+      date_end: null,
       synced_at: new Date().toISOString(),
     }
   })
 
+  console.log('Campaigns to insert:', campaigns.length)
+
   if (campaigns.length > 0) {
     await supabaseAdmin.from('ad_campaigns').delete().eq('connection_id', connection.id)
-    await supabaseAdmin.from('ad_campaigns').insert(campaigns)
+    const { error } = await supabaseAdmin.from('ad_campaigns').insert(campaigns)
+    if (error) console.log('Supabase insert error:', error)
   }
 
   return campaigns.length

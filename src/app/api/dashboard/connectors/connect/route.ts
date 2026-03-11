@@ -16,15 +16,16 @@ export async function POST(request: Request) {
     // Verify token works by making a test API call
     let accountName = account_id
     if (platform === 'meta') {
+      const normalizedId = account_id.startsWith('act_') ? account_id : `act_${account_id}`
       const testRes = await fetch(
-        `https://graph.facebook.com/v18.0/${account_id.replace(/^act_/, '')}?fields=name&access_token=${access_token}`
+        `https://graph.facebook.com/v18.0/${normalizedId}?fields=name&access_token=${access_token}`
       )
       const testData = await testRes.json()
       if (testData.error) throw new Error(`Meta API error: ${testData.error.message}`)
-      accountName = testData.name || account_id
+      accountName = testData.name || normalizedId
     }
 
-    const normalizedAccountId = (account_id || '').toString().replace(/^act_/, '')
+    const normalizedAccountId = (account_id || '').toString().replace('act_', '')
 
     const { error } = await supabaseAdmin
       .from('ad_connections')

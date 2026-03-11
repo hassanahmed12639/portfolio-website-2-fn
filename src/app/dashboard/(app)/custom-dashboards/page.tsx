@@ -12,7 +12,6 @@ const TEMPLATES = [
     id: 'blank',
     name: 'Blank Dashboard',
     description: 'Start from scratch and add your own widgets',
-    icon: '➕',
     color: 'border-slate-200',
     widgets: [] as string[],
   },
@@ -20,7 +19,6 @@ const TEMPLATES = [
     id: 'agency',
     name: 'Agency Report',
     description: 'Total spend, ROAS by platform, top campaigns overview',
-    icon: '🏢',
     color: 'border-blue-200 bg-blue-50',
     widgets: ['total_spend', 'roas_by_platform', 'top_campaigns', 'impressions', 'clicks', 'ctr'],
   },
@@ -28,41 +26,45 @@ const TEMPLATES = [
     id: 'ecommerce',
     name: 'Ecommerce',
     description: 'Revenue, ROAS trend, cost per purchase, best ads',
-    icon: '🛒',
     color: 'border-green-200 bg-green-50',
     widgets: ['total_spend', 'total_roas', 'total_conversions', 'cpc', 'top_campaigns', 'spend_by_platform'],
   },
   {
     id: 'leadgen',
     name: 'Lead Generation',
-    description: 'Cost per lead, total leads, best converting campaigns',
-    icon: '🎯',
+    description: 'Cost per lead, total leads, messages, best converting campaigns',
     color: 'border-purple-200 bg-purple-50',
-    widgets: ['total_spend', 'total_conversions', 'cpl', 'top_campaigns', 'clicks', 'ctr'],
+    widgets: ['total_spend', 'total_leads', 'total_messages', 'cpl', 'cost_per_message', 'top_campaigns'],
   },
   {
     id: 'media_buyer',
     name: 'Media Buyer',
     description: 'Spend vs budget, CTR by platform, campaign health',
-    icon: '📊',
     color: 'border-orange-200 bg-orange-50',
     widgets: ['total_spend', 'ctr', 'cpc', 'cpm', 'impressions', 'top_campaigns'],
   },
 ]
 
 const WIDGET_TYPES = [
-  { id: 'total_spend', name: 'Total Spend', icon: '💰', type: 'metric' },
-  { id: 'total_roas', name: 'Average ROAS', icon: '📈', type: 'metric' },
-  { id: 'total_conversions', name: 'Total Conversions', icon: '🎯', type: 'metric' },
-  { id: 'impressions', name: 'Total Impressions', icon: '👁️', type: 'metric' },
-  { id: 'clicks', name: 'Total Clicks', icon: '🖱️', type: 'metric' },
-  { id: 'ctr', name: 'Average CTR', icon: '📊', type: 'metric' },
-  { id: 'cpc', name: 'Average CPC', icon: '💵', type: 'metric' },
-  { id: 'cpm', name: 'Average CPM', icon: '📣', type: 'metric' },
-  { id: 'cpl', name: 'Cost Per Lead', icon: '🧲', type: 'metric' },
-  { id: 'top_campaigns', name: 'Top Campaigns Table', icon: '🏆', type: 'table' },
-  { id: 'spend_by_platform', name: 'Spend by Platform', icon: '🥧', type: 'chart' },
-  { id: 'roas_by_platform', name: 'ROAS by Platform', icon: '📊', type: 'chart' },
+  { id: 'total_spend', name: 'Total Spend', type: 'metric' },
+  { id: 'total_roas', name: 'Average ROAS', type: 'metric' },
+  { id: 'total_conversions', name: 'Total Conversions', type: 'metric' },
+  { id: 'total_leads', name: 'Total Leads', type: 'metric' },
+  { id: 'total_messages', name: 'Total Messages', type: 'metric' },
+  { id: 'impressions', name: 'Total Impressions', type: 'metric' },
+  { id: 'clicks', name: 'Total Clicks', type: 'metric' },
+  { id: 'link_clicks', name: 'Link Clicks', type: 'metric' },
+  { id: 'ctr', name: 'Average CTR', type: 'metric' },
+  { id: 'cpc', name: 'Average CPC', type: 'metric' },
+  { id: 'cpm', name: 'Average CPM', type: 'metric' },
+  { id: 'cpl', name: 'Cost Per Lead', type: 'metric' },
+  { id: 'cost_per_message', name: 'Cost Per Message', type: 'metric' },
+  { id: 'cost_per_purchase', name: 'Cost Per Purchase', type: 'metric' },
+  { id: 'reach', name: 'Total Reach', type: 'metric' },
+  { id: 'frequency', name: 'Avg Frequency', type: 'metric' },
+  { id: 'top_campaigns', name: 'Top Campaigns Table', type: 'table' },
+  { id: 'spend_by_platform', name: 'Spend by Platform', type: 'chart' },
+  { id: 'roas_by_platform', name: 'ROAS by Platform', type: 'chart' },
 ]
 
 export default function CustomDashboardsPage() {
@@ -80,6 +82,8 @@ export default function CustomDashboardsPage() {
   const [selectedTemplate, setSelectedTemplate] = useState('blank')
   const [showWidgetPicker, setShowWidgetPicker] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [createError, setCreateError] = useState<string | null>(null)
+  const [createLoading, setCreateLoading] = useState(false)
 
   useEffect(() => {
     fetchDashboards()
@@ -123,14 +127,27 @@ export default function CustomDashboardsPage() {
 
   async function createDashboard() {
     if (!isPro) { setShowUpgrade(true); return }
+    setCreateError(null)
+    setCreateLoading(true)
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user || !newDashName.trim()) return
+    if (!user) {
+      setCreateError('Please sign in to create a dashboard.')
+      setCreateLoading(false)
+      return
+    }
+    const nameToUse = newDashName.trim() || 'New Dashboard'
 
-    const { data: dash } = await supabase
+    const { data: dash, error } = await supabase
       .from('custom_dashboards')
-      .insert({ user_id: user.id, name: newDashName, template_type: selectedTemplate })
+      .insert({ user_id: user.id, name: nameToUse, template_type: selectedTemplate })
       .select()
       .single()
+
+    if (error) {
+      setCreateError(error.message || 'Failed to create dashboard.')
+      setCreateLoading(false)
+      return
+    }
 
     if (dash) {
       const template = TEMPLATES.find(t => t.id === selectedTemplate)
@@ -154,6 +171,7 @@ export default function CustomDashboardsPage() {
       setShowCreate(false)
       setNewDashName('')
     }
+    setCreateLoading(false)
   }
 
   async function addWidget(widgetDef: (typeof WIDGET_TYPES)[0]) {
@@ -192,15 +210,40 @@ export default function CustomDashboardsPage() {
         return `${avgRoas.toFixed(2)}x`
       }
       case 'total_conversions': return data.reduce((s, c) => s + (c.conversions || 0), 0).toFixed(0)
+      case 'total_leads': return data.reduce((s, c) => s + (c.leads || 0), 0).toFixed(0)
+      case 'total_messages': return data.reduce((s, c) => s + (c.messages || 0), 0).toFixed(0)
       case 'impressions': return data.reduce((s, c) => s + (c.impressions || 0), 0).toLocaleString()
       case 'clicks': return data.reduce((s, c) => s + (c.clicks || 0), 0).toLocaleString()
+      case 'link_clicks': return data.reduce((s, c) => s + (c.link_clicks || c.clicks || 0), 0).toLocaleString()
       case 'ctr': return `${(data.reduce((s, c) => s + (c.ctr || 0), 0) / data.length).toFixed(2)}%`
       case 'cpc': return `$${(data.reduce((s, c) => s + (c.cpc || 0), 0) / data.length).toFixed(2)}`
       case 'cpm': return `$${(data.reduce((s, c) => s + (c.cpm || 0), 0) / data.length).toFixed(2)}`
       case 'cpl': {
-        const totalConv = data.reduce((s, c) => s + (c.conversions || 0), 0)
+        const totalLeads = data.reduce((s, c) => s + (c.leads || 0), 0)
         const totalSpend = data.reduce((s, c) => s + (c.spend || 0), 0)
-        return totalConv > 0 ? `$${(totalSpend / totalConv).toFixed(2)}` : '—'
+        const avgCpl = data.filter(c => (c.cost_per_lead || 0) > 0).reduce((s, c) => s + (c.cost_per_lead || 0), 0)
+        const cplCount = data.filter(c => (c.cost_per_lead || 0) > 0).length
+        if (cplCount > 0) return `$${(avgCpl / cplCount).toFixed(2)}`
+        return totalLeads > 0 ? `$${(totalSpend / totalLeads).toFixed(2)}` : '—'
+      }
+      case 'cost_per_message': {
+        const totalMsgs = data.reduce((s, c) => s + (c.messages || 0), 0)
+        const totalSpend = data.reduce((s, c) => s + (c.spend || 0), 0)
+        const avgCpm = data.filter(c => (c.cost_per_message || 0) > 0).reduce((s, c) => s + (c.cost_per_message || 0), 0)
+        const cpmCount = data.filter(c => (c.cost_per_message || 0) > 0).length
+        if (cpmCount > 0) return `$${(avgCpm / cpmCount).toFixed(2)}`
+        return totalMsgs > 0 ? `$${(totalSpend / totalMsgs).toFixed(2)}` : '—'
+      }
+      case 'cost_per_purchase': {
+        const withCpp = data.filter(c => (c.cost_per_purchase || 0) > 0)
+        if (withCpp.length === 0) return '—'
+        return `$${(withCpp.reduce((s, c) => s + (c.cost_per_purchase || 0), 0) / withCpp.length).toFixed(2)}`
+      }
+      case 'reach': return data.reduce((s, c) => s + (c.reach || 0), 0).toLocaleString()
+      case 'frequency': {
+        const withFreq = data.filter(c => (c.frequency || 0) > 0)
+        if (withFreq.length === 0) return '—'
+        return (withFreq.reduce((s, c) => s + (c.frequency || 0), 0) / withFreq.length).toFixed(2)
       }
       default: return '—'
     }
@@ -236,7 +279,6 @@ export default function CustomDashboardsPage() {
     return (
       <div className="font-sans p-6 max-w-4xl mx-auto">
         <div className="text-center py-20">
-          <p className="text-5xl mb-4">📊</p>
           <h1 className="text-2xl font-medium text-slate-900 mb-3">Custom Dashboards</h1>
           <p className="text-slate-500 mb-8 max-w-md mx-auto">Connect your ad platforms and build custom reporting dashboards with templates for agencies, ecommerce and lead gen.</p>
           <button onClick={() => setShowUpgrade(true)} className="bg-blue-600 text-white font-medium px-8 py-3 rounded-xl hover:bg-blue-700 transition-colors">
@@ -301,7 +343,7 @@ export default function CustomDashboardsPage() {
                     : 'text-slate-600 hover:bg-slate-100'
                 }`}
               >
-                {TEMPLATES.find(t => t.id === dash.template_type)?.icon || '📊'} {dash.name}
+                {dash.name}
               </button>
             ))}
             {dashboards.length === 0 && (
@@ -342,7 +384,7 @@ export default function CustomDashboardsPage() {
                       return (
                         <div key={widget.id} className={`bg-white border border-slate-200 rounded-2xl p-5 relative group ${widget.width === 'full' ? 'sm:col-span-2 xl:col-span-4' : widget.width === 'half' ? 'xl:col-span-2' : ''}`}>
                           <button onClick={() => removeWidget(widget.id)} className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 w-6 h-6 bg-red-100 text-red-500 rounded-full text-xs font-medium transition-opacity hover:bg-red-200">✕</button>
-                          <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-2">{widgetDef?.icon} {widget.title}</p>
+                          <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-2">{widget.title}</p>
                           <p className="text-3xl font-medium text-slate-900">{value}</p>
                           <p className="text-xs text-slate-400 mt-1">Last 30 days</p>
                         </div>
@@ -366,8 +408,10 @@ export default function CustomDashboardsPage() {
                                     <th className="text-left font-medium text-slate-500 pb-2 text-xs">Platform</th>
                                     <th className="text-right font-medium text-slate-500 pb-2 text-xs">Spend</th>
                                     <th className="text-right font-medium text-slate-500 pb-2 text-xs">Clicks</th>
-                                    <th className="text-right font-medium text-slate-500 pb-2 text-xs">CTR</th>
+                                    <th className="text-right font-medium text-slate-500 pb-2 text-xs">Leads</th>
                                     <th className="text-right font-medium text-slate-500 pb-2 text-xs">Conv.</th>
+                                    <th className="text-right font-medium text-slate-500 pb-2 text-xs">CTR</th>
+                                    <th className="text-right font-medium text-slate-500 pb-2 text-xs">CPL</th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -381,8 +425,16 @@ export default function CustomDashboardsPage() {
                                       </td>
                                       <td className="py-2.5 text-right font-medium text-slate-900">${(c.spend || 0).toFixed(2)}</td>
                                       <td className="py-2.5 text-right text-slate-600">{(c.clicks || 0).toLocaleString()}</td>
-                                      <td className="py-2.5 text-right text-slate-600">{(c.ctr || 0).toFixed(2)}%</td>
+                                      <td className="py-2.5 text-right text-slate-600">{(c.leads || 0).toFixed(0)}</td>
                                       <td className="py-2.5 text-right text-slate-600">{(c.conversions || 0).toFixed(0)}</td>
+                                      <td className="py-2.5 text-right text-slate-600">{(c.ctr || 0).toFixed(2)}%</td>
+                                      <td className="py-2.5 text-right text-slate-600">
+                                        {(c.leads || 0) > 0 && (c.cost_per_lead || 0) > 0
+                                          ? `$${(c.cost_per_lead || 0).toFixed(2)}`
+                                          : (c.leads || 0) > 0
+                                            ? `$${((c.spend || 0) / (c.leads || 0)).toFixed(2)}`
+                                            : '—'}
+                                      </td>
                                     </tr>
                                   ))}
                                 </tbody>
@@ -399,7 +451,7 @@ export default function CustomDashboardsPage() {
                       return (
                         <div key={widget.id} className="bg-white border border-slate-200 rounded-2xl p-5 sm:col-span-2 xl:col-span-2 relative group">
                           <button onClick={() => removeWidget(widget.id)} className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 w-6 h-6 bg-red-100 text-red-500 rounded-full text-xs font-medium transition-opacity hover:bg-red-200">✕</button>
-                          <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-4">🥧 {widget.title}</p>
+                          <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-4">{widget.title}</p>
                           {spendData.length === 0 ? (
                             <p className="text-slate-400 text-sm text-center py-8">No data yet</p>
                           ) : (
@@ -446,14 +498,17 @@ export default function CustomDashboardsPage() {
           <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="sticky top-0 bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between rounded-t-2xl">
               <h2 className="font-medium text-slate-900">Create New Dashboard</h2>
-              <button onClick={() => setShowCreate(false)} className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 font-medium text-sm">✕</button>
+              <button type="button" onClick={() => { setShowCreate(false); setCreateError(null) }} className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 font-medium text-sm">✕</button>
             </div>
             <div className="p-6">
+              {createError && (
+                <p className="mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-2">{createError}</p>
+              )}
               <div className="mb-6">
                 <label className="text-xs font-medium text-slate-700 uppercase tracking-wide block mb-2">Dashboard Name</label>
                 <input
                   type="text"
-                  placeholder="e.g. Q1 Performance, Client ABC Report"
+                  placeholder="e.g. Q1 Performance, Client ABC Report (or leave blank for &quot;New Dashboard&quot;)"
                   value={newDashName}
                   onChange={e => setNewDashName(e.target.value)}
                   className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -472,7 +527,6 @@ export default function CustomDashboardsPage() {
                           : `${template.color} hover:border-slate-300`
                       }`}
                     >
-                      <span className="text-2xl block mb-2">{template.icon}</span>
                       <p className="font-medium text-slate-900 text-sm">{template.name}</p>
                       <p className="text-xs text-slate-500 mt-1">{template.description}</p>
                       {template.widgets.length > 0 && (
@@ -484,11 +538,12 @@ export default function CustomDashboardsPage() {
               </div>
               <div className="flex gap-3">
                 <button
+                  type="button"
                   onClick={createDashboard}
-                  disabled={!newDashName.trim()}
+                  disabled={createLoading}
                   className="flex-1 bg-blue-600 text-white font-medium py-3 rounded-xl text-sm hover:bg-blue-700 transition-colors disabled:opacity-50"
                 >
-                  Create Dashboard
+                  {createLoading ? 'Creating…' : 'Create Dashboard'}
                 </button>
                 <button onClick={() => setShowCreate(false)} className="border border-slate-200 text-slate-600 font-medium px-6 py-3 rounded-xl text-sm hover:bg-slate-50 transition-colors">
                   Cancel
@@ -514,7 +569,6 @@ export default function CustomDashboardsPage() {
                   onClick={() => addWidget(widget)}
                   className="text-left p-3 rounded-xl border border-slate-200 hover:border-blue-300 hover:bg-blue-50 transition-all group"
                 >
-                  <span className="text-xl block mb-1">{widget.icon}</span>
                   <p className="font-medium text-slate-800 text-xs group-hover:text-blue-700">{widget.name}</p>
                   <p className="text-xs text-slate-400 mt-0.5 capitalize">{widget.type}</p>
                 </button>
