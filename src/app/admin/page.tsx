@@ -11,7 +11,8 @@ export default async function AdminAppPage() {
 
   if (isPortfolioAdmin) {
     const cookieStore = await cookies()
-    const isAuth = cookieStore.get('portfolio_admin_auth')?.value === 'true'
+    const token = cookieStore.get('portfolio_admin_auth')?.value
+    const isAuth = token ? (await import('@/lib/portfolio-auth')).verifySessionToken(token) : false
     if (!isAuth) redirect('/admin/login')
     return <PortfolioAdminDashboard />
   }

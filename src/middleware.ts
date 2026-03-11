@@ -1,10 +1,32 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextRequest, NextResponse } from 'next/server'
 
+// Block common attack patterns
+function isSuspiciousPath(pathname: string): boolean {
+  const suspicious = [
+    /\.\./,
+    /%2e%2e/i,
+    /\.env/,
+    /\.git/,
+    /\/wp-admin/i,
+    /\/wp-login/i,
+    /\/phpmyadmin/i,
+    /\/adminer/i,
+    /\.php$/i,
+    /\.asp$/i,
+  ]
+  return suspicious.some((p) => p.test(pathname))
+}
+
 export async function middleware(req: NextRequest) {
-  const res = NextResponse.next()
   const pathname = req.nextUrl.pathname
   const hostname = req.headers.get('host') ?? ''
+
+  if (isSuspiciousPath(pathname)) {
+    return new NextResponse(null, { status: 404 })
+  }
+
+  const res = NextResponse.next()
 
   // Skip static files and api/event (do NOT skip /_next/data - RSC requests need session refresh)
   if (
