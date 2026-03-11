@@ -12,8 +12,71 @@ function getActionValue(actions: { action_type: string; value: string }[] | unde
   return parseFloat(match?.value || '0')
 }
 
-async function syncMeta(connection: any, userId: string) {
-  const params = new URLSearchParams({
+function mapMetaInsightToCampaign(
+  c: any,
+  connection: { id: string },
+  userId: string,
+  dateStart: string | null,
+  dateEnd: string | null
+) {
+  const actions = c.actions || []
+  const costPerAction = c.cost_per_action_type || []
+
+  const conversions = getActionValue(actions, 'purchase') || getActionValue(actions, 'omni_purchase')
+  const leads = getActionValue(actions, 'lead') || getActionValue(actions, (t) => t?.includes('lead'))
+  const messages =
+    getActionValue(actions, (t) => t?.includes('messaging_conversation')) ||
+    getActionValue(actions, (t) => t?.includes('messaging_first_reply'))
+  const addToCart = getActionValue(actions, 'add_to_cart') || getActionValue(actions, (t) => t?.includes('add_to_cart'))
+  const initiateCheckout =
+    getActionValue(actions, 'initiate_checkout') || getActionValue(actions, (t) => t?.includes('initiate_checkout'))
+
+  const costPerLead =
+    parseFloat(costPerAction.find((a: any) => a.action_type === 'lead')?.value || '0') ||
+    parseFloat(costPerAction.find((a: any) => a.action_type?.includes('lead'))?.value || '0')
+  const costPerMessage =
+    parseFloat(costPerAction.find((a: any) => a.action_type?.includes('messaging'))?.value || '0')
+  const costPerPurchase =
+    parseFloat(costPerAction.find((a: any) => a.action_type === 'purchase')?.value || '0') ||
+    parseFloat(costPerAction.find((a: any) => a.action_type === 'omni_purchase')?.value || '0')
+
+  const spend = parseFloat(c.spend || 0)
+  const revenue = parseFloat(String(conversions)) * 50
+
+  return {
+    user_id: userId,
+    connection_id: connection.id,
+    platform: 'meta',
+    campaign_name: c.campaign_name,
+    spend,
+    impressions: parseInt(c.impressions || 0),
+    clicks: parseInt(c.clicks || 0),
+    conversions: parseFloat(String(conversions)),
+    roas: spend > 0 ? revenue / spend : 0,
+    ctr: parseFloat(c.ctr || 0),
+    cpc: parseFloat(c.cpc || 0),
+    cpm: parseFloat(c.cpm || 0),
+    leads: parseFloat(String(leads)),
+    cost_per_lead: costPerLead,
+    messages: parseFloat(String(messages)),
+    cost_per_message: costPerMessage,
+    reach: parseInt(c.reach || 0),
+    frequency: parseFloat(c.frequency || 0),
+    link_clicks: parseInt(c.inline_link_clicks || c.clicks || 0),
+    add_to_cart: parseFloat(String(addToCart)),
+    initiate_checkout: parseFloat(String(initiateCheckout)),
+    cost_per_purchase: costPerPurchase,
+    date_start: dateStart,
+    date_end: dateEnd,
+    synced_at: new Date().toISOString(),
+  }
+}
+
+async function fetchMetaInsights(
+  connection: any,
+  params: Record<string, string>
+): Promise<{ data?: any[]; paging?: { next?: string } }> {
+  const baseParams = {
     fields: [
       'campaign_name',
       'spend',
@@ -30,91 +93,73 @@ async function syncMeta(connection: any, userId: string) {
       'inline_link_clicks',
     ].join(','),
     level: 'campaign',
-    date_preset: 'maximum',
     access_token: connection.access_token,
     limit: '500',
-  })
-
-  const url = `https://graph.facebook.com/v18.0/act_${connection.account_id}/insights?${params}`
-  console.log('Meta sync URL:', url.replace(connection.access_token, 'TOKEN_HIDDEN'))
-
+  }
+  const allParams = { ...baseParams, ...params }
+  const qs = new URLSearchParams(allParams)
+  const url = `https://graph.facebook.com/v18.0/act_${connection.account_id}/insights?${qs}`
   const res = await fetch(url)
   const data = await res.json()
-  console.log('Meta sync full response:', JSON.stringify(data, null, 2))
-  console.log('Meta campaigns count:', data.data?.length ?? 0)
-
   if (data.error) throw new Error(data.error.message)
+  return data
+}
 
-  // Also try fetching campaigns directly to verify account access
-  const campaignsRes = await fetch(
-    `https://graph.facebook.com/v18.0/act_${connection.account_id}/campaigns?fields=name,status,objective&access_token=${connection.access_token}`
+async function syncMeta(connection: any, userId: string) {
+  const allCampaigns: any[] = []
+
+  // 1. All-time aggregated data (date_start/date_end = null)
+  const allTimeData = await fetchMetaInsights(connection, { date_preset: 'maximum' })
+  const allTimeRows = (allTimeData.data || []).map((c: any) =>
+    mapMetaInsightToCampaign(c, connection, userId, null, null)
   )
-  const campaignsData = await campaignsRes.json()
-  console.log('Meta campaigns direct:', JSON.stringify(campaignsData, null, 2))
+  allCampaigns.push(...allTimeRows)
+  console.log('Meta all-time campaigns:', allTimeRows.length)
 
-  const campaigns = (data.data || []).map((c: any) => {
-    const actions = c.actions || []
-    const costPerAction = c.cost_per_action_type || []
-
-    const conversions = getActionValue(actions, 'purchase') || getActionValue(actions, 'omni_purchase')
-    const leads = getActionValue(actions, 'lead') || getActionValue(actions, (t) => t?.includes('lead'))
-    const messages =
-      getActionValue(actions, (t) => t?.includes('messaging_conversation')) ||
-      getActionValue(actions, (t) => t?.includes('messaging_first_reply'))
-    const addToCart = getActionValue(actions, 'add_to_cart') || getActionValue(actions, (t) => t?.includes('add_to_cart'))
-    const initiateCheckout =
-      getActionValue(actions, 'initiate_checkout') || getActionValue(actions, (t) => t?.includes('initiate_checkout'))
-
-    const costPerLead =
-      parseFloat(costPerAction.find((a: any) => a.action_type === 'lead')?.value || '0') ||
-      parseFloat(costPerAction.find((a: any) => a.action_type?.includes('lead'))?.value || '0')
-    const costPerMessage =
-      parseFloat(costPerAction.find((a: any) => a.action_type?.includes('messaging'))?.value || '0')
-    const costPerPurchase =
-      parseFloat(costPerAction.find((a: any) => a.action_type === 'purchase')?.value || '0') ||
-      parseFloat(costPerAction.find((a: any) => a.action_type === 'omni_purchase')?.value || '0')
-
-    const spend = parseFloat(c.spend || 0)
-    const revenue = parseFloat(String(conversions)) * 50
-
-    return {
-      user_id: userId,
-      connection_id: connection.id,
-      platform: 'meta',
-      campaign_name: c.campaign_name,
-      spend,
-      impressions: parseInt(c.impressions || 0),
-      clicks: parseInt(c.clicks || 0),
-      conversions: parseFloat(String(conversions)),
-      roas: spend > 0 ? revenue / spend : 0,
-      ctr: parseFloat(c.ctr || 0),
-      cpc: parseFloat(c.cpc || 0),
-      cpm: parseFloat(c.cpm || 0),
-      leads: parseFloat(String(leads)),
-      cost_per_lead: costPerLead,
-      messages: parseFloat(String(messages)),
-      cost_per_message: costPerMessage,
-      reach: parseInt(c.reach || 0),
-      frequency: parseFloat(c.frequency || 0),
-      link_clicks: parseInt(c.inline_link_clicks || c.clicks || 0),
-      add_to_cart: parseFloat(String(addToCart)),
-      initiate_checkout: parseFloat(String(initiateCheckout)),
-      cost_per_purchase: costPerPurchase,
-      date_start: null,
-      date_end: null,
-      synced_at: new Date().toISOString(),
-    }
+  // 2. Daily data for last 365 days (for day/month/year filtering)
+  const until = new Date()
+  const since = new Date()
+  since.setDate(since.getDate() - 365)
+  const timeRange = JSON.stringify({
+    since: since.toISOString().split('T')[0],
+    until: until.toISOString().split('T')[0],
   })
+  let dailyUrl: string | null =
+    `https://graph.facebook.com/v18.0/act_${connection.account_id}/insights?` +
+    new URLSearchParams({
+      fields: 'campaign_name,spend,impressions,clicks,actions,cost_per_action_type,ctr,cpc,cpm,reach,frequency,inline_link_clicks',
+      time_range: timeRange,
+      time_increment: '1',
+      access_token: connection.access_token,
+      level: 'campaign',
+      limit: '500',
+    }).toString()
 
-  console.log('Campaigns to insert:', campaigns.length)
+  do {
+    const res: Response = await fetch(dailyUrl!)
+    const dailyData = await res.json()
+    if (dailyData.error) {
+      console.log('Meta daily insights error (non-fatal):', dailyData.error)
+      break
+    }
+    const page = dailyData.data || []
+    for (const c of page) {
+      const ds = c.date_start || null
+      const de = c.date_end || null
+      if (ds && de) allCampaigns.push(mapMetaInsightToCampaign(c, connection, userId, ds, de))
+    }
+    dailyUrl = dailyData.paging?.next ?? null
+  } while (dailyUrl)
 
-  if (campaigns.length > 0) {
+  console.log('Meta total campaigns to insert:', allCampaigns.length)
+
+  if (allCampaigns.length > 0) {
     await supabaseAdmin.from('ad_campaigns').delete().eq('connection_id', connection.id)
-    const { error } = await supabaseAdmin.from('ad_campaigns').insert(campaigns)
+    const { error } = await supabaseAdmin.from('ad_campaigns').insert(allCampaigns)
     if (error) console.log('Supabase insert error:', error)
   }
 
-  return campaigns.length
+  return allCampaigns.length
 }
 
 async function syncTikTok(connection: { id: string; account_id: string; access_token: string }, userId: string) {

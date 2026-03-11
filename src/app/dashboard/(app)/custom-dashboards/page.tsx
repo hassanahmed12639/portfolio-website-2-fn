@@ -45,6 +45,14 @@ const TEMPLATES = [
   },
 ]
 
+const DATE_RANGES = [
+  { id: 'all', label: 'All time', days: null },
+  { id: '7d', label: 'Last 7 days', days: 7 },
+  { id: '30d', label: 'Last 30 days', days: 30 },
+  { id: '90d', label: 'Last 90 days', days: 90 },
+  { id: '12mo', label: 'Last 12 months', days: 365 },
+] as const
+
 const WIDGET_TYPES = [
   { id: 'total_spend', name: 'Total Spend', type: 'metric' },
   { id: 'total_roas', name: 'Average ROAS', type: 'metric' },
@@ -84,6 +92,7 @@ export default function CustomDashboardsPage() {
   const [loading, setLoading] = useState(true)
   const [createError, setCreateError] = useState<string | null>(null)
   const [createLoading, setCreateLoading] = useState(false)
+  const [dateRange, setDateRange] = useState<(typeof DATE_RANGES)[number]['id']>('all')
 
   useEffect(() => {
     fetchDashboards()
@@ -199,8 +208,78 @@ export default function CustomDashboardsPage() {
     setWidgets(prev => prev.filter(w => w.id !== widgetId))
   }
 
+  // Filter and aggregate campaign data by selected date range
+  function getFilteredCampaignData() {
+    const range = DATE_RANGES.find(r => r.id === dateRange)
+    if (!range || range.days === null) {
+      // All time: use rows with date_start=null (all-time aggregated)
+      // For platforms like TikTok without all-time rows, include their dated data too
+      const allTimeRows = campaignData.filter(c => c.date_start == null && c.date_end == null)
+      if (allTimeRows.length > 0) return allTimeRows
+      return campaignData
+    }
+    const cutoff = new Date()
+    cutoff.setDate(cutoff.getDate() - range.days)
+    const cutoffStr = cutoff.toISOString().split('T')[0]
+    return campaignData.filter(c => c.date_end && c.date_end >= cutoffStr)
+  }
+
+  // Aggregate filtered rows by campaign (for daily data, multiple rows per campaign)
+  function getAggregatedCampaigns() {
+    const filtered = getFilteredCampaignData()
+    const byKey = new Map<string, any>()
+    for (const row of filtered) {
+      const key = `${row.connection_id}-${row.campaign_name || row.campaign_id || 'unknown'}`
+      const existing = byKey.get(key)
+      if (!existing) {
+        byKey.set(key, {
+          ...row,
+          spend: row.spend || 0,
+          impressions: row.impressions || 0,
+          clicks: row.clicks || 0,
+          conversions: row.conversions || 0,
+          leads: row.leads || 0,
+          messages: row.messages || 0,
+          _cplSum: 0,
+          _cplCount: 0,
+          _cpmSum: 0,
+          _cpmCount: 0,
+        })
+      } else {
+        existing.spend += row.spend || 0
+        existing.impressions += row.impressions || 0
+        existing.clicks += row.clicks || 0
+        existing.conversions += row.conversions || 0
+        existing.leads += row.leads || 0
+        existing.messages += row.messages || 0
+        if ((row.leads || 0) > 0 && (row.cost_per_lead || 0) > 0) {
+          existing._cplSum += row.cost_per_lead || 0
+          existing._cplCount += 1
+        }
+        if ((row.messages || 0) > 0 && (row.cost_per_message || 0) > 0) {
+          existing._cpmSum += row.cost_per_message || 0
+          existing._cpmCount += 1
+        }
+      }
+    }
+    return Array.from(byKey.values()).map(c => {
+      const { _cplSum, _cplCount, _cpmSum, _cpmCount, ...rest } = c
+      rest.ctr = (rest.impressions || 0) > 0 ? ((rest.clicks || 0) / (rest.impressions || 0)) * 100 : (rest.ctr || 0)
+      rest.cpc = (rest.clicks || 0) > 0 ? (rest.spend || 0) / (rest.clicks || 0) : (rest.cpc || 0)
+      rest.cpm = (rest.impressions || 0) > 0 ? ((rest.spend || 0) / ((rest.impressions || 0) / 1000)) : (rest.cpm || 0)
+      if (_cplCount > 0) rest.cost_per_lead = _cplSum / _cplCount
+      else if ((rest.leads || 0) > 0) rest.cost_per_lead = (rest.spend || 0) / (rest.leads || 0)
+      if (_cpmCount > 0) rest.cost_per_message = _cpmSum / _cpmCount
+      else if ((rest.messages || 0) > 0) rest.cost_per_message = (rest.spend || 0) / (rest.messages || 0)
+      rest.roas = rest.spend > 0 ? (rest.conversions || 0) * 50 / rest.spend : 0
+      return rest
+    })
+  }
+
+  const aggregatedData = getAggregatedCampaigns()
+
   function getMetricValue(metric: string, platformFilter = 'all') {
-    const data = platformFilter === 'all' ? campaignData : campaignData.filter(c => c.platform === platformFilter)
+    const data = platformFilter === 'all' ? aggregatedData : aggregatedData.filter(c => c.platform === platformFilter)
     if (data.length === 0) return '—'
     switch (metric) {
       case 'total_spend': return `$${data.reduce((s, c) => s + (c.spend || 0), 0).toFixed(2)}`
@@ -250,7 +329,7 @@ export default function CustomDashboardsPage() {
   }
 
   function getTopCampaigns() {
-    return [...campaignData]
+    return [...aggregatedData]
       .sort((a, b) => (b.spend || 0) - (a.spend || 0))
       .slice(0, 8)
   }
@@ -259,9 +338,11 @@ export default function CustomDashboardsPage() {
     const platforms = ['meta', 'google', 'tiktok']
     return platforms.map(p => ({
       platform: p,
-      spend: campaignData.filter(c => c.platform === p).reduce((s, c) => s + (c.spend || 0), 0)
+      spend: aggregatedData.filter(c => c.platform === p).reduce((s, c) => s + (c.spend || 0), 0)
     })).filter(p => p.spend > 0)
   }
+
+  const dateRangeLabel = DATE_RANGES.find(r => r.id === dateRange)?.label || 'All time'
 
   const platformColors: Record<string, string> = {
     meta: 'bg-blue-500',
@@ -356,14 +437,25 @@ export default function CustomDashboardsPage() {
         <div className="flex-1 min-w-0">
           {activeDashboard ? (
             <>
-              <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center justify-between mb-5 flex-wrap gap-4">
                 <h2 className="font-medium text-slate-900 text-lg">{activeDashboard.name}</h2>
-                <button
-                  onClick={() => setShowWidgetPicker(true)}
-                  className="text-sm border border-slate-200 text-slate-600 font-medium px-4 py-2 rounded-xl hover:bg-slate-50 transition-colors"
-                >
-                  + Add Widget
-                </button>
+                <div className="flex items-center gap-3">
+                  <select
+                    value={dateRange}
+                    onChange={e => setDateRange(e.target.value as typeof dateRange)}
+                    className="text-sm border border-slate-200 rounded-xl px-4 py-2.5 bg-white text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    {DATE_RANGES.map(r => (
+                      <option key={r.id} value={r.id}>{r.label}</option>
+                    ))}
+                  </select>
+                  <button
+                    onClick={() => setShowWidgetPicker(true)}
+                    className="text-sm border border-slate-200 text-slate-600 font-medium px-4 py-2 rounded-xl hover:bg-slate-50 transition-colors"
+                  >
+                    + Add Widget
+                  </button>
+                </div>
               </div>
 
               {widgets.length === 0 ? (
@@ -386,7 +478,7 @@ export default function CustomDashboardsPage() {
                           <button onClick={() => removeWidget(widget.id)} className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 w-6 h-6 bg-red-100 text-red-500 rounded-full text-xs font-medium transition-opacity hover:bg-red-200">✕</button>
                           <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-2">{widget.title}</p>
                           <p className="text-3xl font-medium text-slate-900">{value}</p>
-                          <p className="text-xs text-slate-400 mt-1">Last 30 days</p>
+                          <p className="text-xs text-slate-400 mt-1">{dateRangeLabel}</p>
                         </div>
                       )
                     }
@@ -396,7 +488,7 @@ export default function CustomDashboardsPage() {
                       return (
                         <div key={widget.id} className="bg-white border border-slate-200 rounded-2xl p-5 sm:col-span-2 xl:col-span-4 relative group">
                           <button onClick={() => removeWidget(widget.id)} className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 w-6 h-6 bg-red-100 text-red-500 rounded-full text-xs font-medium transition-opacity hover:bg-red-200">✕</button>
-                          <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-4">🏆 {widget.title}</p>
+                          <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-4">🏆 {widget.title} <span className="text-slate-400 font-normal normal-case">· {dateRangeLabel}</span></p>
                           {campaigns.length === 0 ? (
                             <p className="text-slate-400 text-sm text-center py-8">No campaign data. Sync your ad accounts first.</p>
                           ) : (
@@ -451,7 +543,7 @@ export default function CustomDashboardsPage() {
                       return (
                         <div key={widget.id} className="bg-white border border-slate-200 rounded-2xl p-5 sm:col-span-2 xl:col-span-2 relative group">
                           <button onClick={() => removeWidget(widget.id)} className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 w-6 h-6 bg-red-100 text-red-500 rounded-full text-xs font-medium transition-opacity hover:bg-red-200">✕</button>
-                          <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-4">{widget.title}</p>
+                          <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-4">{widget.title} <span className="text-slate-400 font-normal normal-case">· {dateRangeLabel}</span></p>
                           {spendData.length === 0 ? (
                             <p className="text-slate-400 text-sm text-center py-8">No data yet</p>
                           ) : (

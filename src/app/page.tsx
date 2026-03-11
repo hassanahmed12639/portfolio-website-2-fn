@@ -2,11 +2,7 @@ export const dynamic = 'force-dynamic'
 
 import Footer from '../components/layout/Footer'
 import { FloatingIconsHero } from '../components/sections/Hero'
-import { FeaturesHeadingSection } from '../components/sections/FeaturesHeadingSection'
 import GlowingCardSection from '../components/sections/GlowingCardSection'
-import ParallaxSection from '../components/sections/ParallaxSection'
-import ScrollRevealSection from '../components/sections/ScrollRevealSection'
-import CaseStudySection from '../components/sections/CaseStudySection'
 import { Testimonials } from '../components/sections/Testimonials'
 import { HomeCTA } from '../components/sections/HomeCTA'
 import ScrambleIntroWrapper from '../components/ScrambleIntroWrapper'
@@ -22,11 +18,7 @@ export default function Home() {
         ctaText="Get Started"
         ctaHref="#"
       />
-      <FeaturesHeadingSection />
       <GlowingCardSection />
-      <ParallaxSection />
-      <ScrollRevealSection />
-      <CaseStudySection />
       <Testimonials />
       <HomeCTA />
       <Footer />

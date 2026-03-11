@@ -4,6 +4,7 @@ import '@/lib/mouseStore'
 import ChatWidget from '@/components/ChatWidget'
 import ChatbotWrapper from '@/components/ChatbotWrapper'
 import TrackHivePixel from '@/components/TrackHivePixel'
+import MetaPixelCapture from '@/components/MetaPixelCapture'
 import MetaDomainVerification from '@/components/MetaDomainVerification'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import GsapInit from '@/components/GsapInit'
@@ -57,6 +58,7 @@ export default function RootLayout({
           <ChatWidget />
           <ChatbotWrapper />
           <TrackHivePixel />
+          <MetaPixelCapture />
           <MetaDomainVerification />
         </ThemeProvider>
       </body>

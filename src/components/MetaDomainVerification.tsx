@@ -16,7 +16,9 @@ export default function MetaDomainVerification() {
       meta.content = FACEBOOK_DOMAIN_VERIFICATION
       document.head.appendChild(meta)
       return () => {
-        document.head.removeChild(meta)
+        if (meta.parentNode === document.head) {
+          document.head.removeChild(meta)
+        }
       }
     }
   }, [])

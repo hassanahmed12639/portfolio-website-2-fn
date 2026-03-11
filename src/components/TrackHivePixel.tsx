@@ -24,9 +24,10 @@ export default function TrackHivePixel() {
     if (!isTrackDomain) return
     if (typeof window === 'undefined') return
 
-    // Meta PageView
-    if ((window as unknown as { fbq?: (a: string, b: string) => void }).fbq) {
-      (window as unknown as { fbq: (a: string, b: string) => void }).fbq('track', 'PageView')
+    // Meta PageView with eventID for deduplication with CAPI
+    const pageViewId = (window as unknown as { __metaPageViewId?: string }).__metaPageViewId || `pv_${Date.now()}`
+    if ((window as unknown as { fbq?: (a: string, b: string, c?: unknown, d?: { eventID?: string }) => void }).fbq) {
+      (window as unknown as { fbq: (a: string, b: string, c?: unknown, d?: { eventID?: string }) => void }).fbq('track', 'PageView', {}, { eventID: pageViewId })
     }
 
     // TikTok PageView
@@ -61,7 +62,7 @@ export default function TrackHivePixel() {
           s.parentNode.insertBefore(t,s)}(window, document,'script',
           'https://connect.facebook.net/en_US/fbevents.js');
           fbq('init', '${pixelId}');
-          fbq('track', 'PageView');
+          fbq('track', 'PageView', {}, { eventID: (typeof window !== 'undefined' && window.__metaPageViewId) ? window.__metaPageViewId : ('pv_' + Date.now()) });
         `}
       </Script>
 
