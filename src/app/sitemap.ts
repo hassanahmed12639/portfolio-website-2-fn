@@ -1,71 +1,68 @@
 import type { MetadataRoute } from 'next'
-import { createAdminClient } from '@/lib/supabase/admin'
+import { headers } from 'next/headers'
+import { getTrackHiveSitemap } from '@/lib/sitemaps/trackhive'
 
-const BASE_URL = 'https://track.itshassanhamed.com'
+const BASE_URL = 'https://itshassanahmed.com'
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // Static pages
-  const staticPages: MetadataRoute.Sitemap = [
+function portfolioSitemap(): MetadataRoute.Sitemap {
+  return [
     {
       url: BASE_URL,
       lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 1,
-    },
-    {
-      url: `${BASE_URL}/pricing`,
-      lastModified: new Date(),
       changeFrequency: 'monthly',
-      priority: 0.9,
+      priority: 1.0,
     },
     {
-      url: `${BASE_URL}/features`,
+      url: `${BASE_URL}/my-process`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.8,
     },
     {
-      url: `${BASE_URL}/blog`,
+      url: `${BASE_URL}/project`,
       lastModified: new Date(),
-      changeFrequency: 'daily',
+      changeFrequency: 'monthly',
       priority: 0.8,
     },
     {
-      url: `${BASE_URL}/docs`,
+      url: `${BASE_URL}/resume`,
       lastModified: new Date(),
-      changeFrequency: 'weekly',
+      changeFrequency: 'yearly',
+      priority: 0.6,
+    },
+    {
+      url: `${BASE_URL}/my-process/tools/utm-builder`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
       priority: 0.7,
     },
     {
-      url: `${BASE_URL}/integrations`,
+      url: `${BASE_URL}/my-process/tools/ab-test-calculator`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${BASE_URL}/my-process/tools/budget-reverse-calculator`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${BASE_URL}/my-process/tools/custom-audience-builder`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
     },
   ]
+}
 
-  // Dynamic blog posts from Supabase
-  let blogPages: MetadataRoute.Sitemap = []
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const headersList = await headers()
+  const host = headersList.get('host') || headersList.get('x-forwarded-host') || ''
 
-  try {
-    const supabase = createAdminClient()
-    const { data: posts } = await supabase
-      .from('blog_posts')
-      .select('slug, updated_at, created_at')
-      .eq('published', true)
-      .order('created_at', { ascending: false })
-
-    if (posts) {
-      blogPages = posts.map((post) => ({
-        url: `${BASE_URL}/blog/${post.slug}`,
-        lastModified: new Date(post.updated_at || post.created_at),
-        changeFrequency: 'weekly' as const,
-        priority: 0.6,
-      }))
-    }
-  } catch (err) {
-    console.error('[Sitemap] Error fetching blog posts:', err)
+  if (host.includes('track.')) {
+    return getTrackHiveSitemap()
   }
-
-  return [...staticPages, ...blogPages]
+  return portfolioSitemap()
 }

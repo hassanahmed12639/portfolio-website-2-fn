@@ -160,19 +160,43 @@ export default async function CaseStudyPage({ params }: Props) {
               </div>
             )}
 
+            {/* Content images (below Key Takeaways when present) */}
+            {study.contentImages && study.contentImages.length > 0 && (
+              <div className="mb-10 space-y-6">
+                {study.contentImages.map((img, i) => (
+                  <div key={i} className="w-full">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={img.src}
+                      alt={img.alt ?? ""}
+                      className="w-full h-auto rounded-xl"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+            {study.contentImage && !study.contentImages && (
+              <div className="mb-10 w-full">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={study.contentImage.src}
+                  alt={study.contentImage.alt ?? ""}
+                  className="w-full h-auto rounded-xl"
+                />
+              </div>
+            )}
+
             {/* Sections */}
             {sections.map((sec) => (
-              <div
-                key={sec.id}
-                id={sec.id}
-                className="mb-10 scroll-mt-24"
-              >
-                <h2 className="font-semibold text-[var(--color-text)] mb-4">
-                  {sec.heading}
-                </h2>
-                <p className="text-[var(--color-text)]/90 leading-relaxed">
-                  {sec.content}
-                </p>
+              <div key={sec.id}>
+                <div id={sec.id} className="mb-10 scroll-mt-24">
+                  <h2 className="font-semibold text-[var(--color-text)] mb-4">
+                    {sec.heading}
+                  </h2>
+                  <p className="text-[var(--color-text)]/90 leading-relaxed">
+                    {sec.content}
+                  </p>
+                </div>
               </div>
             ))}
 

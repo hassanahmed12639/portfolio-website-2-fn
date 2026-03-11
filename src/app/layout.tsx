@@ -10,6 +10,10 @@ import GsapInit from '@/components/GsapInit'
 import PreloaderWrapper from '@/components/PreloaderWrapper'
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://itshassanahmed.com'),
+  alternates: {
+    canonical: '/',
+  },
   title: 'Next.js GSAP Portfolio',
   description: 'A production-ready Next.js portfolio starter with GSAP animations',
 }

@@ -21,6 +21,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: page.meta_title || page.title,
     description: page.meta_description ?? undefined,
+    alternates: {
+      canonical: `https://track.itshassanahmed.com/for/${slug}`,
+    },
   }
 }
 

@@ -9,6 +9,10 @@ export type CaseStudy = {
   readTime?: string;
   sections?: { id: string; heading: string; content: string }[];
   keyTakeaways?: string[];
+  /** Optional in-content image: path (e.g. /veg-out.png) - shown below Key Takeaways */
+  contentImage?: { src: string; afterSectionId?: string; alt?: string };
+  /** Optional multiple content images - shown below Key Takeaways */
+  contentImages?: { src: string; alt?: string }[];
 };
 
 export const caseStudies: CaseStudy[] = [
@@ -72,6 +76,11 @@ export const caseStudies: CaseStudy[] = [
           "This project reinforced several key lessons: strategic audience layering and SKU-level segmentation drive efficiency, Performance Max campaigns with custom audience signals can outperform traditional campaigns in e-commerce, and dynamic, real-time optimization is essential for sustained profitability. By integrating these approaches, I was able to deliver measurable, scalable results that positioned VegOutOrganics for continued growth.",
       },
     ],
+    contentImage: {
+      src: "/veg-out.png",
+      afterSectionId: "product-feed",
+      alt: "VegOut Organics products",
+    },
   },
   {
     slug: "little-laser-clinic",
@@ -121,6 +130,11 @@ export const caseStudies: CaseStudy[] = [
           "Through precise geo-targeting, audience intent optimization, and continuous campaign refinement, this project demonstrated the impact of focused Google Search advertising in driving measurable business results for local clinics.",
       },
     ],
+    contentImage: {
+      src: "/little-laser.png",
+      afterSectionId: "overview",
+      alt: "Little Laser Clinic",
+    },
   },
   {
     slug: "comporta-experience",
@@ -170,6 +184,10 @@ export const caseStudies: CaseStudy[] = [
           "The result was a consistent stream of high-quality inquiries from booking-ready travelers and investment-minded buyers. CTRs remained above 12% throughout, and the campaigns achieved improved cost-efficiency over time, establishing a scalable and profitable digital strategy for Comporta Experience's luxury offerings.",
       },
     ],
+    contentImages: [
+      { src: "/comporta-1.png", alt: "Comporta Experience" },
+      { src: "/comporta-2.png", alt: "Comporta Experience" },
+    ],
   },
   {
     slug: "trade-locks",
@@ -213,6 +231,10 @@ export const caseStudies: CaseStudy[] = [
           "The campaign achieved over 1,300 high-intent clicks and 153 conversions at a cost per conversion of just £14.01, demonstrating its profitability and scalability. By targeting ready-to-buy users with a highly relevant and optimized campaign structure, Tradelocks experienced a significant boost in product sales, establishing a replicable strategy for long-term growth.",
       },
     ],
+    contentImage: {
+      src: "/trade-locks.png",
+      alt: "Tradelocks",
+    },
   },
   {
     slug: "driveucars",
@@ -255,6 +277,11 @@ export const caseStudies: CaseStudy[] = [
         content:
           "The results were strong and highly efficient: the campaign generated 277 phone calls and 167 website conversions, with a total ad spend of just $1.48K. By combining data-driven targeting, continuous optimization, and highly relevant ad messaging, the campaign delivered ready-to-book customers and maximized ROI for DriveUCars, establishing a scalable and profitable search strategy for the rental market.",
       },
+    ],
+    contentImages: [
+      { src: "/drive-1.png", alt: "DriveUCars" },
+      { src: "/drive-2.png", alt: "DriveUCars" },
+      { src: "/drive-3.png", alt: "DriveUCars" },
     ],
   },
   {
@@ -299,6 +326,10 @@ export const caseStudies: CaseStudy[] = [
           "Throughout the campaign, I continuously monitored performance, optimized bids, paused underperforming keywords, and reallocated budget toward high-performing services. The results were strong: the campaign generated over 360 conversions at a competitive cost per lead, with a 12.21% CTR, demonstrating that the strategy was attracting highly relevant users ready to take action and driving real business growth for RC Custom Landscapes.",
       },
     ],
+    contentImage: {
+      src: "/rcc.png",
+      alt: "RC Custom Landscapes",
+    },
   },
   {
     slug: "mala-yachts",
@@ -342,6 +373,10 @@ export const caseStudies: CaseStudy[] = [
           "The results were remarkable: Mala.ae grew from under 500 daily impressions to over 30,000 daily impressions, generating 5.7 million impressions and 101,000 clicks. These efforts firmly positioned Mala Yachts as a leading name in Dubai's yacht rental and luxury tourism sector, driving a significant increase in organic leads and consolidating the brand's authority in the market.",
       },
     ],
+    contentImage: {
+      src: "/mala.png",
+      alt: "Mala Yachts",
+    },
   },
   {
     slug: "steve-apparel",
@@ -385,6 +420,10 @@ export const caseStudies: CaseStudy[] = [
           "Within six months, these efforts yielded over 22.9K organic clicks and 1.32 million impressions, driving highly qualified leads from B2B fashion brands and solidifying Steve Apparel's authority in the private label and custom apparel space. The campaign demonstrated how a full-stack, data-driven SEO approach could generate measurable growth, increase visibility for high-intent queries, and establish long-term industry leadership.",
       },
     ],
+    contentImage: {
+      src: "/steve.png",
+      alt: "Steve Apparel",
+    },
   },
   {
     slug: "alliance-shipping",
@@ -427,6 +466,11 @@ export const caseStudies: CaseStudy[] = [
         content:
           "Within six months, Alliance Shipping achieved over 1.09 million impressions and 15,200 organic clicks, with steadily rising CTRs and increasing visibility in AI-generated search summaries. These results firmly established Alliance Shipping as an authority in logistics and international freight search results, driving a consistent flow of qualified leads and reinforcing the brand's presence in key markets.",
       },
+    ],
+    contentImages: [
+      { src: "/shipping-1.png", alt: "Alliance Shipping" },
+      { src: "/shipping-2.png", alt: "Alliance Shipping" },
+      { src: "/shipping-3.png", alt: "Alliance Shipping" },
     ],
   },
   {

@@ -36,6 +36,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: (post.meta_description || post.excerpt) ?? undefined,
       keywords: post.primary_keyword ?? undefined,
       authors: [{ name: post.author || 'TrackHive Team' }],
+      alternates: {
+        canonical: `https://track.itshassanahmed.com/blog/${slug}`,
+      },
       openGraph: {
         title: post.meta_title || post.title,
         description: (post.meta_description || post.excerpt) ?? undefined,
@@ -60,6 +63,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: problemPage.meta_title || problemPage.title + ' | TrackHive',
     description: problemPage.meta_description ?? undefined,
+    alternates: {
+      canonical: `https://track.itshassanahmed.com/blog/${slug}`,
+    },
     openGraph: {
       title: problemPage.meta_title || problemPage.title,
       description: problemPage.meta_description ?? undefined,
