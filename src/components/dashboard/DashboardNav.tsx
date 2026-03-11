@@ -15,10 +15,12 @@ import {
   Database,
   FileCode,
   Gauge,
+  LayoutDashboard,
   Link2,
   Lock,
   PanelTop,
   PlaySquare,
+  Plug,
   Radio,
   RefreshCw,
   RotateCcw,
@@ -203,6 +205,8 @@ export default function DashboardNav({
       requiredPlan: 'pro',
       feature: 'attribution',
     },
+    { label: 'Connectors', href: '/dashboard/connectors', icon: Plug },
+    { label: 'Custom Dashboards', href: '/dashboard/custom-dashboards', icon: LayoutDashboard },
     { label: 'Privacy', href: '/dashboard/privacy', icon: Lock },
     ...(plan === 'agency'
       ? [
@@ -240,6 +244,8 @@ export default function DashboardNav({
     '/dashboard/integrations': Settings2,
     '/dashboard/reverse-proxy': Workflow,
     '/dashboard/attribution': BarChart2,
+    '/dashboard/connectors': Plug,
+    '/dashboard/custom-dashboards': LayoutDashboard,
     '/dashboard/privacy': Lock,
     '/dashboard/team': Users,
   }

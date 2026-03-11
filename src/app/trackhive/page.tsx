@@ -4,6 +4,7 @@ import Link from "next/link"
 import type { Metadata } from 'next'
 import TrackHiveNavbar from "@/components/trackhive/Navbar"
 import TrackHiveFooter from "@/components/trackhive/Footer"
+import TrackHiveHeroDashboard from "@/components/trackhive/HeroDashboard"
 import WireFlowIcons from "@/components/trackhive/WireFlowIcons"
 import TestimonialSection from "@/components/trackhive/TestimonialSection"
 import PricingSection from "@/components/trackhive/PricingSection"
@@ -60,15 +61,11 @@ export default function TrackHivePage() {
         <div className="max-w-6xl mx-auto px-5 md:px-6 relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
             {/* Left: headline, description, CTA */}
-            <div className="text-center lg:text-left order-1">
-              <div className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 mb-4 md:mb-6">
-                <svg className="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" /></svg>
-                TRACK FOR FAST
-              </div>
-              <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-[3.25rem] font-bold leading-tight mb-4 md:mb-6 bg-gradient-to-r from-[#0f172a] via-[#2563eb] to-[#93c5fd] bg-clip-text text-transparent">
+            <div className="text-center lg:text-left flex flex-col items-center lg:items-start order-1">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-[3.25rem] font-bold leading-tight mb-4 md:mb-6 bg-gradient-to-r from-[#0f172a] via-[#2563eb] to-[#93c5fd] bg-clip-text text-transparent w-full">
                 One tool to track conversions and your ads.
               </h1>
-              <p className="text-base md:text-lg lg:text-xl text-slate-600 max-w-xl mb-8 md:mb-10">
+              <p className="text-base md:text-lg lg:text-xl text-slate-600 max-w-xl mb-8 md:mb-10 mx-auto lg:mx-0">
                 TrackHive helps marketing teams work faster and smarter, delivering server-side events to Meta, Google, TikTok and Snapchat—so you get the visibility and match rates you need.
               </p>
               <Link
@@ -80,43 +77,9 @@ export default function TrackHivePage() {
               </Link>
             </div>
 
-            {/* Right: white card + input + social proof */}
+            {/* Right: interactive dashboard */}
             <div className="order-2 flex justify-center lg:justify-end">
-              <div className="w-full max-w-md">
-                <div
-                  className="rounded-2xl bg-white p-5 shadow-xl border border-slate-100/80"
-                  style={{ boxShadow: "0 20px 40px -12px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.02)" }}
-                >
-                  <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3">
-                    <span className="text-slate-400 text-sm flex-1 truncate">
-                      Send events to Meta, Google, TikTok every morning
-                    </span>
-                    <button
-                      type="button"
-                      className="p-2 rounded-full bg-[#3B82F6] text-white hover:bg-[#2563eb] transition-colors"
-                      aria-label="Send"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
-                    </button>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 mt-6 pl-1">
-                  <div className="flex -space-x-2">
-                    {[1, 2, 3, 4].map((i) => (
-                      <div
-                        key={i}
-                        className="w-9 h-9 rounded-full border-2 border-white bg-slate-300 flex items-center justify-center text-xs font-medium text-slate-600"
-                        style={{ zIndex: 5 - i }}
-                      >
-                        {i}
-                      </div>
-                    ))}
-                  </div>
-                  <p className="text-sm font-medium text-slate-600">
-                    Trusted by performance marketers worldwide
-                  </p>
-                </div>
-              </div>
+              <TrackHiveHeroDashboard />
             </div>
           </div>
         </div>
