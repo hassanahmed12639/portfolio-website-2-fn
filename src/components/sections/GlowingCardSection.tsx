@@ -1,11 +1,15 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { BarChart3, Target, Zap, LineChart, TrendingUp } from 'lucide-react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { registerGsapPlugins } from '@/lib/gsap';
 import { GlowingEffect } from '@/components/ui/GlowingEffect';
 import { cn } from '@/lib/utils';
 
 const LIME = '#b3f000';
-const BG_DARK = '#0a0a0a';
+const BG_DARK = '#000000';
 const CARD_BG = '#0f0f0f';
 const BORDER = 'rgba(255,255,255,0.08)';
 
@@ -115,8 +119,48 @@ function GridItem({
 }
 
 export default function GlowingCardSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const subRef = useRef<HTMLParagraphElement>(null);
+  const cardsRef = useRef<HTMLUListElement>(null);
+
+  useEffect(() => {
+    registerGsapPlugins();
+    const section = sectionRef.current;
+    const heading = headingRef.current;
+    const sub = subRef.current;
+    const cardItems = cardsRef.current?.querySelectorAll('li');
+    if (!section) return;
+
+    const ctx = gsap.context(() => {
+      if (heading) gsap.set(heading, { opacity: 0, y: 24 });
+      if (sub) gsap.set(sub, { opacity: 0, y: 20 });
+      if (cardItems?.length) gsap.set(cardItems, { opacity: 0, y: 30 });
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: 'top 80%',
+          end: 'top 35%',
+          scrub: 0.8,
+        },
+      });
+
+      if (heading) tl.to(heading, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' }, 0);
+      if (sub) tl.to(sub, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' }, 0.1);
+      if (cardItems?.length) {
+        cardItems.forEach((li, i) => {
+          tl.to(li, { opacity: 1, y: 0, duration: 0.25, ease: 'power2.out' }, 0.2 + i * 0.08);
+        });
+      }
+    }, section);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section
+      ref={sectionRef}
       className={cn(
         'w-full overflow-hidden min-h-0 py-12 md:py-16 px-4 sm:px-6',
         'flex flex-col items-center justify-center'
@@ -126,6 +170,7 @@ export default function GlowingCardSection() {
     >
       <div className="w-full max-w-6xl mx-auto space-y-10 sm:space-y-12">
         <h2
+          ref={headingRef}
           id="glowing-section-heading"
           className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white text-center"
           style={{
@@ -135,10 +180,10 @@ export default function GlowingCardSection() {
         >
           What I Do
         </h2>
-        <p className="text-base sm:text-lg text-white/70 text-center max-w-2xl mx-auto leading-relaxed">
+        <p ref={subRef} className="text-base sm:text-lg text-white/70 text-center max-w-2xl mx-auto leading-relaxed">
           I help brands grow through data-driven advertising, advanced tracking, and high-ROI performance marketing strategies.
         </p>
-        <ul className="grid grid-cols-1 grid-rows-none gap-4 md:grid-cols-12 md:grid-rows-3 lg:gap-4 xl:max-h-[34rem] xl:grid-rows-2">
+        <ul ref={cardsRef} className="grid grid-cols-1 grid-rows-none gap-4 md:grid-cols-12 md:grid-rows-3 lg:gap-4 xl:max-h-[34rem] xl:grid-rows-2">
           {cards.map((card) => (
             <GridItem
               key={card.title}

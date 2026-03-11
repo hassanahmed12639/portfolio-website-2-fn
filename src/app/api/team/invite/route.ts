@@ -4,8 +4,6 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { Resend } from 'resend'
 import crypto from 'crypto'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 export async function POST(req: NextRequest) {
   try {
     const supabase = await createClient()
@@ -150,6 +148,11 @@ export async function POST(req: NextRequest) {
         </html>
       `
 
+    const resendApiKey = process.env.RESEND_API_KEY
+    if (!resendApiKey) {
+      return NextResponse.json({ error: 'Email service not configured' }, { status: 500 })
+    }
+    const resend = new Resend(resendApiKey)
     const { data: emailData, error: emailError } = await resend.emails.send({
       from: 'TrackHive <noreply@itshassanahmed.com>',
       to: [email.trim()],

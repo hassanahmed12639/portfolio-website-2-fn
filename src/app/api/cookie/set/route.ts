@@ -3,10 +3,12 @@ import { createClient as createAdmin } from '@supabase/supabase-js'
 
 export const dynamic = 'force-dynamic'
 
-const supabaseAdmin = createAdmin(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+function getAdminClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!url || !key) throw new Error('Missing Supabase admin config')
+  return createAdmin(url, key)
+}
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
@@ -22,6 +24,7 @@ export async function GET(req: NextRequest) {
 
   try {
     if (apiKey) {
+      const supabaseAdmin = getAdminClient()
       // Resolve user_id: api_key can be profile.api_key (TrackHive key) or pixel_id (Meta pixel ID)
       let userId: string | undefined
       const { data: profile } = await supabaseAdmin

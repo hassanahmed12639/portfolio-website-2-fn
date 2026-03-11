@@ -8,6 +8,7 @@ import TrackHiveHeroDashboard from "@/components/trackhive/HeroDashboard"
 import WireFlowIcons from "@/components/trackhive/WireFlowIcons"
 import TestimonialSection from "@/components/trackhive/TestimonialSection"
 import PricingSection from "@/components/trackhive/PricingSection"
+import { TrackHiveCTASection } from "@/components/trackhive/TrackHiveCTASection"
 
 export const metadata: Metadata = {
   title: 'TrackHive — Server-Side Tracking for Meta, TikTok & Google',
@@ -409,40 +410,11 @@ export default function TrackHivePage() {
       {/* Pricing Section */}
       <PricingSection />
 
-      {/* CTA - Airlume style: light bg, white panel, heading + subtitle + pill CTA + decorative icons */}
-      <section className="py-12 md:py-16 relative overflow-hidden" style={{ backgroundColor: "#f0f4f8" }}>
-        <div className="max-w-4xl mx-auto px-5 md:px-8">
-          <div
-            className="relative rounded-3xl px-6 py-12 md:px-12 md:py-14 text-center"
-            style={{
-              backgroundColor: "#ffffff",
-              boxShadow: "0 4px 24px rgba(15,23,42,0.06), 0 0 0 1px rgba(15,23,42,0.04)",
-            }}
-          >
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold leading-tight mb-4" style={{ color: "#0f172a" }}>
-              Ready To Track Smarter With TrackHive?
-            </h2>
-            <p className="text-base md:text-lg max-w-xl mx-auto mb-8" style={{ color: "#64748b" }}>
-              from setup to insights to real-time events, trackhive makes every part of your attribution effortless.
-            </p>
-            <Link
-              href="/dashboard/signup"
-              className="inline-flex items-center gap-0 rounded-full font-semibold text-white transition-all hover:opacity-95 pl-8 pr-[6px] py-2"
-              style={{ background: "linear-gradient(180deg, #0f172a 0%, #1e293b 100%)", boxShadow: "0 2px 12px rgba(15,23,42,0.2)" }}
-            >
-              <span className="pr-6 py-1.5">Start for Free</span>
-              <span
-                className="flex items-center justify-center w-11 h-11 rounded-full border-2 shrink-0 -mr-1"
-                style={{ borderColor: "#0f172a", backgroundColor: "#ffffff", color: "#0f172a" }}
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </span>
-            </Link>
-          </div>
-        </div>
-      </section>
+      <TrackHiveCTASection
+        title="Ready to connect your stack?"
+        description="Get started in 5 minutes. No credit card required."
+        buttonText="Start for free →"
+      />
 
       <TrackHiveFooter />
     </div>

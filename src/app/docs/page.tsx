@@ -4,6 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import TrackHiveNavbar from "@/components/trackhive/Navbar"
 import TrackHiveFooter from "@/components/trackhive/Footer"
+import { TrackHiveCTASection } from "@/components/trackhive/TrackHiveCTASection"
 
 const SNIPPET = `<script>window.TRACKHIVE_KEY = "your-key";</script>
 <script src="https://track.itshassanahmed.com/th.js" async></script>`
@@ -264,6 +265,12 @@ export default function DocsPage() {
           </div>
         </main>
       </div>
+
+      <TrackHiveCTASection
+        title="Ready to connect your stack?"
+        description="Get started in 5 minutes. No credit card required."
+        buttonText="Start for free →"
+      />
 
       <TrackHiveFooter />
     </div>

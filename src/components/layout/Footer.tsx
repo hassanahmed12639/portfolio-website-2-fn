@@ -24,7 +24,7 @@ function Footer() {
           <div className="relative">
             <h2 className="mb-4 text-3xl font-bold tracking-tight">Stay Connected</h2>
             <p className="mb-6 text-muted-foreground">
-              Join our newsletter for the latest updates and exclusive offers.
+              Join my newsletter for the latest updates and exclusive offers.
             </p>
             <form className="relative">
               <Input
@@ -46,34 +46,36 @@ function Footer() {
           <div>
             <h3 className="mb-4 text-lg font-semibold">Quick Links</h3>
             <nav className="space-y-2 text-sm">
-              <a href="#" className="block transition-colors hover:text-[#AAFF00]">
+              <a href="/" className="block transition-colors hover:text-[#AAFF00]">
                 Home
               </a>
-              <a href="#" className="block transition-colors hover:text-[#AAFF00]">
-                About Us
+              <a href="/#about" className="block transition-colors hover:text-[#AAFF00]">
+                About
               </a>
-              <a href="#" className="block transition-colors hover:text-[#AAFF00]">
-                Services
+              <a href="/project" className="block transition-colors hover:text-[#AAFF00]">
+                Project
               </a>
-              <a href="#" className="block transition-colors hover:text-[#AAFF00]">
-                Products
+              <a href="/my-process" className="block transition-colors hover:text-[#AAFF00]">
+                My Process
               </a>
-              <a href="#" className="block transition-colors hover:text-[#AAFF00]">
+              <a href="/contact" className="block transition-colors hover:text-[#AAFF00]">
                 Contact
+              </a>
+              <a href="https://track.itshassanahmed.com" target="_blank" rel="noopener noreferrer" className="block transition-colors hover:text-[#AAFF00]">
+                TrackHive
               </a>
             </nav>
           </div>
           <div>
             <h3 className="mb-4 text-lg font-semibold">Contact Us</h3>
             <address className="space-y-2 text-sm not-italic">
-              <p>123 Innovation Street</p>
-              <p>Tech City, TC 12345</p>
-              <p>Phone: (123) 456-7890</p>
-              <p>Email: hello@example.com</p>
+              <p>Remote worldwide</p>
+              <p>Phone: 03313317401</p>
+              <p>Email: hassanonclouds@gmail.com</p>
             </address>
           </div>
           <div className="relative">
-            <h3 className="mb-4 text-lg font-semibold">Follow Us</h3>
+            <h3 className="mb-4 text-lg font-semibold">Follow Me</h3>
             <div className="mb-6 flex space-x-4">
               <TooltipProvider>
                 <Tooltip>

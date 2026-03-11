@@ -6,45 +6,38 @@ import { cn } from "@/lib/utils"
 const testimonials = [
   {
     id: 1,
-    quote: "This changed everything for me.",
-    author: "Sarah Chen",
-    role: "Designer at Figma",
-    avatar: "https://images.unsplash.com/photo-1701615004837-40d8573b6652?q=80&w=1480&auto=format&fit=crop",
-  },
-  {
-    id: 2,
-    quote: "Simply brilliant. Nothing else compares.",
-    author: "Marcus Johnson",
-    role: "Engineer at Vercel",
-    avatar: "https://plus.unsplash.com/premium_photo-1671656349218-5218444643d8?q=80&w=1287&auto=format&fit=crop",
-  },
-  {
-    id: 3,
-    quote: "The attention to detail is unmatched.",
-    author: "Elena Rodriguez",
-    role: "Founder at Craft",
-    avatar: "https://images.unsplash.com/photo-1607746882042-944635dfe10e?q=80&w=2670&auto=format&fit=crop",
-  },
-  {
-    id: 4,
-    quote: "Delivered exactly what we needed—and then some.",
-    author: "James Wilson",
-    role: "VP Marketing at Stripe",
+    quote: "This transformed our lead generation completely.",
+    author: "Alliance Shipping",
+    role: "Marketing Manager at Alliance Shipping",
     avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=1480&auto=format&fit=crop",
   },
   {
-    id: 5,
-    quote: "A true partner in growth. Results speak for themselves.",
-    author: "Priya Sharma",
-    role: "Growth Lead at Notion",
-    avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1480&auto=format&fit=crop",
+    id: 2,
+    quote: "Simply outstanding campaign performance. Nothing compares.",
+    author: "Vegout Organics",
+    role: "Founder at Vegout Organics",
+    avatar: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1200&auto=format&fit=crop",
   },
   {
-    id: 6,
-    quote: "Transformed our approach. Couldn't recommend more highly.",
-    author: "David Park",
-    role: "CTO at Linear",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1480&auto=format&fit=crop",
+    id: 3,
+    quote: "The targeting precision and optimization were exceptional.",
+    author: "RCC Custom Landscape",
+    role: "Operations Manager at RCC Custom Landscape",
+    avatar: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?q=80&w=1480&auto=format&fit=crop",
+  },
+  {
+    id: 4,
+    quote: "Delivered strong ROAS exactly when we needed it.",
+    author: "Trade Locks",
+    role: "E-commerce Manager at Trade Locks",
+    avatar: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=1480&auto=format&fit=crop",
+  },
+  {
+    id: 5,
+    quote: "A true partner in scaling profitable ad campaigns.",
+    author: "Steve Apparel",
+    role: "Marketing Director at Steve Apparel",
+    avatar: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=1480&auto=format&fit=crop",
   },
 ]
 
@@ -68,11 +61,11 @@ export function Testimonials() {
   }
 
   return (
-    <section className="relative w-full min-h-screen min-h-[100dvh] flex flex-col justify-center py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-black">
-      <div className="flex flex-col items-center gap-8 pt-4 pb-12">
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-white text-center -mt-2">
-          What My Clients Say
-        </h2>
+    <section className="relative w-full min-h-screen min-h-[100dvh] flex flex-col py-12 md:py-16 px-4 sm:px-6 lg:px-12 bg-black">
+      <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-white text-center pt-4 md:pt-6 flex-shrink-0">
+        What My Clients Say
+      </h2>
+      <div className="flex flex-1 flex-col items-center justify-center gap-8 py-4">
         {/* Quote Container */}
         <div className="relative px-8 md:px-12">
           <span className="absolute -left-2 -top-8 text-8xl md:text-9xl font-serif text-white/[0.06] select-none pointer-events-none">

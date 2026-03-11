@@ -274,7 +274,7 @@ export const Timeline = ({ data }: { data: TimelineItem[] }) => {
   return (
     <div
       ref={containerRef}
-      className="w-full bg-black dark:bg-[#0a0a0a] font-sans px-4 sm:px-6 md:px-10"
+      className="w-full bg-black font-sans px-4 sm:px-6 md:px-10"
     >
       {/* ── Hero Header ── */}
       <div style={{ maxWidth: "1200px", margin: "0 auto", padding: isMobile ? "60px 0 32px" : "80px 0 40px" }}>

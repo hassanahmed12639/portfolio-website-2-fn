@@ -4,6 +4,7 @@ import Link from "next/link"
 import type { Metadata } from 'next'
 import TrackHiveNavbar from "@/components/trackhive/Navbar"
 import TrackHiveFooter from "@/components/trackhive/Footer"
+import { TrackHiveCTASection } from "@/components/trackhive/TrackHiveCTASection"
 import { PRICING_PLANS } from "@/lib/pricing"
 
 export const metadata: Metadata = {
@@ -242,24 +243,11 @@ export default function PricingPage() {
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="py-24" style={{ backgroundColor: "#2563eb" }}>
-          <div className="max-w-3xl mx-auto px-6 text-center">
-            <h2 className="text-4xl font-extrabold text-white mb-4">
-              Start tracking smarter today.
-            </h2>
-            <p className="text-lg text-blue-200 mb-8">
-              Join hundreds of marketers recovering lost conversions with TrackHive.
-            </p>
-            <Link
-              href="/dashboard/signup"
-              className="inline-block bg-white font-bold px-10 py-4 rounded-xl text-lg transition-colors hover:bg-blue-50"
-              style={{ color: "#2563eb" }}
-            >
-              Start for free →
-            </Link>
-          </div>
-        </section>
+        <TrackHiveCTASection
+          title="Ready to connect your stack?"
+          description="Get started in 5 minutes. No credit card required."
+          buttonText="Start for free →"
+        />
       </main>
 
       <TrackHiveFooter />

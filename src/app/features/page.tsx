@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic'
 
-import Link from "next/link"
+import { TrackHiveCTASection } from "@/components/trackhive/TrackHiveCTASection"
 import type { Metadata } from 'next'
 import TrackHiveNavbar from "@/components/trackhive/Navbar"
 import TrackHiveFooter from "@/components/trackhive/Footer"
@@ -204,21 +204,11 @@ export default function FeaturesPage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-16 bg-white border-t" style={{ borderColor: "#e2e8f0" }}>
-        <div className="max-w-3xl mx-auto px-6 text-center">
-          <p className="text-lg mb-6" style={{ color: "#475569" }}>
-            Ready to recover your lost conversions?
-          </p>
-          <Link
-            href="/dashboard/signup"
-            className="inline-block font-semibold px-8 py-3 rounded-xl transition-colors text-white hover:opacity-90"
-            style={{ backgroundColor: "#2563eb" }}
-          >
-            Start for free →
-          </Link>
-        </div>
-      </section>
+      <TrackHiveCTASection
+        title="Ready to connect your stack?"
+        description="Get started in 5 minutes. No credit card required."
+        buttonText="Start for free →"
+      />
 
       <TrackHiveFooter />
     </div>

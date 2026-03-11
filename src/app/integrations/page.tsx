@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic'
 
-import Link from "next/link"
+import { TrackHiveCTASection } from "@/components/trackhive/TrackHiveCTASection"
 import type { Metadata } from 'next'
 import TrackHiveNavbar from "@/components/trackhive/Navbar"
 import TrackHiveFooter from "@/components/trackhive/Footer"
@@ -22,16 +22,16 @@ const INTEGRATION_GROUPS = [
   {
     title: "Tag Managers",
     items: [
-      { name: "Google Tag Manager", description: "Client-side GTM integration", badge: { letter: "GTM", bg: "bg-white", icon: "/landing-gtm.jpg" }, status: "Live" },
-      { name: "Server-side GTM", description: "Server-side tag manager support", badge: { letter: "sGTM", bg: "bg-white", icon: "/landing-gtm.jpg" }, status: "Live" },
+      { name: "Google Tag Manager", description: "Client-side GTM integration", badge: { letter: "GTM", bg: "bg-white", icon: "/landing-gtm.png" }, status: "Live" },
+      { name: "Server-side GTM", description: "Server-side tag manager support", badge: { letter: "sGTM", bg: "bg-white", icon: "/landing-gtm.png" }, status: "Live" },
     ],
   },
   {
     title: "E-commerce",
     items: [
-      { name: "Shopify", description: "Native Shopify integration", badge: { letter: "S", bg: "bg-green-600" }, status: "Live" },
-      { name: "WooCommerce", description: "WordPress / WooCommerce plugin", badge: { letter: "W", bg: "bg-purple-600" }, status: "Live" },
-      { name: "Custom (API)", description: "REST API for any platform", badge: { letter: "API", bg: "bg-slate-600" }, status: "Live" },
+      { name: "Shopify", description: "Native Shopify integration", badge: { letter: "S", bg: "bg-white", icon: "/landing-shopify-ads.png" }, status: "Live" },
+      { name: "WooCommerce", description: "WordPress / WooCommerce plugin", badge: { letter: "W", bg: "bg-white", icon: "/woo-com.png" }, status: "Live" },
+      { name: "Custom (API)", description: "REST API for any platform", badge: { letter: "API", bg: "bg-white", icon: "/rest.png" }, status: "Live" },
     ],
   },
 ]
@@ -78,10 +78,10 @@ export default function IntegrationsPage() {
                     }}
                   >
                     <div
-                      className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 overflow-hidden ${item.badge.bg}`}
+                      className={`w-16 h-16 rounded-xl flex items-center justify-center shrink-0 overflow-hidden ${item.badge.bg}`}
                     >
                       {"icon" in item.badge && item.badge.icon ? (
-                        <img src={item.badge.icon} alt="" className="w-7 h-7 object-contain" />
+                        <img src={item.badge.icon} alt="" className="w-full h-full max-w-full max-h-full object-contain" />
                       ) : (
                         <span className="text-white text-xs font-bold">{item.badge.letter}</span>
                       )}
@@ -111,24 +111,11 @@ export default function IntegrationsPage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-24" style={{ backgroundColor: "#2563eb" }}>
-        <div className="max-w-3xl mx-auto px-6 text-center">
-          <h2 className="text-4xl font-extrabold text-white mb-4">
-            Ready to connect your stack?
-          </h2>
-          <p className="text-lg text-blue-200 mb-8">
-            Get started in 5 minutes. No credit card required.
-          </p>
-          <Link
-            href="/dashboard/signup"
-            className="inline-block bg-white font-bold px-10 py-4 rounded-xl text-lg transition-colors hover:bg-blue-50"
-            style={{ color: "#2563eb" }}
-          >
-            Start for free →
-          </Link>
-        </div>
-      </section>
+      <TrackHiveCTASection
+        title="Ready to connect your stack?"
+        description="Get started in 5 minutes. No credit card required."
+        buttonText="Start for free →"
+      />
 
       <TrackHiveFooter />
     </div>

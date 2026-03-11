@@ -2,8 +2,6 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
-const supabaseAdmin = createAdminClient()
-
 function getActionValue(actions: { action_type: string; value: string }[] | undefined, type: string | ((t: string) => boolean)): number {
   if (!actions?.length) return 0
   const match = typeof type === 'string'
@@ -105,7 +103,11 @@ async function fetchMetaInsights(
   return data
 }
 
-async function syncMeta(connection: any, userId: string) {
+async function syncMeta(
+  connection: any,
+  userId: string,
+  supabaseAdmin: ReturnType<typeof createAdminClient>
+) {
   const allCampaigns: any[] = []
 
   // 1. All-time aggregated data (date_start/date_end = null)
@@ -162,7 +164,11 @@ async function syncMeta(connection: any, userId: string) {
   return allCampaigns.length
 }
 
-async function syncTikTok(connection: { id: string; account_id: string; access_token: string }, userId: string) {
+async function syncTikTok(
+  connection: { id: string; account_id: string; access_token: string },
+  userId: string,
+  supabaseAdmin: ReturnType<typeof createAdminClient>
+) {
   const since = new Date()
   since.setDate(since.getDate() - 30)
   const startDate = since.toISOString().split('T')[0]
@@ -211,6 +217,7 @@ export async function POST(request: Request) {
   try {
     const { connectionId } = await request.json()
     const supabase = await createClient()
+    const supabaseAdmin = createAdminClient()
 
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -225,8 +232,8 @@ export async function POST(request: Request) {
     if (!connection) return NextResponse.json({ error: 'Connection not found' }, { status: 404 })
 
     let count = 0
-    if (connection.platform === 'meta') count = await syncMeta(connection, user.id)
-    if (connection.platform === 'tiktok') count = await syncTikTok(connection, user.id)
+    if (connection.platform === 'meta') count = await syncMeta(connection, user.id, supabaseAdmin)
+    if (connection.platform === 'tiktok') count = await syncTikTok(connection, user.id, supabaseAdmin)
 
     await supabaseAdmin
       .from('ad_connections')

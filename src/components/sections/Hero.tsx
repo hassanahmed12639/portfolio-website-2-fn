@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { TextRotate } from '@/components/ui/text-rotate';
 import { MagicText } from '@/components/ui/magic-text';
 import Header from '@/components/layout/Header';
+import BrandsMarquee from '@/components/sections/BrandsMarquee';
 
 export interface FloatingIconsHeroProps {
   title: string;
@@ -23,7 +24,7 @@ const FloatingIconsHero = React.forwardRef<
     <section
       ref={ref}
       className={cn(
-        'relative w-full min-h-0 flex flex-col items-center overflow-hidden bg-background pb-12 md:pb-16',
+        'relative w-full min-h-screen min-h-[100dvh] flex flex-col items-center overflow-hidden bg-black pb-8 md:pb-12',
         className
       )}
       {...props}
@@ -69,6 +70,9 @@ const FloatingIconsHero = React.forwardRef<
             <a href={ctaHref}>{ctaText}</a>
           </Button>
         </div>
+      </div>
+      <div className="relative z-10 w-screen max-w-none left-1/2 -translate-x-1/2">
+        <BrandsMarquee />
       </div>
     </section>
   );

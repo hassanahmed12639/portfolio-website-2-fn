@@ -1,10 +1,19 @@
 import type { MetadataRoute } from 'next'
 import { headers } from 'next/headers'
+import { getAllSlugs } from '@/data/caseStudies'
 import { getTrackHiveSitemap } from '@/lib/sitemaps/trackhive'
 
 const BASE_URL = 'https://itshassanahmed.com'
 
 function portfolioSitemap(): MetadataRoute.Sitemap {
+  const caseStudySlugs = getAllSlugs()
+  const caseStudyUrls: MetadataRoute.Sitemap = caseStudySlugs.map((slug) => ({
+    url: `${BASE_URL}/project/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
+  }))
+
   return [
     {
       url: BASE_URL,
@@ -20,6 +29,12 @@ function portfolioSitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${BASE_URL}/project`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/contact`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.8,
@@ -54,6 +69,7 @@ function portfolioSitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.7,
     },
+    ...caseStudyUrls,
   ]
 }
 

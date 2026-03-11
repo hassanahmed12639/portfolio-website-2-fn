@@ -261,15 +261,26 @@ export default function AdminBlogPage() {
               <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 Featured image
               </label>
-              <input
-                type="url"
-                value={form.featured_image || ''}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, featured_image: e.target.value }))
-                }
-                className="w-full mt-1 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="https://... (image URL for post hero)"
-              />
+              <div className="flex gap-2 mt-1">
+                <input
+                  type="url"
+                  value={form.featured_image || ''}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, featured_image: e.target.value }))
+                  }
+                  className="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="https://... (image URL for post hero)"
+                />
+                {form.featured_image && (
+                  <button
+                    type="button"
+                    onClick={() => setForm((f) => ({ ...f, featured_image: '' }))}
+                    className="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg border border-red-200 shrink-0"
+                  >
+                    Remove image
+                  </button>
+                )}
+              </div>
               {form.featured_image && (
                 <div className="mt-2 rounded-lg border border-slate-200 overflow-hidden bg-slate-50 max-w-md">
                   <img

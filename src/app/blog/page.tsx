@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import TrackHiveNavbar from '@/components/trackhive/Navbar'
 import TrackHiveFooter from '@/components/trackhive/Footer'
-import { CtaCard } from '@/components/ui/cta-card'
+import { TrackHiveCTASection } from '@/components/trackhive/TrackHiveCTASection'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -52,15 +52,25 @@ export default async function BlogPage() {
           <Link href={`/blog/${featured.slug}`} className="block mb-10">
             <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
               <div className="grid grid-cols-1 md:grid-cols-2">
-                <div className="bg-gradient-to-br from-blue-600 to-blue-700 h-64 md:h-auto flex items-center justify-center">
-                  <div className="text-center px-8">
-                    <span className="text-blue-200 text-xs font-semibold uppercase tracking-wider">
-                      Featured Post
-                    </span>
-                    <p className="text-white text-2xl font-bold mt-2">
-                      {featured.title}
-                    </p>
-                  </div>
+                <div className="relative h-64 md:h-auto min-h-[200px] bg-gradient-to-br from-blue-600 to-blue-700 overflow-hidden">
+                  {(featured.featured_image || featured.featured_image_url || featured.cover_image) ? (
+                    <img
+                      src={featured.featured_image || featured.featured_image_url || featured.cover_image}
+                      alt={featured.title}
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="text-center px-8">
+                        <span className="text-blue-200 text-xs font-semibold uppercase tracking-wider">
+                          Featured Post
+                        </span>
+                        <p className="text-white text-2xl font-bold mt-2">
+                          {featured.title}
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <div className="p-8 flex flex-col justify-center">
                   {featured.category && (
@@ -100,11 +110,23 @@ export default async function BlogPage() {
 
         {/* Posts grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {rest?.map((post) => (
+          {rest?.map((post) => {
+            const postImage = post.featured_image || post.featured_image_url || post.cover_image
+            return (
             <Link key={post.id} href={`/blog/${post.slug}`}>
               <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-all hover:-translate-y-0.5 h-full">
-                <div className="bg-gradient-to-br from-blue-600 to-blue-800 h-40 flex items-center justify-center">
-                  <div className="w-10 h-10 border-2 border-white/30 rounded-xl" />
+                <div className="relative h-40 bg-gradient-to-br from-blue-600 to-blue-800 overflow-hidden">
+                  {postImage ? (
+                    <img
+                      src={postImage}
+                      alt={post.title}
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-10 h-10 border-2 border-white/30 rounded-xl" />
+                    </div>
+                  )}
                 </div>
                 <div className="p-5">
                   {post.category && (
@@ -129,7 +151,7 @@ export default async function BlogPage() {
                 </div>
               </div>
             </Link>
-          ))}
+          )})}
         </div>
 
         {/* Empty state */}
@@ -147,12 +169,11 @@ export default async function BlogPage() {
           </div>
         )}
 
-        {/* CTA Section */}
         <div className="mt-16">
-          <CtaCard
-            title="Ready to recover lost conversions?"
-            description="Start tracking server-side with TrackHive. Free forever, no credit card needed."
-            buttonText="Start for free"
+          <TrackHiveCTASection
+            title="Ready to connect your stack?"
+            description="Get started in 5 minutes. No credit card required."
+            buttonText="Start for free →"
           />
         </div>
       </div>
