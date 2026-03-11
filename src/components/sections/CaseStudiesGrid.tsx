@@ -17,9 +17,9 @@ function CaseStudyCard({ study }: { study: CaseStudy }) {
   return (
     <Link
       href={`/project/${study.slug}`}
-      className="group flex flex-col rounded-2xl overflow-hidden bg-card text-card-foreground border border-border shadow-sm transition-shadow hover:shadow-md dark:shadow-none dark:border-border/80"
+      className="group flex flex-col rounded-xl overflow-hidden bg-card text-card-foreground border border-border shadow-sm transition-shadow hover:shadow-md dark:shadow-none dark:border-border/80"
     >
-      <h2 className="text-base md:text-lg font-bold pt-6 px-6 pb-5 text-foreground leading-tight">
+      <h2 className="text-sm md:text-base font-bold pt-4 px-4 pb-3 text-foreground leading-tight">
         {study.title}
       </h2>
       <div className="relative w-full aspect-[4/3] flex-shrink-0 overflow-hidden bg-muted rounded-t-none">
@@ -28,17 +28,17 @@ function CaseStudyCard({ study }: { study: CaseStudy }) {
           alt={study.title}
           fill
           className="object-cover transition-transform duration-300 ease-out group-hover:scale-[1.02]"
-          sizes="(max-width: 640px) 100vw, 50vw"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
       </div>
-      <div className="flex items-center gap-2 pt-5 px-6 pb-2">
+      <div className="flex items-center gap-2 pt-3 px-4 pb-1">
         <div
-          className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-medium bg-muted text-muted-foreground flex-shrink-0"
+          className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium bg-muted text-muted-foreground flex-shrink-0"
           aria-hidden
         >
           {initial}
         </div>
-        <span className="text-sm text-muted-foreground">
+        <span className="text-xs text-muted-foreground">
           by{' '}
           <span className="text-foreground font-bold group-hover:text-[#AAFF00] dark:group-hover:text-[#AAFF00] transition-colors">
             {study.author}
@@ -50,7 +50,7 @@ function CaseStudyCard({ study }: { study: CaseStudy }) {
           )}
         </span>
       </div>
-      <p className="text-sm text-muted-foreground px-6 pt-0 pb-6 line-clamp-3">
+      <p className="text-xs text-muted-foreground px-4 pt-0 pb-4 line-clamp-3">
         {truncated}
       </p>
     </Link>
@@ -68,7 +68,7 @@ export default function CaseStudiesGrid({ studies }: { studies: CaseStudy[] }) {
           Selected projects across product, brand, and marketing.
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 lg:gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
           {studies.map((study) => (
             <CaseStudyCard key={study.slug} study={study} />
           ))}

@@ -36,12 +36,12 @@ export default function CaseStudySection() {
           </h2>
         </div>
 
-        {/* Cards: simple 2-column grid, mobile: one card per viewport for scroll-by-scroll */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-4 md:gap-6">
+        {/* Cards: 3 per row on large screens */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-4 md:gap-5">
           {cases.map((c) => (
             <Link key={c.brand} href={`/project/${c.slug}`} className="block">
               <article
-                className="group relative rounded-2xl border overflow-hidden min-h-[72dvh] sm:min-h-[280px] md:min-h-[320px] cursor-pointer touch-manipulation active:scale-[0.98] transition-transform"
+                className="group relative rounded-xl border overflow-hidden min-h-[60dvh] sm:min-h-[220px] md:min-h-[260px] cursor-pointer touch-manipulation active:scale-[0.98] transition-transform"
                 style={{ backgroundColor: CARD_BG, borderColor: BORDER }}
               >
                 <div className="absolute inset-0">
@@ -49,7 +49,7 @@ export default function CaseStudySection() {
                     src={c.image}
                     alt={c.brand}
                     fill
-                    sizes="(max-width: 640px) 100vw, 50vw"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                   {/* Hover/tap overlay: black layer rises from below (group-active for mobile tap) */}
@@ -67,9 +67,9 @@ export default function CaseStudySection() {
                     </span>
                   </div>
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6">
+                <div className="absolute bottom-0 left-0 right-0 p-4 md:p-5">
                   <h3
-                    className="text-lg md:text-xl font-bold text-white"
+                    className="text-base md:text-lg font-bold text-white"
                     style={{ fontFamily: "'Segoe UI', system-ui, sans-serif" }}
                   >
                     {c.brand}

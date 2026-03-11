@@ -6,9 +6,15 @@ import CaseStudiesGrid from "@/components/sections/CaseStudiesGrid";
 import { caseStudies } from "@/data/caseStudies";
 
 const featuredSlugs = [
-  "ecommerce-platform",
-  "fashion-brand-experience",
-  "serrum-product-launch",
+  "vegout-organics",
+  "little-laser-clinic",
+  "comporta-experience",
+  "trade-locks",
+  "driveucars",
+  "rcc-custom-landscapes",
+  "mala-yachts",
+  "steve-apparel",
+  "alliance-shipping",
 ];
 
 export default function ProjectPage() {

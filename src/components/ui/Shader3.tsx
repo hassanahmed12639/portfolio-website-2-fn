@@ -1,12 +1,24 @@
 'use client';
 
-import { Canvas } from '@react-three/fiber';
-import { useFrame, useThree } from '@react-three/fiber';
-import { useMemo, useRef } from 'react';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 
 import { cn } from '@/lib/utils';
 import { mouseStore } from '@/lib/mouseStore';
+
+/** Ensures animation restarts when tab becomes visible (browser pauses rAF when hidden) */
+function VisibilityKicker() {
+  const { invalidate } = useThree();
+  useEffect(() => {
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') invalidate();
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', onVisibilityChange);
+  }, [invalidate]);
+  return null;
+}
 
 interface ShaderPlaneProps {
   vertexShader: string;
@@ -263,9 +275,18 @@ export function Shader3({
         camera={{ position: [0, 0, 1], fov: 75 }}
         dpr={[1, 2]}
         frameloop="always"
-        gl={{ alpha: false }}
+        gl={{
+          alpha: false,
+          powerPreference: 'high-performance',
+          antialias: true,
+        }}
+        onCreated={({ gl }) => {
+          gl.domElement.addEventListener('webglcontextlost', (e) => e.preventDefault());
+          gl.domElement.addEventListener('webglcontextrestored', () => {});
+        }}
         style={{ width: '100%', height: '100%', display: 'block', pointerEvents: 'none' }}
       >
+        <VisibilityKicker />
         <ShaderPlane
           vertexShader={vertexShader}
           fragmentShader={fragmentShader}
