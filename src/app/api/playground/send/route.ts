@@ -138,6 +138,8 @@ export async function POST(request: NextRequest) {
       external_id?: string | string[]
       client_ip_address?: string
       client_user_agent?: string
+      fbp?: string
+      fbc?: string
     }
   }
   try {
@@ -219,11 +221,14 @@ export async function POST(request: NextRequest) {
     event_source_url: event_source_url ?? null,
   }
 
+  // Read fbp/fbc from top-level body or from user_data (e.g. when client sends CAPI-style payload)
+  const fbpForDq = body.fbp ?? (typeof body.user_data?.fbp === 'string' ? body.user_data.fbp : undefined)
+  const fbcForDq = body.fbc ?? (typeof body.user_data?.fbc === 'string' ? body.user_data.fbc : undefined)
   const dataQuality = calculateDataQuality({
     email,
     phone,
-    fbp: body.fbp,
-    fbc: body.fbc,
+    fbp: fbpForDq,
+    fbc: fbcForDq,
     first_name: body.first_name,
     last_name: body.last_name,
     city: body.city,
@@ -280,42 +285,29 @@ export async function POST(request: NextRequest) {
 
     if (integration.platform === 'meta') {
       const pixelId = integration.pixel_id
-      const accessToken = integration.access_token
-      const testEventCode = headerSettings?.meta_test_event_code?.trim() ||
-        (process.env.META_TEST_EVENT_CODE ?? '')
-      console.log('[Meta] Attempting to send event:', body.event_name)
+      console.log('[Meta] Attempting to send event via /api/track/meta:', body.event_name)
       console.log('[Meta] Pixel ID:', pixelId ? 'found' : 'missing')
-      console.log('[Meta] Access Token:', accessToken ? 'found' : 'missing')
-      console.log('[Meta] Test event code:', testEventCode || 'none')
-      if (pixelId && accessToken) {
+      if (pixelId) {
+        const origin = request.nextUrl.origin
 
-        const userData: Record<string, string | string[]> = {}
-        userData.client_ip_address = clientIp
-        userData.client_user_agent = clientUserAgent
-        if (body.fbp) userData.fbp = body.fbp
-        if (body.fbc) userData.fbc = body.fbc
-        if (email) userData.em = [sha256(email)]
-        if (phone) userData.ph = [sha256(phone.replace(/\D/g, ''))]
-        if (body.first_name) userData.fn = [hashValue(body.first_name.toLowerCase().trim())]
-        if (body.last_name) userData.ln = [hashValue(body.last_name.toLowerCase().trim())]
-        if (body.city) userData.ct = [hashValue(body.city.toLowerCase().trim().replace(/\s/g, ''))]
-        if (body.state) userData.st = [hashValue(body.state.toLowerCase().trim().replace(/\s/g, ''))]
-        if (body.zip) userData.zp = [hashValue(body.zip.replace(/\D/g, ''))]
-        if (body.country) userData.country = [hashValue(body.country.toLowerCase().trim())]
-        if (body.date_of_birth) userData.db = [hashValue(body.date_of_birth.replace(/-/g, ''))]
-        if (body.gender) userData.ge = [hashValue(body.gender.toLowerCase().trim())]
-        const extId = body.external_id ?? body.order_id
-        if (extId) userData.external_id = [hashValue(extId)]
-
-        const metaEventId = event_id ?? `th_${Date.now()}_${Math.random().toString(36).slice(2)}`
-        const metaEventName = getMetaEventName(event_name)
-        const metaEvent: Record<string, unknown> = {
-          event_name: metaEventName,
-          event_time: eventTime,
-          event_id: metaEventId,
-          event_source_url: event_source_url ?? '',
-          action_source: 'website',
-          user_data: userData,
+        const trackMetaBody = {
+          event_name: getMetaEventName(event_name),
+          event_source_url:
+            body.event_source_url ?? body.source_url ?? body.page_url ?? 'https://track.itshassanahmed.com',
+          event_id: event_id ?? `th_${Date.now()}_${Math.random().toString(36).slice(2)}`,
+          pixel_id: pixelId,
+          user_data: {
+            fbp: body.fbp,
+            fbc: body.fbc,
+            email,
+            phone,
+            first_name: body.first_name,
+            last_name: body.last_name,
+            city: body.city,
+            state: body.state,
+            zip: body.zip,
+            country: body.country,
+          },
           custom_data: {
             value,
             currency,
@@ -327,21 +319,13 @@ export async function POST(request: NextRequest) {
           },
         }
 
-        const metaPayload: Record<string, unknown> = { data: [metaEvent] }
-        if (testEventCode) {
-          metaPayload.test_event_code = testEventCode
-          console.log('[Meta] Using test event code:', testEventCode)
-        }
-        originalPayload = metaPayload
+        originalPayload = trackMetaBody as Record<string, unknown>
 
-        const res = await fetch(
-          `https://graph.facebook.com/v19.0/${pixelId}/events?access_token=${encodeURIComponent(accessToken)}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(metaPayload),
-          }
-        )
+        const res = await fetch(`${origin}/api/track/meta`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(trackMetaBody),
+        })
         const metaJson = await res.json().catch(() => ({}))
         metaResponse = { status: res.status, body: metaJson }
         if (res.ok) {

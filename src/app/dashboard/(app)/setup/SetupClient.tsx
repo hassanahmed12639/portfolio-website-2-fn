@@ -284,7 +284,7 @@ export default function SetupClient({ apiKey }: SetupClientProps) {
           <div className="p-4 text-sm space-y-3">
             <p className="text-[var(--dash-text)]">
               <span className="font-medium">1.</span> Download the{' '}
-              <a href="/template" className="text-[var(--dash-text)] underline hover:opacity-80">
+              <a href="/dashboard/templates" className="text-[var(--dash-text)] underline hover:opacity-80">
                 TrackHive GTM template
               </a>
               .

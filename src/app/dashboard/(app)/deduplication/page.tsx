@@ -1,19 +1,12 @@
 'use client'
 
-export const dynamic = 'force-dynamic'
-
+import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react'
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip as RechartsTooltip,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  CartesianGrid,
-} from 'recharts'
+
+const DeduplicationCharts = dynamic(
+  () => import('./DeduplicationCharts').then((mod) => mod.DeduplicationCharts),
+  { ssr: false }
+)
 
 type DeduplicationResponse = {
   total_events: number
@@ -84,18 +77,7 @@ export default function DeduplicationPage() {
         <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">Duplicates by Event Name</h2>
         <div className="h-64">
           {barData.length > 0 ? (
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={barData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis dataKey="name" tick={{ fill: '#94a3b8', fontSize: 11 }} />
-                <YAxis tick={{ fill: '#94a3b8', fontSize: 11 }} />
-                <RechartsTooltip
-                  contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 8 }}
-                  labelStyle={{ color: '#0f172a' }}
-                />
-                <Bar dataKey="count" fill="#2563eb" radius={[4, 4, 0, 0]} name="Duplicates" />
-              </BarChart>
-            </ResponsiveContainer>
+            <DeduplicationCharts barData={barData} dailyTrend={data?.daily_trend ?? []} mode="bar" />
           ) : (
             <p className="text-[var(--dash-muted)] text-sm flex items-center h-full">No duplicate events by type yet.</p>
           )}
@@ -106,30 +88,7 @@ export default function DeduplicationPage() {
         <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">Daily Deduplication Trend (last 7 days)</h2>
         <div className="h-64">
           {(data?.daily_trend?.length ?? 0) > 0 ? (
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={data?.daily_trend ?? []} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis
-                  dataKey="date"
-                  tick={{ fill: '#94a3b8', fontSize: 11 }}
-                  tickFormatter={(v) => (v || '').slice(5)}
-                />
-                <YAxis tick={{ fill: '#94a3b8', fontSize: 11 }} />
-                <RechartsTooltip
-                  contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 8 }}
-                  labelStyle={{ color: '#0f172a' }}
-                  labelFormatter={(label) => label}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="duplicates"
-                  stroke="#2563eb"
-                  strokeWidth={2}
-                  dot={{ fill: '#2563eb' }}
-                  name="Duplicates"
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            <DeduplicationCharts barData={barData} dailyTrend={data?.daily_trend ?? []} mode="line" />
           ) : (
             <p className="text-[var(--dash-muted)] text-sm flex items-center h-full">No trend data yet.</p>
           )}

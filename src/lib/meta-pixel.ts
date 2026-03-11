@@ -24,6 +24,7 @@ export async function fireMetaEvent(
 ) {
   const { fbc, fbp } = getMetaCookies()
   const eventId = generateEventId(eventName)
+  const pixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID
 
   // Fire pixel with eventID for deduplication
   if (typeof window !== 'undefined' && (window as unknown as { fbq?: (a: string, b: string, c?: unknown, d?: { eventID?: string }) => void }).fbq) {
@@ -39,6 +40,7 @@ export async function fireMetaEvent(
         event_name: eventName,
         event_source_url: window.location.href,
         event_id: eventId,
+        pixel_id: pixelId,
         user_data: {
           fbc: fbc || undefined,
           fbp: fbp || undefined,

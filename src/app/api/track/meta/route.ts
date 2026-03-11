@@ -1,5 +1,32 @@
 import { NextResponse } from 'next/server'
 import crypto from 'crypto'
+import { createClient } from '@supabase/supabase-js'
+import { decrypt } from '@/lib/encrypt'
+
+type MetaUserData = {
+  fbc?: string
+  fbp?: string
+  email?: string
+  phone?: string
+  first_name?: string
+  last_name?: string
+  city?: string
+  state?: string
+  zip?: string | number
+  country?: string
+  external_id?: string | number
+  fb_login_id?: string
+}
+
+type MetaTrackBody = {
+  event_name: string
+  event_source_url?: string
+  event_id?: string
+  user_data?: MetaUserData
+  custom_data?: Record<string, unknown>
+  pixel_id?: string
+  project_id?: string
+}
 
 function hash(value: string): string {
   return crypto.createHash('sha256').update(value.trim().toLowerCase()).digest('hex')
@@ -11,7 +38,15 @@ export async function POST(request: Request) {
     console.log('META_ACCESS_TOKEN:', process.env.META_ACCESS_TOKEN ? 'SET' : 'MISSING')
 
     const body = await request.json()
-    const { event_name, event_source_url, event_id, user_data = {}, custom_data = {} } = body
+    const {
+      event_name,
+      event_source_url,
+      event_id,
+      user_data = {},
+      custom_data = {},
+      pixel_id: bodyPixelId,
+      project_id,
+    } = body as MetaTrackBody
 
     // Get real client IP
     const forwarded = request.headers.get('x-forwarded-for')
@@ -52,13 +87,14 @@ export async function POST(request: Request) {
     // Facebook Login ID — not hashed
     if (user_data.fb_login_id) ud.fb_login_id = user_data.fb_login_id
 
+    const effectiveEventId = event_id || `${event_name}_${Date.now()}`
     const payload = {
       data: [
         {
           event_name,
           event_time: Math.floor(Date.now() / 1000),
           event_source_url: event_source_url || '',
-          event_id: event_id || `${event_name}_${Date.now()}`,
+          event_id: effectiveEventId,
           action_source: 'website',
           user_data: ud,
           custom_data,
@@ -69,11 +105,83 @@ export async function POST(request: Request) {
       }),
     }
 
-    const pixelId = process.env.META_PIXEL_ID
-    const accessToken = process.env.META_ACCESS_TOKEN
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+    const supabaseAdmin =
+      supabaseUrl && serviceRoleKey
+        ? createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } })
+        : null
+
+    let pixelId: string | undefined = process.env.META_PIXEL_ID
+    let accessToken: string | undefined = process.env.META_ACCESS_TOKEN
+    let userId: string | null = null
+
+    // Prefer per-user pixel credentials when pixel_id (or project_id alias) is provided
+    const pixelIdentifier = (bodyPixelId || project_id)?.toString().trim()
+    if (supabaseAdmin && pixelIdentifier) {
+      try {
+        // First, try pixels table (multi-pixel manager)
+        const { data: pixelRow } = await supabaseAdmin
+          .from('pixels')
+          .select('pixel_id, access_token, user_id')
+          .eq('pixel_id', pixelIdentifier)
+          .eq('platform', 'meta')
+          .eq('is_active', true)
+          .maybeSingle()
+
+        if (pixelRow?.pixel_id && pixelRow.access_token) {
+          pixelId = pixelRow.pixel_id
+          accessToken = pixelRow.access_token
+          userId = (pixelRow as { user_id?: string }).user_id ?? null
+        } else {
+          // Fallback: look up Meta integration row by pixel_id (encrypted access_token)
+          const { data: integration } = await supabaseAdmin
+            .from('integrations')
+            .select('pixel_id, access_token, user_id')
+            .eq('pixel_id', pixelIdentifier)
+            .eq('platform', 'meta')
+            .eq('is_active', true)
+            .maybeSingle()
+
+          if (integration?.pixel_id && integration.access_token) {
+            pixelId = integration.pixel_id
+            accessToken = await decrypt(integration.access_token)
+            userId = (integration as { user_id?: string }).user_id ?? null
+          }
+        }
+      } catch (lookupError) {
+        console.error('Meta CAPI pixel lookup error:', lookupError)
+      }
+    }
 
     if (!pixelId || !accessToken) {
       return NextResponse.json({ error: 'Meta CAPI not configured' }, { status: 500 })
+    }
+
+    // Deduplication: check deduplication_log before sending to Meta
+    let isDuplicate = false
+    if (supabaseAdmin) {
+      const { data: existing } = await supabaseAdmin
+        .from('deduplication_log')
+        .select('id')
+        .eq('event_id', effectiveEventId)
+        .eq('pixel_id', pixelId)
+        .maybeSingle()
+
+      isDuplicate = !!existing
+      console.log('Dedup check:', effectiveEventId, 'duplicate:', isDuplicate)
+
+      if (existing) {
+        console.log(`Meta CAPI: duplicate skipped | event_id: ${effectiveEventId}`)
+        return NextResponse.json({ success: true, duplicate: true })
+      }
+
+      await supabaseAdmin.from('deduplication_log').insert({
+        event_id: effectiveEventId,
+        event_name,
+        pixel_id: pixelId,
+        user_id: userId ?? null,
+      })
     }
 
     const res = await fetch(
@@ -91,7 +199,18 @@ export async function POST(request: Request) {
 
     if (data.error) throw new Error(data.error.message)
 
-    console.log(`Meta CAPI: ${event_name} sent | fbc: ${!!ud.fbc} | fbp: ${!!ud.fbp} | em: ${!!ud.em} | eventId: ${event_id}`)
+    console.log(
+      `Meta CAPI: ${event_name} | pixel: ${pixelId} | fbc: ${!!ud.fbc} | fbp: ${!!ud.fbp}`
+    )
+
+    // Clean up old deduplication logs occasionally (1 in 100 requests)
+    if (supabaseAdmin && Math.random() < 0.01) {
+      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+      await supabaseAdmin
+        .from('deduplication_log')
+        .delete()
+        .lt('created_at', sevenDaysAgo)
+    }
 
     return NextResponse.json({ success: true, events_received: data.events_received })
   } catch (err: unknown) {

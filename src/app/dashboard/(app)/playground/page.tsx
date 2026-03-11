@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
 import { validatePayload, type ValidationResult } from '@/lib/payload-validator'
 import { useDashboardType } from '@/contexts/DashboardContext'
+import { getMetaCookies } from '@/lib/meta-pixel'
 
 const ALL_EVENT_TYPES = [
   { id: 'Purchase', label: 'Purchase', mode: 'ecommerce' as const },
@@ -115,6 +116,7 @@ export default function PlaygroundPage() {
   const buildPayload = useCallback(() => {
     const email = includeTestEmail ? 'test@test.com' : params.email
     const numValue = params.value === '' ? undefined : Number(params.value)
+    const { fbp: cookieFbp, fbc: cookieFbc } = typeof document !== 'undefined' ? getMetaCookies() : { fbp: null, fbc: null }
     const payload: Record<string, unknown> = {
       event_name: displayEventName,
       event_id: autoGenerateEventId ? params.event_id : (params.event_id || generateEventId()),
@@ -128,6 +130,8 @@ export default function PlaygroundPage() {
       value: numValue,
       currency: params.currency || undefined,
       target: sendTarget,
+      ...(cookieFbp && { fbp: cookieFbp }),
+      ...(cookieFbc && { fbc: cookieFbc }),
     }
     if (params.order_id) payload.order_id = params.order_id
     if (params.form_name) payload.form_name = params.form_name

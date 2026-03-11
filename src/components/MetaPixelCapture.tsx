@@ -46,6 +46,7 @@ function PixelCaptureInner() {
           event_name: 'PageView',
           event_source_url: window.location.href,
           event_id: eventId,
+          pixel_id: process.env.NEXT_PUBLIC_META_PIXEL_ID,
           user_data: {
             fbc: fbc || undefined,
             fbp: fbp || undefined,

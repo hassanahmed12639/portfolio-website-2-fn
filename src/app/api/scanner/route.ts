@@ -118,6 +118,40 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: msg }, { status: 422 })
     }
 
+    // Optional AI classification for accurate ecommerce vs leadgen (when Groq is available)
+    let aiSiteType: 'ecommerce' | 'leadgen' | null = null
+    const groqKey = process.env.GROQ_API_KEY
+    if (groqKey) {
+      try {
+        const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)
+        const metaMatch = html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i) || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']description["']/i)
+        const title = (titleMatch?.[1] ?? '').replace(/<[^>]+>/g, '').trim().slice(0, 200)
+        const metaDesc = (metaMatch?.[1] ?? '').trim().slice(0, 300)
+        const bodyStrip = html.replace(/<script[\s\S]*?<\/script>/gi, ' ').replace(/<style[\s\S]*?<\/style>/gi, ' ').replace(/<[^>]+>/g, ' ')
+        const snippet = bodyStrip.replace(/\s+/g, ' ').trim().slice(0, 600)
+        const prompt = `Page title: ${title}\nMeta description: ${metaDesc}\nPage content snippet: ${snippet}\n\nIs this website primarily e-commerce (selling products online, shopping cart, checkout) or lead generation (contact forms, get a quote, signups, consulting)? Reply with exactly one word: ecommerce or leadgen`
+        const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${groqKey}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'llama-3.1-8b-instant',
+            messages: [{ role: 'user', content: prompt }],
+            temperature: 0.1,
+            max_tokens: 20,
+          }),
+          signal: AbortSignal.timeout(8000),
+        })
+        const data = await groqRes.json()
+        const content = (data?.choices?.[0]?.message?.content ?? '').toLowerCase().trim().replace(/[^a-z]/g, '')
+        if (content === 'ecommerce' || content === 'leadgen') {
+          aiSiteType = content === 'ecommerce' ? 'ecommerce' : 'leadgen'
+          console.log('[Scanner] AI classification:', aiSiteType)
+        }
+      } catch (aiErr) {
+        console.warn('[Scanner] AI classification failed', aiErr)
+      }
+    }
+
     const lower = html.toLowerCase()
     const htmlLower = html.toLowerCase()
 
@@ -218,6 +252,13 @@ export async function POST(request: NextRequest) {
 
     console.log('[Scanner] Results for:', url, finalResults)
 
+    const hasForm = /<form\b/i.test(fullContent)
+    const hasCart =
+      /\b(cart|add-to-cart|addtocart|shopping-cart)\b/i.test(fullContent) ||
+      lower.includes('add to cart')
+    const hasCheckout = /\b(checkout|check-out)\b/i.test(fullContent)
+    const hasPrice = /\b(price|\.00|currency|usd|eur)\b/i.test(fullContent) || /\$\d+|\d+\.\d{2}/.test(fullContent)
+
     const scriptTagRegex = /<script\b[^>]*>/gi
     const scriptTags = html.match(scriptTagRegex) ?? []
     const totalScripts = scriptTags.length
@@ -237,39 +278,108 @@ export async function POST(request: NextRequest) {
     if (googleAds) score += 10
     score = Math.max(0, Math.min(100, score - deductBlocking))
 
-    const ecommerceSignals = [
-      'add to cart', 'addtocart', 'buy now', 'shop now',
-      'checkout', 'price', '$', '€', '£',
-      'product', 'shopify', 'woocommerce', 'cart',
-      'order now', 'purchase', 'sale', 'discount',
-      'shipping', 'delivery', 'in stock', 'out of stock',
-      'quantity', 'size', 'color', 'sku',
-    ]
-
-    const leadGenSignals = [
-      'contact us', 'contact form', 'get a quote',
-      'free consultation', 'book a call', 'schedule',
-      'get started', 'sign up', 'register',
-      'download', 'free trial', 'demo',
-      'submit', 'enquire', 'inquiry',
-      'lead', 'callback', 'appointment',
-      'insurance', 'mortgage', 'loan', 'legal',
-      'agency', 'service', 'consultant',
-    ]
-
     const contentLower = fullContent.toLowerCase()
-    const ecomScore = ecommerceSignals.filter((s) => contentLower.includes(s)).length
-    const leadGenScore = leadGenSignals.filter((s) => contentLower.includes(s)).length
-    const siteType = ecomScore > leadGenScore ? 'ecommerce' : 'leadgen'
+    const urlLower = url.toLowerCase()
 
-    console.log('[Scanner] Site type:', siteType, 'ecom score:', ecomScore, 'leadgen score:', leadGenScore)
+    // Word-boundary helper: avoid "product" matching "projects", "order" matching "coordinator", etc.
+    const hasWord = (text: string, word: string) => {
+      const i = text.indexOf(word)
+      if (i === -1) return false
+      const before = i === 0 ? ' ' : text[i - 1]
+      const after = text[i + word.length]
+      const wordBoundary = (c: string) => !/[\w-]/.test(c)
+      return wordBoundary(before) && wordBoundary(after ?? ' ')
+    }
 
-    const hasForm = /<form\b/i.test(fullContent)
-    const hasCart =
-      /\b(cart|add-to-cart|addtocart|shopping-cart)\b/i.test(fullContent) ||
-      lower.includes('add to cart')
-    const hasCheckout = /\b(checkout|check-out)\b/i.test(fullContent)
-    const hasPrice = /\b(price|\.00|currency|usd|eur)\b/i.test(fullContent) || /\$\d+|\d+\.\d{2}/.test(fullContent)
+    // E-commerce: strong = cart/checkout/platform only (no generic words)
+    const ecommerceStrong = [
+      'add to cart', 'addtocart', 'add-to-cart', 'shopping-cart',
+      'place order', 'order confirmation', 'thank you for your order',
+      'shopify', 'woocommerce', 'magento', 'bigcommerce', 'shopify.com',
+      'buy now', 'shop now', 'add to bag',
+    ]
+    const ecommerceMedium = [
+      'in stock', 'out of stock', 'quantity', ' sku ', 'variant',
+      'shipping', 'delivery', 'free shipping', 'shipping address',
+      'sale', 'discount', 'promo', 'coupon', ' size ', ' color ',
+    ]
+    const ecommerceWeak: { term: string; wordBoundary: boolean }[] = [
+      { term: 'cart', wordBoundary: true },
+      { term: 'checkout', wordBoundary: true },
+      { term: 'shop', wordBoundary: true },
+      { term: 'purchase', wordBoundary: true },
+      { term: '$', wordBoundary: false },
+      { term: '.00', wordBoundary: false },
+    ]
+    // "product" / "products" only with word boundary so "projects" doesn't count
+    const ecomProductMatch = /\bproducts?\b/i.test(contentLower)
+    const ecomPriceMatch = /\b(price|currency|usd|eur)\b/i.test(contentLower) || /\$\d+|\d+\.\d{2}/.test(fullContent)
+    const ecomOrderMatch = /\border\b/i.test(contentLower) && !/\border form\b/i.test(contentLower) && !/in order to\b/i.test(contentLower)
+
+    const leadGenStrong = [
+      'get a quote', 'request a quote', 'free consultation', 'book a call',
+      'schedule a call', 'request demo', 'book an appointment',
+      'insurance quote', 'mortgage', 'loan application', 'legal consultation',
+      'agency', 'consultant', 'b2b', 'enterprise',
+      'consulting firm', 'our services', 'engineering firm', 'request information',
+    ]
+    const leadGenMedium = [
+      'contact us', 'contact form', 'enquire', 'inquiry', 'callback',
+      'download', 'free trial', 'demo', 'whitepaper', 'ebook',
+      'newsletter signup', 'subscribe to our',
+      'get in touch', 'contact ', 'consulting', 'engineering services',
+    ]
+    const leadGenWeak = ['sign up', 'register', 'submit', 'get started', 'lead']
+
+    const ecomStrongCount = ecommerceStrong.filter((s) => contentLower.includes(s) || urlLower.includes(s)).length
+    const ecomMediumCount =
+      ecommerceMedium.filter((s) => contentLower.includes(s)).length +
+      (ecomProductMatch ? 1 : 0) +
+      (ecomPriceMatch ? 1 : 0)
+    const ecomWeakCount =
+      ecommerceWeak.filter(({ term, wordBoundary }) =>
+        wordBoundary ? hasWord(contentLower, term) : contentLower.includes(term)
+      ).length + (ecomOrderMatch ? 1 : 0)
+    const ecomScore = ecomStrongCount * 3 + ecomMediumCount * 2 + ecomWeakCount * 1
+
+    const leadStrongCount = leadGenStrong.filter((s) => contentLower.includes(s)).length
+    const leadMediumCount = leadGenMedium.filter((s) => contentLower.includes(s)).length
+    const leadWeakCount = leadGenWeak.filter((s) => contentLower.includes(s)).length
+    const leadGenScore = leadStrongCount * 3 + leadMediumCount * 2 + leadWeakCount * 1
+
+    // Definitive e-commerce signals (platform, store URL, or full shopping flow on page)
+    const hasEcomPlatform =
+      /\b(shopify|woocommerce|magento|bigcommerce)\b/i.test(fullContent) ||
+      /shopify\.com|woocommerce|magento/i.test(contentLower)
+    const hasEcomUrlPath = /(\/cart|\/checkout|\/product|\/products|\/shop|\/collections)(\/|$|\?)/i.test(url)
+    const hasBothCartAndCheckout = hasCart && hasCheckout
+    const definitiveEcom = hasEcomPlatform || hasEcomUrlPath || hasBothCartAndCheckout
+
+    // Definitive lead gen: professional-services language (consulting, engineering, surveying) + form, and no store
+    const hasProServicesLanguage =
+      /\b(consulting firm|engineering firm|land surveying|professional services)\b/i.test(contentLower) &&
+      hasForm &&
+      !hasEcomPlatform &&
+      !hasEcomUrlPath
+    const definitiveLeadGen =
+      hasProServicesLanguage ||
+      (leadStrongCount >= 2 && hasForm && !definitiveEcom)
+
+    let siteType: 'ecommerce' | 'leadgen'
+
+    if (aiSiteType) {
+      siteType = aiSiteType
+    } else if (definitiveEcom) {
+      siteType = 'ecommerce'
+    } else if (definitiveLeadGen) {
+      siteType = 'leadgen'
+    } else {
+      // No definitive signal: use score comparison (higher score wins)
+      siteType = ecomScore > leadGenScore ? 'ecommerce' : 'leadgen'
+    }
+
+    console.log('[Scanner] Site type:', siteType, 'source:', aiSiteType ? 'ai' : 'heuristic', 'ecom:', ecomScore, 'leadgen:', leadGenScore)
+
     const ecommerceSignalsFound = hasCart || hasCheckout || hasPrice || siteType === 'ecommerce'
 
     const detectedActions: { event: string; reason: string; priority: string }[] = []
@@ -319,7 +429,6 @@ export async function POST(request: NextRequest) {
       script_code?: string
     }[] = []
 
-    const groqKey = process.env.GROQ_API_KEY
     if (groqKey) {
       try {
         const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -368,7 +477,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const recommendedEvents: { name: string; why: string; priority: 'Critical' | 'High' | 'Medium' | 'Low' }[] =
+    const templateEvents: { name: string; why: string; priority: 'Critical' | 'High' | 'Medium' | 'Low' }[] =
       siteType === 'ecommerce'
         ? [
             { name: 'PageView', priority: 'High', why: 'Essential for measuring traffic and engagement.' },
@@ -386,10 +495,31 @@ export async function POST(request: NextRequest) {
             { name: 'Subscribe', priority: 'Medium', why: 'Track newsletter and email sign ups.' },
           ]
 
+    const detectedByName = new Map(detectedActions.map((a) => [a.event, a]))
+    const priorityMap = { critical: 'Critical' as const, recommended: 'High' as const, optional: 'Medium' as const }
+
+    const recommendedEvents: { name: string; why: string; priority: 'Critical' | 'High' | 'Medium' | 'Low' }[] = []
+    const seen = new Set<string>()
+    for (const ev of templateEvents) {
+      const detected = detectedByName.get(ev.name)
+      recommendedEvents.push({
+        name: ev.name,
+        why: detected ? `${detected.reason} (detected on page)` : ev.why,
+        priority: detected && priorityMap[detected.priority as keyof typeof priorityMap] ? priorityMap[detected.priority as keyof typeof priorityMap] : ev.priority,
+      })
+      seen.add(ev.name)
+    }
+    for (const a of detectedActions) {
+      if (seen.has(a.event)) continue
+      const priority = priorityMap[a.priority as keyof typeof priorityMap] ?? 'Medium'
+      recommendedEvents.push({ name: a.event, why: a.reason, priority })
+      seen.add(a.event)
+    }
+
     const siteTypeSmartEvents = recommendedEvents.map((ev) => ({
       event: ev.name,
       reason: ev.why,
-      priority: ev.priority.toLowerCase(),
+      priority: (ev.priority === 'Critical' ? 'critical' : ev.priority === 'High' ? 'high' : ev.priority === 'Medium' ? 'medium' : 'low') as string,
       platforms: ['meta', 'google'] as string[],
     }))
 

@@ -152,5 +152,71 @@
     "threshold": 70,
     "emailSentTo": "hassanonclouds@gmail.com",
     "status": "sent"
+  },
+  {
+    "id": "4b0fcc7d-4385-4cfa-ad50-3ae4ce4a2c24",
+    "ruleId": "27e71f00-a23a-459f-82fa-0a08f7411d56",
+    "ruleName": "low scroe alert",
+    "triggeredAt": "2026-03-11T14:42:54.131Z",
+    "condition": "score_below",
+    "value": 46,
+    "threshold": 70,
+    "emailSentTo": "hassanonclouds@gmail.com",
+    "status": "sent"
+  },
+  {
+    "id": "307c271b-1522-4897-8e56-814636535b6d",
+    "ruleId": "27e71f00-a23a-459f-82fa-0a08f7411d56",
+    "ruleName": "low scroe alert",
+    "triggeredAt": "2026-03-11T14:42:54.145Z",
+    "condition": "score_below",
+    "value": 46,
+    "threshold": 70,
+    "emailSentTo": "hassanonclouds@gmail.com",
+    "status": "sent"
+  },
+  {
+    "id": "677d0927-509d-4523-ba41-2c5d415a3b54",
+    "ruleId": "27e71f00-a23a-459f-82fa-0a08f7411d56",
+    "ruleName": "low scroe alert",
+    "triggeredAt": "2026-03-11T14:42:55.081Z",
+    "condition": "score_below",
+    "value": 46,
+    "threshold": 70,
+    "emailSentTo": "hassanonclouds@gmail.com",
+    "status": "failed"
+  },
+  {
+    "id": "f84049ee-a300-4755-a1e2-daff6a4c6294",
+    "ruleId": "188e6a5d-c6a8-4f36-8de1-a558cc5fba1d",
+    "ruleName": "da",
+    "triggeredAt": "2026-03-11T14:42:56.061Z",
+    "condition": "data_quality_below",
+    "value": 55,
+    "threshold": 70,
+    "emailSentTo": "hassanonclouds@gmail.com",
+    "status": "sent"
+  },
+  {
+    "id": "efa8c2af-6191-4a5b-b2ad-e1866c5f92cf",
+    "ruleId": "188e6a5d-c6a8-4f36-8de1-a558cc5fba1d",
+    "ruleName": "da",
+    "triggeredAt": "2026-03-11T14:42:56.407Z",
+    "condition": "data_quality_below",
+    "value": 55,
+    "threshold": 70,
+    "emailSentTo": "hassanonclouds@gmail.com",
+    "status": "sent"
+  },
+  {
+    "id": "5d2f8d62-0b33-433a-9fb1-ce131ede07ab",
+    "ruleId": "188e6a5d-c6a8-4f36-8de1-a558cc5fba1d",
+    "ruleName": "da",
+    "triggeredAt": "2026-03-11T14:42:56.730Z",
+    "condition": "data_quality_below",
+    "value": 55,
+    "threshold": 70,
+    "emailSentTo": "hassanonclouds@gmail.com",
+    "status": "failed"
   }
 ]

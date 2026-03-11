@@ -75,26 +75,6 @@ type Report = {
   recommendations: { text: string; priority: string }[]
 }
 
-const EVENT_ICONS: Record<string, string> = {
-  AddToCart: '🛒',
-  InitiateCheckout: '💳',
-  Purchase: '💰',
-  Lead: '👤',
-  Contact: '📞',
-  ViewContent: '👀',
-  Search: '🔍',
-  Schedule: '📅',
-  Subscribe: '📧',
-  'WhatsApp Click': '📱',
-  'Phone Click': '📞',
-  'Email Click': '📧',
-  'Video Watch': '🎥',
-  PageView: '📄',
-  'Scroll Depth': '📜',
-  'Button Click': '🖱️',
-  CompleteRegistration: '📝',
-}
-
 const PIXEL_LABELS: { key: keyof Report['pixels']; label: string }[] = [
   { key: 'metaPixel', label: 'Meta Pixel' },
   { key: 'gtm', label: 'Google Tag Manager' },
@@ -346,7 +326,7 @@ export default function ScannerPage() {
                   : 'bg-orange-100 text-orange-700'
               }`}
             >
-              {report.siteType === 'ecommerce' ? '🛒 E-Commerce' : '📋 Lead Generation'}
+              {report.siteType === 'ecommerce' ? 'E-Commerce' : 'Lead Generation'}
             </span>
             <span className="text-xs text-slate-400">
               (confidence: ecom {report.ecomScore ?? 0} vs leadgen {report.leadGenScore ?? 0})
@@ -518,7 +498,6 @@ export default function ScannerPage() {
             <div className="p-4">
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {smartEvents.map((ev) => {
-                  const icon = EVENT_ICONS[ev.event] ?? '📌'
                   const enabled = enabledSet.has(ev.event)
                   const priorityClass =
                     ev.priority === 'critical'
@@ -532,7 +511,6 @@ export default function ScannerPage() {
                       className="rounded-lg border border-[var(--dash-border)] bg-[var(--dash-surface-hover)]/50 p-4 flex flex-col gap-3"
                     >
                       <div className="flex items-start justify-between gap-2">
-                        <span className="text-2xl" aria-hidden>{icon}</span>
                         <span
                           className={`text-xs px-2 py-0.5 rounded capitalize ${priorityClass}`}
                         >

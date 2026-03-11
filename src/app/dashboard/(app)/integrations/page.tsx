@@ -29,7 +29,6 @@ export default async function IntegrationsPage() {
     .eq('user_id', user.id)
     .eq('platform', 'meta')
     .eq('is_active', true)
-  const activePixelsCount = activePixels?.length ?? 0
 
   const { count: metaFbclidCount } = await supabase
     .from('events')
@@ -39,6 +38,9 @@ export default async function IntegrationsPage() {
     .gte('created_at', startOfMonth.toISOString())
 
   const meta = integrations?.find((i) => i.platform === 'meta') ?? null
+  // Count: Multi-Pixel table + 1 if main Meta integration (form) has a pixel connected
+  const activePixelsCount =
+    (activePixels?.length ?? 0) + (meta?.pixel_id?.trim() ? 1 : 0)
   const google = integrations?.find((i) => i.platform === 'google') ?? null
   const tiktok = integrations?.find((i) => i.platform === 'tiktok') ?? null
   const ga4 = integrations?.find((i) => i.platform === 'ga4') ?? null
