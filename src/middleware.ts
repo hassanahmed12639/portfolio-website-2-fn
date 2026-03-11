@@ -21,6 +21,11 @@ export async function middleware(req: NextRequest) {
   const isTrackDomain = hostname.includes('track.itshassanahmed.com')
   const isPortfolioDomain = hostname === 'itshassanahmed.com' || hostname === 'www.itshassanahmed.com'
 
+  // Portfolio domain /admin → portfolio admin (do not redirect to TrackHive)
+  if (isPortfolioDomain && pathname.startsWith('/admin')) {
+    return res
+  }
+
   // Redirect portfolio domain to track subdomain for app routes
   const trackHiveRoutes = ['/trackhive', '/dashboard', '/onboarding', '/admin', '/pricing', '/features', '/integrations', '/docs']
   const isTrackHiveRoute = trackHiveRoutes.some((r) => pathname.startsWith(r))
@@ -54,6 +59,11 @@ export async function middleware(req: NextRequest) {
   const isPublicRoute = publicRoutes.some((r) => pathname.startsWith(r))
   const isDashboardRoute = pathname.startsWith('/dashboard') || pathname.includes('/dashboard')
   const isAdminRoute = (pathname.startsWith('/admin') || pathname.includes('/admin')) && !pathname.includes('/admin/login')
+
+  // Portfolio domain /admin: skip Supabase auth (portfolio uses cookie auth)
+  if (isPortfolioDomain && pathname.startsWith('/admin')) {
+    return res
+  }
 
   // Not a protected route — skip auth
   if (isPublicRoute || (!isDashboardRoute && !isAdminRoute)) {
