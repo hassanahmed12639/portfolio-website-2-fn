@@ -234,12 +234,12 @@ export default function CustomDashboardsPage() {
 
   if (!isPro) {
     return (
-      <div className="p-6 max-w-4xl mx-auto">
+      <div className="font-sans p-6 max-w-4xl mx-auto">
         <div className="text-center py-20">
           <p className="text-5xl mb-4">📊</p>
-          <h1 className="text-2xl font-black text-slate-900 mb-3">Custom Dashboards</h1>
+          <h1 className="text-2xl font-medium text-slate-900 mb-3">Custom Dashboards</h1>
           <p className="text-slate-500 mb-8 max-w-md mx-auto">Connect your ad platforms and build custom reporting dashboards with templates for agencies, ecommerce and lead gen.</p>
-          <button onClick={() => setShowUpgrade(true)} className="bg-blue-600 text-white font-black px-8 py-3 rounded-xl hover:bg-blue-700 transition-colors">
+          <button onClick={() => setShowUpgrade(true)} className="bg-blue-600 text-white font-medium px-8 py-3 rounded-xl hover:bg-blue-700 transition-colors">
             Upgrade to Pro to Unlock
           </button>
         </div>
@@ -256,17 +256,17 @@ export default function CustomDashboardsPage() {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="font-sans p-6 max-w-7xl mx-auto">
 
       {/* Header */}
       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 mb-1">Custom Dashboards</h1>
+          <h1 className="text-2xl font-medium text-slate-900 mb-1">Custom Dashboards</h1>
           <p className="text-slate-500 text-sm">Build and customise your ad performance dashboards.</p>
         </div>
         <button
           onClick={() => setShowCreate(true)}
-          className="bg-blue-600 text-white font-bold px-5 py-2.5 rounded-xl text-sm hover:bg-blue-700 transition-colors flex items-center gap-2"
+          className="bg-blue-600 text-white font-medium px-5 py-2.5 rounded-xl text-sm hover:bg-blue-700 transition-colors flex items-center gap-2"
         >
           + New Dashboard
         </button>
@@ -277,9 +277,9 @@ export default function CustomDashboardsPage() {
         <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 mb-6 flex items-center gap-4">
           <span className="text-2xl">⚠️</span>
           <div>
-            <p className="font-bold text-amber-800 text-sm">No ad data connected yet</p>
+            <p className="font-medium text-amber-800 text-sm">No ad data connected yet</p>
             <p className="text-amber-700 text-xs mt-0.5">
-              Go to <a href="/dashboard/connectors" className="underline font-bold">Connectors</a> to connect your Meta, Google or TikTok ad accounts first.
+              Go to <a href="/dashboard/connectors" className="underline font-medium">Connectors</a> to connect your Meta, Google or TikTok ad accounts first.
             </p>
           </div>
         </div>
@@ -289,7 +289,7 @@ export default function CustomDashboardsPage() {
 
         {/* Sidebar — dashboard list */}
         <div className="w-56 flex-shrink-0">
-          <p className="text-xs font-black text-slate-400 uppercase tracking-wide mb-3">Your Dashboards</p>
+          <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-3">Your Dashboards</p>
           <div className="space-y-1">
             {dashboards.map(dash => (
               <button
@@ -315,10 +315,10 @@ export default function CustomDashboardsPage() {
           {activeDashboard ? (
             <>
               <div className="flex items-center justify-between mb-5">
-                <h2 className="font-black text-slate-900 text-lg">{activeDashboard.name}</h2>
+                <h2 className="font-medium text-slate-900 text-lg">{activeDashboard.name}</h2>
                 <button
                   onClick={() => setShowWidgetPicker(true)}
-                  className="text-sm border border-slate-200 text-slate-600 font-bold px-4 py-2 rounded-xl hover:bg-slate-50 transition-colors"
+                  className="text-sm border border-slate-200 text-slate-600 font-medium px-4 py-2 rounded-xl hover:bg-slate-50 transition-colors"
                 >
                   + Add Widget
                 </button>
@@ -327,9 +327,9 @@ export default function CustomDashboardsPage() {
               {widgets.length === 0 ? (
                 <div className="border-2 border-dashed border-slate-200 rounded-2xl p-16 text-center">
                   <p className="text-3xl mb-3">📊</p>
-                  <p className="font-bold text-slate-600 mb-2">No widgets yet</p>
+                  <p className="font-medium text-slate-600 mb-2">No widgets yet</p>
                   <p className="text-slate-400 text-sm mb-4">Add widgets to start building your dashboard</p>
-                  <button onClick={() => setShowWidgetPicker(true)} className="bg-blue-600 text-white font-bold px-5 py-2.5 rounded-xl text-sm hover:bg-blue-700 transition-colors">
+                  <button onClick={() => setShowWidgetPicker(true)} className="bg-blue-600 text-white font-medium px-5 py-2.5 rounded-xl text-sm hover:bg-blue-700 transition-colors">
                     Add First Widget
                   </button>
                 </div>
@@ -341,9 +341,9 @@ export default function CustomDashboardsPage() {
                       const widgetDef = WIDGET_TYPES.find(w => w.id === widget.metric)
                       return (
                         <div key={widget.id} className={`bg-white border border-slate-200 rounded-2xl p-5 relative group ${widget.width === 'full' ? 'sm:col-span-2 xl:col-span-4' : widget.width === 'half' ? 'xl:col-span-2' : ''}`}>
-                          <button onClick={() => removeWidget(widget.id)} className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 w-6 h-6 bg-red-100 text-red-500 rounded-full text-xs font-bold transition-opacity hover:bg-red-200">✕</button>
-                          <p className="text-xs font-bold text-slate-400 uppercase tracking-wide mb-2">{widgetDef?.icon} {widget.title}</p>
-                          <p className="text-3xl font-black text-slate-900">{value}</p>
+                          <button onClick={() => removeWidget(widget.id)} className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 w-6 h-6 bg-red-100 text-red-500 rounded-full text-xs font-medium transition-opacity hover:bg-red-200">✕</button>
+                          <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-2">{widgetDef?.icon} {widget.title}</p>
+                          <p className="text-3xl font-medium text-slate-900">{value}</p>
                           <p className="text-xs text-slate-400 mt-1">Last 30 days</p>
                         </div>
                       )
@@ -353,8 +353,8 @@ export default function CustomDashboardsPage() {
                       const campaigns = getTopCampaigns()
                       return (
                         <div key={widget.id} className="bg-white border border-slate-200 rounded-2xl p-5 sm:col-span-2 xl:col-span-4 relative group">
-                          <button onClick={() => removeWidget(widget.id)} className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 w-6 h-6 bg-red-100 text-red-500 rounded-full text-xs font-bold transition-opacity hover:bg-red-200">✕</button>
-                          <p className="text-xs font-bold text-slate-400 uppercase tracking-wide mb-4">🏆 {widget.title}</p>
+                          <button onClick={() => removeWidget(widget.id)} className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 w-6 h-6 bg-red-100 text-red-500 rounded-full text-xs font-medium transition-opacity hover:bg-red-200">✕</button>
+                          <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-4">🏆 {widget.title}</p>
                           {campaigns.length === 0 ? (
                             <p className="text-slate-400 text-sm text-center py-8">No campaign data. Sync your ad accounts first.</p>
                           ) : (
@@ -362,12 +362,12 @@ export default function CustomDashboardsPage() {
                               <table className="w-full text-sm">
                                 <thead>
                                   <tr className="border-b border-slate-100">
-                                    <th className="text-left font-bold text-slate-500 pb-2 text-xs">Campaign</th>
-                                    <th className="text-left font-bold text-slate-500 pb-2 text-xs">Platform</th>
-                                    <th className="text-right font-bold text-slate-500 pb-2 text-xs">Spend</th>
-                                    <th className="text-right font-bold text-slate-500 pb-2 text-xs">Clicks</th>
-                                    <th className="text-right font-bold text-slate-500 pb-2 text-xs">CTR</th>
-                                    <th className="text-right font-bold text-slate-500 pb-2 text-xs">Conv.</th>
+                                    <th className="text-left font-medium text-slate-500 pb-2 text-xs">Campaign</th>
+                                    <th className="text-left font-medium text-slate-500 pb-2 text-xs">Platform</th>
+                                    <th className="text-right font-medium text-slate-500 pb-2 text-xs">Spend</th>
+                                    <th className="text-right font-medium text-slate-500 pb-2 text-xs">Clicks</th>
+                                    <th className="text-right font-medium text-slate-500 pb-2 text-xs">CTR</th>
+                                    <th className="text-right font-medium text-slate-500 pb-2 text-xs">Conv.</th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -375,11 +375,11 @@ export default function CustomDashboardsPage() {
                                     <tr key={i} className="border-b border-slate-50 hover:bg-slate-50">
                                       <td className="py-2.5 pr-4 font-medium text-slate-800 max-w-[200px] truncate">{c.campaign_name}</td>
                                       <td className="py-2.5 pr-4">
-                                        <span className={`text-xs font-bold text-white px-2 py-0.5 rounded-full ${platformColors[c.platform] || 'bg-slate-500'}`}>
+                                        <span className={`text-xs font-medium text-white px-2 py-0.5 rounded-full ${platformColors[c.platform] || 'bg-slate-500'}`}>
                                           {platformLabels[c.platform] || c.platform}
                                         </span>
                                       </td>
-                                      <td className="py-2.5 text-right font-bold text-slate-900">${(c.spend || 0).toFixed(2)}</td>
+                                      <td className="py-2.5 text-right font-medium text-slate-900">${(c.spend || 0).toFixed(2)}</td>
                                       <td className="py-2.5 text-right text-slate-600">{(c.clicks || 0).toLocaleString()}</td>
                                       <td className="py-2.5 text-right text-slate-600">{(c.ctr || 0).toFixed(2)}%</td>
                                       <td className="py-2.5 text-right text-slate-600">{(c.conversions || 0).toFixed(0)}</td>
@@ -398,8 +398,8 @@ export default function CustomDashboardsPage() {
                       const totalSpend = spendData.reduce((s, p) => s + p.spend, 0)
                       return (
                         <div key={widget.id} className="bg-white border border-slate-200 rounded-2xl p-5 sm:col-span-2 xl:col-span-2 relative group">
-                          <button onClick={() => removeWidget(widget.id)} className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 w-6 h-6 bg-red-100 text-red-500 rounded-full text-xs font-bold transition-opacity hover:bg-red-200">✕</button>
-                          <p className="text-xs font-bold text-slate-400 uppercase tracking-wide mb-4">🥧 {widget.title}</p>
+                          <button onClick={() => removeWidget(widget.id)} className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 w-6 h-6 bg-red-100 text-red-500 rounded-full text-xs font-medium transition-opacity hover:bg-red-200">✕</button>
+                          <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-4">🥧 {widget.title}</p>
                           {spendData.length === 0 ? (
                             <p className="text-slate-400 text-sm text-center py-8">No data yet</p>
                           ) : (
@@ -408,7 +408,7 @@ export default function CustomDashboardsPage() {
                                 <div key={p.platform}>
                                   <div className="flex justify-between text-xs text-slate-600 mb-1">
                                     <span className="font-medium">{platformLabels[p.platform]}</span>
-                                    <span className="font-bold">${p.spend.toFixed(2)} ({totalSpend > 0 ? ((p.spend / totalSpend) * 100).toFixed(0) : 0}%)</span>
+                                    <span className="font-medium">${p.spend.toFixed(2)} ({totalSpend > 0 ? ((p.spend / totalSpend) * 100).toFixed(0) : 0}%)</span>
                                   </div>
                                   <div className="w-full bg-slate-100 rounded-full h-2">
                                     <div
@@ -431,9 +431,8 @@ export default function CustomDashboardsPage() {
             </>
           ) : (
             <div className="border-2 border-dashed border-slate-200 rounded-2xl p-16 text-center">
-              <p className="text-3xl mb-3">📊</p>
-              <p className="font-bold text-slate-600 mb-4">Create your first dashboard</p>
-              <button onClick={() => setShowCreate(true)} className="bg-blue-600 text-white font-bold px-6 py-3 rounded-xl text-sm hover:bg-blue-700 transition-colors">
+              <p className="font-medium text-slate-600 mb-4">Create your first dashboard</p>
+              <button onClick={() => setShowCreate(true)} className="bg-blue-600 text-white font-medium px-6 py-3 rounded-xl text-sm hover:bg-blue-700 transition-colors">
                 Create Dashboard
               </button>
             </div>
@@ -446,12 +445,12 @@ export default function CustomDashboardsPage() {
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="sticky top-0 bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between rounded-t-2xl">
-              <h2 className="font-black text-slate-900">Create New Dashboard</h2>
-              <button onClick={() => setShowCreate(false)} className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 font-bold text-sm">✕</button>
+              <h2 className="font-medium text-slate-900">Create New Dashboard</h2>
+              <button onClick={() => setShowCreate(false)} className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 font-medium text-sm">✕</button>
             </div>
             <div className="p-6">
               <div className="mb-6">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wide block mb-2">Dashboard Name</label>
+                <label className="text-xs font-medium text-slate-700 uppercase tracking-wide block mb-2">Dashboard Name</label>
                 <input
                   type="text"
                   placeholder="e.g. Q1 Performance, Client ABC Report"
@@ -461,7 +460,7 @@ export default function CustomDashboardsPage() {
                 />
               </div>
               <div className="mb-6">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wide block mb-3">Choose Template</label>
+                <label className="text-xs font-medium text-slate-700 uppercase tracking-wide block mb-3">Choose Template</label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {TEMPLATES.map(template => (
                     <button
@@ -474,10 +473,10 @@ export default function CustomDashboardsPage() {
                       }`}
                     >
                       <span className="text-2xl block mb-2">{template.icon}</span>
-                      <p className="font-bold text-slate-900 text-sm">{template.name}</p>
+                      <p className="font-medium text-slate-900 text-sm">{template.name}</p>
                       <p className="text-xs text-slate-500 mt-1">{template.description}</p>
                       {template.widgets.length > 0 && (
-                        <p className="text-xs text-blue-600 font-bold mt-2">{template.widgets.length} widgets included</p>
+                        <p className="text-xs text-blue-600 font-medium mt-2">{template.widgets.length} widgets included</p>
                       )}
                     </button>
                   ))}
@@ -487,11 +486,11 @@ export default function CustomDashboardsPage() {
                 <button
                   onClick={createDashboard}
                   disabled={!newDashName.trim()}
-                  className="flex-1 bg-blue-600 text-white font-bold py-3 rounded-xl text-sm hover:bg-blue-700 transition-colors disabled:opacity-50"
+                  className="flex-1 bg-blue-600 text-white font-medium py-3 rounded-xl text-sm hover:bg-blue-700 transition-colors disabled:opacity-50"
                 >
                   Create Dashboard
                 </button>
-                <button onClick={() => setShowCreate(false)} className="border border-slate-200 text-slate-600 font-bold px-6 py-3 rounded-xl text-sm hover:bg-slate-50 transition-colors">
+                <button onClick={() => setShowCreate(false)} className="border border-slate-200 text-slate-600 font-medium px-6 py-3 rounded-xl text-sm hover:bg-slate-50 transition-colors">
                   Cancel
                 </button>
               </div>
@@ -505,8 +504,8 @@ export default function CustomDashboardsPage() {
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl">
             <div className="border-b border-slate-100 px-6 py-4 flex items-center justify-between">
-              <h2 className="font-black text-slate-900">Add Widget</h2>
-              <button onClick={() => setShowWidgetPicker(false)} className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 font-bold text-sm">✕</button>
+              <h2 className="font-medium text-slate-900">Add Widget</h2>
+              <button onClick={() => setShowWidgetPicker(false)} className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 font-medium text-sm">✕</button>
             </div>
             <div className="p-5 grid grid-cols-2 gap-2 max-h-96 overflow-y-auto">
               {WIDGET_TYPES.map(widget => (
@@ -516,7 +515,7 @@ export default function CustomDashboardsPage() {
                   className="text-left p-3 rounded-xl border border-slate-200 hover:border-blue-300 hover:bg-blue-50 transition-all group"
                 >
                   <span className="text-xl block mb-1">{widget.icon}</span>
-                  <p className="font-bold text-slate-800 text-xs group-hover:text-blue-700">{widget.name}</p>
+                  <p className="font-medium text-slate-800 text-xs group-hover:text-blue-700">{widget.name}</p>
                   <p className="text-xs text-slate-400 mt-0.5 capitalize">{widget.type}</p>
                 </button>
               ))}

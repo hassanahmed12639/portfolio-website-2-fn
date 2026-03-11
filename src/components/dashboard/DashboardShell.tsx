@@ -168,7 +168,7 @@ export default function DashboardShell({ user, trialExpired, profile, children }
         </button>
       )}
 
-      <main className="flex-1 overflow-auto flex flex-col bg-[var(--dash-bg)] min-w-0">
+      <main className="font-sans flex-1 overflow-auto flex flex-col bg-[var(--dash-bg)] min-w-0">
         {trialExpired && (
           <div className="shrink-0 rounded-none bg-[var(--dash-danger-soft)] border-b border-[var(--dash-danger-border)] px-4 py-3 flex flex-wrap items-center justify-between gap-3">
             <p className="font-medium text-[var(--dash-danger-strong)]">

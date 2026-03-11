@@ -163,19 +163,19 @@ export default function ConnectorsPage() {
   }
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
+    <div className="font-sans p-6 max-w-5xl mx-auto">
 
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-black text-slate-900 mb-1">Ad Connectors</h1>
+        <h1 className="text-2xl font-medium text-slate-900 mb-1">Ad Connectors</h1>
         <p className="text-slate-500 text-sm">Connect your ad platforms to pull campaign data into custom dashboards.</p>
         {!isPro && (
           <div className="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center justify-between gap-4">
             <div>
-              <p className="font-bold text-amber-800 text-sm">Pro feature</p>
+              <p className="font-medium text-amber-800 text-sm">Pro feature</p>
               <p className="text-amber-700 text-xs mt-0.5">Upgrade to Pro to connect ad platforms and build custom dashboards.</p>
             </div>
-            <button onClick={() => setShowUpgrade(true)} className="bg-amber-600 text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-amber-700 transition-colors flex-shrink-0">
+            <button onClick={() => setShowUpgrade(true)} className="bg-amber-600 text-white text-xs font-medium px-4 py-2 rounded-lg hover:bg-amber-700 transition-colors flex-shrink-0">
               Upgrade to Pro
             </button>
           </div>
@@ -193,16 +193,30 @@ export default function ConnectorsPage() {
       {/* Connected accounts */}
       {connections.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-sm font-black text-slate-500 uppercase tracking-wide mb-3">Connected Accounts</h2>
+          <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wide mb-3">Connected Accounts</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {connections.map(conn => {
               const platform = PLATFORMS.find(p => p.id === conn.platform)
               return (
                 <div key={conn.id} className="bg-white border border-slate-200 rounded-2xl p-4 flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl">{platform?.icon}</span>
+                    {conn.platform === 'meta' ? (
+                      <span className="w-10 h-10 rounded-lg flex items-center justify-center overflow-hidden bg-slate-50 border border-slate-100 shrink-0">
+                        <img src="/landing-meta.png" alt={platform?.name ?? 'Meta'} className="w-6 h-6 object-contain" />
+                      </span>
+                    ) : conn.platform === 'google' ? (
+                      <span className="w-10 h-10 rounded-lg flex items-center justify-center overflow-hidden bg-slate-50 border border-slate-100 shrink-0">
+                        <img src="/landing-google-ads.png" alt={platform?.name ?? 'Google Ads'} className="w-6 h-6 object-contain" />
+                      </span>
+                    ) : conn.platform === 'tiktok' ? (
+                      <span className="w-10 h-10 rounded-lg flex items-center justify-center overflow-hidden bg-slate-50 border border-slate-100 shrink-0">
+                        <img src="/landing-tiktok-ads.png" alt={platform?.name ?? 'TikTok Ads'} className="w-6 h-6 object-contain" />
+                      </span>
+                    ) : (
+                      <span className="text-2xl">{platform?.icon}</span>
+                    )}
                     <div>
-                      <p className="font-bold text-slate-900 text-sm">{platform?.name}</p>
+                      <p className="font-medium text-slate-900 text-sm">{platform?.name}</p>
                       <p className="text-xs text-slate-500">{conn.account_name || conn.account_id}</p>
                       {conn.last_synced_at && (
                         <p className="text-xs text-slate-400">Synced {new Date(conn.last_synced_at).toLocaleDateString()}</p>
@@ -214,13 +228,13 @@ export default function ConnectorsPage() {
                     <button
                       onClick={() => handleSync(conn.id, conn.platform)}
                       disabled={syncing === conn.id}
-                      className="text-xs bg-blue-50 text-blue-600 font-bold px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-colors"
+                      className="text-xs bg-blue-50 text-blue-600 font-medium px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-colors"
                     >
                       {syncing === conn.id ? 'Syncing...' : 'Sync'}
                     </button>
                     <button
                       onClick={() => handleDisconnect(conn.id)}
-                      className="text-xs text-red-400 hover:text-red-600 font-bold px-2 py-1.5 rounded-lg hover:bg-red-50 transition-colors"
+                      className="text-xs text-red-400 hover:text-red-600 font-medium px-2 py-1.5 rounded-lg hover:bg-red-50 transition-colors"
                     >
                       Remove
                     </button>
@@ -242,14 +256,28 @@ export default function ConnectorsPage() {
               {/* Platform header */}
               <div className="p-5 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 ${platform.color} rounded-xl flex items-center justify-center text-2xl`}>
-                    {platform.icon}
-                  </div>
+                  {platform.id === 'meta' ? (
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden bg-slate-50 border border-slate-100">
+                      <img src="/landing-meta.png" alt={platform.name} className="w-8 h-8 object-contain" />
+                    </div>
+                  ) : platform.id === 'google' ? (
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden bg-slate-50 border border-slate-100">
+                      <img src="/landing-google-ads.png" alt={platform.name} className="w-8 h-8 object-contain" />
+                    </div>
+                  ) : platform.id === 'tiktok' ? (
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden bg-slate-50 border border-slate-100">
+                      <img src="/landing-tiktok-ads.png" alt={platform.name} className="w-8 h-8 object-contain" />
+                    </div>
+                  ) : (
+                    <div className={`w-12 h-12 ${platform.color} rounded-xl flex items-center justify-center text-2xl`}>
+                      {platform.icon}
+                    </div>
+                  )}
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="font-black text-slate-900">{platform.name}</h3>
+                      <h3 className="font-medium text-slate-900">{platform.name}</h3>
                       {isConnected && (
-                        <span className="text-xs bg-green-100 text-green-700 font-bold px-2 py-0.5 rounded-full">Connected</span>
+                        <span className="text-xs bg-green-100 text-green-700 font-medium px-2 py-0.5 rounded-full">Connected</span>
                       )}
                     </div>
                     <p className="text-sm text-slate-500">{platform.description}</p>
@@ -258,14 +286,14 @@ export default function ConnectorsPage() {
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <button
                     onClick={() => setShowGuide(showGuide === platform.id ? null : platform.id)}
-                    className="text-xs border border-slate-200 text-slate-600 font-bold px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"
+                    className="text-xs border border-slate-200 text-slate-600 font-medium px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"
                   >
-                    📖 How to get token
+                    How to get token
                   </button>
                   {!isConnected && (
                     <button
                       onClick={() => isPro ? setConnecting(connecting === platform.id ? null : platform.id) : setShowUpgrade(true)}
-                      className="text-xs bg-slate-900 text-white font-bold px-4 py-2 rounded-lg hover:bg-slate-700 transition-colors"
+                      className="text-xs bg-slate-900 text-white font-medium px-4 py-2 rounded-lg hover:bg-slate-700 transition-colors"
                     >
                       {!isPro ? '🔒 Connect' : 'Connect'}
                     </button>
@@ -278,7 +306,7 @@ export default function ConnectorsPage() {
                 <div className="border-t border-slate-100 bg-slate-50 p-5">
                   <div className="flex items-start justify-between gap-4 mb-4">
                     <div>
-                      <p className="font-black text-slate-900 text-sm mb-1">How to get your {platform.name} token</p>
+                      <p className="font-medium text-slate-900 text-sm mb-1">How to get your {platform.name} token</p>
                       <p className="text-xs text-amber-700 bg-amber-50 border border-amber-100 rounded-lg px-3 py-1.5 inline-block">
                         💡 {platform.tokenNote}
                       </p>
@@ -290,7 +318,7 @@ export default function ConnectorsPage() {
                   <ol className="space-y-2">
                     {platform.guide.map((step, i) => (
                       <li key={i} className="flex items-start gap-3 text-sm text-slate-600">
-                        <span className="w-5 h-5 rounded-full bg-slate-900 text-white text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="w-5 h-5 rounded-full bg-slate-900 text-white text-xs font-medium flex items-center justify-center flex-shrink-0 mt-0.5">
                           {i + 1}
                         </span>
                         {step}
@@ -303,11 +331,11 @@ export default function ConnectorsPage() {
               {/* Connect form */}
               {connecting === platform.id && !isConnected && (
                 <div className="border-t border-slate-100 p-5">
-                  <p className="font-bold text-slate-900 text-sm mb-4">Enter your {platform.name} credentials</p>
+                  <p className="font-medium text-slate-900 text-sm mb-4">Enter your {platform.name} credentials</p>
                   <div className="space-y-4">
                     {platform.fields.map(field => (
                       <div key={field.key}>
-                        <label className="text-xs font-bold text-slate-700 block mb-1.5">{field.label}</label>
+                        <label className="text-xs font-medium text-slate-700 block mb-1.5">{field.label}</label>
                         <input
                           type={field.isToken ? 'password' : 'text'}
                           placeholder={field.placeholder}
@@ -326,13 +354,13 @@ export default function ConnectorsPage() {
                     <button
                       onClick={() => handleConnect(platform.id)}
                       disabled={connecting === platform.id && !formData[platform.id]}
-                      className="bg-blue-600 text-white font-bold px-5 py-2.5 rounded-xl text-sm hover:bg-blue-700 transition-colors"
+                      className="bg-blue-600 text-white font-medium px-5 py-2.5 rounded-xl text-sm hover:bg-blue-700 transition-colors"
                     >
                       Connect {platform.name}
                     </button>
                     <button
                       onClick={() => setConnecting(null)}
-                      className="border border-slate-200 text-slate-600 font-bold px-5 py-2.5 rounded-xl text-sm hover:bg-slate-50 transition-colors"
+                      className="border border-slate-200 text-slate-600 font-medium px-5 py-2.5 rounded-xl text-sm hover:bg-slate-50 transition-colors"
                     >
                       Cancel
                     </button>

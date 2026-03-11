@@ -61,16 +61,16 @@ export default function TeamPage() {
   return (
     <FeatureGate feature="team_members" requiredPlan="agency">
       <div className="p-6 max-w-2xl mx-auto">
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">
+        <h1 className="text-2xl font-bold text-[var(--dash-text)] mb-1">
           Team Members
         </h1>
-        <p className="text-slate-500 dark:text-zinc-400 mb-6">
+        <p className="text-[var(--dash-muted)] mb-6">
           Invite team members to collaborate on your TrackHive account.
         </p>
 
         {/* Invite form */}
-        <div className="bg-white dark:bg-zinc-900 rounded-xl border border-slate-100 dark:border-zinc-800 p-6 mb-6">
-          <h2 className="font-semibold text-slate-900 dark:text-white mb-4">
+        <div className="dash-card rounded-xl p-6 mb-6">
+          <h2 className="font-semibold text-[var(--dash-text)] mb-4">
             Invite Member
           </h2>
           <div className="flex gap-3 flex-wrap">
@@ -79,12 +79,12 @@ export default function TeamPage() {
               placeholder="colleague@company.com"
               value={inviteEmail}
               onChange={(e) => setInviteEmail(e.target.value)}
-              className="flex-1 min-w-[200px] border border-slate-200 dark:border-zinc-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-zinc-800 text-slate-900 dark:text-white"
+              className="flex-1 min-w-[200px] border border-[var(--dash-border)] rounded-lg px-3 py-2 text-sm bg-[var(--dash-surface)] text-[var(--dash-text)] placeholder:text-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)] focus:border-transparent"
             />
             <select
               value={inviteRole}
               onChange={(e) => setInviteRole(e.target.value)}
-              className="border border-slate-200 dark:border-zinc-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-zinc-800 text-slate-900 dark:text-white"
+              className="border border-[var(--dash-border)] rounded-lg px-3 py-2 text-sm bg-[var(--dash-surface)] text-[var(--dash-text)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)] focus:border-transparent"
             >
               <option value="viewer">Viewer</option>
               <option value="admin">Admin</option>
@@ -92,27 +92,27 @@ export default function TeamPage() {
             <button
               onClick={inviteMember}
               disabled={loading}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-50"
+              className="bg-[var(--dash-primary)] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[var(--dash-primary-strong)] disabled:opacity-50 transition-colors"
             >
               {loading ? 'Inviting...' : 'Invite'}
             </button>
           </div>
           {error && (
-            <p className="text-sm text-red-500 mt-2">{error}</p>
+            <p className="text-sm text-[var(--dash-danger)] mt-2">{error}</p>
           )}
-          <p className="text-xs text-slate-400 dark:text-zinc-500 mt-2">
+          <p className="text-xs text-[var(--dash-muted)] mt-2">
             They will receive an email invitation to join your team. Max 5
             members.
           </p>
         </div>
 
         {/* Members list */}
-        <div className="bg-white dark:bg-zinc-900 rounded-xl border border-slate-100 dark:border-zinc-800 p-6">
-          <h2 className="font-semibold text-slate-900 dark:text-white mb-4">
+        <div className="dash-card rounded-xl p-6">
+          <h2 className="font-semibold text-[var(--dash-text)] mb-4">
             Members ({members.length}/5)
           </h2>
           {members.length === 0 ? (
-            <p className="text-slate-400 dark:text-zinc-500 text-sm">
+            <p className="text-[var(--dash-muted)] text-sm">
               No team members yet. Invite someone above.
             </p>
           ) : (
@@ -120,19 +120,19 @@ export default function TeamPage() {
               {members.map((member) => (
                 <div
                   key={member.id}
-                  className="flex items-center justify-between py-2 border-b border-slate-50 dark:border-zinc-800 last:border-0"
+                  className="flex items-center justify-between py-2 border-b border-[var(--dash-border)] last:border-0"
                 >
                   <div>
-                    <p className="font-medium text-slate-900 dark:text-white text-sm">
+                    <p className="font-medium text-[var(--dash-text)] text-sm">
                       {member.member_email}
                     </p>
-                    <p className="text-xs text-slate-400 dark:text-zinc-500 capitalize">
+                    <p className="text-xs text-[var(--dash-muted)] capitalize">
                       {member.role} · {member.status}
                     </p>
                   </div>
                   <button
                     onClick={() => removeMember(member.id)}
-                    className="text-red-500 hover:text-red-700 text-xs font-medium"
+                    className="text-[var(--dash-danger)] hover:text-[var(--dash-danger-strong)] text-xs font-medium transition-colors"
                   >
                     Remove
                   </button>
