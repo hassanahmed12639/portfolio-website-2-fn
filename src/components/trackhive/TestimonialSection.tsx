@@ -16,56 +16,56 @@ interface Testimonial {
 const testimonials: Testimonial[] = [
   {
     text: "TrackHive revolutionized our attribution. Server-side tracking recovered conversions we were losing to ad blockers. Meta match rates jumped from 50% to over 85%.",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150&h=150",
-    name: "Briana Patton",
+    image: "/avatars/1.png",
+    name: "Muhammad Ayaan Khan",
     role: "Operations Manager",
   },
   {
     text: "Implementing TrackHive was smooth and quick. The setup took minutes—no developers needed. Our team was trained and live in a single day.",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=150&h=150",
-    name: "Bilal Ahmed",
+    image: "/avatars/2.png",
+    name: "Ahmed Raza Malik",
     role: "IT Manager",
   },
   {
     text: "The support team is exceptional, guiding us through setup and providing ongoing assistance. Our Meta and TikTok events are now firing reliably.",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=150&h=150",
-    name: "Saman Malik",
+    image: "/avatars/3.png",
+    name: "Ethan James Walker",
     role: "Customer Support Lead",
   },
   {
     text: "TrackHive's seamless integration with Meta CAPI and Google enhanced our attribution across the whole funnel. Highly recommend for ecommerce.",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150&h=150",
-    name: "Omar Raza",
+    image: "/avatars/4.png",
+    name: "Noah Alexander Smith",
     role: "CEO",
   },
   {
     text: "Its robust features and quick support have transformed our tracking. We finally have visibility into conversions that ad blockers were hiding.",
-    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150&h=150",
-    name: "Zainab Hussain",
+    image: "/avatars/5.png",
+    name: "Oliver Daniel Brown",
     role: "Project Manager",
   },
   {
     text: "The smooth implementation exceeded expectations. We went live in under 5 minutes and recovered thousands in lost attribution within a week.",
-    image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=150&h=150",
-    name: "Aliza Khan",
+    image: "/avatars/6.png",
+    name: "Liam Christopher Johnson",
     role: "Business Analyst",
   },
   {
     text: "Our Meta and TikTok ads improved with a user-friendly setup and accurate server-side events. Customer feedback on our campaigns is now reliable.",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150&h=150",
-    name: "Farhan Siddiqui",
+    image: "/avatars/7.png",
+    name: "Lucas Michael Anderson",
     role: "Marketing Director",
   },
   {
     text: "They delivered a solution that exceeded expectations. TrackHive understood our needs—recovering conversions and improving match rates across Meta and Google.",
-    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150&h=150",
-    name: "Sana Sheikh",
+    image: "/avatars/8.png",
+    name: "Mason William Taylor",
     role: "Sales Manager",
   },
   {
     text: "Using TrackHive, our attribution and Meta match rates significantly improved. Server-side events fixed the gaps ad blockers and iOS were creating.",
-    image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=150&h=150",
-    name: "Hassan Ali",
+    image: "/avatars/9.png",
+    name: "Henry Thomas Clark",
     role: "E-commerce Manager",
   },
 ];
@@ -138,11 +138,11 @@ const TestimonialsColumn = (props: {
                     <footer className="flex items-center gap-3 mt-6">
                       <div className="relative w-10 h-10 rounded-full overflow-hidden shrink-0 ring-2 ring-slate-100 group-hover:ring-[#3B82F6]/30 transition-all duration-300">
                         <Image
-                          width={40}
-                          height={40}
+                          fill
                           src={image}
                           alt={`Avatar of ${name}`}
                           className="object-cover"
+                          sizes="40px"
                         />
                       </div>
                       <div className="flex flex-col">

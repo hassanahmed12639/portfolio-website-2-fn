@@ -20,7 +20,7 @@ export const caseStudies: CaseStudy[] = [
     slug: "vegout-organics",
     date: "Feb 26, 2026",
     title: "VegOutOrganics – Advanced Performance Marketing Case Study",
-    src: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=1200&q=80",
+    src: "/veg-out-featured.png",
     author: "Hassan Ahmed",
     authorTitle: "Google Ads Expert | E-commerce Growth Strategist",
     description:
@@ -86,7 +86,7 @@ export const caseStudies: CaseStudy[] = [
     slug: "little-laser-clinic",
     date: "Jan 14, 2026",
     title: "Little Laser Clinic – Google Search Ads Case Study",
-    src: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800&q=80",
+    src: "/little-featured.png",
     author: "Hassan Ahmed",
     authorTitle: "Google Ads Expert",
     description:
@@ -140,7 +140,7 @@ export const caseStudies: CaseStudy[] = [
     slug: "comporta-experience",
     date: "Dec 3, 2025",
     title: "Comporta Experience – Google Search Ads Case Study",
-    src: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80",
+    src: "/comporta-featured.png",
     author: "Hassan Ahmed",
     authorTitle: "Google Ads Expert",
     description:
@@ -193,7 +193,7 @@ export const caseStudies: CaseStudy[] = [
     slug: "trade-locks",
     date: "Nov 15, 2025",
     title: "Tradelocks – Google Search Ads Case Study",
-    src: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+    src: "/trade-featured.png",
     author: "Hassan Ahmed",
     authorTitle: "Google Ads Expert",
     description:
@@ -240,7 +240,7 @@ export const caseStudies: CaseStudy[] = [
     slug: "driveucars",
     date: "Oct 20, 2025",
     title: "DriveUCars – Google Search Ads Case Study",
-    src: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&q=80",
+    src: "/drive-featured.png",
     author: "Hassan Ahmed",
     authorTitle: "Google Ads Expert",
     description:
@@ -335,7 +335,7 @@ export const caseStudies: CaseStudy[] = [
     slug: "mala-yachts",
     date: "Sep 25, 2025",
     title: "Mala Yachts (Mala.ae) – Full-Stack SEO Case Study",
-    src: "https://images.unsplash.com/photo-1567894340315-735d7c361db0?w=800&q=80",
+    src: "/mala-featured.png",
     author: "Hassan Ahmed",
     authorTitle: "SEO Specialist",
     description:
@@ -382,7 +382,7 @@ export const caseStudies: CaseStudy[] = [
     slug: "steve-apparel",
     date: "Sep 15, 2025",
     title: "Steve Apparel – Full-Stack SEO Case Study",
-    src: "https://images.unsplash.com/photo-1558171813-4c088753af8f?w=800&q=80",
+    src: "/steve-featured.png",
     author: "Hassan Ahmed",
     authorTitle: "SEO Specialist",
     description:
@@ -429,7 +429,7 @@ export const caseStudies: CaseStudy[] = [
     slug: "alliance-shipping",
     date: "Sep 5, 2025",
     title: "Alliance Shipping – Technical & Content SEO Case Study",
-    src: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80",
+    src: "/allia-featured.png",
     author: "Hassan Ahmed",
     authorTitle: "SEO Specialist",
     description:
@@ -471,156 +471,6 @@ export const caseStudies: CaseStudy[] = [
       { src: "/shipping-1.png", alt: "Alliance Shipping" },
       { src: "/shipping-2.png", alt: "Alliance Shipping" },
       { src: "/shipping-3.png", alt: "Alliance Shipping" },
-    ],
-  },
-  {
-    slug: "saas-dashboard-redesign",
-    date: "Nov 18, 2025",
-    title: "SaaS Dashboard Redesign – Case Study",
-    src: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
-    author: "Product & Engineering",
-    description:
-      "Redesigned analytics dashboard for a B2B SaaS product. New data viz, filters, and export flows. Outcomes: 50% faster task completion, higher NPS.",
-    readTime: "7 min read",
-    keyTakeaways: [
-      "What is the dashboard redesign?",
-      "New data viz and filters",
-      "Export flows",
-      "Outcomes and NPS",
-    ],
-    sections: [
-      {
-        id: "overview",
-        heading: "Project overview",
-        content:
-          "We redesigned the analytics dashboard for a B2B SaaS product with new data visualizations, filters, and export flows. Outcomes included 50% faster task completion and higher NPS.",
-      },
-      {
-        id: "outcomes",
-        heading: "Outcomes",
-        content:
-          "Task completion time dropped by 50% and NPS improved. The new data viz and filters made it easier for users to find and act on insights.",
-      },
-    ],
-  },
-  {
-    slug: "health-app-brand-ux",
-    date: "Oct 22, 2025",
-    title: "Health App Brand & UX – Case Study",
-    src: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80",
-    author: "Brand & Web",
-    description:
-      "Brand identity and app experience for a health startup. Onboarding, habit tracking, and subscription flows. Outcomes: 3x retention at 30 days.",
-    readTime: "6 min read",
-    keyTakeaways: [
-      "What is the health app?",
-      "Brand identity and UX",
-      "Onboarding and habit tracking",
-      "Outcomes and retention",
-    ],
-    sections: [
-      {
-        id: "overview",
-        heading: "Project overview",
-        content:
-          "We created brand identity and app experience for a health startup: onboarding, habit tracking, and subscription flows. Outcomes included 3x retention at 30 days.",
-      },
-      {
-        id: "outcomes",
-        heading: "Outcomes",
-        content:
-          "30-day retention tripled. The onboarding and habit-tracking flows kept users engaged and reduced churn in the first month.",
-      },
-    ],
-  },
-  {
-    slug: "event-platform-launch",
-    date: "Sep 10, 2025",
-    title: "Event Platform Launch – Case Study",
-    src: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80",
-    author: "Product & Marketing",
-    description:
-      "Landing and registration experience for a virtual event platform. Ticketing, reminders, and post-event content. Outcomes: 8k+ registrations, 65% attendance.",
-    readTime: "5 min read",
-    keyTakeaways: [
-      "What is the event platform?",
-      "Registration and ticketing",
-      "Reminders and post-event",
-      "Outcomes and attendance",
-    ],
-    sections: [
-      {
-        id: "overview",
-        heading: "Project overview",
-        content:
-          "We built the landing and registration experience for a virtual event platform: ticketing, reminders, and post-event content. Outcomes were 8k+ registrations and 65% attendance.",
-      },
-      {
-        id: "outcomes",
-        heading: "Outcomes",
-        content:
-          "Over 8,000 registrations and 65% attendance. The reminder flow and clear ticketing experience helped drive show-up rate.",
-      },
-    ],
-  },
-  {
-    slug: "fintech-onboarding-flow",
-    date: "Aug 5, 2025",
-    title: "Fintech Onboarding Flow – Case Study",
-    src: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80",
-    author: "Product & Engineering",
-    description:
-      "Streamlined KYC and onboarding for a fintech product. Clear steps, progress indicators, and error recovery. Outcomes: 40% fewer drop-offs, faster compliance.",
-    readTime: "6 min read",
-    keyTakeaways: [
-      "What is the fintech onboarding?",
-      "KYC and compliance",
-      "Progress and error recovery",
-      "Outcomes and drop-offs",
-    ],
-    sections: [
-      {
-        id: "overview",
-        heading: "Project overview",
-        content:
-          "We streamlined KYC and onboarding for a fintech product with clear steps, progress indicators, and error recovery. Outcomes included 40% fewer drop-offs and faster compliance.",
-      },
-      {
-        id: "outcomes",
-        heading: "Outcomes",
-        content:
-          "Drop-offs fell by 40% and compliance cycles shortened. Progress indicators and error recovery kept users on track through the flow.",
-      },
-    ],
-  },
-  {
-    slug: "travel-brand-campaign-site",
-    date: "Jul 12, 2025",
-    title: "Travel Brand Campaign Site – Case Study",
-    src: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&q=80",
-    author: "Brand & Web",
-    description:
-      "Seasonal campaign site for a travel brand with destination guides and booking hooks. Outcomes: 2.5x time on site, 20% increase in booking starts.",
-    readTime: "5 min read",
-    keyTakeaways: [
-      "What is the travel campaign?",
-      "Destination guides",
-      "Booking hooks",
-      "Outcomes and booking starts",
-    ],
-    sections: [
-      {
-        id: "overview",
-        heading: "Project overview",
-        content:
-          "We built a seasonal campaign site for a travel brand with destination guides and booking hooks. Outcomes were 2.5x time on site and a 20% increase in booking starts.",
-      },
-      {
-        id: "outcomes",
-        heading: "Outcomes",
-        content:
-          "Time on site increased 2.5x and booking starts rose 20%. Destination guides and clear booking hooks kept users engaged and converted.",
-      },
     ],
   },
 ];

@@ -84,20 +84,6 @@ export default function TrackHivePage() {
             </div>
           </div>
         </div>
-
-        {/* Partner logos - below hero */}
-        <div className="max-w-4xl mx-auto px-5 md:px-6 pt-10 md:pt-14 border-t border-slate-200/60">
-          <p className="text-sm text-slate-500 mb-4 md:mb-6 text-center">
-            Integrations with leading platforms
-          </p>
-          <div className="flex items-center justify-center gap-8 md:gap-12 flex-wrap">
-            {PARTNERS.map((name) => (
-              <span key={name} className="font-semibold text-base text-slate-400">
-                {name}
-              </span>
-            ))}
-          </div>
-        </div>
       </section>
 
       {/* About/Brand statement section recreated from provided reference */}
