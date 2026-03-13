@@ -35,7 +35,7 @@ export default function ChatbotWrapper() {
       '/onboarding'
     ]
 
-    const isTrackHivePage = trackHiveRoutes.some(route => pathname.startsWith(route))
+    const isTrackHivePage = pathname ? trackHiveRoutes.some(route => pathname.startsWith(route)) : false
 
     if (isTrackHivePage) {
       setChatbotType('trackhive')

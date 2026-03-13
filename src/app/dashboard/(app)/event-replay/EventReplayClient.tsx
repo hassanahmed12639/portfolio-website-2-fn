@@ -2,6 +2,8 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
+import { useDisplayCurrency } from '@/contexts/DashboardContext'
+import { formatCurrency } from '@/lib/utils'
 
 type EventRow = {
   id: string
@@ -68,6 +70,7 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 export default function EventReplayClient() {
+  const displayCurrency = useDisplayCurrency()
   const [tab, setTab] = useState<'failed' | 'capi'>('failed')
   const [events, setEvents] = useState<EventRow[]>([])
   const [summary, setSummary] = useState<Summary | null>(null)
@@ -211,7 +214,7 @@ export default function EventReplayClient() {
               </div>
               <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-4">
                 <p className="text-sm text-[var(--dash-muted)] mb-1">Revenue at risk</p>
-                <p className="text-xl font-semibold text-[var(--dash-text)]">${summary.revenueAtRisk.toFixed(2)}</p>
+                <p className="text-xl font-semibold text-[var(--dash-text)]">{formatCurrency(summary.revenueAtRisk, displayCurrency, { decimals: 2 })}</p>
               </div>
             </div>
           )}
@@ -432,7 +435,7 @@ export default function EventReplayClient() {
               Estimated data loss: <span className="text-[var(--dash-text)] font-medium">{dataLossPct}% of conversions</span>
             </p>
             <p className="text-sm text-[var(--dash-muted)]">
-              Revenue at risk: <span className="text-[var(--dash-text)] font-medium">${revenueAtRisk.toFixed(2)}</span>
+              Revenue at risk: <span className="text-[var(--dash-text)] font-medium">{formatCurrency(revenueAtRisk, displayCurrency, { decimals: 2 })}</span>
             </p>
           </div>
         </>

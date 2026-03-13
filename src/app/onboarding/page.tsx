@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { BarChart2, Zap, Target, Rocket } from 'lucide-react'
 import { completeOnboarding } from '@/app/dashboard/actions'
 
 const steps = [
@@ -11,6 +12,13 @@ const steps = [
   { id: 2, title: 'Tell us about your business', subtitle: "We'll customize your experience" },
   { id: 3, title: 'What are you tracking?', subtitle: 'Choose your primary use case' },
   { id: 4, title: 'Which ad platforms do you use?', subtitle: "We'll set these up for you" },
+  { id: 5, title: 'Choose your plan', subtitle: 'Select the plan that fits your needs' },
+]
+
+const PLAN_OPTIONS = [
+  { id: 'free', name: 'Free', price: '$0', period: 'forever', tagline: '500 events/month, Meta CAPI' },
+  { id: 'pro', name: 'Pro', price: '$15', period: '/mo', tagline: '25K events, all platforms' },
+  { id: 'agency', name: 'Agency', price: '$45', period: '/mo', tagline: 'Unlimited, multi-client' },
 ]
 
 export default function OnboardingPage() {
@@ -24,7 +32,9 @@ export default function OnboardingPage() {
     business_type: '',
     monthly_events: '',
     ad_platforms: [] as string[],
+    selected_plan: '' as 'free' | 'pro' | 'agency' | '',
   })
+  const [trialLoading, setTrialLoading] = useState(false)
 
   const handlePlatformToggle = (platform: string) => {
     setForm((f) => ({
@@ -35,7 +45,7 @@ export default function OnboardingPage() {
     }))
   }
 
-  const handleComplete = async () => {
+  const completeAndRedirect = async (redirectTo: string) => {
     setLoading(true)
     setError(null)
     try {
@@ -44,13 +54,39 @@ export default function OnboardingPage() {
         setError(result.error)
         return
       }
-      router.push('/dashboard')
+      router.push(redirectTo)
       router.refresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleStartTrial = async () => {
+    setTrialLoading(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/trial/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan: form.selected_plan }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        setError(data.error ?? 'Failed to start trial')
+        return
+      }
+      await completeAndRedirect('/dashboard')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to start trial')
+    } finally {
+      setTrialLoading(false)
+    }
+  }
+
+  const handleMakePayment = () => {
+    completeAndRedirect('/dashboard/billing')
   }
 
   return (
@@ -65,7 +101,7 @@ export default function OnboardingPage() {
 
       {/* Logo */}
       <div className="fixed top-4 left-6 flex items-center gap-2">
-        <img src="/logo-icon.png" alt="TrackHive" className="w-14 h-14 rounded-lg object-contain" />
+        <img src="/logo-new-1.png" alt="TrackHive" className="w-14 h-14 rounded-lg object-contain" />
         <span className="font-bold text-slate-900">TrackHive</span>
       </div>
 
@@ -79,7 +115,7 @@ export default function OnboardingPage() {
         {step === 1 && (
           <div className="text-center">
             <div className="w-20 h-20 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-200">
-              <span className="text-4xl">🚀</span>
+              <Rocket className="w-10 h-10 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-slate-900 mb-3">Welcome to TrackHive!</h1>
             <p className="text-slate-500 mb-8 text-lg">
@@ -87,15 +123,15 @@ export default function OnboardingPage() {
             </p>
             <div className="grid grid-cols-3 gap-4 mb-8">
               {[
-                { icon: '📊', label: 'Stop losing conversions to ad blockers' },
-                { icon: '⚡', label: 'Fire events to Meta, TikTok & Google' },
-                { icon: '🎯', label: 'Get 85%+ match rates on Meta CAPI' },
+                { Icon: BarChart2, label: 'Stop losing conversions to ad blockers' },
+                { Icon: Zap, label: 'Fire events to Meta, TikTok & Google' },
+                { Icon: Target, label: 'Get 85%+ match rates on Meta CAPI' },
               ].map((item) => (
                 <div
                   key={item.label}
                   className="bg-white rounded-xl border border-slate-100 p-4 text-center shadow-sm"
                 >
-                  <p className="text-2xl mb-2">{item.icon}</p>
+                  <item.Icon className="w-8 h-8 mx-auto mb-2 text-blue-600" />
                   <p className="text-xs text-slate-600">{item.label}</p>
                 </div>
               ))}
@@ -124,7 +160,7 @@ export default function OnboardingPage() {
                 <input
                   value={form.business_name}
                   onChange={(e) => setForm((f) => ({ ...f, business_name: e.target.value }))}
-                  className="w-full mt-1.5 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full mt-1.5 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="e.g. My Store, Agency XYZ"
                 />
               </div>
@@ -135,7 +171,7 @@ export default function OnboardingPage() {
                 <input
                   value={form.website_url}
                   onChange={(e) => setForm((f) => ({ ...f, website_url: e.target.value }))}
-                  className="w-full mt-1.5 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full mt-1.5 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="https://yourwebsite.com"
                 />
               </div>
@@ -146,7 +182,7 @@ export default function OnboardingPage() {
                 <select
                   value={form.monthly_events}
                   onChange={(e) => setForm((f) => ({ ...f, monthly_events: e.target.value }))}
-                  className="w-full mt-1.5 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full mt-1.5 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 [&>option]:text-slate-900 [&>option]:bg-white"
                 >
                   <option value="">Select range</option>
                   <option value="1000">Less than 1,000</option>
@@ -186,35 +222,30 @@ export default function OnboardingPage() {
               {[
                 {
                   type: 'ecommerce',
-                  emoji: '🛍️',
                   title: 'E-Commerce Store',
                   desc: 'Track purchases, add to carts, checkouts. Optimize Meta and TikTok ads for buyers.',
                   features: ['Purchase tracking', 'Cart abandonment', 'Revenue analytics', 'ROAS optimization'],
                 },
                 {
                   type: 'leadgen',
-                  emoji: '🎯',
                   title: 'Lead Generation',
                   desc: 'Track leads, score them as good or bad, and send quality signals back to Meta.',
                   features: ['Lead scoring', 'Funnel stages', 'Meta feedback loop', 'Lead export'],
                 },
                 {
                   type: 'agency',
-                  emoji: '🏢',
                   title: 'Agency / Freelancer',
                   desc: 'Manage tracking for multiple clients with multi-pixel support.',
                   features: ['Multi-pixel', 'Client management', 'All platforms', 'White label'],
                 },
                 {
                   type: 'saas',
-                  emoji: '💻',
                   title: 'SaaS / App',
                   desc: 'Track signups, trials, upgrades and send conversion data to ad platforms.',
                   features: ['Signup tracking', 'Trial conversions', 'Upgrade events', 'Retention data'],
                 },
                 {
                   type: 'other',
-                  emoji: '📌',
                   title: 'Other',
                   desc: 'General conversion tracking and server-side events.',
                   features: ['Custom events', 'All platforms', 'Flexible setup'],
@@ -230,7 +261,6 @@ export default function OnboardingPage() {
                   }`}
                 >
                   <div className="flex items-start gap-4">
-                    <span className="text-3xl">{option.emoji}</span>
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
                         <p className="font-bold text-slate-900">{option.title}</p>
@@ -287,24 +317,20 @@ export default function OnboardingPage() {
             </div>
             <div className="grid grid-cols-2 gap-3 mb-6">
               {[
-                { id: 'meta', emoji: '📘', label: 'Meta / Facebook', desc: 'Facebook & Instagram Ads' },
-                { id: 'tiktok', emoji: '🎵', label: 'TikTok Ads', desc: 'TikTok advertising' },
-                { id: 'google', emoji: '🔍', label: 'Google Ads', desc: 'Search & Display' },
-                { id: 'snapchat', emoji: '👻', label: 'Snapchat Ads', desc: 'Coming soon' },
+                { id: 'meta', label: 'Meta / Facebook', desc: 'Facebook & Instagram Ads' },
+                { id: 'tiktok', label: 'TikTok Ads', desc: 'TikTok advertising' },
+                { id: 'google', label: 'Google Ads', desc: 'Search & Display' },
               ].map((platform) => (
                 <div
                   key={platform.id}
-                  onClick={() => platform.id !== 'snapchat' && handlePlatformToggle(platform.id)}
+                  onClick={() => handlePlatformToggle(platform.id)}
                   className={`bg-white rounded-2xl border-2 p-4 cursor-pointer transition-all ${
                     form.ad_platforms.includes(platform.id)
                       ? 'border-blue-500 shadow-md shadow-blue-50'
-                      : platform.id === 'snapchat'
-                        ? 'border-slate-100 opacity-50 cursor-not-allowed'
-                        : 'border-slate-100 hover:border-blue-200'
+                      : 'border-slate-100 hover:border-blue-200'
                   }`}
                 >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-2xl">{platform.emoji}</span>
+                  <div className="flex justify-end mb-2">
                     <div
                       className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
                         form.ad_platforms.includes(platform.id) ? 'border-blue-500 bg-blue-500' : 'border-slate-300'
@@ -320,18 +346,7 @@ export default function OnboardingPage() {
                 </div>
               ))}
             </div>
-            <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-4 text-sm text-blue-700">
-              <p className="font-semibold mb-1">🎉 Almost done!</p>
-              <p className="text-blue-600 text-xs">
-                After setup you can add your API keys in the Integrations page and start tracking in minutes.
-              </p>
-            </div>
-            {error && (
-              <p className="mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
-                {error}
-              </p>
-            )}
-            <div className="flex gap-3">
+            <div className="flex gap-3 mt-4">
               <button
                 onClick={() => setStep(3)}
                 className="flex-1 bg-white border border-slate-200 text-slate-700 font-semibold py-3 rounded-xl hover:bg-slate-50"
@@ -339,18 +354,105 @@ export default function OnboardingPage() {
                 ← Back
               </button>
               <button
-                onClick={handleComplete}
-                disabled={loading || form.ad_platforms.length === 0}
-                className="flex-1 bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center gap-2"
+                onClick={() => setStep(5)}
+                disabled={form.ad_platforms.length === 0}
+                className="flex-1 bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 disabled:opacity-50"
               >
-                {loading ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Setting up...
-                  </>
-                ) : (
-                  'Go to Dashboard 🚀'
+                Continue →
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 5 — Choose Plan */}
+        {step === 5 && (
+          <div>
+            <div className="text-center mb-8">
+              <h1 className="text-2xl font-bold text-slate-900 mb-2">Choose your plan</h1>
+              <p className="text-slate-500">Select the plan that fits your needs</p>
+            </div>
+            <div className="space-y-3 mb-6">
+              {PLAN_OPTIONS.map((plan) => (
+                <button
+                  key={plan.id}
+                  type="button"
+                  onClick={() => setForm((f) => ({ ...f, selected_plan: plan.id as 'free' | 'pro' | 'agency' }))}
+                  className={`w-full text-left rounded-2xl border-2 p-4 transition-all ${
+                    form.selected_plan === plan.id
+                      ? 'border-blue-500 shadow-md shadow-blue-50 bg-blue-50/50'
+                      : 'border-slate-100 hover:border-blue-200 bg-white'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-bold text-slate-900">{plan.name}</p>
+                      <p className="text-sm text-slate-500">{plan.tagline}</p>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-xl font-black text-slate-900">{plan.price}</span>
+                      <span className="text-slate-400 text-sm">{plan.period}</span>
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            {form.selected_plan && (
+              <div className="space-y-3 mb-6">
+                {form.selected_plan === 'free' && (
+                  <button
+                    type="button"
+                    onClick={() => completeAndRedirect('/dashboard')}
+                    disabled={loading}
+                    className="w-full py-3 rounded-xl font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+                  >
+                    {loading ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        Setting up...
+                      </>
+                    ) : (
+                      'Continue with Free'
+                    )}
+                  </button>
                 )}
+                {(form.selected_plan === 'pro' || form.selected_plan === 'agency') && (
+                  <>
+                    <div className="flex gap-3 mb-3">
+                      <button
+                        type="button"
+                        onClick={handleStartTrial}
+                        disabled={trialLoading}
+                        className="flex-1 py-3 rounded-xl font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors disabled:opacity-60"
+                      >
+                        {trialLoading ? 'Starting...' : 'I will start with 7 day free trial'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleMakePayment}
+                        disabled={loading}
+                        className="flex-1 py-3 rounded-xl font-semibold border-2 border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors disabled:opacity-60"
+                      >
+                        Make Payment
+                      </button>
+                    </div>
+                    <p className="text-xs text-slate-500 text-center">No credit card required. Trial expires after 7 days.</p>
+                  </>
+                )}
+              </div>
+            )}
+
+            {error && (
+              <p className="mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                {error}
+              </p>
+            )}
+            <div className="flex gap-3 mt-4">
+              <button
+                onClick={() => setStep(4)}
+                className="flex-1 bg-white border border-slate-200 text-slate-700 font-semibold py-3 rounded-xl hover:bg-slate-50"
+              >
+                ← Back
               </button>
             </div>
           </div>

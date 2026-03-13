@@ -53,7 +53,7 @@ export async function PUT(req: NextRequest) {
     if (!userId || !plan) {
       return NextResponse.json({ error: 'userId and plan required' }, { status: 400 })
     }
-    const validPlans = ['free', 'trial', 'pro', 'agency']
+    const validPlans = ['free', 'trial', 'pro_trial', 'agency_trial', 'pro', 'agency']
     if (!validPlans.includes(plan)) {
       return NextResponse.json({ error: 'Invalid plan' }, { status: 400 })
     }

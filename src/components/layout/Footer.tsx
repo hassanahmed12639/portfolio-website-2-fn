@@ -71,7 +71,7 @@ function Footer() {
             <address className="space-y-2 text-sm not-italic">
               <p>Remote worldwide</p>
               <p>Phone: 03313317401</p>
-              <p>Email: hassanonclouds@gmail.com</p>
+              <p>Email: hello@trackhive.io</p>
             </address>
           </div>
           <div className="relative">

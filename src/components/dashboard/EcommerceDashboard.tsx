@@ -3,8 +3,11 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePlan } from '@/hooks/usePlan'
+import { useDisplayCurrency } from '@/contexts/DashboardContext'
+import { formatCurrency } from '@/lib/utils'
 
 export default function EcommerceDashboard({ profile }: { profile: Record<string, unknown> | null }) {
+  const displayCurrency = useDisplayCurrency()
   const {
     eventsThisMonth,
     eventsLimit,
@@ -73,7 +76,7 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
           </div>
           {!isUnlimited && isNearLimit && !isAtLimit && (
             <Link
-              href="/pricing"
+              href="/dashboard/billing"
               className="bg-orange-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-orange-600"
             >
               Upgrade Plan
@@ -81,7 +84,7 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
           )}
           {!isUnlimited && isAtLimit && (
             <Link
-              href="/pricing"
+              href="/dashboard/billing"
               className="bg-red-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-600"
             >
               Limit Reached!
@@ -100,7 +103,7 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
         )}
         <p className="text-xs text-slate-400 dark:text-zinc-500 mt-2 capitalize">
           Current plan: {plan} ·{' '}
-          <Link href="/pricing" className="text-blue-500 hover:underline">
+          <Link href="/dashboard/billing" className="text-blue-500 hover:underline">
             Upgrade
           </Link>
         </p>
@@ -111,7 +114,7 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
         {[
           {
             label: 'Total Revenue Tracked',
-            value: loading ? '...' : `$${Number(stats?.totalRevenue ?? 0).toLocaleString()}`,
+            value: loading ? '...' : formatCurrency(Number(stats?.totalRevenue ?? 0), displayCurrency),
             color: 'bg-[var(--dash-success-soft)] border-[var(--dash-success-border)]',
             textColor: 'text-[var(--dash-success-strong)]'
           },
@@ -188,7 +191,7 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
                 <div className="flex items-center gap-2">
                   {event.value != null && event.value > 0 && (
                     <span className="text-xs font-semibold text-[var(--dash-success-strong)] bg-[var(--dash-success-soft)] px-2 py-0.5 rounded-full">
-                      ${event.value}
+                      {formatCurrency(event.value, displayCurrency)}
                     </span>
                   )}
                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${

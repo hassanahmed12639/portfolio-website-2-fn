@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import DashboardNav from '@/components/dashboard/DashboardNav'
 import { DashboardProvider } from '@/contexts/DashboardContext'
+import { usePlan } from '@/hooks/usePlan'
 import {
   Bell,
   ChevronDown,
@@ -18,7 +19,7 @@ import {
 } from 'lucide-react'
 import type { User as SupabaseUser } from '@supabase/supabase-js'
 
-type Profile = { dashboard_type?: string | null } | undefined
+type Profile = { dashboard_type?: string | null; display_currency?: string | null } | undefined
 
 type DashboardShellProps = {
   user: SupabaseUser
@@ -28,6 +29,7 @@ type DashboardShellProps = {
 }
 
 export default function DashboardShell({ user, trialExpired, profile, children }: DashboardShellProps) {
+  const { isTrial, trialDaysLeft, isTrialExpired } = usePlan()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const userMenuRef = useRef<HTMLDivElement>(null)
@@ -79,6 +81,26 @@ export default function DashboardShell({ user, trialExpired, profile, children }
         </div>
 
         <DashboardNav profile={profile} />
+
+        {isTrial && (
+          <div className="mx-3 mb-2 bg-blue-50 border border-blue-200 rounded-xl p-3 min-w-[240px]">
+            <p className="text-xs font-black text-blue-700">
+              {trialDaysLeft} day{trialDaysLeft !== 1 ? 's' : ''} left in trial
+            </p>
+            <Link href="/dashboard/billing" className="text-xs text-blue-600 font-bold hover:underline">
+              Upgrade to keep access →
+            </Link>
+          </div>
+        )}
+
+        {isTrialExpired && (
+          <div className="mx-3 mb-2 bg-red-50 border border-red-200 rounded-xl p-3 min-w-[240px]">
+            <p className="text-xs font-black text-red-700">Trial expired</p>
+            <Link href="/dashboard/billing" className="text-xs text-red-600 font-bold hover:underline">
+              Upgrade now →
+            </Link>
+          </div>
+        )}
 
         {/* Projects / User section */}
         <div className="mt-auto border-t border-[var(--dash-border)] px-3 py-3 min-w-[240px]">
@@ -183,7 +205,10 @@ export default function DashboardShell({ user, trialExpired, profile, children }
           </div>
         )}
         <div className="flex-1 overflow-auto">
-          <DashboardProvider dashboardType={(profile?.dashboard_type === 'leadgen' ? 'leadgen' : 'ecommerce') as 'ecommerce' | 'leadgen'}>
+          <DashboardProvider
+            dashboardType={(profile?.dashboard_type === 'leadgen' ? 'leadgen' : 'ecommerce') as 'ecommerce' | 'leadgen'}
+            displayCurrency={profile?.display_currency}
+          >
             {children}
           </DashboardProvider>
         </div>

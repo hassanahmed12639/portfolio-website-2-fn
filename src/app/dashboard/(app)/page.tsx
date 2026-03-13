@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import EcommerceDashboard from '@/components/dashboard/EcommerceDashboard'
 import LeadGenDashboard from '@/components/dashboard/LeadGenDashboard'
-
+import WelcomeBanner from '@/components/dashboard/WelcomeBanner'
 export const dynamic = 'force-dynamic'
 
 export default async function DashboardPage() {
@@ -18,7 +18,19 @@ export default async function DashboardPage() {
 
   const dashboardType = (profile?.dashboard_type as string) || 'ecommerce'
 
-  return dashboardType === 'leadgen'
-    ? <LeadGenDashboard profile={profile} />
-    : <EcommerceDashboard profile={profile} />
+  const content =
+    dashboardType === 'leadgen' ? (
+      <LeadGenDashboard profile={profile} />
+    ) : (
+      <EcommerceDashboard profile={profile} />
+    )
+
+  return (
+    <>
+      <div className="px-6 md:px-8 pt-6 md:pt-8">
+        <WelcomeBanner />
+      </div>
+      {content}
+    </>
+  )
 }

@@ -122,7 +122,7 @@ function DesktopNavItem({
 
   if (!hasChildren) {
     return item.url ? (
-      <NavLinkItem item={item} pathname={pathname} isMobile={false} />
+      <NavLinkItem item={item} pathname={pathname ?? ''} isMobile={false} />
     ) : null
   }
 
@@ -240,7 +240,7 @@ function MobileNavItem({
       >
         <NavLinkItem
           item={item}
-          pathname={pathname}
+          pathname={pathname ?? ''}
           isMobile
           onLinkClick={onLinkClick}
         />
@@ -282,7 +282,7 @@ function MobileNavItem({
             <MobileNavItem
               key={child.name}
               item={child}
-              pathname={pathname}
+              pathname={pathname ?? ''}
               onLinkClick={onLinkClick}
               depth={depth + 1}
             />
@@ -328,7 +328,7 @@ export function NavBar({ items, className }: NavBarProps) {
                 <MobileNavItem
                   key={item.name}
                   item={item}
-                  pathname={pathname}
+                  pathname={pathname ?? ''}
                   onLinkClick={() => setMobileOpen(false)}
                 />
               ))}
@@ -338,7 +338,7 @@ export function NavBar({ items, className }: NavBarProps) {
 
         <div className="hidden lg:flex items-center gap-6 lg:gap-8 bg-background/95 backdrop-blur-lg py-1 px-1 rounded-full shadow-lg border border-border">
           {items.map((item) => (
-            <DesktopNavItem key={item.name} item={item} pathname={pathname} />
+            <DesktopNavItem key={item.name} item={item} pathname={pathname ?? ''} />
           ))}
         </div>
       </div>

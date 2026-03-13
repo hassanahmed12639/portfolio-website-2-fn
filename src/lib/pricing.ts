@@ -36,7 +36,7 @@ export const PRICING_PLANS = [
     tagline: 'Everything you need to scale your ad performance.',
     highlighted: true,
     cta: 'Get Pro — $15/mo',
-    ctaNote: 'Cancel anytime. No contracts.',
+    ctaNote: 'Start with 7-day free trial (no credit card). Cancel anytime.',
     ctaHref: '/billing',
     features: [
       { text: '25,000 events per month', included: true },
@@ -64,7 +64,7 @@ export const PRICING_PLANS = [
     tagline: 'Manage multiple clients under one powerful dashboard.',
     highlighted: false,
     cta: 'Get Agency — $45/mo',
-    ctaNote: 'Trusted by agencies worldwide.',
+    ctaNote: 'Start with 7-day free trial (no credit card). Trusted by agencies.',
     ctaHref: '/billing',
     features: [
       { text: 'Unlimited events', included: true },

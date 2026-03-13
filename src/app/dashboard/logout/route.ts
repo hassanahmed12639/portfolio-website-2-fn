@@ -1,11 +1,13 @@
 import { createClient } from '@/lib/supabase/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 
-export async function GET(request: NextRequest) {
+const LOGIN_REDIRECT_URL =
+  process.env.NEXT_PUBLIC_APP_URL || 'https://track.itshassanahmed.com'
+
+export async function GET() {
   const supabase = await createClient()
   await supabase.auth.signOut()
-  const url = new URL(request.url)
-  return NextResponse.redirect(new URL('/dashboard/login', url.origin))
+  return NextResponse.redirect(`${LOGIN_REDIRECT_URL}/dashboard/login`)
 }
 
 

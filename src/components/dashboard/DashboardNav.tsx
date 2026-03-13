@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -68,6 +68,13 @@ export default function DashboardNav({
   const toggleSection = (title: string) => {
     setOpenSections((prev) => ({ ...prev, [title]: !prev[title] }))
   }
+
+  // Close upgrade modal when user navigates to billing page
+  useEffect(() => {
+    if (pathname?.includes('/dashboard/billing')) {
+      setShowUpgradeModal((s) => ({ ...s, show: false }))
+    }
+  }, [pathname])
 
   const nav: NavItem[] = [
     { label: 'Overview', href: '/dashboard', icon: Gauge },
@@ -303,7 +310,7 @@ export default function DashboardNav({
                       const isActive =
                         pathname === item.href ||
                         (item.href !== '/dashboard' &&
-                          pathname.startsWith(item.href + '/'))
+                          pathname?.startsWith(item.href + '/'))
                       return (
                         <div key={item.href} className="relative flex items-center">
                           {item.locked ? (

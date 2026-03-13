@@ -91,7 +91,7 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
           </div>
           {!isUnlimited && isNearLimit && !isAtLimit && (
             <Link
-              href="/pricing"
+              href="/dashboard/billing"
               className="bg-orange-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-orange-600"
             >
               Upgrade Plan
@@ -99,7 +99,7 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
           )}
           {!isUnlimited && isAtLimit && (
             <Link
-              href="/pricing"
+              href="/dashboard/billing"
               className="bg-red-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-600"
             >
               Limit Reached!
@@ -118,7 +118,7 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
         )}
         <p className="text-xs text-slate-400 dark:text-zinc-500 mt-2 capitalize">
           Current plan: {plan} ·{' '}
-          <Link href="/pricing" className="text-blue-500 hover:underline">
+          <Link href="/dashboard/billing" className="text-blue-500 hover:underline">
             Upgrade
           </Link>
         </p>

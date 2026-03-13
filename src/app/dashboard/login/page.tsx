@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic'
 
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import LoginRadar from './LoginRadar'
 import {
@@ -22,6 +23,7 @@ import { Separator } from '@/components/ui/separator'
 import { Eye, EyeOff, Lock, Mail, ArrowRight, Chrome } from 'lucide-react'
 
 export default function LoginPage() {
+  const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -30,6 +32,23 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
+
+  useEffect(() => {
+    const e = searchParams?.get('error')
+    if (e === 'auth_failed') setError('Sign-in failed. Please try again.')
+
+    // Handle OAuth error in hash (Supabase redirects with #error= when auth fails)
+    if (typeof window !== 'undefined' && window.location.hash) {
+      const hash = window.location.hash.slice(1)
+      const params = new URLSearchParams(hash)
+      const hashError = params.get('error')
+      if (hashError) {
+        setError('Sign-in failed. Please try again.')
+        window.history.replaceState(null, '', window.location.pathname + window.location.search)
+      }
+    }
+  }, [searchParams])
+
   useEffect(() => {
     const canvas = canvasRef.current
     const ctx = canvas?.getContext('2d')
@@ -262,7 +281,7 @@ export default function LoginPage() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
                     required
-                    autoComplete="email"
+                    autoComplete="off"
                     className="pl-10 bg-[var(--dash-surface)] border-[var(--dash-border)] text-[var(--dash-text)] placeholder:text-[var(--dash-muted)]"
                   />
                 </div>
@@ -281,7 +300,7 @@ export default function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     required
-                    autoComplete="current-password"
+                    autoComplete="off"
                     className="pl-10 pr-10 bg-[var(--dash-surface)] border-[var(--dash-border)] text-[var(--dash-text)] placeholder:text-[var(--dash-muted)]"
                   />
                   <button

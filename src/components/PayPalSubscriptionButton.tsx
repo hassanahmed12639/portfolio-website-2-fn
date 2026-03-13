@@ -19,9 +19,11 @@ const SCRIPT_URL = 'https://www.paypal.com/sdk/js'
 export default function PayPalSubscriptionButton({
   planId,
   containerId,
+  plan = 'pro',
 }: {
   planId: string
   containerId: string
+  plan?: 'pro' | 'agency'
 }) {
   const [loaded, setLoaded] = useState(false)
   const [error, setError] = useState('')
@@ -52,7 +54,7 @@ export default function PayPalSubscriptionButton({
     script.async = true
     script.setAttribute('data-sdk-integration-source', 'button-factory')
     script.onload = () => setLoaded(true)
-    script.onerror = () => setError('Failed to load PayPal')
+    script.onerror = () => setError('contact contact@trackhive.com')
     document.body.appendChild(script)
 
     return () => {
@@ -84,18 +86,17 @@ export default function PayPalSubscriptionButton({
         onApprove: function (data: { subscriptionID?: string; subscriptionId?: string }) {
           const id = data.subscriptionID ?? data.subscriptionId
           if (id) {
-            // Match the sample snippet: show alert, then proceed to success state
-            alert(id)
-            window.location.href = `${window.location.pathname}?success=true`
+            const redirectUrl = `/dashboard?plan=${plan}&welcome=true`
+            window.location.href = redirectUrl
           }
         },
       })
       .render(`#${containerId}`)
       .catch(() => {
-        setError('PayPal button failed to load')
+        setError('contact contact@trackhive.com')
         rendered.current = false
       })
-  }, [loaded, planId, containerId])
+  }, [loaded, planId, containerId, plan])
 
   if (!clientId) {
     return (

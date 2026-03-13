@@ -8,7 +8,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 function InviteContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const token = searchParams.get('token')
+  const token = searchParams?.get('token')
   const [status, setStatus] = useState<
     'loading' | 'valid' | 'invalid' | 'success'
   >('loading')

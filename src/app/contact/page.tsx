@@ -202,10 +202,10 @@ function ContactContent() {
       <div style={{ display:"flex", justifyContent:"center", marginBottom:48 }}>
         <div style={{ background:"#111", border:"1px solid #222", borderRadius:100, padding:4, display:"flex", gap:4 }}>
           <button className={`tab-btn ${activeTab==="form"?"active":""}`} onClick={()=>setActiveTab("form")}>
-            ✉️ Send Message
+            Send Message
           </button>
           <button className={`tab-btn ${activeTab==="calendar"?"active":""}`} onClick={()=>setActiveTab("calendar")}>
-            📅 Book a Meeting
+            Book a Meeting
           </button>
         </div>
       </div>
@@ -218,12 +218,11 @@ function ContactContent() {
             <div style={{ position:"absolute", top:-40, right:-40, width:120, height:120, background:LIME, borderRadius:"50%", opacity:0.06, filter:"blur(30px)" }}/>
             <p style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', fontSize:11, letterSpacing:3, color:LIME, textTransform:"uppercase", marginBottom:20 }}>Contact Info</p>
             {[
-              { icon:"📧", label:"Email", val:"hassan@example.com" },
-              { icon:"📍", label:"Location", val:"Remote · Worldwide" },
-              { icon:"⚡", label:"Response Time", val:"Within 24 hours" },
+              { label:"Email", val:"hassan@example.com" },
+              { label:"Location", val:"Remote · Worldwide" },
+              { label:"Response Time", val:"Within 24 hours" },
             ].map(item => (
               <div key={item.label} style={{ display:"flex", alignItems:"center", gap:14, marginBottom:18 }}>
-                <div style={{ width:40, height:40, background:"#191919", borderRadius:12, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>{item.icon}</div>
                 <div>
                   <div style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', fontSize:11, color:"#555", textTransform:"uppercase", letterSpacing:1, marginBottom:2 }}>{item.label}</div>
                   <div style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', fontSize:14, color:"#ccc" }}>{item.val}</div>
@@ -243,11 +242,10 @@ function ContactContent() {
           </div>
 
           <div style={{ background:`linear-gradient(135deg, ${LIME}22 0%, #0a0a0a 100%)`, border:`1px solid ${LIME}33`, borderRadius:20, padding:28 }}>
-            <div style={{ fontSize:28, marginBottom:8 }}>🚀</div>
             <p style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', fontSize:18, fontWeight:600, marginBottom:8 }}>Free Campaign Audit</p>
             <p style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', fontSize:13, color:"#999", lineHeight:1.6, marginBottom:16 }}>Book a free 45-min audit call and I&apos;ll review your existing campaigns live — no strings attached.</p>
             <button className="lime-btn" style={{ padding:"10px 22px", fontSize:13 }} type="button" onClick={()=>{ setActiveTab("calendar"); setSelectedType("audit"); }}>
-              Claim Free Audit →
+              Claim Free Audit
             </button>
           </div>
         </div>
@@ -257,7 +255,6 @@ function ContactContent() {
             <div className="fade-up" style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:20, padding:36 }}>
               {formSent ? (
                 <div style={{ textAlign:"center", padding:"40px 0" }}>
-                  <div style={{ fontSize:56, marginBottom:16 }}>✅</div>
                   <h3 style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', fontSize:24, marginBottom:8 }}>Message Sent!</h3>
                   <p style={{ color:"#777", fontSize:14 }}>I&apos;ll get back to you within 24 hours.</p>
                   <button className="lime-btn" style={{ marginTop:24 }} type="button" onClick={()=>{ setFormSent(false); setForm({ name:"",email:"",company:"",budget:"",message:"" }); }}>Send Another</button>
@@ -294,7 +291,7 @@ function ContactContent() {
                     <textarea required className="form-input" rows={5} placeholder="Tell me about your goals, current campaigns, and what you're looking to achieve..." value={form.message} onChange={e=>setForm(f=>({...f,message:e.target.value}))} style={{ resize:"vertical" }} />
                   </div>
                   <button className="lime-btn" type="submit" disabled={formLoading} style={{ alignSelf:"flex-end", display:"flex", alignItems:"center", gap:8 }}>
-                    {formLoading ? <><span style={{ width:14,height:14,border:"2px solid #000",borderTopColor:"transparent",borderRadius:"50%",display:"inline-block",animation:"spinRing 0.7s linear infinite" }}/> Sending...</> : "Send Message →"}
+                    {formLoading ? <><span style={{ width:14,height:14,border:"2px solid #000",borderTopColor:"transparent",borderRadius:"50%",display:"inline-block",animation:"spinRing 0.7s linear infinite" }}/> Sending...</> : "Send Message"}
                   </button>
                 </form>
               )}
@@ -305,7 +302,6 @@ function ContactContent() {
             <div className="fade-up" style={{ background:"#111", border:"1px solid #1e1e1e", borderRadius:20, padding:32 }}>
               {booked ? (
                 <div style={{ textAlign:"center", padding:"40px 0" }}>
-                  <div style={{ fontSize:56, marginBottom:16 }}>🎉</div>
                   <h3 style={{ fontFamily:'"Segoe UI", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif', fontSize:24, marginBottom:8 }}>Meeting Booked!</h3>
                   <p style={{ color:"#777", fontSize:14, marginBottom:4 }}>
                     {meetingTypes.find(t=>t.id===selectedType)?.label} on
@@ -384,7 +380,7 @@ function ContactContent() {
                   </div>
 
                   <button className="lime-btn" type="submit" disabled={bookLoading || !selectedDate || !selectedTime} style={{ alignSelf:"flex-end", display:"flex", alignItems:"center", gap:8 }}>
-                    {bookLoading ? <><span style={{ width:14,height:14,border:"2px solid #000",borderTopColor:"transparent",borderRadius:"50%",display:"inline-block",animation:"spinRing 0.7s linear infinite" }}/> Booking...</> : "Confirm Booking →"}
+                    {bookLoading ? <><span style={{ width:14,height:14,border:"2px solid #000",borderTopColor:"transparent",borderRadius:"50%",display:"inline-block",animation:"spinRing 0.7s linear infinite" }}/> Booking...</> : "Confirm Booking"}
                   </button>
                 </form>
               )}

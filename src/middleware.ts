@@ -137,6 +137,30 @@ export async function middleware(req: NextRequest) {
     }
   }
 
+  // Plan-protected dashboard routes: require Pro or Agency
+  if (session?.user?.id && isDashboardRoute) {
+    const { getRequiredPlan, hasPlanAccess } = await import('@/lib/route-plan-config')
+    const required = getRequiredPlan(pathname)
+    if (required) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('plan, is_trial, trial_expires_at')
+        .eq('id', session.user.id)
+        .single()
+      const hasAccess = hasPlanAccess(
+        profile?.plan,
+        profile?.is_trial,
+        profile?.trial_expires_at,
+        required
+      )
+      if (!hasAccess) {
+        const billingUrl = new URL('/dashboard/billing', req.url)
+        billingUrl.searchParams.set('upgrade', required)
+        return NextResponse.redirect(billingUrl)
+      }
+    }
+  }
+
   // CRITICAL: Return res not NextResponse.next()
   return res
 }

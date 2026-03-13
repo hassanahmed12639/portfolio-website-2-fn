@@ -10,7 +10,7 @@ function PixelCaptureInner() {
 
   useEffect(() => {
     // STEP 1 — Capture fbclid from URL immediately
-    const fbclid = searchParams.get('fbclid')
+    const fbclid = searchParams?.get('fbclid')
     let fbcCaptured: string | null = null
     if (fbclid) {
       fbcCaptured = `fb.1.${Date.now()}.${fbclid}`

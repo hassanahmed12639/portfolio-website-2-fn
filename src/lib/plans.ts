@@ -125,8 +125,8 @@ export function isUnlimited(plan: PlanType): boolean {
   return PLANS[plan]?.eventsPerMonth === -1
 }
 
-// Backward compatibility for existing code (trial maps to pro features)
-export type PlanName = PlanType | 'trial'
+// Trial plan names stored in DB: pro_trial, agency_trial (legacy: trial → pro)
+export type PlanName = PlanType | 'trial' | 'pro_trial' | 'agency_trial'
 export type ProfileForPlan = {
   plan?: string | null
   is_trial?: boolean | null
@@ -136,20 +136,35 @@ export type ProfileForPlan = {
   events_reset_at?: string | null
 }
 
+function trialToPlan(plan: PlanName): PlanType {
+  if (plan === 'pro_trial' || plan === 'trial') return 'pro'
+  if (plan === 'agency_trial') return 'agency'
+  return plan as PlanType
+}
+
 export function canAccessFeature(plan: PlanName, feature: FeatureKey): boolean {
-  const p = (plan === 'trial' ? 'pro' : plan) as PlanType
+  const p = trialToPlan(plan)
   return canUseFeature(p, feature)
 }
 
 export function getEffectivePlan(profile: ProfileForPlan): PlanName {
-  if (profile.is_trial && profile.trial_expires_at) {
-    if (new Date(profile.trial_expires_at) > new Date()) {
-      return 'pro' // trial maps to pro features
+  const plan = profile.plan as string | undefined
+  const isTrialPlan = plan === 'pro_trial' || plan === 'agency_trial' || plan === 'trial' || profile.is_trial
+
+  // Trial plans: grant Pro or Agency features until expiry
+  if (isTrialPlan) {
+    if (profile.trial_expires_at && new Date(profile.trial_expires_at) <= new Date()) {
+      return 'free' // expired
     }
-    return 'free'
+    if (plan === 'agency_trial') return 'agency_trial'
+    if (plan === 'pro_trial' || plan === 'trial') return 'pro_trial'
+    if (profile.is_trial) return 'pro_trial' // fallback when plan not set
   }
-  const p = profile.plan as PlanType | undefined
-  return p && p in PLANS ? p : 'free'
+
+  if (plan && (plan in PLANS || plan === 'pro_trial' || plan === 'agency_trial' || plan === 'trial')) {
+    return plan as PlanName
+  }
+  return 'free'
 }
 
 export function isPlanActive(profile: ProfileForPlan): boolean {

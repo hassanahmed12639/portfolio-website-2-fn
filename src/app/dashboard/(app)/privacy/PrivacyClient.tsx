@@ -191,14 +191,14 @@ export default function PrivacyClient() {
           <div
             className={`rounded-xl border p-5 transition-colors ${
               settings.gdpr_mode
-                ? 'border-[var(--dash-success-border)] bg-[var(--dash-surface)]'
+                ? 'border-[var(--dash-accent-border)] bg-[var(--dash-surface)]'
                 : 'border-[var(--dash-border)] bg-[var(--dash-surface)]/50'
             }`}
           >
             <div className="flex items-center justify-between mb-2">
               <span className="font-medium text-[var(--dash-text)]">GDPR Mode</span>
               {settings.gdpr_mode && (
-                <span className="text-xs font-medium px-2 py-0.5 rounded bg-[var(--dash-success)]/30 text-[var(--dash-success)]">
+                <span className="text-xs font-medium px-2 py-0.5 rounded bg-[var(--dash-primary-soft)] text-[var(--dash-primary)]">
                   EU Compliant
                 </span>
               )}
@@ -210,20 +210,20 @@ export default function PrivacyClient() {
             <Switch
               checked={settings.gdpr_mode}
               onCheckedChange={(v) => updateSetting({ gdpr_mode: v })}
-              className="data-[state=checked]:bg-[var(--dash-success)]"
+              className="data-[state=checked]:bg-[var(--dash-primary)]"
             />
           </div>
           <div
             className={`rounded-xl border p-5 transition-colors ${
               settings.ccpa_mode
-                ? 'border-[var(--dash-success-border)] bg-[var(--dash-surface)]'
+                ? 'border-[var(--dash-accent-border)] bg-[var(--dash-surface)]'
                 : 'border-[var(--dash-border)] bg-[var(--dash-surface)]/50'
             }`}
           >
             <div className="flex items-center justify-between mb-2">
               <span className="font-medium text-[var(--dash-text)]">CCPA Mode</span>
               {settings.ccpa_mode && (
-                <span className="text-xs font-medium px-2 py-0.5 rounded bg-[var(--dash-success)]/30 text-[var(--dash-success)]">
+                <span className="text-xs font-medium px-2 py-0.5 rounded bg-[var(--dash-primary-soft)] text-[var(--dash-primary)]">
                   CCPA Compliant
                 </span>
               )}
@@ -235,7 +235,7 @@ export default function PrivacyClient() {
             <Switch
               checked={settings.ccpa_mode}
               onCheckedChange={(v) => updateSetting({ ccpa_mode: v })}
-              className="data-[state=checked]:bg-[var(--dash-success)]"
+              className="data-[state=checked]:bg-[var(--dash-primary)]"
             />
           </div>
         </div>
@@ -260,7 +260,7 @@ export default function PrivacyClient() {
             <Switch
               checked={settings.ip_anonymization}
               onCheckedChange={(v) => updateSetting({ ip_anonymization: v })}
-              className="shrink-0 data-[state=checked]:bg-[var(--dash-success)]"
+              className="shrink-0 data-[state=checked]:bg-[var(--dash-primary)]"
             />
           </div>
           <div className="flex items-start justify-between gap-4">
@@ -273,7 +273,7 @@ export default function PrivacyClient() {
             <Switch
               checked={settings.pii_masking}
               onCheckedChange={(v) => updateSetting({ pii_masking: v })}
-              className="shrink-0 data-[state=checked]:bg-[var(--dash-success)]"
+              className="shrink-0 data-[state=checked]:bg-[var(--dash-primary)]"
             />
           </div>
           <div className="flex items-start justify-between gap-4">
@@ -287,7 +287,7 @@ export default function PrivacyClient() {
             <Switch
               checked={settings.consent_mode}
               onCheckedChange={(v) => updateSetting({ consent_mode: v })}
-              className="shrink-0 data-[state=checked]:bg-[var(--dash-success)]"
+              className="shrink-0 data-[state=checked]:bg-[var(--dash-primary)]"
             />
           </div>
           <div className="flex items-start justify-between gap-4">
@@ -300,7 +300,7 @@ export default function PrivacyClient() {
             <Switch
               checked={settings.data_minimization ?? false}
               onCheckedChange={(v) => updateSetting({ data_minimization: v })}
-              className="shrink-0 data-[state=checked]:bg-[var(--dash-success)]"
+              className="shrink-0 data-[state=checked]:bg-[var(--dash-primary)]"
             />
           </div>
         </div>
@@ -327,7 +327,7 @@ export default function PrivacyClient() {
                   onClick={() => updateSetting({ data_retention_days: d })}
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                     settings.data_retention_days === d
-                      ? 'bg-[var(--dash-success)] text-white'
+                      ? 'bg-[var(--dash-primary)] text-white'
                       : 'bg-[var(--dash-surface-hover)] text-[var(--dash-muted)] hover:bg-[var(--dash-surface-hover)]'
                   }`}
                 >
@@ -349,7 +349,7 @@ export default function PrivacyClient() {
             <Switch
               checked={settings.auto_delete_enabled}
               onCheckedChange={(v) => updateSetting({ auto_delete_enabled: v })}
-              className="data-[state=checked]:bg-[var(--dash-success)]"
+              className="data-[state=checked]:bg-[var(--dash-primary)]"
             />
           </div>
           <div>
@@ -368,7 +368,7 @@ export default function PrivacyClient() {
         <Button
           onClick={saveAllPrivacySettings}
           disabled={saving}
-          className="bg-[var(--dash-success)] hover:bg-[var(--dash-success-strong)] text-white"
+          className="bg-[var(--dash-primary)] hover:bg-[var(--dash-accent-hover)] text-white"
         >
           {saving ? 'Saving…' : 'Save All Privacy Settings'}
         </Button>
@@ -385,7 +385,7 @@ export default function PrivacyClient() {
             <div className="flex-1 h-3 rounded-full bg-[var(--dash-surface-hover)] overflow-hidden">
               <div
                 className={`h-full rounded-full transition-all ${
-                  complianceScore >= 80 ? 'bg-[var(--dash-success)]' : complianceScore >= 50 ? 'bg-[var(--dash-warning)]' : 'bg-[var(--dash-danger)]'
+                  complianceScore >= 80 ? 'bg-[var(--dash-primary)]' : complianceScore >= 50 ? 'bg-[var(--dash-warning)]' : 'bg-[var(--dash-danger)]'
                 }`}
                 style={{ width: `${complianceScore}%` }}
               />
@@ -396,7 +396,7 @@ export default function PrivacyClient() {
             {complianceItems.map((item, i) => (
               <li key={i} className="flex items-center gap-2 text-sm">
                 {item.ok ? (
-                  <span className="text-[var(--dash-success)]">✅</span>
+                  <span className="text-[var(--dash-primary)]">✓</span>
                 ) : (
                   <span className="text-amber-500">⚠️</span>
                 )}
