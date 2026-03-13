@@ -23,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description: 'A production-ready Next.js portfolio starter with GSAP animations',
     ...(isTrackDomain && {
       icons: {
-        icon: '/favicon-new.png',
+        icon: [{ url: '/favicon-new.png', type: 'image/png' }],
       },
     }),
   }
@@ -44,14 +44,21 @@ const themeScript = `
 })();
 `
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const headersList = await headers()
+  const host = headersList.get('host') ?? headersList.get('x-forwarded-host') ?? ''
+  const isTrackDomain = host.includes('track.')
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {isTrackDomain && (
+          <link rel="icon" href="/favicon-new.png" type="image/png" />
+        )}
         <meta
           name="google-site-verification"
           content="EWMl3iYHe0Ccf67EQ-MwhClivAY1DUTy8HM5ijTPU5Q"
