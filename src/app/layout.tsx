@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next'
+import { headers } from 'next/headers'
 import './globals.css'
 import '@/lib/mouseStore'
 import TrackHivePixel from '@/components/TrackHivePixel'
@@ -8,13 +9,24 @@ import { ThemeProvider } from '@/components/ThemeProvider'
 import GsapInit from '@/components/GsapInit'
 import PreloaderWrapper from '@/components/PreloaderWrapper'
 
-export const metadata: Metadata = {
-  metadataBase: new URL('https://itshassanahmed.com'),
-  alternates: {
-    canonical: '/',
-  },
-  title: 'Next.js GSAP Portfolio',
-  description: 'A production-ready Next.js portfolio starter with GSAP animations',
+export async function generateMetadata(): Promise<Metadata> {
+  const headersList = await headers()
+  const host = headersList.get('host') ?? headersList.get('x-forwarded-host') ?? ''
+  const isTrackDomain = host.includes('track.')
+
+  return {
+    metadataBase: new URL('https://itshassanahmed.com'),
+    alternates: {
+      canonical: '/',
+    },
+    title: 'Next.js GSAP Portfolio',
+    description: 'A production-ready Next.js portfolio starter with GSAP animations',
+    ...(isTrackDomain && {
+      icons: {
+        icon: '/favicon-new.png',
+      },
+    }),
+  }
 }
 
 export const viewport: Viewport = {

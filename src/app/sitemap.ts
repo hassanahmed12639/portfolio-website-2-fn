@@ -3,6 +3,10 @@ import { headers } from 'next/headers'
 import { getAllSlugs } from '@/data/caseStudies'
 import { getTrackHiveSitemap } from '@/lib/sitemaps/trackhive'
 
+// Ensure sitemap is generated on each request so blog posts are always included
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 const BASE_URL = 'https://itshassanahmed.com'
 
 function portfolioSitemap(): MetadataRoute.Sitemap {
@@ -78,7 +82,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const host = headersList.get('host') || headersList.get('x-forwarded-host') || ''
 
   if (host.includes('track.')) {
-    return getTrackHiveSitemap()
+    return await getTrackHiveSitemap()
   }
   return portfolioSitemap()
 }
