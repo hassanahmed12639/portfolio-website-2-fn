@@ -77,12 +77,28 @@ function portfolioSitemap(): MetadataRoute.Sitemap {
   ]
 }
 
+const TRACK_BASE = 'https://track.itshassanahmed.com'
+
+function minimalTrackSitemap(): MetadataRoute.Sitemap {
+  return [
+    { url: TRACK_BASE, lastModified: new Date(), changeFrequency: 'weekly', priority: 1.0 },
+    { url: `${TRACK_BASE}/trackhive`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${TRACK_BASE}/pricing`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${TRACK_BASE}/blog`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.8 },
+  ]
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const headersList = await headers()
   const host = headersList.get('host') || headersList.get('x-forwarded-host') || ''
 
   if (host.includes('track.')) {
-    return await getTrackHiveSitemap()
+    try {
+      return await getTrackHiveSitemap()
+    } catch (err) {
+      console.error('[sitemap] TrackHive sitemap failed, returning minimal sitemap:', err)
+      return minimalTrackSitemap()
+    }
   }
   return portfolioSitemap()
 }

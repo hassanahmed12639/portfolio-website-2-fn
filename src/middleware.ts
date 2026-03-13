@@ -76,6 +76,8 @@ export async function middleware(req: NextRequest) {
     '/blog',
     '/auth',
     '/api',
+    '/sitemap.xml',
+    '/robots.txt',
   ]
 
   const isPublicRoute = publicRoutes.some((r) => pathname.startsWith(r))

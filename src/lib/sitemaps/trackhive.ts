@@ -91,6 +91,8 @@ export async function getTrackHiveSitemap(): Promise<MetadataRoute.Sitemap> {
       }
     }
   } catch (err) {
+    // Missing Supabase env (e.g. SUPABASE_SERVICE_ROLE_KEY) or network errors must not break the sitemap
+    // so Google Search Console can always fetch it (avoid "Couldn't fetch").
     const message = err instanceof Error ? err.message : String(err)
     console.error('[sitemap] Failed to fetch blog posts:', message)
   }
