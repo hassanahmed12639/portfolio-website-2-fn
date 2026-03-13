@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
     alternates: {
       canonical: '/',
     },
-    title: 'Next.js GSAP Portfolio',
+    title: isTrackDomain ? 'TrackHive' : 'Hassan Ahmed',
     description: 'A production-ready Next.js portfolio starter with GSAP animations',
     ...(isTrackDomain && {
       icons: {
