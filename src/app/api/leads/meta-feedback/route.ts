@@ -49,8 +49,9 @@ export async function POST(req: NextRequest) {
     }
 
     const scoreMap: Record<string, { event: string; value: number }> = {
-      good: { event: 'Lead', value: 10 },
-      hot: { event: 'Lead', value: 50 },
+      good: { event: 'qualified_lead', value: 50 },
+      bad: { event: 'bad_lead', value: 0 },
+      hot: { event: 'hot_lead', value: 75 },
       converted: {
         event: 'Purchase',
         value: typeof lead.value === 'number' ? lead.value : 100
@@ -155,20 +156,36 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    const now = new Date().toISOString()
     await supabaseAdmin
       .from('leads')
       .update({
         meta_feedback_sent: true,
-        meta_feedback_at: new Date().toISOString()
+        meta_feedback_at: now,
+        meta_feedback_failed: false
       })
       .eq('id', leadId)
       .eq('user_id', user.id)
 
-    return NextResponse.json({ success: true, metaResponse: data })
+    return NextResponse.json({ success: true, metaResponse: data, meta_feedback_at: now })
   } catch (error: unknown) {
     const message =
       error instanceof Error ? error.message : 'Internal server error'
     console.error('[Meta Feedback] Error:', message)
+    try {
+      const supabaseAuth = await createClient()
+      const { data: { user: authUser } } = await supabaseAuth.auth.getUser()
+      if (authUser) {
+        const supabaseAdmin = createAdminClient()
+        await supabaseAdmin
+          .from('leads')
+          .update({ meta_feedback_failed: true })
+          .eq('id', leadId)
+          .eq('user_id', authUser.id)
+      }
+    } catch {
+      // ignore
+    }
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }

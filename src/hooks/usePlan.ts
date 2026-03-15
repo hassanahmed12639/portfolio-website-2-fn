@@ -32,16 +32,36 @@ function computePlanState(profile: {
   plan?: string | null
   is_trial?: boolean | null
   trial_ends_at?: string | null
+  trial_expires_at?: string | null
   events_this_month?: number | null
 }): Pick<PlanState, 'plan' | 'isTrial' | 'trialDaysLeft' | 'trialEndsAt' | 'isTrialExpired'> {
   const now = new Date()
-  const trialEndsAt = profile.trial_ends_at ? new Date(profile.trial_ends_at) : null
+  const trialEndRaw = profile.trial_ends_at ?? profile.trial_expires_at ?? null
+  const trialEndsAt = trialEndRaw ? new Date(trialEndRaw) : null
   const isTrialExpired = !!profile.is_trial && !!trialEndsAt && now > trialEndsAt
-  const trialDaysLeft =
-    trialEndsAt && !isTrialExpired
-      ? Math.max(0, Math.ceil((trialEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)))
-      : 0
-  const effectivePlan: Plan = isTrialExpired ? 'free' : (profile.plan as Plan) || 'free'
+  const trialDaysLeft = (() => {
+    if (!trialEndsAt || isTrialExpired) return 0
+    const dayMs = 1000 * 60 * 60 * 24
+    // Calendar-day countdown:
+    // 13th -> 19th shows 6, then 14th -> 19th shows 5.
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
+    const startOfTrialEnd = new Date(
+      trialEndsAt.getFullYear(),
+      trialEndsAt.getMonth(),
+      trialEndsAt.getDate()
+    ).getTime()
+    return Math.max(0, Math.floor((startOfTrialEnd - startOfToday) / dayMs))
+  })()
+  const rawPlan = (profile.plan && typeof profile.plan === 'string' ? profile.plan.toLowerCase() : '') || 'free'
+  const effectivePlan: Plan = isTrialExpired
+    ? 'free'
+    : rawPlan === 'agency' || rawPlan === 'agency_trial'
+      ? 'agency'
+      : rawPlan === 'pro' || rawPlan === 'pro_trial' || rawPlan === 'trial'
+        ? 'pro'
+        : rawPlan === 'free'
+          ? 'free'
+          : 'free'
 
   return {
     plan: effectivePlan,
@@ -91,7 +111,7 @@ export function usePlan(): PlanState {
 
       const { data: profile } = await supabase
         .from('profiles')
-        .select('plan, is_trial, trial_ends_at, events_this_month')
+        .select('plan, is_trial, trial_ends_at, trial_expires_at, events_this_month')
         .eq('id', user.id)
         .single()
 

@@ -218,5 +218,49 @@
     "threshold": 70,
     "emailSentTo": "hassanonclouds@gmail.com",
     "status": "failed"
+  },
+  {
+    "id": "9c9cd174-04fb-45d8-9e87-71f948f502c4",
+    "ruleId": "27e71f00-a23a-459f-82fa-0a08f7411d56",
+    "ruleName": "low scroe alert",
+    "triggeredAt": "2026-03-13T22:43:34.175Z",
+    "condition": "score_below",
+    "value": 52,
+    "threshold": 70,
+    "emailSentTo": "hassanonclouds@gmail.com",
+    "status": "sent"
+  },
+  {
+    "id": "9735c736-8f28-48cc-8586-e28c709661d2",
+    "ruleId": "27e71f00-a23a-459f-82fa-0a08f7411d56",
+    "ruleName": "low scroe alert",
+    "triggeredAt": "2026-03-13T22:43:34.165Z",
+    "condition": "score_below",
+    "value": 52,
+    "threshold": 70,
+    "emailSentTo": "hassanonclouds@gmail.com",
+    "status": "sent"
+  },
+  {
+    "id": "e0de7de7-926f-42b2-9816-e1f5e36f3717",
+    "ruleId": "188e6a5d-c6a8-4f36-8de1-a558cc5fba1d",
+    "ruleName": "da",
+    "triggeredAt": "2026-03-13T22:43:36.883Z",
+    "condition": "data_quality_below",
+    "value": 98,
+    "threshold": 70,
+    "emailSentTo": "hassanonclouds@gmail.com",
+    "status": "sent"
+  },
+  {
+    "id": "d3a151c0-78ed-4fae-9f54-327c37927c47",
+    "ruleId": "188e6a5d-c6a8-4f36-8de1-a558cc5fba1d",
+    "ruleName": "da",
+    "triggeredAt": "2026-03-13T22:43:36.548Z",
+    "condition": "data_quality_below",
+    "value": 98,
+    "threshold": 70,
+    "emailSentTo": "hassanonclouds@gmail.com",
+    "status": "sent"
   }
 ]

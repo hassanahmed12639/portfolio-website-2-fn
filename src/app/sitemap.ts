@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next'
 import { headers } from 'next/headers'
 import { getAllSlugs } from '@/data/caseStudies'
 import { getTrackHiveSitemap } from '@/lib/sitemaps/trackhive'
+import { isTrackHiveHost } from '@/lib/domain-brand'
 
 // Ensure sitemap is generated on each request so blog posts are always included
 export const dynamic = 'force-dynamic'
@@ -92,7 +93,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const headersList = await headers()
   const host = headersList.get('host') || headersList.get('x-forwarded-host') || ''
 
-  if (host.includes('track.')) {
+  if (isTrackHiveHost(host)) {
     try {
       return await getTrackHiveSitemap()
     } catch (err) {

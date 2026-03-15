@@ -31,6 +31,7 @@ import {
   Sparkles,
   Users,
   Workflow,
+  Webhook,
   Wrench,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
@@ -48,7 +49,7 @@ type NavItem = {
 }
 
 export default function DashboardNav({
-  profile: _profile,
+  profile,
 }: {
   profile?: { dashboard_type?: string | null }
 }) {
@@ -113,6 +114,7 @@ export default function DashboardNav({
       feature: 'raw_data',
     },
     { label: 'Pixels', href: '/dashboard/pixels', icon: Link2 },
+    { label: 'Webhooks', href: '/dashboard/leadgen/webhooks', icon: Webhook },
     { label: 'Playground', href: '/dashboard/playground', icon: PlaySquare },
     {
       label: 'Templates',
@@ -212,6 +214,7 @@ export default function DashboardNav({
       requiredPlan: 'pro',
       feature: 'attribution',
     },
+    { label: 'Unified Revenue', href: '/dashboard/unified-revenue', icon: BarChart2 },
     { label: 'Connectors', href: '/dashboard/connectors', icon: Plug },
     { label: 'Custom Dashboards', href: '/dashboard/custom-dashboards', icon: LayoutDashboard },
     { label: 'Privacy', href: '/dashboard/privacy', icon: Lock },
@@ -236,6 +239,8 @@ export default function DashboardNav({
     '/dashboard/event-replay': RotateCcw,
     '/dashboard/raw-data': Database,
     '/dashboard/pixels': Link2,
+    '/dashboard/leadgen/webhooks': Webhook,
+    '/dashboard/webhooks': Webhook,
     '/dashboard/playground': PlaySquare,
     '/dashboard/templates': FileCode,
     '/dashboard/data-quality': Shield,
@@ -251,11 +256,27 @@ export default function DashboardNav({
     '/dashboard/integrations': Settings2,
     '/dashboard/reverse-proxy': Workflow,
     '/dashboard/attribution': BarChart2,
+    '/dashboard/unified-revenue': BarChart2,
     '/dashboard/connectors': Plug,
     '/dashboard/custom-dashboards': LayoutDashboard,
     '/dashboard/privacy': Lock,
     '/dashboard/team': Users,
   }
+
+  const items = nav.map(({ label, href, icon, ...rest }) => {
+    const resolvedHref =
+      label === 'Webhooks'
+        ? profile?.dashboard_type === 'leadgen'
+          ? '/dashboard/leadgen/webhooks'
+          : '/dashboard/webhooks'
+        : href
+    return {
+      label,
+      href: resolvedHref,
+      icon: icon ?? iconByHref[resolvedHref] ?? iconByHref[href],
+      ...rest,
+    }
+  })
 
   const sections = [
     { title: 'General', from: 0, to: 10 },
@@ -271,13 +292,6 @@ export default function DashboardNav({
       })
     }
   }
-
-  const items = nav.map(({ label, href, icon, ...rest }) => ({
-    label,
-    href,
-    icon: icon ?? iconByHref[href],
-    ...rest,
-  }))
 
   return (
     <>

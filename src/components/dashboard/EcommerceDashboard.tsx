@@ -244,7 +244,7 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
           </p>
           <Link
             href="/dashboard/data-quality"
-            className="bg-[var(--dash-primary)] hover:bg-[var(--dash-accent-hover)] text-[#0F0F0F] text-sm font-semibold px-4 py-2 rounded-lg transition-colors inline-block"
+            className="bg-[var(--dash-primary)] hover:bg-[var(--dash-accent-hover)] text-black text-sm font-semibold px-4 py-2 rounded-lg transition-colors inline-block"
           >
             Improve Score →
           </Link>
@@ -259,7 +259,7 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
           </div>
           <Link
             href="/dashboard/pixels"
-            className="bg-[var(--dash-primary)] hover:bg-[var(--dash-accent-hover)] text-[#0F0F0F] text-sm font-semibold px-4 py-2 rounded-lg transition-colors inline-block"
+            className="bg-[var(--dash-primary)] hover:bg-[var(--dash-accent-hover)] text-black text-sm font-semibold px-4 py-2 rounded-lg transition-colors inline-block"
           >
             Get Your Pixel ID →
           </Link>

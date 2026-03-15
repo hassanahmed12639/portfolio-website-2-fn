@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 
 type Lead = {
   id: string
@@ -10,6 +10,9 @@ type Lead = {
   email?: string | null
   phone?: string | null
   source_url?: string | null
+  source?: string | null
+  source_display?: string | null
+  webhook_id?: string | null
   event_name?: string | null
   value?: number | null
   currency?: string | null
@@ -17,7 +20,16 @@ type Lead = {
   stage?: string | null
   meta_feedback_sent?: boolean | null
   meta_feedback_at?: string | null
+  meta_feedback_failed?: boolean | null
   created_at?: string | null
+}
+
+const SCORE_PILL_STYLES: Record<string, string> = {
+  good: 'bg-green-100 text-green-800',
+  bad: 'bg-red-100 text-red-800',
+  hot: 'bg-orange-100 text-orange-800',
+  converted: 'bg-purple-100 text-purple-800',
+  new: 'bg-slate-100 text-slate-600',
 }
 
 export default function LeadsManagerClient({ initialLeads }: { initialLeads: Lead[] }) {
@@ -26,6 +38,26 @@ export default function LeadsManagerClient({ initialLeads }: { initialLeads: Lea
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
   const [showScoreWarning, setShowScoreWarning] = useState(false)
   const [pendingScore, setPendingScore] = useState<string | null>(null)
+  const [metaFeedbackSending, setMetaFeedbackSending] = useState(false)
+  const [stageSavedToast, setStageSavedToast] = useState(false)
+
+  const duplicateEmails = useMemo(() => {
+    const counts = new Map<string, number>()
+    leads.forEach((l) => {
+      const e = (l.email ?? '').trim().toLowerCase()
+      if (e) counts.set(e, (counts.get(e) ?? 0) + 1)
+    })
+    return new Set([...counts.entries()].filter(([, n]) => n > 1).map(([e]) => e))
+  }, [leads])
+
+  const summary = useMemo(() => {
+    const total = leads.length
+    const good = leads.filter((l) => l.score === 'good').length
+    const bad = leads.filter((l) => l.score === 'bad').length
+    const hot = leads.filter((l) => l.score === 'hot').length
+    const pending = leads.filter((l) => !l.score || l.score === 'new').length
+    return { total, good, bad, hot, pending }
+  }, [leads])
 
   const handleScoreLead = async (leadId: string, score: string) => {
     const currentScore = selectedLead?.score
@@ -49,45 +81,75 @@ export default function LeadsManagerClient({ initialLeads }: { initialLeads: Lea
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: leadId, score })
       })
-
       if (!res.ok) throw new Error('Failed to update score')
 
-      if (score !== 'bad') {
-        await fetch('/api/leads/meta-feedback', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ leadId, score })
-        })
-      }
+      setLeads((prev) =>
+        prev.map((l) => (l.id === leadId ? { ...l, score } : l))
+      )
+      setSelectedLead((prev) =>
+        prev?.id === leadId ? { ...prev, score } : prev
+      )
 
-      const now = new Date().toISOString()
+      setMetaFeedbackSending(true)
+      const metaRes = await fetch('/api/leads/meta-feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ leadId, score })
+      })
+      const metaJson = metaRes.ok ? await metaRes.json() : null
+      const now = metaJson?.meta_feedback_at ?? new Date().toISOString()
+
+      if (!metaRes.ok) {
+        setSelectedLead((prev) =>
+          prev?.id === leadId
+            ? { ...prev, meta_feedback_failed: true }
+            : prev
+        )
+        setLeads((prev) =>
+          prev.map((l) =>
+            l.id === leadId ? { ...l, meta_feedback_failed: true } : l
+          )
+        )
+      } else {
+        setSelectedLead((prev) =>
+          prev?.id === leadId
+            ? {
+                ...prev,
+                meta_feedback_sent: true,
+                meta_feedback_at: now,
+                meta_feedback_failed: false
+              }
+            : prev
+        )
+        setLeads((prev) =>
+          prev.map((l) =>
+            l.id === leadId
+              ? {
+                  ...l,
+                  meta_feedback_sent: true,
+                  meta_feedback_at: now,
+                  meta_feedback_failed: false
+                }
+              : l
+          )
+        )
+      }
+    } catch (error) {
+      console.error('Error scoring lead:', error)
       setSelectedLead((prev) =>
         prev?.id === leadId
-          ? {
-              ...prev,
-              score,
-              meta_feedback_sent: score !== 'bad',
-              meta_feedback_at: score !== 'bad' ? now : prev.meta_feedback_at
-            }
+          ? { ...prev, meta_feedback_failed: true }
           : prev
       )
       setLeads((prev) =>
         prev.map((l) =>
-          l.id === leadId
-            ? {
-                ...l,
-                score,
-                meta_feedback_sent: score !== 'bad',
-                meta_feedback_at: score !== 'bad' ? now : l.meta_feedback_at
-              }
-            : l
+          l.id === leadId ? { ...l, meta_feedback_failed: true } : l
         )
       )
-    } catch (error) {
-      console.error('Error scoring lead:', error)
       alert('Failed to score lead. Please try again.')
     } finally {
       setScoringLoading(false)
+      setMetaFeedbackSending(false)
       setShowScoreWarning(false)
       setPendingScore(null)
     }
@@ -105,6 +167,8 @@ export default function LeadsManagerClient({ initialLeads }: { initialLeads: Lea
       setLeads((prev) =>
         prev.map((l) => (l.id === leadId ? { ...l, stage } : l))
       )
+      setStageSavedToast(true)
+      setTimeout(() => setStageSavedToast(false), 2000)
     } catch (error) {
       console.error('Error updating stage:', error)
       alert('Failed to update stage. Please try again.')
@@ -131,12 +195,43 @@ export default function LeadsManagerClient({ initialLeads }: { initialLeads: Lea
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className={selectedLead ? 'lg:col-span-2' : 'lg:col-span-3'}>
+        {/* Quality Summary Bar */}
+        <div className="flex flex-wrap items-center gap-4 mb-4 p-3 rounded-xl bg-slate-50 border border-slate-100 text-sm">
+          <span className="font-medium text-slate-700">
+            Total: <span className="text-slate-900">{summary.total}</span>
+          </span>
+          <span className="text-slate-500">|</span>
+          <span>
+            Good: <span className="font-semibold text-green-700">{summary.good}</span>
+            {summary.total > 0 && (
+              <span className="text-slate-500 ml-0.5">
+                ({Math.round((summary.good / summary.total) * 100)}%)
+              </span>
+            )}
+          </span>
+          <span>
+            Bad: <span className="font-semibold text-red-700">{summary.bad}</span>
+            {summary.total > 0 && (
+              <span className="text-slate-500 ml-0.5">
+                ({Math.round((summary.bad / summary.total) * 100)}%)
+              </span>
+            )}
+          </span>
+          <span>
+            Hot: <span className="font-semibold text-orange-700">{summary.hot}</span>
+          </span>
+          <span>
+            Pending: <span className="font-semibold text-slate-600">{summary.pending}</span>
+          </span>
+        </div>
+
         <div className="rounded-xl bg-white border border-slate-100 shadow-sm overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-100 text-left text-slate-500">
                 <th className="px-4 py-3 font-medium">Name</th>
                 <th className="px-4 py-3 font-medium">Email</th>
+                <th className="px-4 py-3 font-medium">Phone</th>
                 <th className="px-4 py-3 font-medium">Score</th>
                 <th className="px-4 py-3 font-medium">Stage</th>
                 <th className="px-4 py-3 font-medium">Meta feedback</th>
@@ -144,37 +239,83 @@ export default function LeadsManagerClient({ initialLeads }: { initialLeads: Lea
               </tr>
             </thead>
             <tbody>
-              {leads.map((lead) => (
-                <tr
-                  key={lead.id}
-                  onClick={() => setSelectedLead(lead)}
-                  className={`border-b border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors ${
-                    selectedLead?.id === lead.id ? 'bg-blue-50/50' : ''
-                  }`}
-                >
-                  <td className="px-4 py-3 text-slate-900">
-                    {[lead.first_name, lead.last_name].filter(Boolean).join(' ') ||
-                      '—'}
-                  </td>
-                  <td className="px-4 py-3 text-slate-600">
-                    {lead.email ?? '—'}
-                  </td>
-                  <td className="px-4 py-3 text-slate-600">
-                    {lead.score ?? '—'}
-                  </td>
-                  <td className="px-4 py-3 text-slate-600">
-                    {lead.stage ?? '—'}
-                  </td>
-                  <td className="px-4 py-3">
-                    {lead.meta_feedback_sent ? '✓' : '—'}
-                  </td>
-                  <td className="px-4 py-3 text-slate-600">
-                    {lead.created_at
-                      ? new Date(lead.created_at).toLocaleString()
-                      : '—'}
-                  </td>
-                </tr>
-              ))}
+              {leads.map((lead) => {
+                const scoreVal = lead.score ?? 'new'
+                const metaStatus =
+                  lead.meta_feedback_failed
+                    ? 'failed'
+                    : lead.meta_feedback_sent
+                      ? 'sent'
+                      : 'pending'
+                const isDuplicate = lead.email
+                  ? duplicateEmails.has(String(lead.email).trim().toLowerCase())
+                  : false
+                return (
+                  <tr
+                    key={lead.id}
+                    onClick={() => setSelectedLead(lead)}
+                    className={`border-b border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors ${
+                      selectedLead?.id === lead.id ? 'bg-blue-50/50' : ''
+                    }`}
+                  >
+                    <td className="px-4 py-3 text-slate-900">
+                      <span className="inline-flex items-center gap-1.5 flex-wrap">
+                        {[lead.first_name, lead.last_name].filter(Boolean).join(' ') || '—'}
+                        {lead.source === 'webhook' && (
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800" title={lead.source_display ?? 'Webhook'}>
+                            Webhook{lead.source_display ? `: ${lead.source_display}` : ''}
+                          </span>
+                        )}
+                        {isDuplicate && (
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-800">
+                            Duplicate
+                          </span>
+                        )}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-slate-600">
+                      {lead.email ?? '—'}
+                    </td>
+                    <td className="px-4 py-3 text-slate-600">
+                      {lead.phone ?? '—'}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                          SCORE_PILL_STYLES[scoreVal] ?? SCORE_PILL_STYLES.new
+                        }`}
+                      >
+                        {scoreVal === 'new' ? 'New' : scoreVal.charAt(0).toUpperCase() + scoreVal.slice(1)}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-slate-600">
+                      {lead.stage ?? '—'}
+                    </td>
+                    <td className="px-4 py-3">
+                      {metaStatus === 'sent' && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                          Sent
+                        </span>
+                      )}
+                      {metaStatus === 'pending' && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600">
+                          Pending
+                        </span>
+                      )}
+                      {metaStatus === 'failed' && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">
+                          Failed
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-slate-600">
+                      {lead.created_at
+                        ? new Date(lead.created_at).toLocaleString()
+                        : '—'}
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </div>
@@ -199,9 +340,14 @@ export default function LeadsManagerClient({ initialLeads }: { initialLeads: Lea
                 <span className="text-slate-600 font-medium">Phone:</span>{' '}
                 {selectedLead.phone || 'N/A'}
               </p>
+              {(selectedLead.source === 'webhook' || selectedLead.source_url) && (
               <p className="text-sm text-slate-900">
                 <span className="text-slate-600 font-medium">Source:</span>{' '}
-                {selectedLead.source_url ? (
+                {selectedLead.source === 'webhook' ? (
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                    Webhook{selectedLead.source_display ? ` — ${selectedLead.source_display}` : ''}
+                  </span>
+                ) : selectedLead.source_url ? (
                   <a
                     href={selectedLead.source_url}
                     target="_blank"
@@ -221,6 +367,7 @@ export default function LeadsManagerClient({ initialLeads }: { initialLeads: Lea
                   <span className="text-slate-500">Direct / Unknown</span>
                 )}
               </p>
+              )}
               <p className="text-sm text-slate-900">
                 <span className="text-slate-600 font-medium">Event:</span>{' '}
                 {selectedLead.event_name ?? 'N/A'}
@@ -302,6 +449,9 @@ export default function LeadsManagerClient({ initialLeads }: { initialLeads: Lea
                 <option value="converted">Converted</option>
                 <option value="lost">Lost</option>
               </select>
+              {stageSavedToast && (
+                <p className="mt-1.5 text-xs font-medium text-green-600">Saved</p>
+              )}
             </div>
 
             {/* Platform Feedback */}
@@ -312,9 +462,19 @@ export default function LeadsManagerClient({ initialLeads }: { initialLeads: Lea
 
               <div className="flex items-center justify-between">
                 <span className="text-xs text-slate-600">Meta CAPI</span>
-                {selectedLead.meta_feedback_sent ? (
+                {metaFeedbackSending ? (
+                  <span className="text-xs text-slate-500 font-medium">
+                    Sending...
+                  </span>
+                ) : selectedLead.meta_feedback_failed ? (
+                  <span className="text-xs text-red-600 font-medium">
+                    Failed — retry
+                  </span>
+                ) : selectedLead.meta_feedback_sent ? (
                   <span className="text-xs text-green-600 font-medium">
-                    ✓ Signal sent
+                    Sent ✓ {selectedLead.meta_feedback_at
+                      ? new Date(selectedLead.meta_feedback_at).toLocaleTimeString()
+                      : ''}
                   </span>
                 ) : (
                   <span className="text-xs text-slate-500">Pending score</span>

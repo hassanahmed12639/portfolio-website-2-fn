@@ -18,6 +18,7 @@ export const PRO_ROUTES = [
   '/dashboard/integrations',
   '/dashboard/reverse-proxy',
   '/dashboard/attribution',
+  '/dashboard/unified-revenue',
   '/dashboard/connectors',
   '/dashboard/custom-dashboards',
 ] as const

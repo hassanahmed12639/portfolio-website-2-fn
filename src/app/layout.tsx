@@ -8,18 +8,20 @@ import MetaDomainVerification from '@/components/MetaDomainVerification'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import GsapInit from '@/components/GsapInit'
 import PreloaderWrapper from '@/components/PreloaderWrapper'
+import { getBrandNameForHost, isTrackHiveHost } from '@/lib/domain-brand'
 
 export async function generateMetadata(): Promise<Metadata> {
   const headersList = await headers()
   const host = headersList.get('host') ?? headersList.get('x-forwarded-host') ?? ''
-  const isTrackDomain = host.includes('track.')
+  const isTrackDomain = isTrackHiveHost(host)
+  const brandName = getBrandNameForHost(host)
 
   return {
-    metadataBase: new URL('https://itshassanahmed.com'),
+    metadataBase: new URL(isTrackDomain ? 'https://track.itshassanahmed.com' : 'https://itshassanahmed.com'),
     alternates: {
       canonical: '/',
     },
-    title: isTrackDomain ? 'TrackHive' : 'Hassan Ahmed',
+    title: brandName,
     description: 'A production-ready Next.js portfolio starter with GSAP animations',
     ...(isTrackDomain && {
       icons: {
@@ -51,7 +53,7 @@ export default async function RootLayout({
 }) {
   const headersList = await headers()
   const host = headersList.get('host') ?? headersList.get('x-forwarded-host') ?? ''
-  const isTrackDomain = host.includes('track.')
+  const isTrackDomain = isTrackHiveHost(host)
 
   return (
     <html lang="en" suppressHydrationWarning>

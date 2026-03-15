@@ -3,10 +3,6 @@ import { createClient } from '@/lib/supabase/server'
 import type { AlertLog } from '@/lib/email-alerts'
 import { getAlertEmailHtml } from '@/lib/alert-email'
 import { Resend } from 'resend'
-import { readFile, writeFile } from 'fs/promises'
-import path from 'path'
-
-const LOGS_PATH = path.join(process.cwd(), 'src', 'data', 'alert-logs.json')
 const FROM_EMAIL = 'TrackHive <noreply@itshassanahmed.com>'
 export const dynamic = 'force-dynamic'
 
@@ -50,11 +46,19 @@ function conditionDetails(condition: string, value: number, threshold: number, r
   return parts.join(' ')
 }
 
-async function appendLog(log: AlertLog) {
-  const raw = await readFile(LOGS_PATH, 'utf-8').catch(() => '[]')
-  const logs: AlertLog[] = JSON.parse(raw)
-  logs.push(log)
-  await writeFile(LOGS_PATH, JSON.stringify(logs, null, 2))
+async function appendLog(supabase: Awaited<ReturnType<typeof createClient>>, userId: string, log: AlertLog) {
+  await supabase.from('alert_logs').insert({
+    id: log.id,
+    user_id: userId,
+    rule_id: log.ruleId === 'test' ? null : log.ruleId,
+    rule_name: log.ruleName,
+    triggered_at: log.triggeredAt,
+    condition: log.condition,
+    value: log.value,
+    threshold: log.threshold,
+    email_sent_to: log.emailSentTo,
+    status: log.status,
+  })
 }
 
 export async function POST(request: NextRequest) {
@@ -105,14 +109,14 @@ export async function POST(request: NextRequest) {
     })
     if (error) {
       logEntry.status = 'failed'
-      await appendLog(logEntry)
+      await appendLog(supabase, user.id, logEntry)
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
-    await appendLog(logEntry)
+    await appendLog(supabase, user.id, logEntry)
     return NextResponse.json({ ok: true })
   } catch (err) {
     logEntry.status = 'failed'
-    await appendLog(logEntry)
+    await appendLog(supabase, user.id, logEntry)
     return NextResponse.json({ error: String(err) }, { status: 500 })
   }
 }

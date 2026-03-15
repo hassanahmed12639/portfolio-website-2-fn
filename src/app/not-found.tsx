@@ -1,10 +1,11 @@
 import Link from 'next/link'
 import { headers } from 'next/headers'
+import { isTrackHiveHost } from '@/lib/domain-brand'
 
 export default async function NotFound() {
   const headersList = await headers()
   const host = headersList.get('host') ?? ''
-  const isTrackDomain = host.includes('track.')
+  const isTrackDomain = isTrackHiveHost(host)
 
   if (isTrackDomain) {
     return (

@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextRequest, NextResponse } from 'next/server'
+import { isPortfolioHost, isTrackHiveHost } from '@/lib/domain-brand'
 
 // Block common attack patterns
 function isSuspiciousPath(pathname: string): boolean {
@@ -40,8 +41,8 @@ export async function middleware(req: NextRequest) {
     return res
   }
 
-  const isTrackDomain = hostname.includes('track.itshassanahmed.com')
-  const isPortfolioDomain = hostname === 'itshassanahmed.com' || hostname === 'www.itshassanahmed.com'
+  const isTrackDomain = isTrackHiveHost(hostname)
+  const isPortfolioDomain = isPortfolioHost(hostname)
 
   // Portfolio domain /admin → portfolio admin (do not redirect to TrackHive)
   if (isPortfolioDomain && pathname.startsWith('/admin')) {

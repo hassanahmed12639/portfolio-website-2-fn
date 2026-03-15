@@ -52,6 +52,68 @@ function getClientIp(headers: Headers): string | null {
   )
 }
 
+function parseAttributionSignals(inputUrl?: string | null) {
+  if (!inputUrl) {
+    return {
+      utm_source: null,
+      utm_medium: null,
+      utm_campaign: null,
+      utm_term: null,
+      utm_content: null,
+      gclid: null,
+      fbclid: null,
+      ttclid: null,
+      msclkid: null,
+      landing_page: null,
+    }
+  }
+  try {
+    const u = new URL(inputUrl)
+    return {
+      utm_source: u.searchParams.get('utm_source'),
+      utm_medium: u.searchParams.get('utm_medium'),
+      utm_campaign: u.searchParams.get('utm_campaign'),
+      utm_term: u.searchParams.get('utm_term'),
+      utm_content: u.searchParams.get('utm_content'),
+      gclid: u.searchParams.get('gclid'),
+      fbclid: u.searchParams.get('fbclid'),
+      ttclid: u.searchParams.get('ttclid'),
+      msclkid: u.searchParams.get('msclkid'),
+      landing_page: `${u.origin}${u.pathname}`,
+    }
+  } catch {
+    return {
+      utm_source: null,
+      utm_medium: null,
+      utm_campaign: null,
+      utm_term: null,
+      utm_content: null,
+      gclid: null,
+      fbclid: null,
+      ttclid: null,
+      msclkid: null,
+      landing_page: null,
+    }
+  }
+}
+
+function inferChannelFromSignals(signals: {
+  utm_source: string | null
+  utm_medium: string | null
+  gclid: string | null
+  fbclid: string | null
+  ttclid: string | null
+}): string {
+  const source = (signals.utm_source ?? '').toLowerCase()
+  const medium = (signals.utm_medium ?? '').toLowerCase()
+  if (signals.fbclid || source.includes('facebook') || source.includes('instagram')) return 'meta'
+  if (signals.ttclid || source.includes('tiktok')) return 'tiktok'
+  if (signals.gclid || source.includes('google') || medium === 'cpc') return 'google_ads'
+  if (medium === 'organic' || source.includes('google')) return 'organic'
+  if (medium === 'email') return 'email'
+  return 'direct'
+}
+
 export async function POST(request: NextRequest) {
   try {
     if (!serviceRoleKey || !supabaseUrl) {
@@ -173,8 +235,10 @@ export async function POST(request: NextRequest) {
     num_items: bodyNumItems,
     user_id: bodyUserId,
     referrer: bodyReferrer,
+    ttclid: bodyTtclid,
   } = body
   const event_source_url = bodySourceUrl ?? bodyReferrer ?? request.headers.get('referer') ?? undefined
+  const attributionSignals = parseAttributionSignals(event_source_url)
 
   // Support th.js payload: extract from user_data arrays if present
   const email = bodyEmail ?? userData?.em?.[0] ?? undefined
@@ -573,6 +637,18 @@ export async function POST(request: NextRequest) {
     event_id: event_id ?? null,
     event_source_url: event_source_url_final ?? null,
     visitor_id: visitor_id ?? null,
+    referrer: bodyReferrer ?? null,
+    session_key: visitor_id ? `${visitor_id}:${new Date().toISOString().slice(0, 10)}` : null,
+    utm_source: attributionSignals.utm_source,
+    utm_medium: attributionSignals.utm_medium,
+    utm_campaign: attributionSignals.utm_campaign,
+    utm_term: attributionSignals.utm_term,
+    utm_content: attributionSignals.utm_content,
+    gclid: attributionSignals.gclid,
+    fbclid: fbclid ?? attributionSignals.fbclid,
+    ttclid: bodyTtclid ?? attributionSignals.ttclid,
+    msclkid: attributionSignals.msclkid,
+    landing_page: attributionSignals.landing_page,
   }
 
   const fiveMinutesFromNow = new Date(Date.now() + 5 * 60 * 1000).toISOString()
@@ -1009,6 +1085,65 @@ export async function POST(request: NextRequest) {
       })
       .eq('event_id', event_id)
       .eq('user_id', profile.id)
+  }
+
+  // Unified revenue infrastructure: persist touchpoints + canonical conversion rows.
+  try {
+    const inferredChannel = inferChannelFromSignals({
+      utm_source: attributionSignals.utm_source,
+      utm_medium: attributionSignals.utm_medium,
+      gclid: attributionSignals.gclid,
+      fbclid: fbclid ?? attributionSignals.fbclid,
+      ttclid: bodyTtclid ?? attributionSignals.ttclid,
+    })
+    await supabaseService.from('channel_touchpoints').insert({
+      user_id: profile.id,
+      conversion_event_id: event_id,
+      touchpoint_at: new Date().toISOString(),
+      session_key: internalPayload.session_key,
+      visitor_id: visitor_id ?? null,
+      event_id: event_id ?? null,
+      event_name,
+      channel: inferredChannel,
+      source: attributionSignals.utm_source,
+      medium: attributionSignals.utm_medium,
+      campaign: attributionSignals.utm_campaign,
+      term: attributionSignals.utm_term,
+      content: attributionSignals.utm_content,
+      landing_page: attributionSignals.landing_page,
+      referrer: bodyReferrer ?? null,
+      gclid: attributionSignals.gclid,
+      fbclid: fbclid ?? attributionSignals.fbclid,
+      ttclid: bodyTtclid ?? attributionSignals.ttclid,
+      msclkid: attributionSignals.msclkid,
+      click_id: attributionSignals.gclid ?? (fbclid ?? attributionSignals.fbclid) ?? (bodyTtclid ?? attributionSignals.ttclid) ?? null,
+      raw_payload: internalPayload,
+    })
+
+    const isRevenueConversion = event_name === 'Purchase' || Number(value ?? 0) > 0
+    if (isRevenueConversion && event_id) {
+      await supabaseService.from('conversions_fact').upsert(
+        {
+          user_id: profile.id,
+          event_id,
+          event_name,
+          conversion_at: new Date().toISOString(),
+          value: Number(value ?? 0),
+          currency: currency ?? 'USD',
+          order_id: bodyOrderId ?? null,
+          source_url: event_source_url_final ?? null,
+          referrer: bodyReferrer ?? null,
+          visitor_id: visitor_id ?? null,
+          session_key: internalPayload.session_key,
+          is_exact: true,
+          payload: internalPayload,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: 'user_id,event_id' }
+      )
+    }
+  } catch (infrastructureError) {
+    console.error('[event] unified revenue persistence failed', infrastructureError)
   }
 
   if (!is_test) {
