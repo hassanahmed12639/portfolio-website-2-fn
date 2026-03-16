@@ -129,7 +129,7 @@ async function processWebhookInBackground(
     const platformResponses: Record<string, unknown> = {}
 
     // Create lead in leads table
-    const leadData = {
+    const leadData: Record<string, unknown> = {
       user_id: webhook.user_id,
       pixel_id: null,
       event_id: eventId,
@@ -152,9 +152,9 @@ async function processWebhookInBackground(
     }
     let leadId: string | null = null
     let leadError: { message: string } | null = null
-    let { data: leadRow, error: leadErr } = await supabaseAdmin
+    let { data: leadRow, error: leadErr }: any = await supabaseAdmin
       .from('leads')
-      .insert(leadData)
+      .insert(leadData as any)
       .select('id')
       .single()
 
@@ -165,9 +165,13 @@ async function processWebhookInBackground(
         /relation.*does not exist/i.test(leadErr.message)
       if (isColumnError) {
         const { source: _s, source_display: _sd, webhook_id: _wid, ...leadDataWithoutWebhookCols } = leadData
-        const retry = await supabaseAdmin.from('leads').insert(leadDataWithoutWebhookCols).select('id').single()
+        const retry: any = await supabaseAdmin
+          .from('leads')
+          .insert(leadDataWithoutWebhookCols as any)
+          .select('id')
+          .single()
         if (!retry.error) {
-          leadId = retry.data?.id ?? null
+          leadId = (retry.data as any)?.id ?? null
           leadErr = null
         }
       }
@@ -177,12 +181,12 @@ async function processWebhookInBackground(
         platformResponses.lead = { ok: false, error: leadErr.message }
       }
     } else {
-      leadId = leadRow?.id ?? null
+      leadId = (leadRow as any)?.id ?? null
     }
     const { hashedEmail, hashedPhone } = hashForPlatforms(email, phone)
 
     if (webhook.pixel_ids?.length) {
-      const { data: pixels } = await supabaseAdmin
+      const { data: pixels }: any = await supabaseAdmin
         .from('pixels')
         .select('id, pixel_id, access_token, platform, name')
         .in('id', webhook.pixel_ids)
@@ -233,20 +237,20 @@ async function processWebhookInBackground(
     const hasPlatformErrors = Object.keys(platformResponses).length > 0 && !allOk
     const status = leadError || hasPlatformErrors ? 'failed' : 'sent'
 
-    await supabaseAdmin
+    await (supabaseAdmin as any)
       .from('webhook_logs')
       .update({
-        mapped_data: mapped,
+        mapped_data: mapped as any,
         status,
-        platform_responses: platformResponses,
-        lead_id: leadId,
-      })
+        platform_responses: platformResponses as any,
+        lead_id: leadId as any,
+      } as any)
       .eq('id', logId)
   } catch (err) {
     console.error('[webhook] Background process error:', err)
-    await supabaseAdmin
+    await (supabaseAdmin as any)
       .from('webhook_logs')
-      .update({ status: 'failed', platform_responses: { error: String(err) } })
+      .update({ status: 'failed', platform_responses: { error: String(err) } } as any)
       .eq('id', logId)
   }
 }
@@ -309,7 +313,7 @@ export async function POST(
       field_map: (webhook.field_map as FieldMap) || {},
     },
     rawPayload,
-    supabaseAdmin
+    supabaseAdmin as any
   )
 
   return NextResponse.json({ ok: true })

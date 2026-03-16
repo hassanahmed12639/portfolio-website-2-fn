@@ -180,7 +180,6 @@ export async function POST(req: NextRequest) {
         await supabaseAdmin
           .from('leads')
           .update({ meta_feedback_failed: true })
-          .eq('id', leadId)
           .eq('user_id', authUser.id)
       }
     } catch {

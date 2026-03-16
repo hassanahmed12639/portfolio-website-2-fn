@@ -8,7 +8,6 @@ import {
   encryptIfValue,
   normalizeGscSiteUrl,
 } from '@/lib/gsc'
-import { computeSeoIntelligence } from '@/lib/seo-intelligence'
 
 export const dynamic = 'force-dynamic'
 
@@ -360,13 +359,6 @@ export async function POST(request: NextRequest) {
       .update({ last_synced_at: new Date().toISOString(), updated_at: new Date().toISOString() })
       .eq('id', connection.id)
 
-    let seoIntelligence: { opportunities: number; clusters: number; cannibalizations: number } | null = null
-    try {
-      seoIntelligence = await computeSeoIntelligence(user.id, property.id, 490)
-    } catch (seoError) {
-      console.warn('[gsc/sync] computeSeoIntelligence skipped', seoError)
-    }
-
     return NextResponse.json({
       success: true,
       site_url: property.site_url,
@@ -379,7 +371,6 @@ export async function POST(request: NextRequest) {
           ? 'No keyword rows returned by Google for this property/date range. Try full 16-month backfill or select a sc-domain property.'
           : null,
       range: { startDate, endDate },
-      seo_intelligence: seoIntelligence,
     })
   } catch (error) {
     const anyErr = error as { message?: string; details?: string; hint?: string; code?: string } | null

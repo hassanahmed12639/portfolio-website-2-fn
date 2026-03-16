@@ -1143,7 +1143,7 @@ export async function POST(request: NextRequest) {
       )
     }
   } catch (infrastructureError) {
-    console.error('[event] unified revenue persistence failed', infrastructureError)
+    console.error('[event] revenue persistence failed', infrastructureError)
   }
 
   if (!is_test) {

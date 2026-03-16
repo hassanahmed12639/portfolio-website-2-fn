@@ -36,10 +36,13 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  const logsWithName = (logs ?? []).map((log: { webhooks?: { name?: string } | null }) => ({
-    ...log,
-    webhook_name: (log.webhooks as { name?: string } | null)?.name ?? null,
-  }))
+  const logsWithName = (logs ?? []).map((log: any) => {
+    const firstWebhook = Array.isArray(log.webhooks) ? log.webhooks[0] : log.webhooks
+    return {
+      ...log,
+      webhook_name: firstWebhook?.name ?? null,
+    }
+  })
 
   return NextResponse.json({ logs: logsWithName })
 }
