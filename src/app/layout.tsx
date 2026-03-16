@@ -25,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description: 'A production-ready Next.js portfolio starter with GSAP animations',
     ...(isTrackDomain && {
       icons: {
-        icon: [{ url: '/favicon-new.png', type: 'image/png' }],
+        icon: [{ url: '/logo-new-1.png', type: 'image/png' }],
       },
     }),
   }
@@ -59,7 +59,7 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         {isTrackDomain && (
-          <link rel="icon" href="/favicon-new.png" type="image/png" />
+          <link rel="icon" href="/logo-new-1.png" type="image/png" />
         )}
         <meta
           name="google-site-verification"
