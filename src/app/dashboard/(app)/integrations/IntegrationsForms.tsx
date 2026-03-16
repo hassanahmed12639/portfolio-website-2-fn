@@ -4,10 +4,10 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
-type MetaIntegration = { pixel_id: string | null; access_token: string | null; meta_test_event_code?: string | null } | null
+type MetaIntegration = { pixel_id: string | null; has_access_token: boolean; meta_test_event_code?: string | null } | null
 type GoogleIntegration = { tag_id: string | null; conversion_label?: string | null } | null
-type PixelTokenIntegration = { pixel_id: string | null; access_token: string | null } | null
-type Ga4Integration = { tag_id: string | null; access_token: string | null } | null
+type PixelTokenIntegration = { pixel_id: string | null; has_access_token: boolean } | null
+type Ga4Integration = { tag_id: string | null; has_access_token: boolean } | null
 
 export default function IntegrationsForms({
   meta,
@@ -25,14 +25,15 @@ export default function IntegrationsForms({
   ga4: Ga4Integration
 }) {
   const [metaPixelId, setMetaPixelId] = useState(meta?.pixel_id ?? '')
-  const [metaAccessToken, setMetaAccessToken] = useState(meta?.access_token ?? '')
+  // Never prefill stored tokens in the browser. We only accept a new token if the user pastes one.
+  const [metaAccessToken, setMetaAccessToken] = useState('')
   const [metaTestEventCode, setMetaTestEventCode] = useState(meta?.meta_test_event_code ?? '')
   const [googleTagId, setGoogleTagId] = useState(google?.tag_id ?? '')
   const [googleConversionLabel, setGoogleConversionLabel] = useState(google?.conversion_label ?? '')
   const [tiktokPixelId, setTiktokPixelId] = useState(tiktok?.pixel_id ?? '')
-  const [tiktokAccessToken, setTiktokAccessToken] = useState(tiktok?.access_token ?? '')
+  const [tiktokAccessToken, setTiktokAccessToken] = useState('')
   const [ga4MeasurementId, setGa4MeasurementId] = useState(ga4?.tag_id ?? '')
-  const [ga4ApiSecret, setGa4ApiSecret] = useState(ga4?.access_token ?? '')
+  const [ga4ApiSecret, setGa4ApiSecret] = useState('')
 
   const [metaSaveMsg, setMetaSaveMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [metaTestMsg, setMetaTestMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
@@ -81,6 +82,7 @@ export default function IntegrationsForms({
         return
       }
       setMetaSaveMsg({ type: 'success', text: 'Saved.' })
+      setMetaAccessToken('')
       router.refresh()
       if (metaPixelId.trim() && metaAccessToken.trim()) {
         const testRes = await fetch('/api/integrations/test', {
@@ -220,6 +222,7 @@ export default function IntegrationsForms({
         return
       }
       setTiktokSaveMsg({ type: 'success', text: 'Saved.' })
+      setTiktokAccessToken('')
       router.refresh()
       if (tiktokPixelId.trim() && tiktokAccessToken.trim()) {
         const testRes = await fetch('/api/integrations/test', {
@@ -297,6 +300,7 @@ export default function IntegrationsForms({
         return
       }
       setGa4SaveMsg({ type: 'success', text: 'Saved.' })
+      setGa4ApiSecret('')
       router.refresh()
       if (ga4MeasurementId.trim() && ga4ApiSecret.trim()) {
         const testRes = await fetch('/api/integrations/test', {
@@ -356,15 +360,12 @@ export default function IntegrationsForms({
   // Sync form state when server props change (e.g. after router.refresh() or navigation)
   useEffect(() => {
     setMetaPixelId(meta?.pixel_id ?? '')
-    setMetaAccessToken(meta?.access_token ?? '')
     setMetaTestEventCode(meta?.meta_test_event_code ?? '')
     setGoogleTagId(google?.tag_id ?? '')
     setGoogleConversionLabel(google?.conversion_label ?? '')
     setTiktokPixelId(tiktok?.pixel_id ?? '')
-    setTiktokAccessToken(tiktok?.access_token ?? '')
     setGa4MeasurementId(ga4?.tag_id ?? '')
-    setGa4ApiSecret(ga4?.access_token ?? '')
-  }, [meta?.pixel_id, meta?.access_token, meta?.meta_test_event_code, google?.tag_id, google?.conversion_label, tiktok?.pixel_id, tiktok?.access_token, ga4?.tag_id, ga4?.access_token])
+  }, [meta?.pixel_id, meta?.meta_test_event_code, google?.tag_id, google?.conversion_label, tiktok?.pixel_id, ga4?.tag_id])
 
   useEffect(() => {
     fetch('/api/meta/match-rate')
@@ -373,10 +374,10 @@ export default function IntegrationsForms({
       .catch(() => setMatchRate(null))
   }, [])
 
-  const metaConnected = meta && (meta.pixel_id || meta.access_token)
+  const metaConnected = meta && (meta.pixel_id || meta.has_access_token)
   const googleConnected = google && (google.tag_id || google.conversion_label)
-  const tiktokConnected = tiktok && (tiktok.pixel_id || tiktok.access_token)
-  const ga4Connected = ga4 && (ga4.tag_id || ga4.access_token)
+  const tiktokConnected = tiktok && (tiktok.pixel_id || tiktok.has_access_token)
+  const ga4Connected = ga4 && (ga4.tag_id || ga4.has_access_token)
 
   const installScript = `<script src="https://track.itshassanahmed.com/th.js?id=${metaPixelId.trim() || 'YOUR_PIXEL_ID'}"></script>`
 
@@ -427,7 +428,7 @@ export default function IntegrationsForms({
               type="password"
               value={metaAccessToken}
               onChange={(e) => setMetaAccessToken(e.target.value)}
-              placeholder="••••••••"
+              placeholder={meta?.has_access_token ? 'Saved (paste to replace)' : '••••••••'}
               className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]"
             />
           </div>
@@ -638,7 +639,7 @@ export default function IntegrationsForms({
               type="password"
               value={tiktokAccessToken}
               onChange={(e) => setTiktokAccessToken(e.target.value)}
-              placeholder="••••••••"
+              placeholder={tiktok?.has_access_token ? 'Saved (paste to replace)' : '••••••••'}
               className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]"
             />
             <a
@@ -713,7 +714,7 @@ export default function IntegrationsForms({
               type="password"
               value={ga4ApiSecret}
               onChange={(e) => setGa4ApiSecret(e.target.value)}
-              placeholder="••••••••"
+              placeholder={ga4?.has_access_token ? 'Saved (paste to replace)' : '••••••••'}
               className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]"
             />
             <a
