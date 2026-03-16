@@ -244,7 +244,7 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
           </p>
           <Link
             href="/dashboard/data-quality"
-            className="bg-[var(--dash-primary)] hover:bg-[var(--dash-accent-hover)] text-black text-sm font-semibold px-4 py-2 rounded-lg transition-colors inline-block"
+            className="bg-[var(--dash-primary)] hover:bg-[var(--dash-accent-hover)] text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors inline-block"
           >
             Improve Score →
           </Link>
@@ -252,14 +252,14 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
 
         {/* Install snippet */}
         <div className="dash-card bg-[#0F0F0F] rounded-xl p-5 border border-slate-700">
-          <p className="font-bold mb-1 text-black">Install Tracking Script</p>
+          <p className="font-bold mb-1 text-white">Install Tracking Script</p>
           <p className="text-slate-400 text-sm mb-3">Add to your website&apos;s &lt;head&gt; tag</p>
           <div className="bg-slate-800 rounded-lg p-3 font-mono text-xs text-white mb-3 overflow-x-auto">
             {`<script src="https://track.itshassanahmed.com/th.js?id=${firstPixelId || 'YOUR_PIXEL_ID'}"></script>`}
           </div>
           <Link
             href="/dashboard/pixels"
-            className="bg-[var(--dash-primary)] hover:bg-[var(--dash-accent-hover)] text-black text-sm font-semibold px-4 py-2 rounded-lg transition-colors inline-block"
+            className="bg-[var(--dash-primary)] hover:bg-[var(--dash-accent-hover)] text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors inline-block"
           >
             Get Your Pixel ID →
           </Link>
