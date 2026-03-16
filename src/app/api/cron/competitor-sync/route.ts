@@ -29,10 +29,6 @@ export async function GET(request: NextRequest) {
 
   return NextResponse.json({ success: true, processed_users: processed, failures })
 }
-import { NextRequest, NextResponse } from 'next/server'
-import { createAdminClient } from '@/lib/supabase/admin'
-
-export const dynamic = 'force-dynamic'
 
 function isAuthorized(request: NextRequest) {
   const expected = process.env.CRON_SECRET

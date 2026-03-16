@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import {
+  decryptIfValue,
+  encryptIfValue,
+  querySearchAnalytics,
+  refreshAccessToken,
+} from '@/lib/gsc'
 
 export const dynamic = 'force-dynamic'
 
@@ -26,16 +32,6 @@ export async function POST(request: NextRequest) {
     note: 'Cron endpoint is active. Use app-level job runner to call /api/gsc/sync per user/property.',
   })
 }
-import { NextRequest, NextResponse } from 'next/server'
-import { createAdminClient } from '@/lib/supabase/admin'
-import {
-  decryptIfValue,
-  encryptIfValue,
-  querySearchAnalytics,
-  refreshAccessToken,
-} from '@/lib/gsc'
-
-export const dynamic = 'force-dynamic'
 
 function getDateRange(days: number) {
   const end = new Date()
