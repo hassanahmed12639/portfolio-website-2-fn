@@ -75,9 +75,11 @@ const EVENT_OPTIONS = [
 ]
 
 function getBaseUrl() {
+  if (typeof window !== 'undefined' && window.location?.origin) {
+    return window.location.origin.replace(/\/$/, '')
+  }
   const envUrl = process.env.NEXT_PUBLIC_APP_URL
   if (envUrl) return envUrl.replace(/\/$/, '') // allow trailing slash in env
-  if (typeof window !== 'undefined') return window.location.origin
   return 'https://track.itshassanahmed.com/trackhive'
 }
 
@@ -177,7 +179,7 @@ export default function WebhooksClient() {
         <button
           type="button"
           onClick={openCreate}
-          className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold bg-[var(--dash-primary)] text-black hover:bg-[var(--dash-accent-hover)] transition-colors"
+          className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold bg-[var(--dash-primary)] text-white hover:bg-[var(--dash-accent-hover)] transition-colors"
         >
           <Plus className="h-4 w-4" />
           New webhook
@@ -204,7 +206,7 @@ export default function WebhooksClient() {
             <button
               type="button"
               onClick={openCreate}
-              className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold bg-[var(--dash-primary)] text-black hover:bg-[var(--dash-accent-hover)]"
+              className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold bg-[var(--dash-primary)] text-white hover:bg-[var(--dash-accent-hover)]"
             >
               Create your first webhook
             </button>
@@ -654,7 +656,7 @@ function WebhookSlideOver({
                     <button
                       type="button"
                       onClick={() => navigator.clipboard.writeText(webhookUrl)}
-                      className="shrink-0 px-3 py-2 rounded-lg bg-[var(--dash-primary)] text-black text-sm font-semibold"
+                      className="shrink-0 px-3 py-2 rounded-lg bg-[var(--dash-primary)] text-white text-sm font-semibold"
                     >
                       Copy
                     </button>
@@ -888,7 +890,7 @@ function WebhookSlideOver({
             </button>
           ) : null}
           {step < 4 ? (
-            <button type="button" onClick={goNext} disabled={saving || (step === 1 && !form.name.trim())} className="px-4 py-2 rounded-xl bg-[var(--dash-primary)] text-black text-sm font-semibold disabled:opacity-50">
+            <button type="button" onClick={goNext} disabled={saving || (step === 1 && !form.name.trim())} className="px-4 py-2 rounded-xl bg-[var(--dash-primary)] text-white text-sm font-semibold disabled:opacity-50">
               {saving ? '…' : 'Next'}
             </button>
           ) : (
@@ -896,7 +898,7 @@ function WebhookSlideOver({
               type="button"
               onClick={handleSave}
               disabled={saving || !form.name.trim()}
-              className="px-4 py-2 rounded-xl bg-[var(--dash-primary)] text-black text-sm font-semibold disabled:opacity-50"
+              className="px-4 py-2 rounded-xl bg-[var(--dash-primary)] text-white text-sm font-semibold disabled:opacity-50"
             >
               {saving ? 'Saving…' : 'Save webhook'}
             </button>

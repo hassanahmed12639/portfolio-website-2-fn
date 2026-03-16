@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import crypto from 'crypto'
+import { XMLParser } from 'fast-xml-parser'
 import { flattenObject, hashField } from '@/lib/utils'
 
 export const dynamic = 'force-dynamic'
@@ -20,23 +21,52 @@ const TRACKHIVE_FIELDS = [
 
 type FieldMap = Record<string, string> // crm_key -> trackhive_field
 
-function parseBody(request: NextRequest): Promise<Record<string, unknown>> {
+const xmlParser = new XMLParser({
+  ignoreAttributes: false,
+  attributeNamePrefix: '',
+  textNodeName: 'value',
+  ignoreDeclaration: true,
+  parseTagValue: true,
+  parseAttributeValue: true,
+})
+
+async function parseBody(request: NextRequest): Promise<Record<string, unknown>> {
   const contentType = request.headers.get('content-type') || ''
+
   if (contentType.includes('application/json')) {
     return request.json()
   }
+
   if (contentType.includes('application/x-www-form-urlencoded')) {
-    return request.text().then((text) => {
-      const params = new URLSearchParams(text)
-      const obj: Record<string, unknown> = {}
-      params.forEach((v, k) => {
-        obj[k] = v
-      })
-      return obj
+    const text = await request.text()
+    const params = new URLSearchParams(text)
+    const obj: Record<string, unknown> = {}
+    params.forEach((v, k) => {
+      obj[k] = v
     })
+    return obj
   }
+
+  if (contentType.includes('application/xml') || contentType.includes('text/xml')) {
+    const xmlText = await request.text()
+    try {
+      const parsed = xmlParser.parse(xmlText)
+      if (parsed && typeof parsed === 'object') {
+        return parsed as Record<string, unknown>
+      }
+      return {}
+    } catch (err) {
+      console.error('[webhook] XML parse error:', err)
+      return {}
+    }
+  }
+
   // Try JSON first for multipart or unknown
-  return request.json().catch(() => ({}))
+  try {
+    return await request.json()
+  } catch {
+    return {}
+  }
 }
 
 function applyFieldMap(
