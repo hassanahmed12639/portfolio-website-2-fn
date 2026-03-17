@@ -7,6 +7,7 @@ export type Template = {
   description: string
   difficulty: 'beginner' | 'intermediate' | 'advanced'
   requiredPlan: 'free' | 'pro' | 'agency'
+  badge?: 'SMART'
   tags: string[]
   previewCode: string
   fileName: string
@@ -23,6 +24,20 @@ export function canAccessTemplate(
 }
 
 export const TEMPLATES: Template[] = [
+  {
+    id: 'auto-track-script',
+    name: 'Auto-Track Script',
+    category: 'Engagement',
+    type: 'html',
+    platform: ['meta', 'google', 'ga4'],
+    description: 'Add once. Track form submits, button clicks, checkout intent, and SPA page views automatically — no GTM setup required.',
+    difficulty: 'beginner',
+    requiredPlan: 'pro',
+    badge: 'SMART',
+    tags: ['auto-track', 'smart', 'script', 'datalayer'],
+    fileName: 'auto-track-script.html',
+    previewCode: `<script src="https://track.itshassanahmed.com/auto-track.js"></script>`,
+  },
   // ============ E-COMMERCE GTM WEB ============
   {
     id: 'gtm-purchase',

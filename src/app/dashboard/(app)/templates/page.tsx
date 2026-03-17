@@ -19,7 +19,11 @@ export default async function TemplatesPage() {
 
   return (
     <FeatureGate feature="templates" requiredPlan="pro">
-      <TemplatesClient userPlan={planForTemplates} />
+      <TemplatesClient
+        userPlan={planForTemplates}
+        rawPlan={(profile?.plan ?? 'free') as string}
+        isTrial={!!profile?.is_trial}
+      />
     </FeatureGate>
   )
 }

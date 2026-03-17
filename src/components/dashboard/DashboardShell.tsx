@@ -50,37 +50,47 @@ export default function DashboardShell({ user, trialExpired, profile, children }
   }
 
   return (
-    <div className="dashboard-shell min-h-screen flex bg-[var(--dash-bg)] text-[var(--dash-text)]" style={{ fontFamily: "'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" }}>
+    <div
+      className="dashboard-shell min-h-screen flex bg-[var(--dash-bg)] text-[var(--dash-text)]"
+      style={{
+        fontFamily:
+          "'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif",
+      }}
+    >
       <aside
         className={`shrink-0 flex flex-col border-r border-[var(--dash-border)] bg-[var(--dash-sidebar)] transition-all duration-200 ease-in-out ${
-          sidebarCollapsed ? 'w-0 overflow-hidden border-r-0' : 'w-60'
+          sidebarCollapsed ? 'w-16' : 'w-60'
         }`}
       >
         {/* Org / Workspace header */}
-        <div className="flex items-center justify-between gap-2 p-4 min-w-[240px] border-b border-[var(--dash-border)]">
+        <div className="flex items-center justify-between gap-2 p-4 min-w-[64px] border-b border-[var(--dash-border)]">
           <Link href="/dashboard" className="flex min-w-0 flex-1 items-center gap-3">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--dash-surface)] border border-[var(--dash-border)]">
               <FileStack className="h-4 w-4 text-[var(--dash-text)]" />
             </div>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold text-[var(--dash-text)]">TrackHive</p>
-              <p className="truncate text-xs text-[var(--dash-muted)]">Dashboard</p>
-            </div>
+            {!sidebarCollapsed && (
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-semibold text-[var(--dash-text)]">TrackHive</p>
+                <p className="truncate text-xs text-[var(--dash-muted)]">Dashboard</p>
+              </div>
+            )}
           </Link>
           <div className="flex items-center gap-1 shrink-0">
-            <ChevronDown className="h-4 w-4 text-[var(--dash-muted)]" aria-hidden />
+            {!sidebarCollapsed && (
+              <ChevronDown className="h-4 w-4 text-[var(--dash-muted)]" aria-hidden />
+            )}
             <button
               type="button"
-              onClick={() => setSidebarCollapsed(true)}
-              aria-label="Collapse sidebar"
+              onClick={() => setSidebarCollapsed((v) => !v)}
+              aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
               className="rounded-md p-1.5 text-[var(--dash-muted)] hover:bg-[var(--dash-surface-hover)] hover:text-[var(--dash-text)] transition-colors"
             >
-              <PanelLeftClose className="h-4 w-4" />
+              {sidebarCollapsed ? <span className="block h-4 w-4" aria-hidden /> : <PanelLeftClose className="h-4 w-4" />}
             </button>
           </div>
         </div>
 
-        <DashboardNav profile={profile} />
+        <DashboardNav profile={profile} collapsed={sidebarCollapsed} />
 
         {isTrial && (
           <div className="mx-3 mb-2 bg-blue-50 border border-blue-200 rounded-xl p-3 min-w-[240px]">
@@ -103,10 +113,12 @@ export default function DashboardShell({ user, trialExpired, profile, children }
         )}
 
         {/* Projects / User section */}
-        <div className="mt-auto border-t border-[var(--dash-border)] px-3 py-3 min-w-[240px]">
-          <p className="mb-2 px-2 text-[11px] font-medium uppercase tracking-wider text-[var(--dash-muted)]">
+        <div className="mt-auto border-t border-[var(--dash-border)] px-3 py-3 min-w-[64px]">
+          {!sidebarCollapsed && (
+            <p className="mb-2 px-2 text-[11px] font-medium uppercase tracking-wider text-[var(--dash-muted)]">
             Account
-          </p>
+            </p>
+          )}
           <div className="relative" ref={userMenuRef}>
             <button
               type="button"
@@ -117,15 +129,19 @@ export default function DashboardShell({ user, trialExpired, profile, children }
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--dash-primary-soft)] text-sm font-semibold text-[var(--dash-primary)]">
                 {(user.user_metadata?.full_name?.[0] ?? user.email?.[0] ?? 'U').toUpperCase()}
               </span>
-              <div className="min-w-0 flex-1 leading-tight">
-                <p className="truncate text-sm font-semibold text-[var(--dash-text)]">
-                  {user.user_metadata?.full_name ?? user.email?.split('@')[0] ?? 'User'}
-                </p>
-                <p className="truncate text-xs text-[var(--dash-muted)]">{user.email ?? 'Signed in'}</p>
-              </div>
-              <ChevronDown
-                className={`h-4 w-4 shrink-0 text-[var(--dash-muted)] transition-transform ${userMenuOpen ? 'rotate-180' : ''}`}
-              />
+              {!sidebarCollapsed && (
+                <>
+                  <div className="min-w-0 flex-1 leading-tight">
+                    <p className="truncate text-sm font-semibold text-[var(--dash-text)]">
+                      {user.user_metadata?.full_name ?? user.email?.split('@')[0] ?? 'User'}
+                    </p>
+                    <p className="truncate text-xs text-[var(--dash-muted)]">{user.email ?? 'Signed in'}</p>
+                  </div>
+                  <ChevronDown
+                    className={`h-4 w-4 shrink-0 text-[var(--dash-muted)] transition-transform ${userMenuOpen ? 'rotate-180' : ''}`}
+                  />
+                </>
+              )}
             </button>
 
             {userMenuOpen && (

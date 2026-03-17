@@ -175,7 +175,7 @@ export default function DocsPage() {
                       Step 4 — Fire your first event
                     </h2>
                     <p className="mb-4" style={{ color: "#475569" }}>
-                      Use the Playground to test → go to Meta Events Manager → verify event received.
+                      Use the Playground to test → go to Meta Events Manager → verify event received. Both bundles already include the Auto-Track script as a tag, so you do not need to add it separately.
                     </p>
                   </section>
 

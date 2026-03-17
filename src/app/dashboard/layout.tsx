@@ -9,9 +9,9 @@ export const metadata: Metadata = {
     template: '%s | TrackHive',
   },
   icons: {
-    icon: [{ url: '/favicon-new.png', type: 'image/png' }],
-    shortcut: ['/favicon-new.png'],
-    apple: ['/favicon-new.png'],
+    icon: [{ url: '/logo-new-1.png', type: 'image/png' }],
+    shortcut: ['/logo-new-1.png'],
+    apple: ['/logo-new-1.png'],
   },
 }
 

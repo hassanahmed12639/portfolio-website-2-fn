@@ -50,6 +50,83 @@
   --dash-gradient-bar: linear-gradient(180deg, rgba(29, 78, 216, 0.5) 0%, rgba(29, 78, 216, 0.2) 100%);
 }
 
+/* Dashboard dark mode — scoped to dashboard only */
+.dashboard-shell.dashboard-shell--dark {
+  /* Backgrounds */
+  --dash-bg: #050816; /* main workspace */
+  --dash-sidebar: #050816; /* left rail */
+  --dash-card: #020617; /* cards / panels */
+
+  /* Text */
+  --dash-text: #e5e7eb;
+  --dash-text-secondary: #a1a1aa;
+  --dash-text-muted: #6b7280;
+  --dash-text-soft: #d4d4d8;
+  --dash-muted: var(--dash-text-muted);
+
+  /* Borders & shadows */
+  --dash-border: #111827;
+  --dash-border-strong: #1f2937;
+  --dash-shadow: 0 18px 45px rgba(0, 0, 0, 0.8);
+
+  /* Accent / primary (soft neon blue) */
+  --dash-accent: #38bdf8;
+  --dash-accent-hover: #0ea5e9;
+  --dash-accent-light: #0b1120;
+  --dash-accent-border: rgba(56, 189, 248, 0.65);
+
+  --dash-primary: #38bdf8;
+  --dash-primary-strong: #0ea5e9;
+  --dash-primary-soft: rgba(56, 189, 248, 0.12);
+  --dash-primary-soft-strong: rgba(56, 189, 248, 0.28);
+
+  --dash-neon: #38bdf8;
+  --dash-neon-dim: rgba(56, 189, 248, 0.22);
+  --dash-neon-soft: rgba(56, 189, 248, 0.12);
+
+  /* Surfaces */
+  --dash-surface: #020617;
+  --dash-surface-hover: #0b1120;
+
+  /* Status colors */
+  --dash-success: #22c55e;
+  --dash-success-strong: #16a34a;
+  --dash-success-soft: rgba(34, 197, 94, 0.12);
+  --dash-success-badge-bg: #22c55e;
+  --dash-success-badge-text: #020617;
+  --dash-success-border: rgba(34, 197, 94, 0.45);
+
+  --dash-warning: #eab308;
+  --dash-danger: #f97373;
+  --dash-danger-soft: rgba(248, 113, 113, 0.16);
+  --dash-danger-border: rgba(248, 113, 113, 0.5);
+  --dash-danger-strong: #fecaca;
+
+  /* Gradients tuned for dark */
+  --dash-gradient-header: linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.95) 0%,
+    rgba(15, 23, 42, 0.9) 35%,
+    rgba(15, 23, 42, 0.85) 100%
+  );
+  --dash-gradient-hero: linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.92) 0%,
+    rgba(15, 23, 42, 0.88) 40%,
+    rgba(15, 23, 42, 0.85) 100%
+  );
+  --dash-gradient-sidebar-active: linear-gradient(
+    135deg,
+    rgba(56, 189, 248, 0.18) 0%,
+    rgba(15, 23, 42, 0.9) 100%
+  );
+  --dash-gradient-bar: linear-gradient(
+    180deg,
+    rgba(56, 189, 248, 0.65) 0%,
+    rgba(37, 99, 235, 0.35) 100%
+  );
+}
+
 /* Base card: white, rounded, soft shadow */
 .dashboard-shell .dash-card {
   background: var(--dash-card);

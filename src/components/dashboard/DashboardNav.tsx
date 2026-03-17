@@ -25,6 +25,7 @@ import {
   RefreshCw,
   RotateCcw,
   ScanSearch,
+  Search,
   Settings2,
   Shield,
   ShieldCheck,
@@ -50,11 +51,14 @@ type NavItem = {
 
 export default function DashboardNav({
   profile,
+  collapsed = false,
 }: {
   profile?: { dashboard_type?: string | null }
+  collapsed?: boolean
 }) {
   const pathname = usePathname()
   const { can, plan } = usePlan()
+  const [query, setQuery] = useState('')
   const [showUpgradeModal, setShowUpgradeModal] = useState<{
     show: boolean
     feature: string
@@ -183,6 +187,13 @@ export default function DashboardNav({
     { label: 'Scanner', href: '/dashboard/scanner', icon: ScanSearch },
     { label: 'Regex Library', href: '/dashboard/regex-library', icon: Braces },
     {
+      label: 'Auto-Track',
+      href: '/dashboard/auto-track',
+      icon: Sparkles,
+      locked: !(plan === 'pro' || plan === 'agency'),
+      requiredPlan: 'pro',
+    },
+    {
       label: 'Enrichment',
       href: '/dashboard/enrichment',
       icon: Sparkles,
@@ -251,6 +262,7 @@ export default function DashboardNav({
     '/dashboard/anomalies': Bug,
     '/dashboard/scanner': ScanSearch,
     '/dashboard/regex-library': Braces,
+    '/dashboard/auto-track': Sparkles,
     '/dashboard/enrichment': Sparkles,
     '/dashboard/integrations': Settings2,
     '/dashboard/reverse-proxy': Workflow,
@@ -293,104 +305,119 @@ export default function DashboardNav({
 
   return (
     <>
-      <nav className="flex-1 overflow-y-auto px-3 pt-4 pb-2">
+      <nav className="flex-1 overflow-y-auto px-3 pt-3 pb-2">
+        {!collapsed && (
+          <div className="sticky top-0 bg-[var(--dash-sidebar)] pb-3 z-10">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--dash-muted)]" />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search"
+                className="w-full rounded-xl border border-[var(--dash-border)] bg-[var(--dash-surface)] pl-9 pr-3 py-2 text-sm text-[var(--dash-text)] placeholder:text-[var(--dash-muted)] outline-none focus:ring-2 focus:ring-[var(--dash-primary-soft-strong)]"
+              />
+            </div>
+          </div>
+        )}
+
         <div className="space-y-5">
           {sections.map((section) => {
             const isOpen = openSections[section.title]
-            const sectionItems = items.slice(section.from, section.to)
+            const sectionItems = items
+              .slice(section.from, section.to)
+              .filter((i) =>
+                query.trim()
+                  ? i.label.toLowerCase().includes(query.trim().toLowerCase())
+                  : true
+              )
+
+            if (query.trim() && sectionItems.length === 0) return null
+
             return (
               <div key={section.title}>
-                <button
-                  type="button"
-                  onClick={() => toggleSection(section.title)}
-                  className="mb-2 flex w-full items-center gap-2 px-2 py-1 text-left text-xs font-medium uppercase tracking-wider text-slate-600 transition-colors hover:text-slate-900"
-                >
-                  {isOpen ? (
-                    <ChevronDown className="h-3.5 w-3.5 shrink-0" />
-                  ) : (
-                    <ChevronRight className="h-3.5 w-3.5 shrink-0" />
-                  )}
-                  <span>{section.title}</span>
-                </button>
+                {!collapsed && (
+                  <button
+                    type="button"
+                    onClick={() => toggleSection(section.title)}
+                    className="mb-2 flex w-full items-center justify-between gap-2 px-2 py-1 text-left text-sm font-medium text-[var(--dash-text-secondary)] transition-colors hover:text-[var(--dash-text)]"
+                  >
+                    <span className="truncate">{section.title}</span>
+                    {isOpen ? (
+                      <ChevronDown className="h-4 w-4 shrink-0 text-[var(--dash-muted)]" />
+                    ) : (
+                      <ChevronRight className="h-4 w-4 shrink-0 text-[var(--dash-muted)]" />
+                    )}
+                  </button>
+                )}
+
                 {isOpen && (
-                  <div className="relative space-y-0.5 pl-1">
-                    <div
-                      className="absolute left-[11px] top-2 bottom-2 w-px bg-[var(--dash-border)]"
-                      aria-hidden
-                    />
+                  <div className={`space-y-1 ${collapsed ? 'mt-2' : ''}`}>
                     {sectionItems.map((item) => {
                       const isActive =
                         pathname === item.href ||
                         (item.href !== '/dashboard' &&
                           pathname?.startsWith(item.href + '/'))
+
+                      const base = collapsed
+                        ? 'flex w-full items-center justify-center rounded-xl p-2 text-sm transition-colors'
+                        : 'flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm transition-colors'
+                      const active = 'font-semibold text-[var(--dash-primary-strong)]'
+                      const inactive = 'text-[var(--dash-text)] hover:bg-[var(--dash-surface-hover)]'
+
+                      const background = isActive
+                        ? { background: 'var(--dash-gradient-sidebar-active)' }
+                        : undefined
+
                       return (
-                        <div key={item.href} className="relative flex items-center">
+                        <div key={item.href} className="flex">
                           {item.locked ? (
                             <button
                               type="button"
                               onClick={() => handleNavClick(item)}
-                              className={`relative flex w-full items-center gap-3 rounded-lg pl-4 pr-2 py-2 text-sm transition-colors text-left ${
-                                isActive
-                                  ? 'font-semibold text-[var(--dash-primary-strong)]'
-                                  : 'text-slate-900 hover:bg-[var(--dash-surface-hover)]'
-                              }`}
-                              style={
-                                isActive
-                                  ? {
-                                      background:
-                                        'var(--dash-gradient-sidebar-active)',
-                                    }
-                                  : undefined}
+                              className={`${base} ${isActive ? active : inactive} text-left`}
+                              style={background}
+                              title={collapsed ? item.label : undefined}
                             >
                               {item.icon && (
                                 <item.icon
                                   className={`h-4 w-4 shrink-0 ${
                                     isActive
                                       ? 'text-[var(--dash-primary-strong)]'
-                                      : 'text-slate-600'
+                                      : 'text-[var(--dash-muted)]'
                                   }`}
                                 />
                               )}
-                              <span className="flex-1 truncate">{item.label}</span>
-                              <span className="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded font-medium shrink-0">
-                                PRO
-                              </span>
-                              <ChevronRight className="h-3.5 w-3.5 shrink-0 text-slate-500" />
+                              {!collapsed && (
+                                <>
+                                  <span className="flex-1 truncate">{item.label}</span>
+                                  <span className="text-[10px] bg-[var(--dash-primary-soft)] text-[var(--dash-primary)] px-2 py-0.5 rounded-full font-semibold shrink-0 border border-[var(--dash-accent-border)]">
+                                    PRO
+                                  </span>
+                                </>
+                              )}
                             </button>
                           ) : (
                             <Link
                               href={item.href}
                               prefetch={false}
-                              className={`relative flex items-center gap-3 rounded-lg pl-4 pr-2 py-2 text-sm transition-colors w-full ${
-                                isActive
-                                  ? 'font-semibold text-[var(--dash-primary-strong)]'
-                                  : 'text-slate-900 hover:bg-[var(--dash-surface-hover)]'
-                              }`}
-                              style={
-                                isActive
-                                  ? {
-                                      background:
-                                        'var(--dash-gradient-sidebar-active)',
-                                    }
-                                  : undefined}
+                              className={`${base} ${isActive ? active : inactive}`}
+                              style={background}
+                              title={collapsed ? item.label : undefined}
                             >
                               {item.icon && (
                                 <item.icon
                                   className={`h-4 w-4 shrink-0 ${
                                     isActive
                                       ? 'text-[var(--dash-primary-strong)]'
-                                      : 'text-slate-600'
+                                      : 'text-[var(--dash-muted)]'
                                   }`}
                                 />
                               )}
-                              <span className="flex-1 truncate">{item.label}</span>
-                              <ChevronRight
-                                className={`h-3.5 w-3.5 shrink-0 ${
-                                  isActive
-                                    ? 'text-[var(--dash-primary-strong)]'
-                                    : 'text-slate-500'
-                                }`}
-                              />
+                              {!collapsed && (
+                                <>
+                                  <span className="flex-1 truncate">{item.label}</span>
+                                </>
+                              )}
                             </Link>
                           )}
                         </div>
@@ -401,6 +428,7 @@ export default function DashboardNav({
               </div>
             )
           })}
+
         </div>
       </nav>
       <UpgradeModal
