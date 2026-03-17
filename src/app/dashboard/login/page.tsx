@@ -5,6 +5,7 @@ export const dynamic = 'force-dynamic'
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
+import type { AuthChangeEvent, Session } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/client'
 import LoginRadar from './LoginRadar'
 import {
@@ -70,7 +71,10 @@ export default function LoginPage() {
 
     void routeSignedInUser()
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange((
+      event: AuthChangeEvent,
+      session: Session | null
+    ) => {
       if (!mounted) return
       if (event === 'SIGNED_IN' && session) {
         void routeSignedInUser()
