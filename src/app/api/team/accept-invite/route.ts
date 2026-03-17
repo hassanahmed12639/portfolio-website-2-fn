@@ -1,9 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { enforceRateLimit } from '@/lib/request-security'
 
 export async function POST(req: NextRequest) {
+  const rateLimitResponse = enforceRateLimit(req, 'team-invite', 10, 60_000)
+  if (rateLimitResponse) return rateLimitResponse
+
   try {
     const { token, password, name, isNewUser } = await req.json()
+    if (typeof token !== 'string' || token.length < 20 || token.length > 128) {
+      return NextResponse.json(
+        { error: 'Invalid invitation token' },
+        { status: 400 }
+      )
+    }
 
     const admin = createAdminClient()
 

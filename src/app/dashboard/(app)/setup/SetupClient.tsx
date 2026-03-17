@@ -96,14 +96,21 @@ export default function SetupClient({ apiKey }: SetupClientProps) {
     fetch('/api/pixels')
       .then((r) => r.json())
       .then((data) => {
-        if (data.pixels?.[0]?.pixel_id) {
-          setPixelId(data.pixels[0].pixel_id)
+        const pixels = data?.pixels ?? []
+        const activeMetaPixel = pixels.find(
+          (p: { platform?: string; is_active?: boolean; pixel_id?: string }) =>
+            p.platform === 'meta' && p.is_active && p.pixel_id
+        )
+        if (activeMetaPixel?.pixel_id) {
+          setPixelId(activeMetaPixel.pixel_id)
         }
       })
   }, [])
 
-  const installSnippet = `<!-- TrackHive Tracking -->
-<script src="https://track.itshassanahmed.com/th.js?id=${pixelId || 'YOUR_PIXEL_ID'}"></script>`
+  const installSnippet = pixelId
+    ? `<!-- TrackHive Tracking -->
+<script src="https://track.itshassanahmed.com/th.js?id=${pixelId}"></script>`
+    : ''
 
   const reverseProxySnippet = `<!-- TrackHive with Reverse Proxy -->
 <script src="/th-proxy/th?id=${pixelId || 'YOUR_PIXEL_ID'}"></script>`
@@ -134,17 +141,25 @@ export default function SetupClient({ apiKey }: SetupClientProps) {
         <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
           <div className="px-4 py-3 border-b border-[var(--dash-border)] flex items-center justify-between">
             <h2 className="text-sm font-medium text-[var(--dash-text-soft)]">Install Snippet</h2>
-            <CopyButton text={installSnippet} />
+            {pixelId ? <CopyButton text={installSnippet} /> : null}
           </div>
           <div className="p-4">
-            <pre className="bg-[var(--dash-surface-hover)] rounded-lg border border-[var(--dash-border)] shadow-sm p-4 text-sm text-[var(--dash-text-soft)] font-mono overflow-x-auto whitespace-pre">
-              {installSnippet}
-            </pre>
-            <p className="mt-3 text-[var(--dash-muted)] text-sm">
-              Paste this code before the closing{' '}
-              <code className="text-[var(--dash-text-soft)] bg-[var(--dash-surface-hover)] px-1 rounded">&lt;/head&gt;</code>{' '}
-              tag on your website.
-            </p>
+            {pixelId ? (
+              <>
+                <pre className="bg-[var(--dash-surface-hover)] rounded-lg border border-[var(--dash-border)] shadow-sm p-4 text-sm text-[var(--dash-text-soft)] font-mono overflow-x-auto whitespace-pre">
+                  {installSnippet}
+                </pre>
+                <p className="mt-3 text-[var(--dash-muted)] text-sm">
+                  Paste this code before the closing{' '}
+                  <code className="text-[var(--dash-text-soft)] bg-[var(--dash-surface-hover)] px-1 rounded">&lt;/head&gt;</code>{' '}
+                  tag on your website.
+                </p>
+              </>
+            ) : (
+              <p className="text-sm text-amber-500/90">
+                Add your Meta Pixel ID in Integrations first, then return here for your snippet
+              </p>
+            )}
           </div>
         </section>
 

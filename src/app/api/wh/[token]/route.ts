@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import crypto from 'crypto'
 import { XMLParser } from 'fast-xml-parser'
 import { flattenObject, hashField } from '@/lib/utils'
+import { enforceRateLimit } from '@/lib/request-security'
 
 export const dynamic = 'force-dynamic'
 
@@ -30,16 +31,24 @@ const xmlParser = new XMLParser({
   parseAttributeValue: true,
 })
 
-async function parseBody(request: NextRequest): Promise<Record<string, unknown>> {
-  const contentType = request.headers.get('content-type') || ''
+const MAX_WEBHOOK_BODY_BYTES = 1024 * 1024 // 1MB hard cap
+
+async function parseBody(
+  rawText: string,
+  contentType: string
+): Promise<Record<string, unknown>> {
 
   if (contentType.includes('application/json')) {
-    return request.json()
+    try {
+      const parsed = JSON.parse(rawText)
+      return parsed && typeof parsed === 'object' ? parsed : {}
+    } catch {
+      return {}
+    }
   }
 
   if (contentType.includes('application/x-www-form-urlencoded')) {
-    const text = await request.text()
-    const params = new URLSearchParams(text)
+    const params = new URLSearchParams(rawText)
     const obj: Record<string, unknown> = {}
     params.forEach((v, k) => {
       obj[k] = v
@@ -48,9 +57,8 @@ async function parseBody(request: NextRequest): Promise<Record<string, unknown>>
   }
 
   if (contentType.includes('application/xml') || contentType.includes('text/xml')) {
-    const xmlText = await request.text()
     try {
-      const parsed = xmlParser.parse(xmlText)
+      const parsed = xmlParser.parse(rawText)
       if (parsed && typeof parsed === 'object') {
         return parsed as Record<string, unknown>
       }
@@ -63,9 +71,33 @@ async function parseBody(request: NextRequest): Promise<Record<string, unknown>>
 
   // Try JSON first for multipart or unknown
   try {
-    return await request.json()
+    const parsed = JSON.parse(rawText)
+    return parsed && typeof parsed === 'object' ? parsed : {}
   } catch {
     return {}
+  }
+}
+
+function verifyWebhookSignature(
+  rawBody: string,
+  signingSecret: string,
+  receivedHeader: string | null
+): boolean {
+  if (!receivedHeader) return false
+  const signature = receivedHeader.startsWith('sha256=')
+    ? receivedHeader.slice('sha256='.length)
+    : receivedHeader
+  if (!signature) return false
+
+  const expected = crypto
+    .createHmac('sha256', signingSecret)
+    .update(rawBody, 'utf8')
+    .digest('hex')
+
+  try {
+    return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))
+  } catch {
+    return false
   }
 }
 
@@ -259,30 +291,85 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ token: string }> }
 ) {
+  const rateLimitResponse = enforceRateLimit(request, 'webhook-ingest', 120, 60_000)
+  if (rateLimitResponse) return rateLimitResponse
+
   const { token } = await params
+  if (!/^[a-zA-Z0-9-]{20,128}$/.test(token)) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  }
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
   if (!supabaseUrl || !serviceRoleKey) {
     return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 })
   }
 
+  const contentType = request.headers.get('content-type') || ''
+  const contentLengthHeader = Number(request.headers.get('content-length') || '0')
+  if (Number.isFinite(contentLengthHeader) && contentLengthHeader > MAX_WEBHOOK_BODY_BYTES) {
+    return NextResponse.json({ error: 'Payload too large' }, { status: 413 })
+  }
+
+  let rawBody = ''
+  try {
+    rawBody = await request.text()
+  } catch {
+    return NextResponse.json({ error: 'Invalid body' }, { status: 400 })
+  }
+
+  if (Buffer.byteLength(rawBody, 'utf8') > MAX_WEBHOOK_BODY_BYTES) {
+    return NextResponse.json({ error: 'Payload too large' }, { status: 413 })
+  }
+
   let rawPayload: Record<string, unknown>
   try {
-    rawPayload = await parseBody(request)
+    rawPayload = await parseBody(rawBody, contentType)
   } catch {
     return NextResponse.json({ error: 'Invalid body' }, { status: 400 })
   }
 
   const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } })
 
-  const { data: webhook, error: whError } = await supabaseAdmin
+  const webhookWithSecretQuery = await supabaseAdmin
     .from('webhooks')
-    .select('id, user_id, name, event_name, event_value, pixel_ids, field_map, is_active')
+    .select('id, user_id, name, event_name, event_value, pixel_ids, field_map, is_active, signing_secret')
     .eq('token', token)
     .maybeSingle()
+  let webhook: {
+    id: string
+    user_id: string
+    name: string
+    event_name: string
+    event_value: number
+    pixel_ids: string[]
+    field_map: FieldMap
+    is_active: boolean
+    signing_secret?: string | null
+  } | null = webhookWithSecretQuery.data as any
+  let whError = webhookWithSecretQuery.error
+
+  if (whError && /signing_secret/i.test(whError.message)) {
+    const fallbackQuery = await supabaseAdmin
+      .from('webhooks')
+      .select('id, user_id, name, event_name, event_value, pixel_ids, field_map, is_active')
+      .eq('token', token)
+      .maybeSingle()
+    webhook = fallbackQuery.data
+      ? ({ ...(fallbackQuery.data as any), signing_secret: null } as any)
+      : null
+    whError = fallbackQuery.error
+  }
 
   if (whError || !webhook || !webhook.is_active) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  }
+
+  if (webhook.signing_secret) {
+    const signature = request.headers.get('x-trackhive-signature')
+    const verified = verifyWebhookSignature(rawBody, webhook.signing_secret, signature)
+    if (!verified) {
+      return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
+    }
   }
 
   const { data: logRow, error: logError } = await supabaseAdmin

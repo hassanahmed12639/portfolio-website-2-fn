@@ -73,7 +73,7 @@ const ECOM_BUNDLE_CONTENTS = {
   ],
   variables: [
     'GA4 Measurement ID',
-    'TrackHive Pixel ID',
+    'Meta Pixel ID',
     'DLV - value',
     'DLV - currency',
     'DLV - transaction_id',
@@ -94,7 +94,7 @@ const LEADGEN_BUNDLE_CONTENTS = {
   triggers: ['All Pages', 'Custom - generate_lead'],
   variables: [
     'GA4 Measurement ID',
-    'TrackHive Pixel ID',
+    'Meta Pixel ID',
     'DLV - email',
     'DLV - phone',
     'DLV - event_name',
@@ -119,7 +119,7 @@ function createEcomGtmExport(pixelId: string): GtmExport {
           type: 'c',
           parameter: [{ type: 'TEMPLATE', key: 'value', value: 'G-XXXXXXXXXX' }],
         },
-        { variableId: '2', name: 'TrackHive Pixel ID', type: 'c', parameter: [{ type: 'TEMPLATE', key: 'value', value: pixelId }] },
+        { variableId: '2', name: 'Meta Pixel ID', type: 'c', parameter: [{ type: 'TEMPLATE', key: 'value', value: pixelId }] },
         { variableId: '3', name: 'DLV - value', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'value' }] },
         { variableId: '4', name: 'DLV - currency', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'currency' }] },
         { variableId: '5', name: 'DLV - transaction_id', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'transaction_id' }] },
@@ -237,7 +237,7 @@ function createEcomGtmExport(pixelId: string): GtmExport {
         { triggerId: '10', name: 'Custom - generate_lead', type: 'CUSTOM_EVENT', customEventFilter: [{ type: 'EQUALS', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'generate_lead' }] }] },
       ],
       tag: [
-        { tagId: '1', name: 'TrackHive Base Pixel', type: 'html', firingTriggerId: ['1'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\n(function(w,d,s,l,i){w[l]=w[l]||[];\nvar f=d.getElementsByTagName(s)[0],j=d.createElement(s);\nj.async=true;j.src='https://track.itshassanahmed.com/pixel.js?id='+i;\nf.parentNode.insertBefore(j,f);\n})(window,document,'script','trackHive','{{TrackHive Pixel ID}}');\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
+        { tagId: '1', name: 'TrackHive Base Pixel', type: 'html', firingTriggerId: ['1'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\n(function(w,d,s,l,i){w[l]=w[l]||[];\nvar f=d.getElementsByTagName(s)[0],j=d.createElement(s);\nj.async=true;j.src='https://track.itshassanahmed.com/pixel.js?id='+i;\nf.parentNode.insertBefore(j,f);\n})(window,document,'script','trackHive','{{Meta Pixel ID}}');\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
         {
           tagId: '3',
           name: 'GA4 - Purchase',
@@ -372,7 +372,7 @@ function createLeadGenGtmExport(pixelId: string): GtmExport {
           type: 'c',
           parameter: [{ type: 'TEMPLATE', key: 'value', value: 'G-XXXXXXXXXX' }],
         },
-        { variableId: '2', name: 'TrackHive Pixel ID', type: 'c', parameter: [{ type: 'TEMPLATE', key: 'value', value: pixelId }] },
+        { variableId: '2', name: 'Meta Pixel ID', type: 'c', parameter: [{ type: 'TEMPLATE', key: 'value', value: pixelId }] },
         { variableId: '3', name: 'DLV - email', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'email' }] },
         { variableId: '4', name: 'DLV - phone', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'phone' }] },
         { variableId: '5', name: 'DLV - form_name', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'form_name' }] },
@@ -497,7 +497,7 @@ function createLeadGenGtmExport(pixelId: string): GtmExport {
         },
       ],
       tag: [
-        { tagId: '1', name: 'TrackHive Base Pixel', type: 'html', firingTriggerId: ['1'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\n(function(w,d,s,l,i){w[l]=w[l]||[];\nvar f=d.getElementsByTagName(s)[0],j=d.createElement(s);\nj.async=true;j.src='https://track.itshassanahmed.com/pixel.js?id='+i;\nf.parentNode.insertBefore(j,f);\n})(window,document,'script','trackHive','{{TrackHive Pixel ID}}');\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
+        { tagId: '1', name: 'TrackHive Base Pixel', type: 'html', firingTriggerId: ['1'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\n(function(w,d,s,l,i){w[l]=w[l]||[];\nvar f=d.getElementsByTagName(s)[0],j=d.createElement(s);\nj.async=true;j.src='https://track.itshassanahmed.com/pixel.js?id='+i;\nf.parentNode.insertBefore(j,f);\n})(window,document,'script','trackHive','{{Meta Pixel ID}}');\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
         {
           tagId: '3',
           name: 'GA4 - Lead',
@@ -684,26 +684,15 @@ export default function TemplatesClient({
 
   async function fetchUserPixelId(userId: string): Promise<string | null> {
     const supabase = createClient()
-    const primary = await supabase
+    const metaPixel = await supabase
       .from('pixels')
       .select('pixel_id')
       .eq('user_id', userId)
-      .eq('is_primary', true)
+      .eq('platform', 'meta')
+      .eq('is_active', true)
       .limit(1)
       .maybeSingle()
-
-    let pixelId = primary.data?.pixel_id ?? null
-    if (!pixelId) {
-      const fallback = await supabase
-        .from('pixels')
-        .select('pixel_id')
-        .eq('user_id', userId)
-        .eq('is_active', true)
-        .limit(1)
-        .maybeSingle()
-      pixelId = fallback.data?.pixel_id ?? null
-    }
-    return pixelId
+    return metaPixel.data?.pixel_id ?? null
   }
 
   async function handleBundleDownload(bundleType: 'ecom' | 'leadgen') {
@@ -724,7 +713,7 @@ export default function TemplatesClient({
       if (!pixelId) {
         setToast({
           type: 'error',
-          message: 'No active pixel found. Create a pixel first, then try again.',
+          message: 'Please add your Meta Pixel ID in Integrations before downloading the GTM container',
         })
         return
       }

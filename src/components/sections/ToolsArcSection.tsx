@@ -4,28 +4,13 @@ import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { registerGsapPlugins } from '@/lib/gsap';
+import type { PortfolioTool } from '@/lib/portfolio-settings';
 
 const BG_DARK = '#000000';
 const CARD_BG = '#ffffff';
 const BORDER = 'rgba(255,255,255,0.12)';
 
-const TOOLS = [
-  { slug: 'meta', name: 'Meta' },
-  { slug: 'googleads', name: 'Google Ads' },
-  { slug: 'tiktok', name: 'TikTok' },
-  { slug: 'snapchat', name: 'Snapchat' },
-  { slug: 'googletagmanager', name: 'GTM' },
-  { slug: 'shopify', name: 'Shopify' },
-  { slug: 'woocommerce', name: 'WooCommerce' },
-  { slug: 'googleanalytics', name: 'Google Analytics' },
-  { slug: 'zapier', name: 'Zapier' },
-  { slug: 'stripe', name: 'Stripe' },
-  { slug: 'hotjar', name: 'Hotjar' },
-  { slug: 'supabase', name: 'Supabase' },
-  { slug: 'cursor', name: 'Cursor' },
-];
-
-export default function ToolsArcSection() {
+export default function ToolsArcSection({ tools }: { tools: PortfolioTool[] }) {
   const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef(0);
@@ -235,7 +220,7 @@ export default function ToolsArcSection() {
             transform: 'translateZ(0)',
           }}
         >
-          {TOOLS.map((tool) => (
+          {tools.map((tool) => (
             <div
               key={tool.slug}
               className="absolute flex items-center justify-center rounded-xl overflow-hidden"

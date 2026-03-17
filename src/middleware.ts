@@ -1,6 +1,8 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextRequest, NextResponse } from 'next/server'
-import { isPortfolioHost, isTrackHiveHost } from '@/lib/domain-brand'
+import { isPortfolioHost, isTrackHiveHost, normalizeHost } from '@/lib/domain-brand'
+import { getClientIp } from '@/lib/request-security'
+import { rateLimit } from '@/lib/rate-limit'
 
 // Block common attack patterns
 function isSuspiciousPath(pathname: string): boolean {
@@ -19,12 +21,126 @@ function isSuspiciousPath(pathname: string): boolean {
   return suspicious.some((p) => p.test(pathname))
 }
 
+function getApiRateBudget(pathname: string): {
+  key: string
+  maxRequests: number
+  windowMs: number
+} {
+  if (pathname.startsWith('/api/wh/')) {
+    return { key: 'api:webhook-ingest', maxRequests: 120, windowMs: 60_000 }
+  }
+  if (pathname === '/api/event') {
+    return { key: 'api:event', maxRequests: 220, windowMs: 60_000 }
+  }
+  if (pathname === '/api/team/verify-invite') {
+    return { key: 'api:team-verify-invite', maxRequests: 15, windowMs: 60_000 }
+  }
+  if (pathname === '/api/team/accept-invite') {
+    return { key: 'api:team-accept-invite', maxRequests: 10, windowMs: 60_000 }
+  }
+  if (pathname === '/api/chatbot') {
+    return { key: 'api:chatbot', maxRequests: 20, windowMs: 60_000 }
+  }
+  if (pathname.startsWith('/api/admin/')) {
+    return { key: 'api:admin', maxRequests: 60, windowMs: 60_000 }
+  }
+  if (pathname.startsWith('/api/proxy/')) {
+    return { key: 'api:proxy', maxRequests: 300, windowMs: 60_000 }
+  }
+  if (pathname.startsWith('/api/track/')) {
+    return { key: 'api:track', maxRequests: 300, windowMs: 60_000 }
+  }
+  if (pathname.startsWith('/api/cron/')) {
+    return { key: 'api:cron', maxRequests: 30, windowMs: 60_000 }
+  }
+
+  return { key: 'api:default', maxRequests: 90, windowMs: 60_000 }
+}
+
+function isUnsafeMethod(method: string): boolean {
+  return method === 'POST' || method === 'PUT' || method === 'PATCH' || method === 'DELETE'
+}
+
+function isCsrfProtectedApiPath(pathname: string): boolean {
+  const protectedPrefixes = [
+    '/api/admin/',
+    '/api/dashboard/',
+    '/api/team/',
+    '/api/webhooks',
+    '/api/privacy/',
+    '/api/headers/',
+    '/api/pixels',
+    '/api/integrations/',
+    '/api/enrichment/',
+    '/api/leads/',
+  ]
+  return protectedPrefixes.some((prefix) => pathname.startsWith(prefix))
+}
+
+function isSameOriginRequest(req: NextRequest): boolean {
+  const host = normalizeHost(req.headers.get('host'))
+  const origin = req.headers.get('origin')
+  const referer = req.headers.get('referer')
+  const secFetchSite = req.headers.get('sec-fetch-site')
+
+  if (secFetchSite === 'cross-site') return false
+
+  if (origin) {
+    try {
+      const originHost = normalizeHost(new URL(origin).host)
+      if (originHost !== host) return false
+    } catch {
+      return false
+    }
+  }
+
+  if (referer) {
+    try {
+      const refererHost = normalizeHost(new URL(referer).host)
+      if (refererHost !== host) return false
+    } catch {
+      return false
+    }
+  }
+
+  return true
+}
+
 export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname
   const hostname = req.headers.get('host') ?? ''
 
   if (isSuspiciousPath(pathname)) {
     return new NextResponse(null, { status: 404 })
+  }
+
+  // Global API rate limiter with per-route budgets.
+  // Endpoint-level limiters still apply where defined for defense in depth.
+  if (pathname.startsWith('/api') && req.method !== 'OPTIONS') {
+    const budget = getApiRateBudget(pathname)
+    const ip = getClientIp(req)
+    const result = rateLimit(`${budget.key}|ip=${ip}`, {
+      windowMs: budget.windowMs,
+      maxRequests: budget.maxRequests,
+    })
+    if (!result.success) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please try again later.' },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': String(result.retryAfterSeconds),
+          },
+        }
+      )
+    }
+  }
+
+  // CSRF protection for session-authenticated state-changing API routes.
+  if (pathname.startsWith('/api') && isUnsafeMethod(req.method) && isCsrfProtectedApiPath(pathname)) {
+    if (!isSameOriginRequest(req)) {
+      return NextResponse.json({ error: 'Forbidden origin' }, { status: 403 })
+    }
   }
 
   const res = NextResponse.next()

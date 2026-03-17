@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { rateLimit } from '@/lib/rate-limit'
+import { getCookieName, verifySessionToken } from '@/lib/portfolio-auth'
+import { isPortfolioAdminHost } from '@/lib/portfolio-admin'
 
 export const dynamic = 'force-dynamic'
 
@@ -14,7 +16,14 @@ function checkAdminRateLimit(request: NextRequest): NextResponse | null {
   return null
 }
 
-async function verifyAdmin() {
+async function verifyAdmin(request: NextRequest) {
+  const host = request.headers.get('host')
+  const portfolioCookie = request.cookies.get(getCookieName())?.value
+  if (isPortfolioAdminHost(host) && portfolioCookie && verifySessionToken(portfolioCookie)) {
+    const admin = createAdminClient()
+    return { ok: true as const, admin }
+  }
+
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { ok: false as const, status: 401 }
@@ -33,7 +42,7 @@ export async function GET(request: NextRequest) {
   try {
     const rateLimitResponse = checkAdminRateLimit(request)
     if (rateLimitResponse) return rateLimitResponse
-    const result = await verifyAdmin()
+    const result = await verifyAdmin(request)
     if (!result.ok)
       return NextResponse.json(
         { error: result.status === 401 ? 'Unauthorized' : 'Forbidden' },
@@ -57,7 +66,7 @@ export async function POST(req: NextRequest) {
   try {
     const rateLimitResponse = checkAdminRateLimit(req)
     if (rateLimitResponse) return rateLimitResponse
-    const result = await verifyAdmin()
+    const result = await verifyAdmin(req)
     if (!result.ok)
       return NextResponse.json(
         { error: result.status === 401 ? 'Unauthorized' : 'Forbidden' },
@@ -83,7 +92,7 @@ export async function PUT(req: NextRequest) {
   try {
     const rateLimitResponse = checkAdminRateLimit(req)
     if (rateLimitResponse) return rateLimitResponse
-    const result = await verifyAdmin()
+    const result = await verifyAdmin(req)
     if (!result.ok)
       return NextResponse.json(
         { error: result.status === 401 ? 'Unauthorized' : 'Forbidden' },
@@ -111,7 +120,7 @@ export async function DELETE(req: NextRequest) {
   try {
     const rateLimitResponse = checkAdminRateLimit(req)
     if (rateLimitResponse) return rateLimitResponse
-    const result = await verifyAdmin()
+    const result = await verifyAdmin(req)
     if (!result.ok)
       return NextResponse.json(
         { error: result.status === 401 ? 'Unauthorized' : 'Forbidden' },

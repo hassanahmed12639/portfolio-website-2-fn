@@ -26,14 +26,31 @@ This document summarizes the security measures applied and deployment requiremen
 ### 4. Middleware Protections
 - Blocks path traversal (`../`, `.env`, `.git`)
 - Blocks common attack paths (wp-admin, wp-login, phpmyadmin, adminer, .php, .asp)
+- Adds a global `/api/*` rate-limiting layer with per-route budgets to protect all public endpoints by default
 
 ### 5. API Security
 - Cron routes protected with `CRON_SECRET` header
 - PayPal webhook verifies signature
 - Event API has rate limiting (200 req/min per IP)
+- Public webhook ingestion (`/api/wh/[token]`) now has:
+  - IP rate limiting
+  - 1MB payload cap
+  - Optional HMAC verification via `x-trackhive-signature` (`sha256=<hmac>`)
+- Team invite verify/accept routes now have per-IP rate limiting and token shape checks
+- Webhook CRUD/log routes now have per-IP rate limiting and stricter payload validation
+- Admin-only endpoint `GET /api/admin/security` exposes rate limiter pressure stats (top scopes, block ratios)
 - Supabase auth for protected API routes
 
-### 6. Environment
+### 6. Supabase RLS and DB Constraints
+- `webhooks`, `webhook_logs`, and `team_members` are set to **FORCE RLS**
+- `team_members` owner policy now includes explicit `WITH CHECK` guard
+- `webhooks` now has hard constraints for:
+  - token length
+  - name and event_name lengths
+  - max mapped fields / max linked pixel IDs (enforced through API + DB checks)
+  - optional signing secret length
+
+### 7. Environment
 - `.env`, `.env*.local`, `.env.production` in `.gitignore`
 - Use `.env.example` as template; never commit real credentials
 
@@ -45,6 +62,7 @@ This document summarizes the security measures applied and deployment requiremen
 - [ ] Configure `CRON_SECRET` for cron endpoints (e.g., Vercel Cron)
 - [ ] Use HTTPS only (HSTS header enforces this)
 - [ ] Run `npm audit` before each deployment
+- [ ] Keep `SECURITY_MONITORING.md` links updated for your current project IDs/domains
 
 ## If Credentials Were Exposed
 

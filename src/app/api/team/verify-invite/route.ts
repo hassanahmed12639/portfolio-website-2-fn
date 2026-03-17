@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { enforceRateLimit } from '@/lib/request-security'
 
 export async function GET(req: NextRequest) {
+  const rateLimitResponse = enforceRateLimit(req, 'team-invite', 15, 60_000)
+  if (rateLimitResponse) return rateLimitResponse
+
   const token = new URL(req.url).searchParams.get('token')
-  if (!token) return NextResponse.json({ valid: false })
+  if (!token || token.length < 20 || token.length > 128) {
+    return NextResponse.json({ valid: false })
+  }
 
   const admin = createAdminClient()
 

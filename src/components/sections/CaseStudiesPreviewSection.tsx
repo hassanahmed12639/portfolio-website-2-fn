@@ -6,14 +6,12 @@ import Link from 'next/link';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { registerGsapPlugins } from '@/lib/gsap';
-import { caseStudies } from '@/data/caseStudies';
+import type { CaseStudy } from '@/data/caseStudies';
 
 const LIME = '#b3f000';
 const BG_DARK = '#000000';
 const CARD_BG = '#0f0f0f';
 const BORDER = 'rgba(255,255,255,0.08)';
-
-const FEATURED = caseStudies.slice(0, 3);
 
 function CaseStudyCard({
   title,
@@ -77,7 +75,7 @@ function CaseStudyCard({
   );
 }
 
-export default function CaseStudiesPreviewSection() {
+export default function CaseStudiesPreviewSection({ studies }: { studies: CaseStudy[] }) {
   const sectionRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -135,7 +133,7 @@ export default function CaseStudiesPreviewSection() {
           </h2>
         </div>
         <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-          {FEATURED.map((study) => (
+          {studies.map((study) => (
             <CaseStudyCard
               key={study.slug}
               title={study.title}

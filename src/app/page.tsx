@@ -9,8 +9,13 @@ import ToolsArcSection from '../components/sections/ToolsArcSection'
 import { Testimonials } from '../components/sections/Testimonials'
 import { HomeCTA } from '../components/sections/HomeCTA'
 import ScrambleIntroWrapper from '../components/ScrambleIntroWrapper'
+import { getPortfolioProjects } from '@/lib/portfolio-projects'
+import { getPortfolioTools } from '@/lib/portfolio-settings'
 
-export default function Home() {
+export default async function Home() {
+  const projects = await getPortfolioProjects({ limit: 3 })
+  const tools = await getPortfolioTools()
+
   return (
     <main className="w-full min-h-screen m-0 p-0 pt-14 lg:pt-0 bg-transparent overflow-x-hidden">
       <ScrambleIntroWrapper />
@@ -23,8 +28,8 @@ export default function Home() {
       />
       <AboutSection />
       <GlowingCardSection />
-      <CaseStudiesPreviewSection />
-      <ToolsArcSection />
+      <CaseStudiesPreviewSection studies={projects} />
+      <ToolsArcSection tools={tools} />
       <Testimonials />
       <HomeCTA />
       <Footer />

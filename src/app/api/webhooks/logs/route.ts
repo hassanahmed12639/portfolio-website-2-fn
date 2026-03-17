@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { enforceRateLimit } from '@/lib/request-security'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET(req: NextRequest) {
+  const rateLimitResponse = enforceRateLimit(req, 'webhooks-read', 60, 60_000)
+  if (rateLimitResponse) return rateLimitResponse
+
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

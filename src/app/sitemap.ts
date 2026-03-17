@@ -1,8 +1,8 @@
 import type { MetadataRoute } from 'next'
 import { headers } from 'next/headers'
-import { getAllSlugs } from '@/data/caseStudies'
 import { getTrackHiveSitemap } from '@/lib/sitemaps/trackhive'
 import { isTrackHiveHost } from '@/lib/domain-brand'
+import { getPortfolioProjects } from '@/lib/portfolio-projects'
 
 // Ensure sitemap is generated on each request so blog posts are always included
 export const dynamic = 'force-dynamic'
@@ -10,8 +10,9 @@ export const revalidate = 0
 
 const BASE_URL = 'https://itshassanahmed.com'
 
-function portfolioSitemap(): MetadataRoute.Sitemap {
-  const caseStudySlugs = getAllSlugs()
+async function portfolioSitemap(): Promise<MetadataRoute.Sitemap> {
+  const projects = await getPortfolioProjects()
+  const caseStudySlugs = projects.map((project) => project.slug)
   const caseStudyUrls: MetadataRoute.Sitemap = caseStudySlugs.map((slug) => ({
     url: `${BASE_URL}/project/${slug}`,
     lastModified: new Date(),

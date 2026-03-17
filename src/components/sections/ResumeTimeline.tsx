@@ -6,6 +6,7 @@ import {
 } from "framer-motion";
 import React, { useEffect, useRef, useState } from "react";
 import { TextRotate } from "@/components/ui/text-rotate";
+import type { PortfolioResumeSettings } from "@/lib/portfolio-settings";
 
 const LIME = "#C8FF00";
 
@@ -243,8 +244,17 @@ const resumeData = [
 // ─── Timeline Component ───────────────────────────────────────────────────────
 
 type TimelineItem = { title: string; content: React.ReactNode };
+type TimelineSettings = {
+  heroBadge: string;
+  heroTitle: string;
+  heroPrefix: string;
+  rotateWords: string[];
+  contactLinks: { label: string; href: string }[];
+  skills: string[];
+  tools: string[];
+};
 
-export const Timeline = ({ data }: { data: TimelineItem[] }) => {
+export const Timeline = ({ data, settings }: { data: TimelineItem[]; settings: TimelineSettings }) => {
   const isMobile = useIsMobile();
   const ref = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -291,17 +301,17 @@ export const Timeline = ({ data }: { data: TimelineItem[] }) => {
         }}>
           <div>
             <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", color: LIME, margin: "0 0 12px" }}>
-              Performance Marketer · 5+ Years
+              {settings.heroBadge}
             </p>
             <h1 style={{ fontSize: "clamp(40px, 6vw, 80px)", fontWeight: 900, color: "#fff", margin: "0 0 8px", lineHeight: 1 }}>
-              Hassan Ahmed
+              {settings.heroTitle}
             </h1>
             <div style={{ marginTop: "16px", display: "flex", alignItems: "center", flexWrap: "wrap", gap: "0.25em" }}>
               <span style={{ fontSize: "clamp(20px, 3vw, 32px)", color: "#fff", fontWeight: 300 }}>
-                I build systems that{" "}
+                {settings.heroPrefix}{" "}
               </span>
               <TextRotate
-                texts={['Convert!', 'Scale!', 'Perform!', 'Grow!', 'Sell!', 'Win!', 'Deliver!']}
+                texts={settings.rotateWords}
                 mainClassName="text-[#0F0F0F] text-[32px] sm:text-[38px] md:text-4xl lg:text-5xl font-extrabold px-1.5 sm:px-2 md:px-2.5 bg-[#AAFF00] overflow-hidden py-0.5 sm:py-0.5 md:py-1 justify-center rounded-lg leading-tight shadow-[0_0_25px_rgba(170,255,0,0.5),0_0_60px_rgba(170,255,0,0.2)]"
                 staggerFrom="last"
                 initial={{ y: '100%' }}
@@ -322,12 +332,7 @@ export const Timeline = ({ data }: { data: TimelineItem[] }) => {
             flexWrap: isMobile ? "wrap" : "nowrap",
             gap: isMobile ? "10px 20px" : "8px",
           }}>
-            {[
-              { label: "✉ hassanonclouds@gmail.com", href: "mailto:hassanonclouds@gmail.com" },
-              { label: "☏ +92-331-3317401", href: "tel:+923313317401" },
-              { label: "in LinkedIn", href: "https://www.linkedin.com/in/hassanahmed25/" },
-              { label: "⬡ Portfolio", href: "https://shorturl.at/rxysa" },
-            ].map(({ label, href }) => (
+            {settings.contactLinks.map(({ label, href }) => (
               <a key={label} href={href} target="_blank" rel="noopener noreferrer"
                 style={{ color: "#555", fontSize: "13px", textDecoration: "none", transition: "color 0.2s" }}
                 onMouseEnter={e => e.currentTarget.style.color = LIME}
@@ -362,7 +367,7 @@ export const Timeline = ({ data }: { data: TimelineItem[] }) => {
 
         {/* Skills */}
         <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "10px" }}>
-          {["Keyword Research","Technical SEO","PPC Optimization","Conversion Tracking","A/B Testing","Data Visualization","Account Structuring","AD Account Audit","Content Semantics"].map(s => (
+          {settings.skills.map(s => (
             <span key={s} style={{
               padding: "4px 12px",
               fontSize: "11px",
@@ -377,7 +382,7 @@ export const Timeline = ({ data }: { data: TimelineItem[] }) => {
 
         {/* Tools */}
         <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-          {["SEMrush","Ahrefs","Moz","Screaming Frog","Google Analytics","Looker Studio","HubSpot","Zoho","monday.com","Trello"].map(t => (
+          {settings.tools.map(t => (
             <span key={t} style={{
               padding: "4px 12px",
               fontSize: "11px",
@@ -464,6 +469,36 @@ export const Timeline = ({ data }: { data: TimelineItem[] }) => {
   );
 };
 
-export default function ResumeTimeline() {
-  return <Timeline data={resumeData} />;
+export default function ResumeTimeline({ settings }: { settings?: PortfolioResumeSettings }) {
+  const safeSettings: TimelineSettings = {
+    heroBadge: settings?.heroBadge ?? "Performance Marketer - 5+ Years",
+    heroTitle: settings?.heroTitle ?? "Hassan Ahmed",
+    heroPrefix: settings?.heroPrefix ?? "I build systems that",
+    rotateWords: settings?.rotateWords?.length ? settings.rotateWords : ["Convert!", "Scale!", "Perform!", "Grow!", "Sell!", "Win!", "Deliver!"],
+    contactLinks: settings?.contactLinks?.length
+      ? settings.contactLinks
+      : [
+          { label: "Email", href: "mailto:hassanonclouds@gmail.com" },
+          { label: "Phone", href: "tel:+923313317401" },
+          { label: "LinkedIn", href: "https://www.linkedin.com/in/hassanahmed25/" },
+          { label: "Portfolio", href: "https://shorturl.at/rxysa" },
+        ],
+    skills: settings?.skills?.length
+      ? settings.skills
+      : [
+          "Keyword Research",
+          "Technical SEO",
+          "PPC Optimization",
+          "Conversion Tracking",
+          "A/B Testing",
+          "Data Visualization",
+          "Account Structuring",
+          "AD Account Audit",
+          "Content Semantics",
+        ],
+    tools: settings?.tools?.length
+      ? settings.tools
+      : ["SEMrush", "Ahrefs", "Moz", "Screaming Frog", "Google Analytics", "Looker Studio", "HubSpot", "Zoho", "monday.com", "Trello"],
+  };
+  return <Timeline data={resumeData} settings={safeSettings} />;
 }

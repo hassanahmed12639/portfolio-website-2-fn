@@ -8,17 +8,18 @@ import SummarizeInChatGPT from "@/components/SummarizeInChatGPT";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getCaseStudyBySlug, getAllSlugs } from "@/data/caseStudies";
+import { getPortfolioProjectBySlug, getPortfolioProjects } from "@/lib/portfolio-projects";
 
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
-  return getAllSlugs().map((slug) => ({ slug }));
+  const projects = await getPortfolioProjects()
+  return projects.map((project) => ({ slug: project.slug }))
 }
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
-  const study = getCaseStudyBySlug(slug);
+  const study = await getPortfolioProjectBySlug(slug);
   if (!study) return { title: "Case Study" };
   return {
     title: `${study.title} | Projects`,
@@ -28,7 +29,7 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function CaseStudyPage({ params }: Props) {
   const { slug } = await params;
-  const study = getCaseStudyBySlug(slug);
+  const study = await getPortfolioProjectBySlug(slug);
   if (!study) notFound();
 
   const sections = study.sections ?? [];
