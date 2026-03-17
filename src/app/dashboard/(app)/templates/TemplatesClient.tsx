@@ -110,39 +110,44 @@ function createEcomGtmExport(pixelId: string): GtmExport {
         accountId: '0',
         containerId: '0',
         name: 'TrackHive GTM - E-commerce',
-        usageContext: ['web'],
+        usageContext: ['WEB'],
       },
       variable: [
-        { variableId: '1', name: 'GA4 Measurement ID', type: 'c', parameter: [{ type: 'TEMPLATE', key: 'value', value: '' }] },
+        {
+          variableId: '1',
+          name: 'GA4 Measurement ID',
+          type: 'c',
+          parameter: [{ type: 'TEMPLATE', key: 'value', value: 'G-XXXXXXXXXX' }],
+        },
         { variableId: '2', name: 'TrackHive Pixel ID', type: 'c', parameter: [{ type: 'TEMPLATE', key: 'value', value: pixelId }] },
-        { variableId: '3', name: 'DLV - value', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'value' }] },
-        { variableId: '4', name: 'DLV - currency', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'currency' }] },
-        { variableId: '5', name: 'DLV - transaction_id', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'transaction_id' }] },
-        { variableId: '6', name: 'DLV - email', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'email' }] },
-        { variableId: '7', name: 'DLV - phone', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'phone' }] },
-        { variableId: '8', name: 'DLV - item_id', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'item_id' }] },
-        { variableId: '9', name: 'DLV - items', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'items' }] },
-        { variableId: '10', name: 'DLV - coupon', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'coupon' }] },
-        { variableId: '11', name: 'DLV - discount', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'discount' }] },
-        { variableId: '12', name: 'DLV - tax', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'tax' }] },
-        { variableId: '13', name: 'DLV - shipping', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'shipping' }] },
-        { variableId: '14', name: 'DLV - order_total', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'order_total' }] },
-        { variableId: '15', name: 'DLV - payment_type', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'payment_type' }] },
-        { variableId: '16', name: 'DLV - customer_id', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'customer_id' }] },
-        { variableId: '17', name: 'DLV - customer_type', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'customer_type' }] },
-        { variableId: '18', name: 'DLV - page_category', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'page_category' }] },
-        { variableId: '19', name: 'DLV - search_term', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'search_term' }] },
-        { variableId: '20', name: 'DLV - event_name', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'event' }] },
+        { variableId: '3', name: 'DLV - value', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'value' }] },
+        { variableId: '4', name: 'DLV - currency', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'currency' }] },
+        { variableId: '5', name: 'DLV - transaction_id', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'transaction_id' }] },
+        { variableId: '6', name: 'DLV - email', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'email' }] },
+        { variableId: '7', name: 'DLV - phone', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'phone' }] },
+        { variableId: '8', name: 'DLV - item_id', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'item_id' }] },
+        { variableId: '9', name: 'DLV - items', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'items' }] },
+        { variableId: '10', name: 'DLV - coupon', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'coupon' }] },
+        { variableId: '11', name: 'DLV - discount', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'discount' }] },
+        { variableId: '12', name: 'DLV - tax', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'tax' }] },
+        { variableId: '13', name: 'DLV - shipping', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'shipping' }] },
+        { variableId: '14', name: 'DLV - order_total', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'order_total' }] },
+        { variableId: '15', name: 'DLV - payment_type', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'payment_type' }] },
+        { variableId: '16', name: 'DLV - customer_id', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'customer_id' }] },
+        { variableId: '17', name: 'DLV - customer_type', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'customer_type' }] },
+        { variableId: '18', name: 'DLV - page_category', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'page_category' }] },
+        { variableId: '19', name: 'DLV - search_term', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'search_term' }] },
+        { variableId: '20', name: 'DLV - event_name', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'event' }] },
       ],
       trigger: [
-        { triggerId: '1', name: 'All Pages', type: 'pageview' },
+        { triggerId: '1', name: 'All Pages', type: 'PAGEVIEW' },
         {
           triggerId: '2',
           name: 'Purchase Page',
-          type: 'pageview',
+          type: 'PAGEVIEW',
           filter: [
             {
-              type: 'contains',
+              type: 'CONTAINS',
               parameter: [
                 { type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' },
                 { type: 'TEMPLATE', key: 'arg1', value: '/thank-you' },
@@ -153,7 +158,7 @@ function createEcomGtmExport(pixelId: string): GtmExport {
             {
               filter: [
                 {
-                  type: 'contains',
+                  type: 'CONTAINS',
                   parameter: [
                     { type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' },
                     { type: 'TEMPLATE', key: 'arg1', value: '/thank-you' },
@@ -164,7 +169,7 @@ function createEcomGtmExport(pixelId: string): GtmExport {
             {
               filter: [
                 {
-                  type: 'contains',
+                  type: 'CONTAINS',
                   parameter: [
                     { type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' },
                     { type: 'TEMPLATE', key: 'arg1', value: '/order-confirmation' },
@@ -175,7 +180,7 @@ function createEcomGtmExport(pixelId: string): GtmExport {
             {
               filter: [
                 {
-                  type: 'contains',
+                  type: 'CONTAINS',
                   parameter: [
                     { type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' },
                     { type: 'TEMPLATE', key: 'arg1', value: '/order-received' },
@@ -185,15 +190,15 @@ function createEcomGtmExport(pixelId: string): GtmExport {
             },
           ],
         },
-        { triggerId: '3', name: 'Cart Page', type: 'pageview', filter: [{ type: 'contains', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' }, { type: 'TEMPLATE', key: 'arg1', value: '/cart' }] }] },
-        { triggerId: '4', name: 'Checkout Page', type: 'pageview', filter: [{ type: 'contains', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' }, { type: 'TEMPLATE', key: 'arg1', value: '/checkout' }] }] },
+        { triggerId: '3', name: 'Cart Page', type: 'PAGEVIEW', filter: [{ type: 'CONTAINS', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' }, { type: 'TEMPLATE', key: 'arg1', value: '/cart' }] }] },
+        { triggerId: '4', name: 'Checkout Page', type: 'PAGEVIEW', filter: [{ type: 'CONTAINS', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' }, { type: 'TEMPLATE', key: 'arg1', value: '/checkout' }] }] },
         {
           triggerId: '5',
           name: 'Refund Page',
-          type: 'pageview',
+          type: 'PAGEVIEW',
           filter: [
             {
-              type: 'contains',
+              type: 'CONTAINS',
               parameter: [
                 { type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' },
                 { type: 'TEMPLATE', key: 'arg1', value: '/refund' },
@@ -204,7 +209,7 @@ function createEcomGtmExport(pixelId: string): GtmExport {
             {
               filter: [
                 {
-                  type: 'contains',
+                  type: 'CONTAINS',
                   parameter: [
                     { type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' },
                     { type: 'TEMPLATE', key: 'arg1', value: '/refund' },
@@ -215,7 +220,7 @@ function createEcomGtmExport(pixelId: string): GtmExport {
             {
               filter: [
                 {
-                  type: 'contains',
+                  type: 'CONTAINS',
                   parameter: [
                     { type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' },
                     { type: 'TEMPLATE', key: 'arg1', value: '/return' },
@@ -225,22 +230,119 @@ function createEcomGtmExport(pixelId: string): GtmExport {
             },
           ],
         },
-        { triggerId: '6', name: 'Custom - add_to_cart', type: 'customEvent', customEventFilter: [{ type: 'equals', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'add_to_cart' }] }] },
-        { triggerId: '7', name: 'Custom - view_item', type: 'customEvent', customEventFilter: [{ type: 'equals', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'view_item' }] }] },
-        { triggerId: '8', name: 'Custom - begin_checkout', type: 'customEvent', customEventFilter: [{ type: 'equals', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'begin_checkout' }] }] },
-        { triggerId: '9', name: 'Custom - add_payment_info', type: 'customEvent', customEventFilter: [{ type: 'equals', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'add_payment_info' }] }] },
-        { triggerId: '10', name: 'Custom - generate_lead', type: 'customEvent', customEventFilter: [{ type: 'equals', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'generate_lead' }] }] },
+        { triggerId: '6', name: 'Custom - add_to_cart', type: 'CUSTOM_EVENT', customEventFilter: [{ type: 'EQUALS', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'add_to_cart' }] }] },
+        { triggerId: '7', name: 'Custom - view_item', type: 'CUSTOM_EVENT', customEventFilter: [{ type: 'EQUALS', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'view_item' }] }] },
+        { triggerId: '8', name: 'Custom - begin_checkout', type: 'CUSTOM_EVENT', customEventFilter: [{ type: 'EQUALS', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'begin_checkout' }] }] },
+        { triggerId: '9', name: 'Custom - add_payment_info', type: 'CUSTOM_EVENT', customEventFilter: [{ type: 'EQUALS', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'add_payment_info' }] }] },
+        { triggerId: '10', name: 'Custom - generate_lead', type: 'CUSTOM_EVENT', customEventFilter: [{ type: 'EQUALS', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'generate_lead' }] }] },
       ],
       tag: [
         { tagId: '1', name: 'TrackHive Base Pixel', type: 'html', firingTriggerId: ['1'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\n(function(w,d,s,l,i){w[l]=w[l]||[];\nvar f=d.getElementsByTagName(s)[0],j=d.createElement(s);\nj.async=true;j.src='https://track.itshassanahmed.com/pixel.js?id='+i;\nf.parentNode.insertBefore(j,f);\n})(window,document,'script','trackHive','{{TrackHive Pixel ID}}');\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
-        { tagId: '2', name: 'GA4 Configuration', type: 'gaawc', firingTriggerId: ['1'], parameter: [{ type: 'TEMPLATE', key: 'measurementId', value: '{{GA4 Measurement ID}}' }] },
-        { tagId: '3', name: 'GA4 - Purchase', type: 'gaawe', firingTriggerId: ['2'], parameter: [{ type: 'TEMPLATE', key: 'eventName', value: 'purchase' }, { type: 'TEMPLATE', key: 'measurementId', value: '{{GA4 Measurement ID}}' }, { type: 'TEMPLATE', key: 'eventParameters', value: "{\"value\":\"{{DLV - value}}\",\"currency\":\"{{DLV - currency}}\",\"transaction_id\":\"{{DLV - transaction_id}}\",\"coupon\":\"{{DLV - coupon}}\",\"tax\":\"{{DLV - tax}}\",\"shipping\":\"{{DLV - shipping}}\",\"items\":\"{{DLV - items}}\"}" }] },
-        { tagId: '4', name: 'GA4 - Add to Cart', type: 'gaawe', firingTriggerId: ['6'], parameter: [{ type: 'TEMPLATE', key: 'eventName', value: 'add_to_cart' }, { type: 'TEMPLATE', key: 'measurementId', value: '{{GA4 Measurement ID}}' }, { type: 'TEMPLATE', key: 'eventParameters', value: "{\"value\":\"{{DLV - value}}\",\"currency\":\"{{DLV - currency}}\",\"item_id\":\"{{DLV - item_id}}\",\"items\":\"{{DLV - items}}\"}" }] },
-        { tagId: '5', name: 'GA4 - View Item', type: 'gaawe', firingTriggerId: ['7'], parameter: [{ type: 'TEMPLATE', key: 'eventName', value: 'view_item' }, { type: 'TEMPLATE', key: 'measurementId', value: '{{GA4 Measurement ID}}' }, { type: 'TEMPLATE', key: 'eventParameters', value: "{\"item_id\":\"{{DLV - item_id}}\",\"items\":\"{{DLV - items}}\",\"value\":\"{{DLV - value}}\",\"currency\":\"{{DLV - currency}}\"}" }] },
-        { tagId: '6', name: 'GA4 - Begin Checkout', type: 'gaawe', firingTriggerId: ['8'], parameter: [{ type: 'TEMPLATE', key: 'eventName', value: 'begin_checkout' }, { type: 'TEMPLATE', key: 'measurementId', value: '{{GA4 Measurement ID}}' }, { type: 'TEMPLATE', key: 'eventParameters', value: "{\"value\":\"{{DLV - value}}\",\"currency\":\"{{DLV - currency}}\",\"coupon\":\"{{DLV - coupon}}\",\"items\":\"{{DLV - items}}\"}" }] },
-        { tagId: '7', name: 'GA4 - Add Payment Info', type: 'gaawe', firingTriggerId: ['9'], parameter: [{ type: 'TEMPLATE', key: 'eventName', value: 'add_payment_info' }, { type: 'TEMPLATE', key: 'measurementId', value: '{{GA4 Measurement ID}}' }, { type: 'TEMPLATE', key: 'eventParameters', value: "{\"value\":\"{{DLV - value}}\",\"currency\":\"{{DLV - currency}}\",\"payment_type\":\"{{DLV - payment_type}}\",\"items\":\"{{DLV - items}}\"}" }] },
-        { tagId: '8', name: 'GA4 - Refund', type: 'gaawe', firingTriggerId: ['5'], parameter: [{ type: 'TEMPLATE', key: 'eventName', value: 'refund' }, { type: 'TEMPLATE', key: 'measurementId', value: '{{GA4 Measurement ID}}' }, { type: 'TEMPLATE', key: 'eventParameters', value: "{\"transaction_id\":\"{{DLV - transaction_id}}\",\"value\":\"{{DLV - value}}\",\"currency\":\"{{DLV - currency}}\",\"items\":\"{{DLV - items}}\"}" }] },
-        { tagId: '9', name: 'GA4 - Search', type: 'gaawe', firingTriggerId: ['1'], parameter: [{ type: 'TEMPLATE', key: 'eventName', value: 'search' }, { type: 'TEMPLATE', key: 'measurementId', value: '{{GA4 Measurement ID}}' }, { type: 'TEMPLATE', key: 'eventParameters', value: "{\"search_term\":\"{{DLV - search_term}}\"}" }] },
+        {
+          tagId: '3',
+          name: 'GA4 - Purchase',
+          type: 'html',
+          firingTriggerId: ['2'],
+          parameter: [
+            {
+              type: 'TEMPLATE',
+              key: 'html',
+              value:
+                "<script>\nwindow.dataLayer = window.dataLayer || [];\nwindow.dataLayer.push({\n  event: 'purchase',\n  value: {{DLV - value}},\n  currency: '{{DLV - currency}}',\n  transaction_id: '{{DLV - transaction_id}}',\n  coupon: '{{DLV - coupon}}',\n  tax: '{{DLV - tax}}',\n  shipping: '{{DLV - shipping}}',\n  items: {{DLV - items}}\n});\n</script>",
+            },
+            { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' },
+          ],
+        },
+        {
+          tagId: '4',
+          name: 'GA4 - Add to Cart',
+          type: 'html',
+          firingTriggerId: ['6'],
+          parameter: [
+            {
+              type: 'TEMPLATE',
+              key: 'html',
+              value:
+                "<script>\nwindow.dataLayer = window.dataLayer || [];\nwindow.dataLayer.push({\n  event: 'add_to_cart',\n  value: {{DLV - value}},\n  currency: '{{DLV - currency}}',\n  item_id: '{{DLV - item_id}}',\n  items: {{DLV - items}}\n});\n</script>",
+            },
+            { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' },
+          ],
+        },
+        {
+          tagId: '5',
+          name: 'GA4 - View Item',
+          type: 'html',
+          firingTriggerId: ['7'],
+          parameter: [
+            {
+              type: 'TEMPLATE',
+              key: 'html',
+              value:
+                "<script>\nwindow.dataLayer = window.dataLayer || [];\nwindow.dataLayer.push({\n  event: 'view_item',\n  item_id: '{{DLV - item_id}}',\n  items: {{DLV - items}},\n  value: {{DLV - value}},\n  currency: '{{DLV - currency}}'\n});\n</script>",
+            },
+            { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' },
+          ],
+        },
+        {
+          tagId: '6',
+          name: 'GA4 - Begin Checkout',
+          type: 'html',
+          firingTriggerId: ['8'],
+          parameter: [
+            {
+              type: 'TEMPLATE',
+              key: 'html',
+              value:
+                "<script>\nwindow.dataLayer = window.dataLayer || [];\nwindow.dataLayer.push({\n  event: 'begin_checkout',\n  value: {{DLV - value}},\n  currency: '{{DLV - currency}}',\n  coupon: '{{DLV - coupon}}',\n  items: {{DLV - items}}\n});\n</script>",
+            },
+            { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' },
+          ],
+        },
+        {
+          tagId: '7',
+          name: 'GA4 - Add Payment Info',
+          type: 'html',
+          firingTriggerId: ['9'],
+          parameter: [
+            {
+              type: 'TEMPLATE',
+              key: 'html',
+              value:
+                "<script>\nwindow.dataLayer = window.dataLayer || [];\nwindow.dataLayer.push({\n  event: 'add_payment_info',\n  value: {{DLV - value}},\n  currency: '{{DLV - currency}}',\n  payment_type: '{{DLV - payment_type}}',\n  items: {{DLV - items}}\n});\n</script>",
+            },
+            { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' },
+          ],
+        },
+        {
+          tagId: '8',
+          name: 'GA4 - Refund',
+          type: 'html',
+          firingTriggerId: ['5'],
+          parameter: [
+            {
+              type: 'TEMPLATE',
+              key: 'html',
+              value:
+                "<script>\nwindow.dataLayer = window.dataLayer || [];\nwindow.dataLayer.push({\n  event: 'refund',\n  transaction_id: '{{DLV - transaction_id}}',\n  value: {{DLV - value}},\n  currency: '{{DLV - currency}}',\n  items: {{DLV - items}}\n});\n</script>",
+            },
+            { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' },
+          ],
+        },
+        {
+          tagId: '9',
+          name: 'GA4 - Search',
+          type: 'html',
+          firingTriggerId: ['1'],
+          parameter: [
+            {
+              type: 'TEMPLATE',
+              key: 'html',
+              value:
+                "<script>\nwindow.dataLayer = window.dataLayer || [];\nwindow.dataLayer.push({\n  event: 'search',\n  search_term: '{{DLV - search_term}}'\n});\n</script>",
+            },
+            { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' },
+          ],
+        },
         { tagId: '10', name: 'TrackHive - Purchase Event', type: 'html', firingTriggerId: ['2'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\nwindow.TrackHive && window.TrackHive.track('Purchase', {\n  value: {{DLV - value}},\n  currency: '{{DLV - currency}}',\n  email: '{{DLV - email}}',\n  phone: '{{DLV - phone}}',\n  event_id: '{{DLV - transaction_id}}',\n  customer_id: '{{DLV - customer_id}}',\n  customer_type: '{{DLV - customer_type}}',\n  event_source_url: window.location.href\n});\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
         { tagId: '11', name: 'TrackHive - AddToCart Event', type: 'html', firingTriggerId: ['6'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\nwindow.TrackHive && window.TrackHive.track('AddToCart', {\n  value: {{DLV - value}},\n  currency: '{{DLV - currency}}',\n  item_id: '{{DLV - item_id}}',\n  event_source_url: window.location.href\n});\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
         { tagId: '12', name: 'TrackHive - ViewContent Event', type: 'html', firingTriggerId: ['7'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\nwindow.TrackHive && window.TrackHive.track('ViewContent', {\n  value: {{DLV - value}},\n  currency: '{{DLV - currency}}',\n  item_id: '{{DLV - item_id}}',\n  event_source_url: window.location.href\n});\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
@@ -261,33 +363,38 @@ function createLeadGenGtmExport(pixelId: string): GtmExport {
         accountId: '0',
         containerId: '0',
         name: 'TrackHive GTM - Lead Gen',
-        usageContext: ['web'],
+        usageContext: ['WEB'],
       },
       variable: [
-        { variableId: '1', name: 'GA4 Measurement ID', type: 'c', parameter: [{ type: 'TEMPLATE', key: 'value', value: '' }] },
+        {
+          variableId: '1',
+          name: 'GA4 Measurement ID',
+          type: 'c',
+          parameter: [{ type: 'TEMPLATE', key: 'value', value: 'G-XXXXXXXXXX' }],
+        },
         { variableId: '2', name: 'TrackHive Pixel ID', type: 'c', parameter: [{ type: 'TEMPLATE', key: 'value', value: pixelId }] },
-        { variableId: '3', name: 'DLV - email', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'email' }] },
-        { variableId: '4', name: 'DLV - phone', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'phone' }] },
-        { variableId: '5', name: 'DLV - form_name', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'form_name' }] },
-        { variableId: '6', name: 'DLV - form_id', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'form_id' }] },
-        { variableId: '7', name: 'DLV - lead_source', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'lead_source' }] },
-        { variableId: '8', name: 'DLV - campaign_id', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'campaign_id' }] },
-        { variableId: '9', name: 'DLV - page_category', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'page_category' }] },
-        { variableId: '10', name: 'DLV - service_type', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'service_type' }] },
-        { variableId: '11', name: 'DLV - budget', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'budget' }] },
-        { variableId: '12', name: 'DLV - company_name', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'company_name' }] },
-        { variableId: '13', name: 'DLV - job_title', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'job_title' }] },
-        { variableId: '14', name: 'DLV - event_name', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'dataLayerVariableName', value: 'event' }] },
+        { variableId: '3', name: 'DLV - email', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'email' }] },
+        { variableId: '4', name: 'DLV - phone', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'phone' }] },
+        { variableId: '5', name: 'DLV - form_name', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'form_name' }] },
+        { variableId: '6', name: 'DLV - form_id', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'form_id' }] },
+        { variableId: '7', name: 'DLV - lead_source', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'lead_source' }] },
+        { variableId: '8', name: 'DLV - campaign_id', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'campaign_id' }] },
+        { variableId: '9', name: 'DLV - page_category', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'page_category' }] },
+        { variableId: '10', name: 'DLV - service_type', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'service_type' }] },
+        { variableId: '11', name: 'DLV - budget', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'budget' }] },
+        { variableId: '12', name: 'DLV - company_name', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'company_name' }] },
+        { variableId: '13', name: 'DLV - job_title', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'job_title' }] },
+        { variableId: '14', name: 'DLV - event_name', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'event' }] },
       ],
       trigger: [
-        { triggerId: '1', name: 'All Pages', type: 'pageview' },
+        { triggerId: '1', name: 'All Pages', type: 'PAGEVIEW' },
         {
           triggerId: '2',
           name: 'Thank You Page',
-          type: 'pageview',
+          type: 'PAGEVIEW',
           filter: [
             {
-              type: 'contains',
+              type: 'CONTAINS',
               parameter: [
                 { type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' },
                 { type: 'TEMPLATE', key: 'arg1', value: '/thank-you' },
@@ -298,7 +405,7 @@ function createLeadGenGtmExport(pixelId: string): GtmExport {
             {
               filter: [
                 {
-                  type: 'contains',
+                  type: 'CONTAINS',
                   parameter: [
                     { type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' },
                     { type: 'TEMPLATE', key: 'arg1', value: '/thank-you' },
@@ -309,7 +416,7 @@ function createLeadGenGtmExport(pixelId: string): GtmExport {
             {
               filter: [
                 {
-                  type: 'contains',
+                  type: 'CONTAINS',
                   parameter: [
                     { type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' },
                     { type: 'TEMPLATE', key: 'arg1', value: '/success' },
@@ -330,24 +437,172 @@ function createLeadGenGtmExport(pixelId: string): GtmExport {
             },
           ],
         },
-        { triggerId: '3', name: 'Custom - generate_lead', type: 'customEvent', customEventFilter: [{ type: 'equals', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'generate_lead' }] }] },
-        { triggerId: '4', name: 'Custom - form_start', type: 'customEvent', customEventFilter: [{ type: 'equals', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'form_start' }] }] },
-        { triggerId: '5', name: 'Custom - form_complete', type: 'customEvent', customEventFilter: [{ type: 'equals', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'form_complete' }] }] },
-        { triggerId: '6', name: 'Click - Phone Numbers', type: 'click', filter: [{ type: 'contains', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{Click URL}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'tel:' }] }] },
-        { triggerId: '7', name: 'Click - WhatsApp', type: 'click', filter: [{ type: 'contains', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{Click URL}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'wa.me' }] }] },
-        { triggerId: '8', name: 'Scroll Depth 50%', type: 'scrollDepth', parameter: [{ type: 'TEMPLATE', key: 'verticalThresholds', value: '50' }] },
-        { triggerId: '9', name: 'Timer 30 seconds', type: 'timer', parameter: [{ type: 'TEMPLATE', key: 'interval', value: '30000' }, { type: 'TEMPLATE', key: 'limit', value: '1' }] },
+        { triggerId: '3', name: 'Custom - generate_lead', type: 'CUSTOM_EVENT', customEventFilter: [{ type: 'EQUALS', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'generate_lead' }] }] },
+        { triggerId: '4', name: 'Custom - form_start', type: 'CUSTOM_EVENT', customEventFilter: [{ type: 'EQUALS', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'form_start' }] }] },
+        { triggerId: '5', name: 'Custom - form_complete', type: 'CUSTOM_EVENT', customEventFilter: [{ type: 'EQUALS', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'form_complete' }] }] },
+        {
+          triggerId: '6',
+          name: 'Click - Phone Numbers',
+          type: 'CLICK',
+          filter: [
+            {
+              type: 'CONTAINS',
+              parameter: [
+                { type: 'TEMPLATE', key: 'arg0', value: '{{Click URL}}' },
+                { type: 'TEMPLATE', key: 'arg1', value: 'tel:' },
+              ],
+            },
+          ],
+          parameter: [
+            { type: 'BOOLEAN', key: 'waitForTags', value: 'true' },
+            { type: 'TEMPLATE', key: 'checkValidation', value: 'false' },
+          ],
+        },
+        {
+          triggerId: '7',
+          name: 'Click - WhatsApp',
+          type: 'CLICK',
+          filter: [
+            {
+              type: 'CONTAINS',
+              parameter: [
+                { type: 'TEMPLATE', key: 'arg0', value: '{{Click URL}}' },
+                { type: 'TEMPLATE', key: 'arg1', value: 'wa.me' },
+              ],
+            },
+          ],
+          parameter: [
+            { type: 'BOOLEAN', key: 'waitForTags', value: 'true' },
+            { type: 'TEMPLATE', key: 'checkValidation', value: 'false' },
+          ],
+        },
+        {
+          triggerId: '8',
+          name: 'Scroll Depth 50%',
+          type: 'SCROLL_DEPTH',
+          parameter: [
+            { type: 'TEMPLATE', key: 'verticalThresholds', value: '50' },
+            { type: 'BOOLEAN', key: 'firesOnce', value: 'false' },
+          ],
+        },
+        {
+          triggerId: '9',
+          name: 'Timer 30 seconds',
+          type: 'TIMER',
+          parameter: [
+            { type: 'TEMPLATE', key: 'interval', value: '30000' },
+            { type: 'TEMPLATE', key: 'limit', value: '1' },
+            { type: 'BOOLEAN', key: 'firesOnce', value: 'true' },
+          ],
+        },
       ],
       tag: [
         { tagId: '1', name: 'TrackHive Base Pixel', type: 'html', firingTriggerId: ['1'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\n(function(w,d,s,l,i){w[l]=w[l]||[];\nvar f=d.getElementsByTagName(s)[0],j=d.createElement(s);\nj.async=true;j.src='https://track.itshassanahmed.com/pixel.js?id='+i;\nf.parentNode.insertBefore(j,f);\n})(window,document,'script','trackHive','{{TrackHive Pixel ID}}');\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
-        { tagId: '2', name: 'GA4 Configuration', type: 'gaawc', firingTriggerId: ['1'], parameter: [{ type: 'TEMPLATE', key: 'measurementId', value: '{{GA4 Measurement ID}}' }] },
-        { tagId: '3', name: 'GA4 - Lead', type: 'gaawe', firingTriggerId: ['3'], parameter: [{ type: 'TEMPLATE', key: 'eventName', value: 'generate_lead' }, { type: 'TEMPLATE', key: 'measurementId', value: '{{GA4 Measurement ID}}' }, { type: 'TEMPLATE', key: 'eventParameters', value: "{\"form_name\":\"{{DLV - form_name}}\",\"form_id\":\"{{DLV - form_id}}\",\"lead_source\":\"{{DLV - lead_source}}\",\"campaign_id\":\"{{DLV - campaign_id}}\",\"service_type\":\"{{DLV - service_type}}\",\"budget\":\"{{DLV - budget}}\"}" }] },
-        { tagId: '4', name: 'GA4 - Form Start', type: 'gaawe', firingTriggerId: ['4'], parameter: [{ type: 'TEMPLATE', key: 'eventName', value: 'form_start' }, { type: 'TEMPLATE', key: 'measurementId', value: '{{GA4 Measurement ID}}' }, { type: 'TEMPLATE', key: 'eventParameters', value: "{\"form_name\":\"{{DLV - form_name}}\",\"form_id\":\"{{DLV - form_id}}\",\"page_category\":\"{{DLV - page_category}}\"}" }] },
-        { tagId: '5', name: 'GA4 - Form Complete', type: 'gaawe', firingTriggerId: ['5'], parameter: [{ type: 'TEMPLATE', key: 'eventName', value: 'form_complete' }, { type: 'TEMPLATE', key: 'measurementId', value: '{{GA4 Measurement ID}}' }, { type: 'TEMPLATE', key: 'eventParameters', value: "{\"form_name\":\"{{DLV - form_name}}\",\"form_id\":\"{{DLV - form_id}}\",\"lead_source\":\"{{DLV - lead_source}}\"}" }] },
-        { tagId: '6', name: 'GA4 - Click to Call', type: 'gaawe', firingTriggerId: ['6'], parameter: [{ type: 'TEMPLATE', key: 'eventName', value: 'click_to_call' }, { type: 'TEMPLATE', key: 'measurementId', value: '{{GA4 Measurement ID}}' }, { type: 'TEMPLATE', key: 'eventParameters', value: "{\"click_url\":\"{{Click URL}}\",\"page_category\":\"{{DLV - page_category}}\"}" }] },
-        { tagId: '7', name: 'GA4 - WhatsApp Click', type: 'gaawe', firingTriggerId: ['7'], parameter: [{ type: 'TEMPLATE', key: 'eventName', value: 'whatsapp_click' }, { type: 'TEMPLATE', key: 'measurementId', value: '{{GA4 Measurement ID}}' }, { type: 'TEMPLATE', key: 'eventParameters', value: "{\"page_category\":\"{{DLV - page_category}}\",\"page_url\":\"{{Page URL}}\"}" }] },
-        { tagId: '8', name: 'GA4 - Scroll Engagement', type: 'gaawe', firingTriggerId: ['8'], parameter: [{ type: 'TEMPLATE', key: 'eventName', value: 'scroll_depth' }, { type: 'TEMPLATE', key: 'measurementId', value: '{{GA4 Measurement ID}}' }, { type: 'TEMPLATE', key: 'eventParameters', value: "{\"depth_percent\":\"50\",\"page_url\":\"{{Page URL}}\"}" }] },
-        { tagId: '9', name: 'GA4 - Time Engagement', type: 'gaawe', firingTriggerId: ['9'], parameter: [{ type: 'TEMPLATE', key: 'eventName', value: 'time_on_page' }, { type: 'TEMPLATE', key: 'measurementId', value: '{{GA4 Measurement ID}}' }, { type: 'TEMPLATE', key: 'eventParameters', value: "{\"seconds_spent\":\"30\",\"page_url\":\"{{Page URL}}\"}" }] },
+        {
+          tagId: '3',
+          name: 'GA4 - Lead',
+          type: 'html',
+          firingTriggerId: ['3'],
+          parameter: [
+            {
+              type: 'TEMPLATE',
+              key: 'html',
+              value:
+                "<script>\nwindow.dataLayer = window.dataLayer || [];\nwindow.dataLayer.push({\n  event: 'generate_lead',\n  form_name: '{{DLV - form_name}}',\n  form_id: '{{DLV - form_id}}',\n  lead_source: '{{DLV - lead_source}}',\n  campaign_id: '{{DLV - campaign_id}}',\n  service_type: '{{DLV - service_type}}',\n  budget: '{{DLV - budget}}'\n});\n</script>",
+            },
+            { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' },
+          ],
+        },
+        {
+          tagId: '4',
+          name: 'GA4 - Form Start',
+          type: 'html',
+          firingTriggerId: ['4'],
+          parameter: [
+            {
+              type: 'TEMPLATE',
+              key: 'html',
+              value:
+                "<script>\nwindow.dataLayer = window.dataLayer || [];\nwindow.dataLayer.push({\n  event: 'form_start',\n  form_name: '{{DLV - form_name}}',\n  form_id: '{{DLV - form_id}}',\n  page_category: '{{DLV - page_category}}'\n});\n</script>",
+            },
+            { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' },
+          ],
+        },
+        {
+          tagId: '5',
+          name: 'GA4 - Form Complete',
+          type: 'html',
+          firingTriggerId: ['5'],
+          parameter: [
+            {
+              type: 'TEMPLATE',
+              key: 'html',
+              value:
+                "<script>\nwindow.dataLayer = window.dataLayer || [];\nwindow.dataLayer.push({\n  event: 'form_complete',\n  form_name: '{{DLV - form_name}}',\n  form_id: '{{DLV - form_id}}',\n  lead_source: '{{DLV - lead_source}}'\n});\n</script>",
+            },
+            { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' },
+          ],
+        },
+        {
+          tagId: '6',
+          name: 'GA4 - Click to Call',
+          type: 'html',
+          firingTriggerId: ['6'],
+          parameter: [
+            {
+              type: 'TEMPLATE',
+              key: 'html',
+              value:
+                "<script>\nwindow.dataLayer = window.dataLayer || [];\nwindow.dataLayer.push({\n  event: 'click_to_call',\n  click_url: '{{Click URL}}',\n  page_category: '{{DLV - page_category}}'\n});\n</script>",
+            },
+            { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' },
+          ],
+        },
+        {
+          tagId: '7',
+          name: 'GA4 - WhatsApp Click',
+          type: 'html',
+          firingTriggerId: ['7'],
+          parameter: [
+            {
+              type: 'TEMPLATE',
+              key: 'html',
+              value:
+                "<script>\nwindow.dataLayer = window.dataLayer || [];\nwindow.dataLayer.push({\n  event: 'whatsapp_click',\n  page_url: '{{Page URL}}',\n  page_category: '{{DLV - page_category}}'\n});\n</script>",
+            },
+            { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' },
+          ],
+        },
+        {
+          tagId: '8',
+          name: 'GA4 - Scroll Engagement',
+          type: 'html',
+          firingTriggerId: ['8'],
+          parameter: [
+            {
+              type: 'TEMPLATE',
+              key: 'html',
+              value:
+                "<script>\nwindow.dataLayer = window.dataLayer || [];\nwindow.dataLayer.push({\n  event: 'scroll_depth',\n  depth_percent: 50,\n  page_url: '{{Page URL}}'\n});\n</script>",
+            },
+            { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' },
+          ],
+        },
+        {
+          tagId: '9',
+          name: 'GA4 - Time Engagement',
+          type: 'html',
+          firingTriggerId: ['9'],
+          parameter: [
+            {
+              type: 'TEMPLATE',
+              key: 'html',
+              value:
+                "<script>\nwindow.dataLayer = window.dataLayer || [];\nwindow.dataLayer.push({\n  event: 'time_on_page',\n  seconds_spent: 30,\n  page_url: '{{Page URL}}'\n});\n</script>",
+            },
+            { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' },
+          ],
+        },
         { tagId: '10', name: 'TrackHive - Lead Event', type: 'html', firingTriggerId: ['3'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\nwindow.TrackHive && window.TrackHive.track('Lead', {\n  email: '{{DLV - email}}',\n  phone: '{{DLV - phone}}',\n  form_name: '{{DLV - form_name}}',\n  lead_source: '{{DLV - lead_source}}',\n  campaign_id: '{{DLV - campaign_id}}',\n  service_type: '{{DLV - service_type}}',\n  budget: '{{DLV - budget}}',\n  company_name: '{{DLV - company_name}}',\n  event_source_url: window.location.href\n});\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
         { tagId: '11', name: 'TrackHive - Click to Call Event', type: 'html', firingTriggerId: ['6'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\nwindow.TrackHive && window.TrackHive.track('Contact', {\n  contact_method: 'phone',\n  phone_number: '{{Click URL}}',\n  event_source_url: window.location.href\n});\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
         { tagId: '12', name: 'TrackHive Auto-Track Script', type: 'html', firingTriggerId: ['1'], parameter: [{ type: 'TEMPLATE', key: 'html', value: '<script src=\"https://track.itshassanahmed.com/auto-track.js\"></script>' }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },

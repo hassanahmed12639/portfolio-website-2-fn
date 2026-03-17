@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic'
 
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import LoginRadar from './LoginRadar'
 import {
@@ -23,6 +23,7 @@ import { Separator } from '@/components/ui/separator'
 import { Eye, EyeOff, Lock, Mail, ArrowRight, Chrome } from 'lucide-react'
 
 export default function LoginPage() {
+  const router = useRouter()
   const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -48,6 +49,39 @@ export default function LoginPage() {
       }
     }
   }, [searchParams])
+
+  useEffect(() => {
+    const supabase = createClient()
+    let mounted = true
+
+    async function routeSignedInUser() {
+      const { data: sessionData } = await supabase.auth.getSession()
+      const session = sessionData.session
+      if (!session || !mounted) return
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('onboarding_completed')
+        .eq('id', session.user.id)
+        .single()
+
+      router.replace(profile?.onboarding_completed ? '/dashboard' : '/onboarding')
+    }
+
+    void routeSignedInUser()
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!mounted) return
+      if (event === 'SIGNED_IN' && session) {
+        void routeSignedInUser()
+      }
+    })
+
+    return () => {
+      mounted = false
+      authListener.subscription.unsubscribe()
+    }
+  }, [router])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -117,7 +151,7 @@ export default function LoginPage() {
         options: {
           redirectTo:
             typeof window !== 'undefined'
-              ? `${window.location.origin}/auth/callback`
+              ? `${window.location.origin}/dashboard/login`
               : undefined,
         },
       })
@@ -331,12 +365,12 @@ export default function LoginPage() {
                     Remember me
                   </Label>
                 </div>
-                <a
-                  href="#"
+                <Link
+                  href="/dashboard/forgot-password"
                   className="text-sm text-[var(--dash-muted)] hover:text-[var(--dash-primary)]"
                 >
                   Forgot password?
-                </a>
+                </Link>
               </div>
 
               {error && (

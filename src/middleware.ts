@@ -67,6 +67,7 @@ export async function middleware(req: NextRequest) {
     '/dashboard/signup',
     '/dashboard/logout',
     '/dashboard/forgot-password',
+    '/dashboard/reset-password',
     '/admin/login',
     '/onboarding',
     '/trackhive',
