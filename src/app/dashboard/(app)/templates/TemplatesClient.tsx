@@ -136,10 +136,95 @@ function createEcomGtmExport(pixelId: string): GtmExport {
       ],
       trigger: [
         { triggerId: '1', name: 'All Pages', type: 'pageview' },
-        { triggerId: '2', name: 'Purchase Page', type: 'pageview', filter: [{ type: 'contains', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' }, { type: 'TEMPLATE', key: 'arg1', value: '/thank-you|/order-confirmation|/order-received' }] }] },
+        {
+          triggerId: '2',
+          name: 'Purchase Page',
+          type: 'pageview',
+          filter: [
+            {
+              type: 'contains',
+              parameter: [
+                { type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' },
+                { type: 'TEMPLATE', key: 'arg1', value: '/thank-you' },
+              ],
+            },
+          ],
+          filterGroup: [
+            {
+              filter: [
+                {
+                  type: 'contains',
+                  parameter: [
+                    { type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' },
+                    { type: 'TEMPLATE', key: 'arg1', value: '/thank-you' },
+                  ],
+                },
+              ],
+            },
+            {
+              filter: [
+                {
+                  type: 'contains',
+                  parameter: [
+                    { type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' },
+                    { type: 'TEMPLATE', key: 'arg1', value: '/order-confirmation' },
+                  ],
+                },
+              ],
+            },
+            {
+              filter: [
+                {
+                  type: 'contains',
+                  parameter: [
+                    { type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' },
+                    { type: 'TEMPLATE', key: 'arg1', value: '/order-received' },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
         { triggerId: '3', name: 'Cart Page', type: 'pageview', filter: [{ type: 'contains', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' }, { type: 'TEMPLATE', key: 'arg1', value: '/cart' }] }] },
         { triggerId: '4', name: 'Checkout Page', type: 'pageview', filter: [{ type: 'contains', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' }, { type: 'TEMPLATE', key: 'arg1', value: '/checkout' }] }] },
-        { triggerId: '5', name: 'Refund Page', type: 'pageview', filter: [{ type: 'contains', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' }, { type: 'TEMPLATE', key: 'arg1', value: '/refund|/return' }] }] },
+        {
+          triggerId: '5',
+          name: 'Refund Page',
+          type: 'pageview',
+          filter: [
+            {
+              type: 'contains',
+              parameter: [
+                { type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' },
+                { type: 'TEMPLATE', key: 'arg1', value: '/refund' },
+              ],
+            },
+          ],
+          filterGroup: [
+            {
+              filter: [
+                {
+                  type: 'contains',
+                  parameter: [
+                    { type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' },
+                    { type: 'TEMPLATE', key: 'arg1', value: '/refund' },
+                  ],
+                },
+              ],
+            },
+            {
+              filter: [
+                {
+                  type: 'contains',
+                  parameter: [
+                    { type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' },
+                    { type: 'TEMPLATE', key: 'arg1', value: '/return' },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
         { triggerId: '6', name: 'Custom - add_to_cart', type: 'customEvent', customEventFilter: [{ type: 'equals', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'add_to_cart' }] }] },
         { triggerId: '7', name: 'Custom - view_item', type: 'customEvent', customEventFilter: [{ type: 'equals', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'view_item' }] }] },
         { triggerId: '8', name: 'Custom - begin_checkout', type: 'customEvent', customEventFilter: [{ type: 'equals', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'begin_checkout' }] }] },
@@ -196,7 +281,55 @@ function createLeadGenGtmExport(pixelId: string): GtmExport {
       ],
       trigger: [
         { triggerId: '1', name: 'All Pages', type: 'pageview' },
-        { triggerId: '2', name: 'Thank You Page', type: 'pageview', filter: [{ type: 'contains', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' }, { type: 'TEMPLATE', key: 'arg1', value: '/thank-you|/success|/confirmation' }] }] },
+        {
+          triggerId: '2',
+          name: 'Thank You Page',
+          type: 'pageview',
+          filter: [
+            {
+              type: 'contains',
+              parameter: [
+                { type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' },
+                { type: 'TEMPLATE', key: 'arg1', value: '/thank-you' },
+              ],
+            },
+          ],
+          filterGroup: [
+            {
+              filter: [
+                {
+                  type: 'contains',
+                  parameter: [
+                    { type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' },
+                    { type: 'TEMPLATE', key: 'arg1', value: '/thank-you' },
+                  ],
+                },
+              ],
+            },
+            {
+              filter: [
+                {
+                  type: 'contains',
+                  parameter: [
+                    { type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' },
+                    { type: 'TEMPLATE', key: 'arg1', value: '/success' },
+                  ],
+                },
+              ],
+            },
+            {
+              filter: [
+                {
+                  type: 'contains',
+                  parameter: [
+                    { type: 'TEMPLATE', key: 'arg0', value: '{{Page URL}}' },
+                    { type: 'TEMPLATE', key: 'arg1', value: '/confirmation' },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
         { triggerId: '3', name: 'Custom - generate_lead', type: 'customEvent', customEventFilter: [{ type: 'equals', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'generate_lead' }] }] },
         { triggerId: '4', name: 'Custom - form_start', type: 'customEvent', customEventFilter: [{ type: 'equals', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'form_start' }] }] },
         { triggerId: '5', name: 'Custom - form_complete', type: 'customEvent', customEventFilter: [{ type: 'equals', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'form_complete' }] }] },
