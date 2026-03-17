@@ -91,6 +91,7 @@ export default function PortfolioProjectsAdmin() {
   const [projects, setProjects] = useState<ProjectRecord[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [uploadingTarget, setUploadingTarget] = useState('')
   const [error, setError] = useState('')
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -211,6 +212,28 @@ export default function PortfolioProjectsAdmin() {
     setError('')
   }
 
+  async function uploadImage(file: File, target: string): Promise<string | null> {
+    setError('')
+    setUploadingTarget(target)
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('projectSlug', form.slug || 'general')
+      const res = await fetch('/api/admin/portfolio-upload', {
+        method: 'POST',
+        body: formData,
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data?.error || 'Upload failed')
+      return typeof data?.url === 'string' ? data.url : null
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Upload failed')
+      return null
+    } finally {
+      setUploadingTarget('')
+    }
+  }
+
   return (
     <div className="min-h-screen bg-black text-white p-6 md:p-10">
       <div className="max-w-6xl mx-auto">
@@ -319,7 +342,6 @@ export default function PortfolioProjectsAdmin() {
               {[
                 { key: 'slug', label: 'Slug', required: true },
                 { key: 'title', label: 'Title', required: true },
-                { key: 'src', label: 'Hero Image URL', required: true },
                 { key: 'date', label: 'Published Date (display)' },
                 { key: 'author', label: 'Author', required: true },
                 { key: 'authorTitle', label: 'Author Title' },
@@ -339,6 +361,33 @@ export default function PortfolioProjectsAdmin() {
                   />
                 </div>
               ))}
+
+              <div>
+                <label className="block text-sm text-slate-300 mb-1">Hero Image URL *</label>
+                <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-2">
+                  <input
+                    value={form.src}
+                    onChange={(event) => setForm((current) => ({ ...current, src: event.target.value }))}
+                    className="w-full bg-black border border-slate-700 rounded-lg px-3 py-2 text-sm"
+                  />
+                  <label className="inline-flex items-center justify-center bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs cursor-pointer hover:bg-slate-700">
+                    {uploadingTarget === 'hero' ? 'Uploading...' : 'Upload Image'}
+                    <input
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp"
+                      className="hidden"
+                      disabled={uploadingTarget === 'hero'}
+                      onChange={async (event) => {
+                        const file = event.target.files?.[0]
+                        if (!file) return
+                        const url = await uploadImage(file, 'hero')
+                        if (url) setForm((current) => ({ ...current, src: url }))
+                        event.currentTarget.value = ''
+                      }}
+                    />
+                  </label>
+                </div>
+              </div>
 
               <div>
                 <label className="block text-sm text-slate-300 mb-1">Description *</label>
@@ -439,14 +488,32 @@ export default function PortfolioProjectsAdmin() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <input
-                  placeholder="Inline content image URL"
-                  value={form.contentImageSrc}
-                  onChange={(event) =>
-                    setForm((current) => ({ ...current, contentImageSrc: event.target.value }))
-                  }
-                  className="w-full bg-black border border-slate-700 rounded-lg px-3 py-2 text-sm"
-                />
+                <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-2 md:col-span-2">
+                  <input
+                    placeholder="Inline content image URL"
+                    value={form.contentImageSrc}
+                    onChange={(event) =>
+                      setForm((current) => ({ ...current, contentImageSrc: event.target.value }))
+                    }
+                    className="w-full bg-black border border-slate-700 rounded-lg px-3 py-2 text-sm"
+                  />
+                  <label className="inline-flex items-center justify-center bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs cursor-pointer hover:bg-slate-700">
+                    {uploadingTarget === 'inline' ? 'Uploading...' : 'Upload Image'}
+                    <input
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp"
+                      className="hidden"
+                      disabled={uploadingTarget === 'inline'}
+                      onChange={async (event) => {
+                        const file = event.target.files?.[0]
+                        if (!file) return
+                        const url = await uploadImage(file, 'inline')
+                        if (url) setForm((current) => ({ ...current, contentImageSrc: url }))
+                        event.currentTarget.value = ''
+                      }}
+                    />
+                  </label>
+                </div>
                 <input
                   placeholder="Inline image alt"
                   value={form.contentImageAlt}
@@ -487,19 +554,44 @@ export default function PortfolioProjectsAdmin() {
                 <div className="space-y-2">
                   {form.contentImages.map((image, index) => (
                     <div key={index} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-2">
-                      <input
-                        placeholder="Image URL"
-                        value={image.src}
-                        onChange={(event) =>
-                          setForm((current) => ({
-                            ...current,
-                            contentImages: current.contentImages.map((item, idx) =>
-                              idx === index ? { ...item, src: event.target.value } : item
-                            ),
-                          }))
-                        }
-                        className="w-full bg-black border border-slate-700 rounded-lg px-3 py-2 text-sm"
-                      />
+                      <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-2 md:col-span-1">
+                        <input
+                          placeholder="Image URL"
+                          value={image.src}
+                          onChange={(event) =>
+                            setForm((current) => ({
+                              ...current,
+                              contentImages: current.contentImages.map((item, idx) =>
+                                idx === index ? { ...item, src: event.target.value } : item
+                              ),
+                            }))
+                          }
+                          className="w-full bg-black border border-slate-700 rounded-lg px-3 py-2 text-sm"
+                        />
+                        <label className="inline-flex items-center justify-center bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs cursor-pointer hover:bg-slate-700">
+                          {uploadingTarget === `additional-${index}` ? 'Uploading...' : 'Upload'}
+                          <input
+                            type="file"
+                            accept="image/png,image/jpeg,image/webp"
+                            className="hidden"
+                            disabled={uploadingTarget === `additional-${index}`}
+                            onChange={async (event) => {
+                              const file = event.target.files?.[0]
+                              if (!file) return
+                              const url = await uploadImage(file, `additional-${index}`)
+                              if (url) {
+                                setForm((current) => ({
+                                  ...current,
+                                  contentImages: current.contentImages.map((item, idx) =>
+                                    idx === index ? { ...item, src: url } : item
+                                  ),
+                                }))
+                              }
+                              event.currentTarget.value = ''
+                            }}
+                          />
+                        </label>
+                      </div>
                       <input
                         placeholder="Alt text"
                         value={image.alt}

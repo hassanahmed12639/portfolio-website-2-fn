@@ -73,7 +73,6 @@ const ECOM_BUNDLE_CONTENTS = {
   ],
   variables: [
     'GA4 Measurement ID',
-    'Meta Pixel ID',
     'DLV - value',
     'DLV - currency',
     'DLV - transaction_id',
@@ -94,14 +93,13 @@ const LEADGEN_BUNDLE_CONTENTS = {
   triggers: ['All Pages', 'Custom - generate_lead'],
   variables: [
     'GA4 Measurement ID',
-    'Meta Pixel ID',
     'DLV - email',
     'DLV - phone',
     'DLV - event_name',
   ],
 } as const
 
-function createEcomGtmExport(pixelId: string): GtmExport {
+function createEcomGtmExport(): GtmExport {
   return {
     exportFormatVersion: 2,
     exportTime: new Date().toISOString(),
@@ -119,7 +117,6 @@ function createEcomGtmExport(pixelId: string): GtmExport {
           type: 'c',
           parameter: [{ type: 'TEMPLATE', key: 'value', value: 'G-XXXXXXXXXX' }],
         },
-        { variableId: '2', name: 'Meta Pixel ID', type: 'c', parameter: [{ type: 'TEMPLATE', key: 'value', value: pixelId }] },
         { variableId: '3', name: 'DLV - value', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'value' }] },
         { variableId: '4', name: 'DLV - currency', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'currency' }] },
         { variableId: '5', name: 'DLV - transaction_id', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'transaction_id' }] },
@@ -237,7 +234,7 @@ function createEcomGtmExport(pixelId: string): GtmExport {
         { triggerId: '10', name: 'Custom - generate_lead', type: 'CUSTOM_EVENT', customEventFilter: [{ type: 'EQUALS', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'generate_lead' }] }] },
       ],
       tag: [
-        { tagId: '1', name: 'TrackHive Base Pixel', type: 'html', firingTriggerId: ['1'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\n(function(w,d,s,l,i){w[l]=w[l]||[];\nvar f=d.getElementsByTagName(s)[0],j=d.createElement(s);\nj.async=true;j.src='https://track.itshassanahmed.com/pixel.js?id='+i;\nf.parentNode.insertBefore(j,f);\n})(window,document,'script','trackHive','{{Meta Pixel ID}}');\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
+        { tagId: '1', name: 'TrackHive Base Pixel', type: 'html', firingTriggerId: ['1'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\nwindow.TRACKHIVE_KEY = 'API_KEY_PLACEHOLDER';\n</script>\n<script src=\"https://track.itshassanahmed.com/th.js?id=PIXEL_ID_PLACEHOLDER\"></script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
         {
           tagId: '3',
           name: 'GA4 - Purchase',
@@ -343,18 +340,18 @@ function createEcomGtmExport(pixelId: string): GtmExport {
             { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' },
           ],
         },
-        { tagId: '10', name: 'TrackHive - Purchase Event', type: 'html', firingTriggerId: ['2'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\nwindow.TrackHive && window.TrackHive.track('Purchase', {\n  value: {{DLV - value}},\n  currency: '{{DLV - currency}}',\n  email: '{{DLV - email}}',\n  phone: '{{DLV - phone}}',\n  event_id: '{{DLV - transaction_id}}',\n  customer_id: '{{DLV - customer_id}}',\n  customer_type: '{{DLV - customer_type}}',\n  event_source_url: window.location.href\n});\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
-        { tagId: '11', name: 'TrackHive - AddToCart Event', type: 'html', firingTriggerId: ['6'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\nwindow.TrackHive && window.TrackHive.track('AddToCart', {\n  value: {{DLV - value}},\n  currency: '{{DLV - currency}}',\n  item_id: '{{DLV - item_id}}',\n  event_source_url: window.location.href\n});\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
-        { tagId: '12', name: 'TrackHive - ViewContent Event', type: 'html', firingTriggerId: ['7'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\nwindow.TrackHive && window.TrackHive.track('ViewContent', {\n  value: {{DLV - value}},\n  currency: '{{DLV - currency}}',\n  item_id: '{{DLV - item_id}}',\n  event_source_url: window.location.href\n});\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
-        { tagId: '13', name: 'TrackHive - InitiateCheckout Event', type: 'html', firingTriggerId: ['8'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\nwindow.TrackHive && window.TrackHive.track('InitiateCheckout', {\n  value: {{DLV - value}},\n  currency: '{{DLV - currency}}',\n  event_source_url: window.location.href\n});\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
-        { tagId: '14', name: 'TrackHive - AddPaymentInfo Event', type: 'html', firingTriggerId: ['9'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\nwindow.TrackHive && window.TrackHive.track('AddPaymentInfo', {\n  value: {{DLV - value}},\n  currency: '{{DLV - currency}}',\n  payment_type: '{{DLV - payment_type}}',\n  event_source_url: window.location.href\n});\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
+        { tagId: '10', name: 'TrackHive - Purchase Event', type: 'html', firingTriggerId: ['2'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\ntrackhive('track', 'Purchase', {\n  value: '{{DLV - value}}',\n  currency: '{{DLV - currency}}',\n  email: '{{DLV - email}}',\n  phone: '{{DLV - phone}}',\n  event_id: '{{DLV - transaction_id}}',\n  customer_id: '{{DLV - customer_id}}',\n  customer_type: '{{DLV - customer_type}}',\n  event_source_url: window.location.href\n});\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
+        { tagId: '11', name: 'TrackHive - AddToCart Event', type: 'html', firingTriggerId: ['6'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\ntrackhive('track', 'AddToCart', {\n  value: '{{DLV - value}}',\n  currency: '{{DLV - currency}}',\n  item_id: '{{DLV - item_id}}',\n  event_source_url: window.location.href\n});\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
+        { tagId: '12', name: 'TrackHive - ViewContent Event', type: 'html', firingTriggerId: ['7'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\ntrackhive('track', 'ViewContent', {\n  value: '{{DLV - value}}',\n  currency: '{{DLV - currency}}',\n  item_id: '{{DLV - item_id}}',\n  event_source_url: window.location.href\n});\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
+        { tagId: '13', name: 'TrackHive - InitiateCheckout Event', type: 'html', firingTriggerId: ['8'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\ntrackhive('track', 'InitiateCheckout', {\n  value: '{{DLV - value}}',\n  currency: '{{DLV - currency}}',\n  event_source_url: window.location.href\n});\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
+        { tagId: '14', name: 'TrackHive - AddPaymentInfo Event', type: 'html', firingTriggerId: ['9'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\ntrackhive('track', 'AddPaymentInfo', {\n  value: '{{DLV - value}}',\n  currency: '{{DLV - currency}}',\n  payment_type: '{{DLV - payment_type}}',\n  event_source_url: window.location.href\n});\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
         { tagId: '15', name: 'TrackHive Auto-Track Script', type: 'html', firingTriggerId: ['1'], parameter: [{ type: 'TEMPLATE', key: 'html', value: '<script src=\"https://track.itshassanahmed.com/auto-track.js\"></script>' }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
       ],
     },
   }
 }
 
-function createLeadGenGtmExport(pixelId: string): GtmExport {
+function createLeadGenGtmExport(): GtmExport {
   return {
     exportFormatVersion: 2,
     exportTime: new Date().toISOString(),
@@ -372,7 +369,6 @@ function createLeadGenGtmExport(pixelId: string): GtmExport {
           type: 'c',
           parameter: [{ type: 'TEMPLATE', key: 'value', value: 'G-XXXXXXXXXX' }],
         },
-        { variableId: '2', name: 'Meta Pixel ID', type: 'c', parameter: [{ type: 'TEMPLATE', key: 'value', value: pixelId }] },
         { variableId: '3', name: 'DLV - email', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'email' }] },
         { variableId: '4', name: 'DLV - phone', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'phone' }] },
         { variableId: '5', name: 'DLV - form_name', type: 'v', parameter: [{ type: 'TEMPLATE', key: 'name', value: 'form_name' }] },
@@ -497,7 +493,7 @@ function createLeadGenGtmExport(pixelId: string): GtmExport {
         },
       ],
       tag: [
-        { tagId: '1', name: 'TrackHive Base Pixel', type: 'html', firingTriggerId: ['1'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\n(function(w,d,s,l,i){w[l]=w[l]||[];\nvar f=d.getElementsByTagName(s)[0],j=d.createElement(s);\nj.async=true;j.src='https://track.itshassanahmed.com/pixel.js?id='+i;\nf.parentNode.insertBefore(j,f);\n})(window,document,'script','trackHive','{{Meta Pixel ID}}');\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
+        { tagId: '1', name: 'TrackHive Base Pixel', type: 'html', firingTriggerId: ['1'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\nwindow.TRACKHIVE_KEY = 'API_KEY_PLACEHOLDER';\n</script>\n<script src=\"https://track.itshassanahmed.com/th.js?id=PIXEL_ID_PLACEHOLDER\"></script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
         {
           tagId: '3',
           name: 'GA4 - Lead',
@@ -603,8 +599,8 @@ function createLeadGenGtmExport(pixelId: string): GtmExport {
             { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' },
           ],
         },
-        { tagId: '10', name: 'TrackHive - Lead Event', type: 'html', firingTriggerId: ['3'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\nwindow.TrackHive && window.TrackHive.track('Lead', {\n  email: '{{DLV - email}}',\n  phone: '{{DLV - phone}}',\n  form_name: '{{DLV - form_name}}',\n  lead_source: '{{DLV - lead_source}}',\n  campaign_id: '{{DLV - campaign_id}}',\n  service_type: '{{DLV - service_type}}',\n  budget: '{{DLV - budget}}',\n  company_name: '{{DLV - company_name}}',\n  event_source_url: window.location.href\n});\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
-        { tagId: '11', name: 'TrackHive - Click to Call Event', type: 'html', firingTriggerId: ['6'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\nwindow.TrackHive && window.TrackHive.track('Contact', {\n  contact_method: 'phone',\n  phone_number: '{{Click URL}}',\n  event_source_url: window.location.href\n});\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
+        { tagId: '10', name: 'TrackHive - Lead Event', type: 'html', firingTriggerId: ['3'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\ntrackhive('track', 'Lead', {\n  email: '{{DLV - email}}',\n  phone: '{{DLV - phone}}',\n  form_name: '{{DLV - form_name}}',\n  lead_source: '{{DLV - lead_source}}',\n  campaign_id: '{{DLV - campaign_id}}',\n  service_type: '{{DLV - service_type}}',\n  budget: '{{DLV - budget}}',\n  company_name: '{{DLV - company_name}}',\n  event_source_url: window.location.href\n});\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
+        { tagId: '11', name: 'TrackHive - Click to Call Event', type: 'html', firingTriggerId: ['6'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\ntrackhive('track', 'Contact', {\n  contact_method: 'phone',\n  phone_number: '{{Click URL}}',\n  event_source_url: window.location.href\n});\n</script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
         { tagId: '12', name: 'TrackHive Auto-Track Script', type: 'html', firingTriggerId: ['1'], parameter: [{ type: 'TEMPLATE', key: 'html', value: '<script src=\"https://track.itshassanahmed.com/auto-track.js\"></script>' }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
       ],
     },
@@ -695,6 +691,16 @@ export default function TemplatesClient({
     return metaPixel.data?.pixel_id ?? null
   }
 
+  async function fetchUserApiKey(userId: string): Promise<string | null> {
+    const supabase = createClient()
+    const profile = await supabase
+      .from('profiles')
+      .select('api_key')
+      .eq('id', userId)
+      .maybeSingle()
+    return profile.data?.api_key ?? null
+  }
+
   async function handleBundleDownload(bundleType: 'ecom' | 'leadgen') {
     if (bundleLocked || bundleDownloading) return
     setBundleDownloading(bundleType)
@@ -709,20 +715,32 @@ export default function TemplatesClient({
       }
 
       const pixelId = await fetchUserPixelId(user.id)
+      const apiKey = await fetchUserApiKey(user.id)
 
       if (!pixelId) {
         setToast({
           type: 'error',
-          message: 'Please add your Meta Pixel ID in Integrations before downloading the GTM container',
+          message: 'Please add your Meta Pixel ID in Integrations first',
+        })
+        return
+      }
+
+      if (!apiKey) {
+        setToast({
+          type: 'error',
+          message: 'API key not found, please contact support',
         })
         return
       }
 
       const json =
         bundleType === 'ecom'
-          ? createEcomGtmExport(pixelId)
-          : createLeadGenGtmExport(pixelId)
-      const blob = new Blob([JSON.stringify(json, null, 2)], {
+          ? createEcomGtmExport()
+          : createLeadGenGtmExport()
+      const jsonString = JSON.stringify(json, null, 2)
+        .replaceAll('API_KEY_PLACEHOLDER', apiKey)
+        .replaceAll('PIXEL_ID_PLACEHOLDER', pixelId)
+      const blob = new Blob([jsonString], {
         type: 'application/json;charset=utf-8',
       })
       const url = URL.createObjectURL(blob)
