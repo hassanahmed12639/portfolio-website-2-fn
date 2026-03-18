@@ -71,11 +71,13 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+              // PayPal SDK: allow loading + any internal resources it needs.
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.paypal.com https://www.sandbox.paypal.com https://www.paypalobjects.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: https: blob:",
-              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api-m.paypal.com https://connect.facebook.net https://graph.facebook.com https://www.googletagmanager.com https://*.google-analytics.com https://www.google-analytics.com https://api.resend.com",
+              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api-m.paypal.com https://www.paypal.com https://www.sandbox.paypal.com https://connect.facebook.net https://graph.facebook.com https://www.googletagmanager.com https://*.google-analytics.com https://www.google-analytics.com https://api.resend.com",
+              "frame-src 'self' https://www.paypal.com https://www.sandbox.paypal.com https://www.paypalobjects.com",
               "frame-ancestors 'none'",
               "base-uri 'self'",
               "form-action 'self'",

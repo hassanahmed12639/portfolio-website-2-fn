@@ -32,16 +32,20 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid planId' }, { status: 400 })
     }
 
+    const paypalBaseUrl = process.env.PAYPAL_BASE_URL
     const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ?? process.env.PAYPAL_CLIENT_ID
     const secret = process.env.PAYPAL_SECRET
 
+    if (!paypalBaseUrl) {
+      return NextResponse.json({ error: 'PAYPAL_BASE_URL is not configured' }, { status: 500 })
+    }
     if (!clientId || !secret) {
       return NextResponse.json({ error: 'PayPal is not configured' }, { status: 500 })
     }
 
     const auth = Buffer.from(`${clientId}:${secret}`).toString('base64')
 
-    const tokenRes = await fetch('https://api-m.paypal.com/v1/oauth2/token', {
+    const tokenRes = await fetch(`${paypalBaseUrl}/v1/oauth2/token`, {
       method: 'POST',
       headers: {
         Authorization: `Basic ${auth}`,
@@ -49,18 +53,39 @@ export async function POST(req: NextRequest) {
       },
       body: 'grant_type=client_credentials',
     })
-    const tokenData = await tokenRes.json()
+    const tokenData = await tokenRes.json().catch(() => ({})) as {
+      access_token?: string
+      error?: string
+      error_description?: string
+    }
     const access_token = tokenData.access_token
 
-    if (!access_token) {
-      return NextResponse.json({ error: 'Failed to get PayPal access token' }, { status: 500 })
+    if (!tokenRes.ok || !access_token) {
+      const oauthError = tokenData.error_description || tokenData.error || `HTTP ${tokenRes.status}`
+      console.error('[paypal/create-subscription] OAuth token failed:', {
+        status: tokenRes.status,
+        error: tokenData.error,
+        error_description: tokenData.error_description,
+      })
+      return NextResponse.json(
+        { error: `Failed to get PayPal access token (${tokenRes.status}): ${oauthError}` },
+        { status: 500 }
+      )
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-    const returnUrl = customReturn ? (customReturn.startsWith('http') ? customReturn : `${baseUrl}${customReturn.startsWith('/') ? '' : '/'}${customReturn}`) : `${baseUrl}/dashboard/billing?success=true`
-    const cancelUrl = customCancel ? (customCancel.startsWith('http') ? customCancel : `${baseUrl}${customCancel.startsWith('/') ? '' : '/'}${customCancel}`) : `${baseUrl}/pricing?cancelled=true`
+    const appBaseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    const returnUrl = customReturn
+      ? customReturn.startsWith('http')
+        ? customReturn
+        : `${appBaseUrl}${customReturn.startsWith('/') ? '' : '/'}${customReturn}`
+      : `${appBaseUrl}/dashboard/billing?success=true`
+    const cancelUrl = customCancel
+      ? customCancel.startsWith('http')
+        ? customCancel
+        : `${appBaseUrl}${customCancel.startsWith('/') ? '' : '/'}${customCancel}`
+      : `${appBaseUrl}/dashboard/billing?cancelled=true`
 
-    const subRes = await fetch('https://api-m.paypal.com/v1/billing/subscriptions', {
+    const subRes = await fetch(`${paypalBaseUrl}/v1/billing/subscriptions`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${access_token}`,

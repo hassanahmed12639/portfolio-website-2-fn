@@ -6,7 +6,6 @@ import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { createProfileAfterSignup } from '../actions'
 import LoginRadar from '../login/LoginRadar'
 import {
   Card,
@@ -115,9 +114,14 @@ export default function SignupPage() {
     setLoading(true)
 
     const supabase = createClient()
-    const { error: signUpError } = await supabase.auth.signUp({
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
+      // Used by Supabase to know where to send users after they confirm their email.
+      options: {
+        emailRedirectTo:
+          typeof window !== 'undefined' ? `${window.location.origin}/dashboard/login` : undefined,
+      },
     })
 
     if (signUpError) {
@@ -126,11 +130,11 @@ export default function SignupPage() {
       return
     }
 
-    try {
-      await createProfileAfterSignup()
-    } catch {
+    // When email confirmation is enabled, Supabase typically does NOT create an active session
+    // until the user clicks the confirmation link.
+    if (!signUpData?.session) {
       setLoading(false)
-      setError('Account created but profile setup failed. Try signing in.')
+      setError('Check your email to confirm your account. After confirmation you can sign in.')
       return
     }
 

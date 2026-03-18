@@ -194,7 +194,13 @@ export default function LoginPage() {
       })
 
       if (error) {
-        setError(error.message)
+        const message = error.message || 'Sign-in failed.'
+        const lower = message.toLowerCase()
+        if (lower.includes('confirm') && lower.includes('email')) {
+          setError('Please confirm your email address before signing in.')
+        } else {
+          setError(message)
+        }
         return
       }
 

@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { BarChart2, Zap, Target, Rocket } from 'lucide-react'
 import { completeOnboarding } from '@/app/dashboard/actions'
+import { createClient as createBrowserSupabaseClient } from '@/lib/supabase/client'
 
 const steps = [
   { id: 1, title: 'Welcome to TrackHive', subtitle: "Let's set up your account in 2 minutes" },
@@ -49,7 +50,16 @@ export default function OnboardingPage() {
     setLoading(true)
     setError(null)
     try {
-      const result = await completeOnboarding(form)
+      const supabase = createBrowserSupabaseClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      const accessToken = session?.access_token
+
+      if (!accessToken) {
+        router.push('/dashboard/login')
+        return
+      }
+
+      const result = await completeOnboarding(form, accessToken)
       if (!result.ok) {
         setError(result.error)
         return

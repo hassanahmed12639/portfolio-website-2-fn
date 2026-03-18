@@ -206,8 +206,8 @@ export default function BillingForm() {
 
             <div className="mt-8 pt-6 border-t border-white/20">
               <p className="text-sm text-blue-100 mb-1">Have questions about your plan?</p>
-              <a href="mailto:support@trackhive.io" className="text-sm font-medium text-white hover:underline">
-                support@trackhive.io
+              <a href="mailto:support@track.itshassanahmed.com" className="text-sm font-medium text-white hover:underline">
+                support@track.itshassanahmed.com
               </a>
               <span className="text-blue-200"> · </span>
               <Link href="/pricing" className="text-sm font-medium text-white hover:underline">
