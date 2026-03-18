@@ -4,13 +4,8 @@ import { useEffect, useRef, useState } from 'react'
 
 declare global {
   interface Window {
-    paypal?: {
-      Buttons: (config: {
-        style?: { shape?: string; color?: string; layout?: string; label?: string }
-        createSubscription: (data: unknown, actions: { subscription: { create: (opts: { plan_id: string }) => Promise<unknown> } }) => Promise<unknown>
-        onApprove?: (data: { subscriptionID: string }, actions: unknown) => void | Promise<void>
-      }) => { render: (selector: string) => Promise<void> }
-    }
+    // Broad typing to avoid TS "subsequent property declarations must have same type".
+    paypal?: any
   }
 }
 

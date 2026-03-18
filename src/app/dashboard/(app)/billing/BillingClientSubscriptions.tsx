@@ -10,17 +10,8 @@ type PlanName = 'pro' | 'agency'
 
 declare global {
   interface Window {
-    paypal?: {
-      Buttons: (config: {
-        style?: Record<string, unknown>
-        createSubscription: (
-          data: unknown,
-          actions: { subscription: { create: (opts: { plan_id: string }) => Promise<unknown> } }
-        ) => Promise<unknown>
-        onApprove: (data: { subscriptionID: string }) => void | Promise<void>
-        onError?: (err: unknown) => void
-      }) => { render: (selector: string) => void }
-    }
+    // Broad typing to avoid TS "subsequent property declarations must have same type".
+    paypal?: any
   }
 }
 
@@ -104,10 +95,10 @@ export default function BillingClientSubscriptions({
         renderAttemptedRef.current.pro = true
         window.paypal.Buttons({
           style: { shape: 'pill', layout: 'vertical', label: 'pay' },
-          createSubscription: function (_data, actions) {
+          createSubscription: function (_data: unknown, actions: any) {
             return actions.subscription.create({ plan_id: proPlanId })
           },
-          onApprove: async function (data) {
+          onApprove: async function (data: any) {
             const subscriptionID = data?.subscriptionID
             if (!subscriptionID) {
               setError('PayPal did not return a subscription ID.')
@@ -122,7 +113,7 @@ export default function BillingClientSubscriptions({
               setActivatingPlan(null)
             }
           },
-          onError: function (err) {
+          onError: function (err: any) {
             setError(err instanceof Error ? err.message : 'PayPal checkout failed.')
             setActivatingPlan(null)
           },
@@ -145,10 +136,10 @@ export default function BillingClientSubscriptions({
         renderAttemptedRef.current.agency = true
         window.paypal.Buttons({
           style: { shape: 'pill', layout: 'vertical', label: 'pay' },
-          createSubscription: function (_data, actions) {
+          createSubscription: function (_data: unknown, actions: any) {
             return actions.subscription.create({ plan_id: agencyPlanId })
           },
-          onApprove: async function (data) {
+          onApprove: async function (data: any) {
             const subscriptionID = data?.subscriptionID
             if (!subscriptionID) {
               setError('PayPal did not return a subscription ID.')
@@ -163,7 +154,7 @@ export default function BillingClientSubscriptions({
               setActivatingPlan(null)
             }
           },
-          onError: function (err) {
+          onError: function (err: any) {
             setError(err instanceof Error ? err.message : 'PayPal checkout failed.')
             setActivatingPlan(null)
           },

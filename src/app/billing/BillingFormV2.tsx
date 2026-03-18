@@ -8,17 +8,9 @@ type Plan = 'pro' | 'agency'
 
 declare global {
   interface Window {
-    paypal?: {
-      Buttons: (config: {
-        style?: Record<string, unknown>
-        createSubscription: (
-          data: unknown,
-          actions: { subscription: { create: (opts: { plan_id: string }) => Promise<unknown> } }
-        ) => Promise<unknown>
-        onApprove: (data: { subscriptionID?: string; subscriptionId?: string }) => void | Promise<void>
-        onError?: (err: unknown) => void
-      }) => { render: (selector: string) => void }
-    }
+    // PayPal SDK attaches `window.paypal`. Different files in this repo declare it for different button
+    // variants; to avoid TS "subsequent property declarations must have same type" we keep this broad.
+    paypal?: any
   }
 }
 
@@ -56,7 +48,7 @@ export default function BillingFormV2({ userId }: { userId: string }) {
   const selectedPlanId = selectedPlan === 'pro' ? proPlanId : agencyPlanId
 
   const showSdkFallbackButton =
-    Boolean(error) && !sdkReady && error.toLowerCase().includes('failed to load')
+    !sdkReady && (error?.toLowerCase().includes('failed to load') ?? false)
 
   useEffect(() => {
     if (!paypalScriptSrc) return
@@ -174,10 +166,10 @@ export default function BillingFormV2({ userId }: { userId: string }) {
         window.paypal
           .Buttons({
             style: { shape: 'pill', layout: 'horizontal', label: 'subscribe' },
-            createSubscription: function (_data, actions) {
+            createSubscription: function (_data: unknown, actions: any) {
               return actions.subscription.create({ plan_id: selectedPlanId })
             },
-            onApprove: async function (data) {
+            onApprove: async function (data: any) {
               try {
                 const subscriptionID = data?.subscriptionID ?? data?.subscriptionId
                 if (!subscriptionID) throw new Error('PayPal did not return a subscription ID.')
@@ -199,7 +191,7 @@ export default function BillingFormV2({ userId }: { userId: string }) {
                 }
               }
             },
-            onError: function (err) {
+            onError: function (err: any) {
               if (nonce === renderNonceRef.current) {
                 setError(err instanceof Error ? err.message : 'PayPal checkout failed.')
                 renderInProgressRef.current = false
