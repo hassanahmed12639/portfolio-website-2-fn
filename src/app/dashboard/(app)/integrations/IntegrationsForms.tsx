@@ -8,6 +8,7 @@ type MetaIntegration = { pixel_id: string | null; has_access_token: boolean; met
 type GoogleIntegration = { tag_id: string | null; conversion_label?: string | null } | null
 type PixelTokenIntegration = { pixel_id: string | null; has_access_token: boolean } | null
 type Ga4Integration = { tag_id: string | null; has_access_token: boolean } | null
+type TokenHealth = { status: 'idle' | 'checking' | 'valid' | 'invalid' | 'missing'; message: string }
 
 export default function IntegrationsForms({
   meta,
@@ -43,6 +44,8 @@ export default function IntegrationsForms({
   const [tiktokTestMsg, setTiktokTestMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [ga4SaveMsg, setGa4SaveMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [ga4TestMsg, setGa4TestMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const [metaTokenHealth, setMetaTokenHealth] = useState<TokenHealth>({ status: 'idle', message: '' })
+  const [tiktokTokenHealth, setTiktokTokenHealth] = useState<TokenHealth>({ status: 'idle', message: '' })
 
   const [metaSaving, setMetaSaving] = useState(false)
   const [metaTesting, setMetaTesting] = useState(false)
@@ -59,6 +62,28 @@ export default function IntegrationsForms({
   const [ga4Testing, setGa4Testing] = useState(false)
 
   const router = useRouter()
+
+  async function checkSavedToken(platform: 'meta' | 'tiktok') {
+    const setter = platform === 'meta' ? setMetaTokenHealth : setTiktokTokenHealth
+    setter({ status: 'checking', message: 'Checking saved token...' })
+    try {
+      const res = await fetch('/api/integrations/token-health', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ platform }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        setter({ status: 'invalid', message: data.error ?? 'Token check failed' })
+        return
+      }
+      const status = data.status === 'valid' || data.status === 'invalid' || data.status === 'missing' ? data.status : 'invalid'
+      const message = typeof data.message === 'string' ? data.message : 'Token check failed'
+      setter({ status, message })
+    } catch {
+      setter({ status: 'invalid', message: 'Token check failed' })
+    }
+  }
 
   async function handleMetaSave(e: React.FormEvent) {
     e.preventDefault()
@@ -83,6 +108,7 @@ export default function IntegrationsForms({
       }
       setMetaSaveMsg({ type: 'success', text: 'Saved.' })
       setMetaAccessToken('')
+      void checkSavedToken('meta')
       router.refresh()
       if (metaPixelId.trim() && metaAccessToken.trim()) {
         const testRes = await fetch('/api/integrations/test', {
@@ -223,6 +249,7 @@ export default function IntegrationsForms({
       }
       setTiktokSaveMsg({ type: 'success', text: 'Saved.' })
       setTiktokAccessToken('')
+      void checkSavedToken('tiktok')
       router.refresh()
       if (tiktokPixelId.trim() && tiktokAccessToken.trim()) {
         const testRes = await fetch('/api/integrations/test', {
@@ -374,6 +401,15 @@ export default function IntegrationsForms({
       .catch(() => setMatchRate(null))
   }, [])
 
+  useEffect(() => {
+    if (meta?.has_access_token && (meta?.pixel_id ?? '').trim()) {
+      void checkSavedToken('meta')
+    }
+    if (tiktok?.has_access_token && (tiktok?.pixel_id ?? '').trim()) {
+      void checkSavedToken('tiktok')
+    }
+  }, [meta?.has_access_token, meta?.pixel_id, tiktok?.has_access_token, tiktok?.pixel_id])
+
   const metaConnected = meta && (meta.pixel_id || meta.has_access_token)
   const googleConnected = google && (google.tag_id || google.conversion_label)
   const tiktokConnected = tiktok && (tiktok.pixel_id || tiktok.has_access_token)
@@ -432,6 +468,11 @@ export default function IntegrationsForms({
               className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]"
             />
           </div>
+          {metaTokenHealth.status !== 'idle' && (
+            <p className={`text-xs ${metaTokenHealth.status === 'valid' ? 'text-[var(--dash-success)]' : metaTokenHealth.status === 'checking' ? 'text-[var(--dash-muted)]' : 'text-red-400'}`}>
+              {metaTokenHealth.message}
+            </p>
+          )}
           {metaSaveMsg && (
             <p className={metaSaveMsg.type === 'success' ? 'text-[var(--dash-success)] text-sm' : 'text-red-400 text-sm'}>
               {metaSaveMsg.text}
@@ -452,6 +493,14 @@ export default function IntegrationsForms({
               className="px-4 py-2 rounded-lg bg-[var(--dash-surface-hover)] text-[var(--dash-text)] font-medium hover:bg-[var(--dash-border)] disabled:opacity-50 text-sm"
             >
               {metaTesting ? 'Sending…' : 'Test only'}
+            </button>
+            <button
+              type="button"
+              onClick={() => checkSavedToken('meta')}
+              disabled={metaTokenHealth.status === 'checking' || !meta?.has_access_token}
+              className="px-4 py-2 rounded-lg bg-[var(--dash-surface-hover)] text-[var(--dash-text)] font-medium hover:bg-[var(--dash-border)] disabled:opacity-50 text-sm"
+            >
+              {metaTokenHealth.status === 'checking' ? 'Checking…' : 'Check saved token'}
             </button>
           </div>
           {metaTestMsg && (
@@ -651,6 +700,11 @@ export default function IntegrationsForms({
               Get your token from TikTok Events Manager → Management → Generate Access Token
             </a>
           </div>
+          {tiktokTokenHealth.status !== 'idle' && (
+            <p className={`text-xs ${tiktokTokenHealth.status === 'valid' ? 'text-[var(--dash-success)]' : tiktokTokenHealth.status === 'checking' ? 'text-[var(--dash-muted)]' : 'text-red-400'}`}>
+              {tiktokTokenHealth.message}
+            </p>
+          )}
           {tiktokSaveMsg && (
             <p className={tiktokSaveMsg.type === 'success' ? 'text-[var(--dash-success)] text-sm' : 'text-red-400 text-sm'}>
               {tiktokSaveMsg.text}
@@ -671,6 +725,14 @@ export default function IntegrationsForms({
               className="px-4 py-2 rounded-lg bg-[var(--dash-surface-hover)] text-[var(--dash-text)] font-medium hover:bg-[var(--dash-border)] disabled:opacity-50 text-sm"
             >
               {tiktokTesting ? 'Sending…' : 'Test only'}
+            </button>
+            <button
+              type="button"
+              onClick={() => checkSavedToken('tiktok')}
+              disabled={tiktokTokenHealth.status === 'checking' || !tiktok?.has_access_token}
+              className="px-4 py-2 rounded-lg bg-[var(--dash-surface-hover)] text-[var(--dash-text)] font-medium hover:bg-[var(--dash-border)] disabled:opacity-50 text-sm"
+            >
+              {tiktokTokenHealth.status === 'checking' ? 'Checking…' : 'Check saved token'}
             </button>
           </div>
           {tiktokTestMsg && (

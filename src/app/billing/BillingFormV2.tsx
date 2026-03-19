@@ -37,6 +37,7 @@ export default function BillingFormV2({ userId }: { userId: string }) {
   const renderNonceRef = useRef(0)
   const renderInProgressRef = useRef(false)
   const lastRenderedPlanIdRef = useRef<string | null>(null)
+  const paypalButtonsInstanceRef = useRef<any>(null)
 
   const paypalScriptSrc = useMemo(() => {
     if (!paypalClientId) return null
@@ -139,6 +140,17 @@ export default function BillingFormV2({ userId }: { userId: string }) {
     const mount = document.getElementById('paypal-subscribe-button')
     if (!mount) return
 
+    // Always tear down any previous PayPal button before rendering a new one.
+    if (paypalButtonsInstanceRef.current?.close) {
+      try {
+        paypalButtonsInstanceRef.current.close()
+      } catch {
+        // Ignore close errors and continue with a fresh render.
+      }
+    }
+    paypalButtonsInstanceRef.current = null
+    mount.innerHTML = ''
+
     renderInProgressRef.current = true
     lastRenderedPlanIdRef.current = selectedPlanId
     const nonce = ++renderNonceRef.current
@@ -163,42 +175,42 @@ export default function BillingFormV2({ userId }: { userId: string }) {
       }
 
       try {
-        window.paypal
-          .Buttons({
-            style: { shape: 'pill', layout: 'horizontal', label: 'subscribe' },
-            createSubscription: function (_data: unknown, actions: any) {
-              return actions.subscription.create({ plan_id: selectedPlanId })
-            },
-            onApprove: async function (data: any) {
-              try {
-                const subscriptionID = data?.subscriptionID ?? data?.subscriptionId
-                if (!subscriptionID) throw new Error('PayPal did not return a subscription ID.')
+        const buttons = window.paypal.Buttons({
+          style: { shape: 'pill', layout: 'horizontal', label: 'subscribe' },
+          createSubscription: function (_data: unknown, actions: any) {
+            return actions.subscription.create({ plan_id: selectedPlanId })
+          },
+          onApprove: async function (data: any) {
+            try {
+              const subscriptionID = data?.subscriptionID ?? data?.subscriptionId
+              if (!subscriptionID) throw new Error('PayPal did not return a subscription ID.')
 
-                const res = await fetch('/api/paypal/activate-subscription', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ subscriptionID, user_id: latestUserIdRef.current }),
-                })
-                const payload = await res.json().catch(() => ({}))
-                if (!res.ok) {
-                  throw new Error(payload?.error ?? 'Failed to activate subscription.')
-                }
-
-                window.location.href = `/billing?success=true&plan=${selectedPlan}`
-              } catch (e) {
-                if (nonce === renderNonceRef.current) {
-                  setError(e instanceof Error ? e.message : 'Failed to activate subscription.')
-                }
+              const res = await fetch('/api/paypal/activate-subscription', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ subscriptionID, user_id: latestUserIdRef.current }),
+              })
+              const payload = await res.json().catch(() => ({}))
+              if (!res.ok) {
+                throw new Error(payload?.error ?? 'Failed to activate subscription.')
               }
-            },
-            onError: function (err: any) {
+
+              window.location.href = `/billing?success=true&plan=${selectedPlan}`
+            } catch (e) {
               if (nonce === renderNonceRef.current) {
-                setError(err instanceof Error ? err.message : 'PayPal checkout failed.')
-                renderInProgressRef.current = false
+                setError(e instanceof Error ? e.message : 'Failed to activate subscription.')
               }
-            },
-          })
-          .render('#paypal-subscribe-button')
+            }
+          },
+          onError: function (err: any) {
+            if (nonce === renderNonceRef.current) {
+              setError(err instanceof Error ? err.message : 'PayPal checkout failed.')
+              renderInProgressRef.current = false
+            }
+          },
+        })
+        paypalButtonsInstanceRef.current = buttons
+        buttons.render('#paypal-subscribe-button')
 
         if (nonce === renderNonceRef.current) {
           setPaypalReady(true)
@@ -218,6 +230,14 @@ export default function BillingFormV2({ userId }: { userId: string }) {
       renderNonceRef.current = nonce + 1
       // If this effect is being replaced, mark as no longer in-progress so a new render can start.
       renderInProgressRef.current = false
+      if (paypalButtonsInstanceRef.current?.close) {
+        try {
+          paypalButtonsInstanceRef.current.close()
+        } catch {
+          // Ignore close errors during cleanup.
+        }
+      }
+      paypalButtonsInstanceRef.current = null
     }
   }, [sdkReady, selectedPlan, selectedPlanId])
 
