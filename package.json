@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "dev:3001": "next dev -p 3001",
-    "build": "next build",
+    "build": "cross-env NODE_ENV=production next build",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
@@ -53,6 +53,7 @@
     "@types/react-dom": "^18.2.0",
     "@types/three": "^0.183.1",
     "autoprefixer": "^10.4.17",
+    "cross-env": "^10.1.0",
     "dotenv": "^17.3.1",
     "eslint": "^8.57.1",
     "eslint-config-next": "14.2.35",
