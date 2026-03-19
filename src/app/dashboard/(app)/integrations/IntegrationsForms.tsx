@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import CopyButton from '../setup/CopyButton'
 
 type MetaIntegration = { pixel_id: string | null; has_access_token: boolean; meta_test_event_code?: string | null } | null
 type GoogleIntegration = { tag_id: string | null; conversion_label?: string | null } | null
@@ -415,7 +416,7 @@ export default function IntegrationsForms({
   const tiktokConnected = tiktok && (tiktok.pixel_id || tiktok.has_access_token)
   const ga4Connected = ga4 && (ga4.tag_id || ga4.has_access_token)
 
-  const installScript = `<script src="https://track.itshassanahmed.com/th.js?id=${metaPixelId.trim() || 'YOUR_PIXEL_ID'}"></script>`
+  const installScript = `<script src="https://track.itshassanahmed.com/th.js?id=YOUR_PIXEL_ID"></script>`
 
   return (
     <div className="space-y-8 overflow-y-auto">
@@ -424,9 +425,14 @@ export default function IntegrationsForms({
         <p className="text-sm text-[var(--dash-muted)] mb-3">
           Add it to <strong>your website</strong> head tag:
         </p>
-        <pre className="p-4 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-sm text-[var(--dash-text)] overflow-x-auto font-mono">
-          <code>{installScript}</code>
-        </pre>
+        <div className="rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] overflow-hidden">
+          <div className="flex items-center justify-end px-4 py-2 border-b border-[var(--dash-border)]">
+            <CopyButton text={installScript} />
+          </div>
+          <pre className="p-4 text-sm text-[var(--dash-text)] overflow-x-auto font-mono m-0">
+            <code>{installScript}</code>
+          </pre>
+        </div>
         <p className="text-xs text-[var(--dash-muted)] mt-2">
           Replace <code className="px-1.5 py-0.5 rounded bg-[var(--dash-surface)] text-[var(--dash-text)]">YOUR_PIXEL_ID</code> with your actual Meta Pixel ID (you can enter it in the Meta CAPI section below).
         </p>
@@ -462,11 +468,15 @@ export default function IntegrationsForms({
             <input
               id="meta-access-token"
               type="password"
+              autoComplete="off"
               value={metaAccessToken}
               onChange={(e) => setMetaAccessToken(e.target.value)}
               placeholder={meta?.has_access_token ? 'Saved (paste to replace)' : '••••••••'}
-              className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]"
+              className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)] [&::-ms-reveal]:hidden"
             />
+            <p className="mt-1 text-xs text-[var(--dash-muted)]">
+              Events Manager → your Pixel → Settings → Generate Access Token
+            </p>
           </div>
           {metaTokenHealth.status !== 'idle' && (
             <p className={`text-xs ${metaTokenHealth.status === 'valid' ? 'text-[var(--dash-success)]' : metaTokenHealth.status === 'checking' ? 'text-[var(--dash-muted)]' : 'text-red-400'}`}>
@@ -686,10 +696,11 @@ export default function IntegrationsForms({
             <input
               id="tiktok-access-token"
               type="password"
+              autoComplete="off"
               value={tiktokAccessToken}
               onChange={(e) => setTiktokAccessToken(e.target.value)}
               placeholder={tiktok?.has_access_token ? 'Saved (paste to replace)' : '••••••••'}
-              className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]"
+              className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)] [&::-ms-reveal]:hidden"
             />
             <a
               href="https://ads.tiktok.com/help/article?aid=10028"
@@ -774,10 +785,11 @@ export default function IntegrationsForms({
             <input
               id="ga4-api-secret"
               type="password"
+              autoComplete="off"
               value={ga4ApiSecret}
               onChange={(e) => setGa4ApiSecret(e.target.value)}
               placeholder={ga4?.has_access_token ? 'Saved (paste to replace)' : '••••••••'}
-              className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]"
+              className="w-full px-4 py-2.5 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)] text-[var(--dash-text)] placeholder-[var(--dash-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)] [&::-ms-reveal]:hidden"
             />
             <a
               href="https://support.google.com/analytics/answer/9539598"

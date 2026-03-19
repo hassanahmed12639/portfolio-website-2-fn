@@ -12,6 +12,18 @@ function normalizePlatform(value: string | undefined): SupportedPlatform | null 
   return null
 }
 
+const META_100_HELP =
+  'Generate a new token: Events Manager → select your Pixel → Settings → Generate Access Token (use the token from there, not from other tools).'
+
+function parseMetaError(data: { error?: { code?: number; message?: string; error_user_msg?: string } }) {
+  const code = data?.error?.code
+  const rawMsg = data?.error?.message || (typeof data?.error?.error_user_msg === 'string' ? data.error.error_user_msg : null)
+  if (code === 100 || (typeof rawMsg === 'string' && rawMsg.includes('(#100)') && rawMsg.toLowerCase().includes('permission'))) {
+    return META_100_HELP
+  }
+  return rawMsg || 'Meta token appears invalid or expired'
+}
+
 async function validateMetaToken(pixelId: string, accessToken: string) {
   const res = await fetch(
     `https://graph.facebook.com/v18.0/${pixelId}?fields=id,name&access_token=${encodeURIComponent(accessToken)}`,
@@ -19,10 +31,7 @@ async function validateMetaToken(pixelId: string, accessToken: string) {
   )
   const data = await res.json().catch(() => ({}))
   if (!res.ok || data?.error) {
-    const message =
-      data?.error?.message ||
-      (typeof data?.error_user_msg === 'string' ? data.error_user_msg : null) ||
-      'Meta token appears invalid or expired'
+    const message = parseMetaError(data)
     return { valid: false, message }
   }
   return { valid: true, message: 'Meta token is valid' }

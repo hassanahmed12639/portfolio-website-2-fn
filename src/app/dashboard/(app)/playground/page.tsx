@@ -178,7 +178,26 @@ export default function PlaygroundPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...payload, target }),
       })
-      const data = await res.json().catch(() => ({}))
+      const text = await res.text()
+      let data: unknown
+      try {
+        data = text ? JSON.parse(text) : {}
+      } catch {
+        data = {
+          _parseError: true,
+          _message: 'API returned invalid or non-JSON response',
+          status: res.status,
+          statusText: res.statusText,
+          raw_preview: text.slice(0, 500) + (text.length > 500 ? '...' : ''),
+        }
+      }
+      if (typeof data === 'object' && data !== null && Object.keys(data).length === 0 && !res.ok) {
+        data = {
+          error: 'Empty response from API',
+          status: res.status,
+          statusText: res.statusText,
+        }
+      }
       setLastPayload(payload)
       setLastResponse(data)
       if (typeof data.quality_score === 'number') setQualityScore(data.quality_score)
@@ -848,7 +867,18 @@ export default function PlaygroundPage() {
                                   headers: { 'Content-Type': 'application/json' },
                                   body: JSON.stringify(item.payload),
                                 })
-                                const data = await res.json().catch(() => ({}))
+                                const text = await res.text()
+                                let data: unknown
+                                try {
+                                  data = text ? JSON.parse(text) : {}
+                                } catch {
+                                  data = {
+                                    _parseError: true,
+                                    _message: 'API returned invalid or non-JSON response',
+                                    status: res.status,
+                                    raw_preview: text.slice(0, 300) + (text.length > 300 ? '...' : ''),
+                                  }
+                                }
                                 setLastPayload(item.payload)
                                 setLastResponse(data)
                                 setQualityScore(typeof data.quality_score === 'number' ? data.quality_score : null)

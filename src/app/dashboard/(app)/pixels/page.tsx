@@ -272,12 +272,18 @@ export default function PixelsPage() {
                 </label>
                 <input
                   type="password"
-                  placeholder="Paste your access token"
+                  autoComplete="off"
+                  placeholder="••••••••"
                   value={form.access_token}
                   onChange={(e) => setForm((f) => ({ ...f, access_token: e.target.value }))}
                   required
-                  className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm"
+                  className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm [&::-ms-reveal]:hidden"
                 />
+                {form.platform === 'meta' && (
+                  <p className="mt-1 text-xs text-slate-500">
+                    Events Manager → Pixel → Settings → Generate Access Token
+                  </p>
+                )}
               </div>
             </div>
 

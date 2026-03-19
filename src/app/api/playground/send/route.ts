@@ -501,14 +501,27 @@ export async function POST(request: NextRequest) {
     ...(runTikTok ? ['TikTok'] : []),
     ...(runGoogle ? ['Google'] : []),
   ]
+  let ga4Response: unknown = undefined
+  let tiktokResponse: unknown = undefined
+  let googleAdsResponse: unknown = undefined
   platformResults.forEach((result, index) => {
+    const name = platformNames[index]
     if (result.status === 'fulfilled') {
-      const name = platformNames[index]
-      if (name === 'GA4') platformsFired.push('ga4')
-      else if (name === 'TikTok') platformsFired.push('tiktok')
-      else if (name === 'Google') platformsFired.push('google')
+      if (name === 'GA4') {
+        platformsFired.push('ga4')
+        ga4Response = result.value
+      } else if (name === 'TikTok') {
+        platformsFired.push('tiktok')
+        tiktokResponse = result.value
+      } else if (name === 'Google') {
+        platformsFired.push('google')
+        googleAdsResponse = result.value
+      }
       debugLog(`[${name}] ✅ Sent`)
     } else {
+      if (name === 'GA4') ga4Response = { error: String(result.reason), status: 'failed' }
+      else if (name === 'TikTok') tiktokResponse = { error: String(result.reason), status: 'failed' }
+      else if (name === 'Google') googleAdsResponse = { error: String(result.reason), status: 'failed' }
       debugLog(`[${platformNames[index]}] ❌ Failed:`, result.reason)
     }
   })
@@ -538,7 +551,9 @@ export async function POST(request: NextRequest) {
     event_id: event_id ?? null,
     timestamp: eventTime,
     meta_response: metaResponse ?? undefined,
-    google_response: googleResponse ?? undefined,
+    google_response: googleAdsResponse ?? googleResponse ?? undefined,
+    ga4_response: ga4Response ?? undefined,
+    tiktok_response: tiktokResponse ?? undefined,
     quality_score: dataQuality.score,
     data_quality: dataQuality,
     validation,

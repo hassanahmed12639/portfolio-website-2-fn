@@ -72,8 +72,15 @@ export async function POST(request: NextRequest) {
       let errorMessage = 'Test event failed'
       try {
         const parsed = JSON.parse(raw)
+        const code = parsed?.error?.code
         const msg = parsed?.error?.message ?? parsed?.error?.error_user_msg
-        if (typeof msg === 'string') errorMessage = msg
+        const msgStr = typeof msg === 'string' ? msg : ''
+        if (code === 100 || (msgStr.includes('(#100)') && msgStr.toLowerCase().includes('permission'))) {
+          errorMessage =
+            'Generate a new token: Events Manager → your Pixel → Settings → Generate Access Token (use the token from there, not from other tools).'
+        } else if (msgStr) {
+          errorMessage = msgStr
+        }
       } catch {
         if (raw) errorMessage = raw.slice(0, 200)
       }
