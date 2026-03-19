@@ -200,7 +200,8 @@ export default function PlaygroundPage() {
       }
       setLastPayload(payload)
       setLastResponse(data)
-      if (typeof data.quality_score === 'number') setQualityScore(data.quality_score)
+      const obj = data as Record<string, unknown>
+      if (typeof obj?.quality_score === 'number') setQualityScore(obj.quality_score)
       setHistory((h) => [
         {
           id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
@@ -881,7 +882,8 @@ export default function PlaygroundPage() {
                                 }
                                 setLastPayload(item.payload)
                                 setLastResponse(data)
-                                setQualityScore(typeof data.quality_score === 'number' ? data.quality_score : null)
+                                const obj = data as Record<string, unknown>
+                                setQualityScore(typeof obj?.quality_score === 'number' ? obj.quality_score : null)
                                 setResultTab('response')
                                 setHistory((h) => [
                                   {
