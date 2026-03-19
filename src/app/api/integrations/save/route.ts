@@ -46,6 +46,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'platform required' }, { status: 400 })
   }
 
+  // TikTok Pixel ID must be alphanumeric (e.g. CXXXXXXXX), not an email
+  if (platform === 'tiktok' && pixel_id !== undefined && pixel_id !== null) {
+    const trimmed = String(pixel_id).trim()
+    if (trimmed && trimmed.includes('@')) {
+      return NextResponse.json(
+        { error: 'TikTok Pixel ID should be your Pixel ID from Events Manager (e.g. CXXXXXXXX), not your email.' },
+        { status: 400 }
+      )
+    }
+  }
+
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
   if (!supabaseUrl || !serviceRoleKey) {

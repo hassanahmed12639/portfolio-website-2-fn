@@ -251,7 +251,7 @@ export async function POST(request: NextRequest) {
   const userCountry = body.country ?? userData?.country?.[0] ?? undefined
   const date_of_birth = body.date_of_birth ?? userData?.db?.[0] ?? undefined
   const gender = body.gender ?? userData?.ge?.[0] ?? undefined
-  const external_id = body.external_id ?? bodyUserId ?? userData?.external_id?.[0] ?? undefined
+  const external_id = body.external_id ?? visitor_id ?? bodyUserId ?? userData?.external_id?.[0] ?? undefined
   const event_id = bodyEventId ?? `th_${Date.now()}_${Math.random().toString(36).slice(2)}`
 
   let api_key = bodyApiKey
@@ -686,6 +686,9 @@ export async function POST(request: NextRequest) {
         const hashedEmail = enrichmentData?.hashes?.email_hash ?? (email ? sha256(email) : undefined)
         const hashedPhone = enrichmentData?.hashes?.phone_hash ?? (phone ? sha256(phone.replace(/\D/g, '')) : undefined)
 
+        // fbc from fbclid when missing — Click ID gives +64% Event Match Quality
+        const effectiveFbc = fbc || (fbclid ? `fb.1.${Date.now()}.${fbclid}` : undefined)
+
         const userData: Record<string, string | string[] | undefined> = {
           em: hashedEmail ? [hashedEmail] : undefined,
           ph: hashedPhone ? [hashedPhone] : undefined,
@@ -697,22 +700,26 @@ export async function POST(request: NextRequest) {
           country: userCountry ? [hashValue(userCountry.toLowerCase().trim())] : undefined,
           db: date_of_birth ? [hashValue(date_of_birth.replace(/-/g, ''))] : undefined,
           ge: gender ? [hashValue(gender.toLowerCase().trim())] : undefined,
-          client_ip_address: ip,
-          client_user_agent: userAgent,
+          client_ip_address: ip && ip !== '0.0.0.0' ? ip : undefined,
+          client_user_agent: userAgent || undefined,
           fbp: fbp || undefined,
-          fbc: fbc || undefined,
-          external_id: external_id ? [hashValue(external_id)] : undefined,
+          fbc: effectiveFbc || undefined,
+          external_id: external_id ? [hashValue(String(external_id))] : undefined,
         }
         Object.keys(userData).forEach((key) => {
           if (userData[key] === undefined) {
             delete userData[key]
           }
         })
+        // Geo enrichment — Meta requires hashed values for Event Match Quality
         if (enrichmentData?.geo?.countryCode && !userData.country) {
-          userData.country = [enrichmentData.geo.countryCode.toLowerCase()]
+          userData.country = [hashValue(enrichmentData.geo.countryCode.toLowerCase().trim())]
         }
         if (enrichmentData?.geo?.city && !userData.ct) {
-          userData.ct = [enrichmentData.geo.city.toLowerCase().replace(/\s/g, '')]
+          userData.ct = [hashValue(enrichmentData.geo.city.toLowerCase().trim().replace(/\s/g, ''))]
+        }
+        if (enrichmentData?.geo?.region && !userData.st) {
+          userData.st = [hashValue(enrichmentData.geo.region.toLowerCase().trim().replace(/\s/g, ''))]
         }
 
         const actionSource = (headerSettings?.meta_send_action_source !== false && headerSettings?.meta_action_source)

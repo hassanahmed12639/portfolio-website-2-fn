@@ -74,7 +74,8 @@ export async function GET(req: NextRequest) {
         userData.ph = [sha256(payload.phone.replace(/\D/g, ''))]
       }
       if (payload.fbp) userData.fbp = payload.fbp
-      if (payload.fbc) userData.fbc = payload.fbc
+      const effectiveFbc = payload.fbc ?? (payload.fbclid ? `fb.1.${Date.now()}.${payload.fbclid}` : undefined)
+      if (effectiveFbc) userData.fbc = effectiveFbc
 
       const metaPayload = {
         data: [

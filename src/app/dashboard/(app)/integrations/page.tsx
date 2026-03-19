@@ -42,7 +42,12 @@ export default async function IntegrationsPage() {
   const activePixelsCount =
     (activePixels?.length ?? 0) + (meta?.pixel_id?.trim() ? 1 : 0)
   const google = integrations?.find((i) => i.platform === 'google') ?? null
-  const tiktok = integrations?.find((i) => i.platform === 'tiktok') ?? null
+  const tiktokRow = integrations?.find((i) => i.platform === 'tiktok') ?? null
+  // Don't pass email-like values as pixel_id — TikTok Pixel IDs are alphanumeric (e.g. CXXXXXXXX)
+  const tiktokPixelId = tiktokRow?.pixel_id && !tiktokRow.pixel_id.includes('@')
+    ? tiktokRow.pixel_id
+    : null
+  const tiktok = tiktokRow ? { pixel_id: tiktokPixelId, has_access_token: !!tiktokRow.access_token } : null
   const ga4 = integrations?.find((i) => i.platform === 'ga4') ?? null
 
   return (
@@ -54,7 +59,7 @@ export default async function IntegrationsPage() {
         metaFbclidCount={metaFbclidCount ?? 0}
         activePixelsCount={activePixelsCount ?? 0}
         google={google ? { tag_id: google.tag_id, conversion_label: google.conversion_label } : null}
-        tiktok={tiktok ? { pixel_id: tiktok.pixel_id, has_access_token: !!tiktok.access_token } : null}
+        tiktok={tiktok}
         ga4={ga4 ? { tag_id: ga4.ga4_measurement_id ?? ga4.tag_id, has_access_token: !!(ga4.ga4_api_secret ?? ga4.access_token) } : null}
       />
     </div>

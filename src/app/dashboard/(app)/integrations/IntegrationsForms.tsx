@@ -232,6 +232,11 @@ export default function IntegrationsForms({
     e.preventDefault()
     setTiktokSaveMsg(null)
     setTiktokTestMsg(null)
+    // Reject email-like values — Pixel ID should be alphanumeric (e.g. CXXXXXXXX)
+    if (tiktokPixelId.trim() && tiktokPixelId.includes('@')) {
+      setTiktokSaveMsg({ type: 'error', text: 'Please enter your TikTok Pixel ID from Events Manager (e.g. CXXXXXXXX), not your email.' })
+      return
+    }
     setTiktokSaving(true)
     try {
       const saveRes = await fetch('/api/integrations/save', {
@@ -239,7 +244,7 @@ export default function IntegrationsForms({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           platform: 'tiktok',
-          pixel_id: tiktokPixelId.trim() || undefined,
+          pixel_id: tiktokPixelId.trim() || null,
           access_token: tiktokAccessToken.trim() || undefined,
         }),
       })
@@ -520,6 +525,11 @@ export default function IntegrationsForms({
           )}
         </form>
 
+        <div className="mt-4 p-3 rounded-lg bg-[var(--dash-surface-hover)] border border-[var(--dash-border)]">
+          <p className="text-xs text-[var(--dash-muted)]">
+            <strong className="text-[var(--dash-text)]">Event Match Quality 9–10/10:</strong> Send email, phone, first_name, last_name with Purchase/Lead events. th.js auto-captures fbp, fbc, fbclid, IP, user agent and geo from IP.
+          </p>
+        </div>
         <div className="mt-6 pt-6 border-t border-[var(--dash-border)]">
           <h3 className="text-sm font-medium text-[var(--dash-muted)] mb-3">Meta Signal Status</h3>
           <div className="space-y-3">
@@ -683,6 +693,7 @@ export default function IntegrationsForms({
             <input
               id="tiktok-pixel-id"
               type="text"
+              autoComplete="off"
               value={tiktokPixelId}
               onChange={(e) => setTiktokPixelId(e.target.value)}
               placeholder="CXXXXXXXX"

@@ -73,10 +73,14 @@ export async function getUserCredentials(userId: string): Promise<UserCredential
       ga4ApiSecretRaw ? decrypt(ga4ApiSecretRaw) : Promise.resolve(fallback.ga4ApiSecret),
     ])
 
+    // Don't use email-like values as TikTok Pixel ID (IDs are alphanumeric, e.g. CXXXXXXXX)
+    const rawTiktokPixelId = (tiktok?.pixel_id ?? fallback.tiktokPixelId)?.trim() || fallback.tiktokPixelId
+    const tiktokPixelId = rawTiktokPixelId && !rawTiktokPixelId.includes('@') ? rawTiktokPixelId : fallback.tiktokPixelId
+
     return {
       metaPixelId: (meta?.pixel_id ?? fallback.metaPixelId)?.trim() || fallback.metaPixelId,
       metaAccessToken: metaAccessToken || fallback.metaAccessToken,
-      tiktokPixelId: (tiktok?.pixel_id ?? fallback.tiktokPixelId)?.trim() || fallback.tiktokPixelId,
+      tiktokPixelId,
       tiktokAccessToken: tiktokAccessToken || fallback.tiktokAccessToken,
       ga4MeasurementId: (ga4?.ga4_measurement_id ?? ga4?.tag_id ?? fallback.ga4MeasurementId)?.trim() || fallback.ga4MeasurementId,
       ga4ApiSecret: ga4ApiSecret || fallback.ga4ApiSecret,
