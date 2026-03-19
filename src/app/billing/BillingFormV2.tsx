@@ -371,9 +371,9 @@ export default function BillingFormV2({ userId }: { userId: string }) {
             {selectedPlanId ? (
               <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-6">
                 <p className="text-sm text-slate-600 mb-4">Pay securely with PayPal. You can cancel anytime.</p>
-                <div id="paypal-subscribe-button" aria-label="PayPal subscribe button">
-                  {!paypalReady && <p className="text-xs text-slate-500 text-center">Loading PayPal…</p>}
-                </div>
+                {!paypalReady && <p className="text-xs text-slate-500 text-center mb-2">Loading PayPal…</p>}
+                {/* Container must have NO React children - PayPal injects here; mixing causes removeChild errors */}
+                <div id="paypal-subscribe-button" aria-label="PayPal subscribe button" suppressHydrationWarning />
                 {error && <p className="text-red-500 text-xs mt-3 text-center">{error}</p>}
                 {showSdkFallbackButton && (
                   <div className="mt-4">

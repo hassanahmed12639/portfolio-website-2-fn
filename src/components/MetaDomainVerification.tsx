@@ -8,18 +8,16 @@ export default function MetaDomainVerification() {
   useEffect(() => {
     const hostname = window.location.hostname
     if (
-      hostname.includes('track.itshassanhamed.com') ||
-      hostname.includes('localhost') // remove this line after testing
+      hostname.includes('track.itshassanahmed.com') ||
+      hostname.includes('localhost')
     ) {
       const meta = document.createElement('meta')
       meta.name = 'facebook-domain-verification'
       meta.content = FACEBOOK_DOMAIN_VERIFICATION
-      document.head.appendChild(meta)
-      return () => {
-        if (meta.parentNode === document.head) {
-          document.head.removeChild(meta)
-        }
+      if (!document.querySelector('meta[name="facebook-domain-verification"][content="' + FACEBOOK_DOMAIN_VERIFICATION + '"]')) {
+        document.head.appendChild(meta)
       }
+      // Don't remove on cleanup - third-party DOM removal can trigger React removeChild errors
     }
   }, [])
 
