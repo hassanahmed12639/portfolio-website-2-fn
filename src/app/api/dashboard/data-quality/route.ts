@@ -3,13 +3,13 @@ import { NextResponse } from 'next/server'
 
 const QUALITY_FIELDS = ['email', 'phone', 'fbp', 'fbc', 'name', 'location', 'fbclid'] as const
 const FIELD_POINTS: Record<string, number> = {
-  email: 20,
-  phone: 15,
-  fbp: 20,
-  fbc: 15,
-  name: 10,
-  location: 10,
-  fbclid: 10,
+  fbc: 2,
+  fbp: 2,
+  email: 2,
+  phone: 1,
+  name: 1,
+  location: 1,
+  fbclid: 1,
 }
 
 export const dynamic = 'force-dynamic'
@@ -42,7 +42,8 @@ export async function GET() {
   const distribution = { Excellent: 0, Good: 0, Fair: 0, Poor: 0 }
   list.forEach((e) => {
     const s = e.data_quality_score ?? 0
-    const label = s >= 80 ? 'Excellent' : s >= 60 ? 'Good' : s >= 40 ? 'Fair' : 'Poor'
+    const normalized = s > 10 ? s / 10 : s
+    const label = normalized >= 9 ? 'Excellent' : normalized >= 7 ? 'Good' : normalized >= 5 ? 'Fair' : 'Poor'
     distribution[label as keyof typeof distribution]++
   })
 
@@ -108,7 +109,8 @@ export async function GET() {
     const dayDist = { Excellent: 0, Good: 0, Fair: 0, Poor: 0 }
     dayEvents.forEach((e) => {
       const s = e.data_quality_score ?? 0
-      const label = s >= 80 ? 'Excellent' : s >= 60 ? 'Good' : s >= 40 ? 'Fair' : 'Poor'
+      const normalized = s > 10 ? s / 10 : s
+      const label = normalized >= 9 ? 'Excellent' : normalized >= 7 ? 'Good' : normalized >= 5 ? 'Fair' : 'Poor'
       dayDist[label as keyof typeof dayDist]++
     })
     dailyQuality.push({ date: dayIso, ...dayDist })

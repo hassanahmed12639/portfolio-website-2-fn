@@ -12,8 +12,11 @@ export default function SettingsClient({ profile, userId }: { profile: Profile; 
   const [currentCurrency, setCurrentCurrency] = useState<string>(profile?.display_currency ?? 'USD')
   const [saving, setSaving] = useState(false)
   const [currencySaving, setCurrencySaving] = useState(false)
+  const [dashboardError, setDashboardError] = useState<string | null>(null)
 
   const handleSwitchDashboard = async (type: string) => {
+    if (type === currentDashboardType) return
+    setDashboardError(null)
     setSaving(true)
     try {
       const res = await fetch('/api/dashboard/profile', {
@@ -21,10 +24,16 @@ export default function SettingsClient({ profile, userId }: { profile: Profile; 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ dashboard_type: type }),
       })
-      if (!res.ok) return
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        setDashboardError((err as { error?: string })?.error ?? `Failed to switch (${res.status})`)
+        return
+      }
       setCurrentDashboardType(type)
       router.refresh()
       router.push('/dashboard')
+    } catch (e) {
+      setDashboardError(e instanceof Error ? e.message : 'Network error')
     } finally {
       setSaving(false)
     }
@@ -91,6 +100,9 @@ export default function SettingsClient({ profile, userId }: { profile: Profile; 
             </button>
           ))}
         </div>
+        {dashboardError && (
+          <p className="mt-3 text-sm text-red-600">{dashboardError}</p>
+        )}
       </div>
     </div>
   )

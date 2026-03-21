@@ -77,8 +77,12 @@ export async function getUserCredentials(userId: string): Promise<UserCredential
     const rawTiktokPixelId = (tiktok?.pixel_id ?? fallback.tiktokPixelId)?.trim() || fallback.tiktokPixelId
     const tiktokPixelId = rawTiktokPixelId && !rawTiktokPixelId.includes('@') ? rawTiktokPixelId : fallback.tiktokPixelId
 
+    // Don't use email-like values as Meta Pixel ID (IDs are numeric)
+    const rawMetaPixelId = (meta?.pixel_id ?? fallback.metaPixelId)?.trim() || fallback.metaPixelId
+    const metaPixelId = rawMetaPixelId && !rawMetaPixelId.includes('@') ? rawMetaPixelId : fallback.metaPixelId
+
     return {
-      metaPixelId: (meta?.pixel_id ?? fallback.metaPixelId)?.trim() || fallback.metaPixelId,
+      metaPixelId,
       metaAccessToken: metaAccessToken || fallback.metaAccessToken,
       tiktokPixelId,
       tiktokAccessToken: tiktokAccessToken || fallback.tiktokAccessToken,

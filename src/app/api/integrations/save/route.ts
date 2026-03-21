@@ -46,6 +46,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'platform required' }, { status: 400 })
   }
 
+  // Meta Pixel ID must be numeric (e.g. 1234567890123456), not an email
+  if (platform === 'meta' && pixel_id !== undefined && pixel_id !== null) {
+    const trimmed = String(pixel_id).trim()
+    if (trimmed && trimmed.includes('@')) {
+      return NextResponse.json(
+        { error: 'Meta Pixel ID should be your numeric Pixel ID from Events Manager, not your email.' },
+        { status: 400 }
+      )
+    }
+  }
+
   // TikTok Pixel ID must be alphanumeric (e.g. CXXXXXXXX), not an email
   if (platform === 'tiktok' && pixel_id !== undefined && pixel_id !== null) {
     const trimmed = String(pixel_id).trim()

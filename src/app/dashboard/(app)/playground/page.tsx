@@ -72,10 +72,10 @@ type HistoryItem = {
 
 function qualityTips(score: number): string[] {
   const tips: string[] = []
-  if (score < 30) tips.push('Add email or phone for +30 points and better attribution.')
-  if (score < 50) tips.push('Include event_id for deduplication (+20).')
-  if (score < 65) tips.push('Add event_source_url (+15) and currency for purchase events (+15).')
-  if (score < 80) tips.push('For Purchase events, send value (+20).')
+  if (score < 5) tips.push('Add fbc, fbp, or email for better match quality.')
+  if (score < 6) tips.push('Include event_id for deduplication.')
+  if (score < 7) tips.push('Add event_source_url and currency for purchase events.')
+  if (score < 9) tips.push('For Purchase events, send value. Add phone and name for 9-10 EMQ.')
   return tips.length ? tips : ['Event looks great. All key fields present.']
 }
 
@@ -120,7 +120,7 @@ export default function PlaygroundPage() {
     const payload: Record<string, unknown> = {
       event_name: displayEventName,
       event_id: autoGenerateEventId ? params.event_id : (params.event_id || generateEventId()),
-      event_source_url: params.event_source_url || undefined,
+      event_source_url: params.event_source_url || (typeof window !== 'undefined' ? window.location.href : undefined),
       email: email || undefined,
       phone: params.phone || undefined,
       first_name: params.first_name || undefined,
@@ -933,14 +933,14 @@ export default function PlaygroundPage() {
             <span className="text-sm font-medium text-[var(--dash-muted)]">Event Quality Score</span>
             <span
               className={`text-2xl font-bold ${
-                qualityScore >= 80 ? 'text-[var(--dash-success)]' : qualityScore >= 50 ? 'text-amber-400' : 'text-red-400'
+                qualityScore >= 9 ? 'text-[var(--dash-success)]' : qualityScore >= 5 ? 'text-amber-400' : 'text-red-400'
               }`}
             >
-              {qualityScore}/100
+              {qualityScore}/10
             </span>
           </div>
           <div className="p-4">
-            <p className="text-xs text-[var(--dash-muted)] mb-2">Breakdown: email/phone +30 • value (purchase) +20 • event_id +20 • source URL +15 • currency +15</p>
+            <p className="text-xs text-[var(--dash-muted)] mb-2">EMQ (0-10): fbc +2 • fbp +2 • email +2 • phone +1 • name +1 • city/country +1 • fbclid +1</p>
             <ul className="text-sm text-[var(--dash-muted)] space-y-1">
               {qualityTips(qualityScore).map((tip, i) => (
                 <li key={i}>{tip}</li>

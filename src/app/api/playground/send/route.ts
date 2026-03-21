@@ -44,6 +44,7 @@ function hashValue(value: string): string {
   return createHash('sha256').update(value).digest('hex')
 }
 
+/** Data Quality score 0-10 matching Meta EMQ methodology. Labels: Poor (0-4), Fair (5-6), Good (7-8), Excellent (9-10). */
 function calculateDataQuality(payload: {
   email?: string
   phone?: string
@@ -54,23 +55,26 @@ function calculateDataQuality(payload: {
   city?: string
   state?: string
   zip?: string
+  country?: string
   fbclid?: string
 }): { score: number; label: string; breakdown: Record<string, boolean> } {
   let score = 0
   const breakdown: Record<string, boolean> = {}
 
-  if (payload.email) { score += 20; breakdown.email = true } else { breakdown.email = false }
-  if (payload.phone) { score += 15; breakdown.phone = true } else { breakdown.phone = false }
-  if (payload.fbp) { score += 20; breakdown.fbp = true } else { breakdown.fbp = false }
-  if (payload.fbc) { score += 15; breakdown.fbc = true } else { breakdown.fbc = false }
-  if (payload.first_name && payload.last_name) { score += 10; breakdown.name = true } else { breakdown.name = false }
-  if (payload.city || payload.state || payload.zip) { score += 10; breakdown.location = true } else { breakdown.location = false }
-  if (payload.fbclid) { score += 10; breakdown.fbclid = true } else { breakdown.fbclid = false }
+  if (payload.fbc) { score += 2; breakdown.fbc = true } else { breakdown.fbc = false }
+  if (payload.fbp) { score += 2; breakdown.fbp = true } else { breakdown.fbp = false }
+  if (payload.email) { score += 2; breakdown.email = true } else { breakdown.email = false }
+  if (payload.phone) { score += 1; breakdown.phone = true } else { breakdown.phone = false }
+  if (payload.first_name && payload.last_name) { score += 1; breakdown.name = true } else { breakdown.name = false }
+  if (payload.city || payload.state || payload.zip || payload.country) { score += 1; breakdown.location = true } else { breakdown.location = false }
+  if (payload.fbclid) { score += 1; breakdown.fbclid = true } else { breakdown.fbclid = false }
+
+  score = Math.min(10, score)
 
   let label = 'Poor'
-  if (score >= 80) label = 'Excellent'
-  else if (score >= 60) label = 'Good'
-  else if (score >= 40) label = 'Fair'
+  if (score >= 9) label = 'Excellent'
+  else if (score >= 7) label = 'Good'
+  else if (score >= 5) label = 'Fair'
 
   return { score, label, breakdown }
 }
@@ -234,6 +238,7 @@ export async function POST(request: NextRequest) {
     city: body.city,
     state: body.state,
     zip: body.zip,
+    country: body.country,
     fbclid: body.fbclid,
   })
   debugLog('[DQ]', dataQuality)
@@ -326,7 +331,11 @@ export async function POST(request: NextRequest) {
           const res = await fetch(`${origin}/api/track/meta`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(trackMetaBody),
+            body: JSON.stringify({
+              ...trackMetaBody,
+              _client_ip: clientIp,
+              _client_user_agent: clientUserAgent,
+            }),
           })
           const metaJson = (await res.json().catch(() => ({}))) as Record<string, unknown>
           metaResponse = {

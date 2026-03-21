@@ -30,15 +30,16 @@ export default function TrackHivePixel() {
       (window as unknown as { fbq: (a: string, b: string, c?: unknown, d?: { eventID?: string }) => void }).fbq('track', 'PageView', {}, { eventID: pageViewId })
     }
 
-    // TikTok PageView
-    if ((window as unknown as { ttq?: { page: () => void } }).ttq) {
-      (window as unknown as { ttq: { page: () => void } }).ttq.page()
+    // TikTok PageView with event_id for deduplication with Events API
+    if ((window as unknown as { ttq?: { page: (options?: { event_id?: string }) => void } }).ttq) {
+      (window as unknown as { ttq: { page: (options?: { event_id?: string }) => void } }).ttq.page({ event_id: pageViewId })
     }
 
-    // TrackHive server-side PageView
-    if ((window as unknown as { trackhive?: (a: string, b: string, c?: { event_source_url: string }) => void }).trackhive) {
-      (window as unknown as { trackhive: (a: string, b: string, c?: { event_source_url: string }) => void }).trackhive('track', 'PageView', {
+    // TrackHive server-side PageView (pass same event_id for deduplication with Meta CAPI/TikTok Events API)
+    if ((window as unknown as { trackhive?: (a: string, b: string, c?: { event_source_url: string; event_id?: string }) => void }).trackhive) {
+      (window as unknown as { trackhive: (a: string, b: string, c?: { event_source_url: string; event_id?: string }) => void }).trackhive('track', 'PageView', {
         event_source_url: window.location.href,
+        event_id: pageViewId,
       })
     }
   }, [pathname, isTrackDomain])
@@ -66,7 +67,6 @@ export default function TrackHivePixel() {
         e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)
       };
       ttq.load('${process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID || 'D6K5RJBC77U9T6VFJPK0'}');
-      ttq.page();
     }(window, document, 'ttq');
   `}
       </Script>

@@ -133,7 +133,7 @@ export async function sendTikTokEvent(
         },
       },
     ],
-    ...(process.env.TIKTOK_TEST_EVENT_CODE && { test_event_code: process.env.TIKTOK_TEST_EVENT_CODE }),
+    ...(process.env.NODE_ENV === 'development' && process.env.TIKTOK_TEST_EVENT_CODE && { test_event_code: process.env.TIKTOK_TEST_EVENT_CODE }),
   }
 
   try {

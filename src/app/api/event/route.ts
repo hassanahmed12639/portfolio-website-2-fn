@@ -277,55 +277,21 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'api_key (or valid pixel_id) and event_name required' }, { status: 400, headers: CORS_HEADERS })
   }
 
+  // EMQ 0-10 scale: fbc +2, fbp +2, email +2, phone +1, name +1, location +1, fbclid +1
   let qualityScore = 0
   const qualityBreakdown: Record<string, boolean> = {}
-  if (email) {
-    qualityScore += 20
-    qualityBreakdown.email = true
-  } else {
-    qualityBreakdown.email = false
-  }
-  if (phone) {
-    qualityScore += 15
-    qualityBreakdown.phone = true
-  } else {
-    qualityBreakdown.phone = false
-  }
-  if (fbp) {
-    qualityScore += 20
-    qualityBreakdown.fbp = true
-  } else {
-    qualityBreakdown.fbp = false
-  }
-  if (fbc) {
-    qualityScore += 15
-    qualityBreakdown.fbc = true
-  } else {
-    qualityBreakdown.fbc = false
-  }
-  if (first_name && last_name) {
-    qualityScore += 10
-    qualityBreakdown.name = true
-  } else {
-    qualityBreakdown.name = false
-  }
-  if (city || state || zip) {
-    qualityScore += 10
-    qualityBreakdown.location = true
-  } else {
-    qualityBreakdown.location = false
-  }
-  if (fbclid) {
-    qualityScore += 10
-    qualityBreakdown.fbclid = true
-  } else {
-    qualityBreakdown.fbclid = false
-  }
+  if (fbc) { qualityScore += 2; qualityBreakdown.fbc = true } else { qualityBreakdown.fbc = false }
+  if (fbp) { qualityScore += 2; qualityBreakdown.fbp = true } else { qualityBreakdown.fbp = false }
+  if (email) { qualityScore += 2; qualityBreakdown.email = true } else { qualityBreakdown.email = false }
+  if (phone) { qualityScore += 1; qualityBreakdown.phone = true } else { qualityBreakdown.phone = false }
+  if (first_name && last_name) { qualityScore += 1; qualityBreakdown.name = true } else { qualityBreakdown.name = false }
+  if (city || state || zip || userCountry) { qualityScore += 1; qualityBreakdown.location = true } else { qualityBreakdown.location = false }
+  if (fbclid) { qualityScore += 1; qualityBreakdown.fbclid = true } else { qualityBreakdown.fbclid = false }
+  qualityScore = Math.min(10, qualityScore)
   let qualityLabel = 'Poor'
-  if (qualityScore >= 80) qualityLabel = 'Excellent'
-  else if (qualityScore >= 60) qualityLabel = 'Good'
-  else if (qualityScore >= 40) qualityLabel = 'Fair'
-  else qualityLabel = 'Poor'
+  if (qualityScore >= 9) qualityLabel = 'Excellent'
+  else if (qualityScore >= 7) qualityLabel = 'Good'
+  else if (qualityScore >= 5) qualityLabel = 'Fair'
 
   const supabase = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } })
   const supabaseService = supabase

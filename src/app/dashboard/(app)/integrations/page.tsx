@@ -37,10 +37,15 @@ export default async function IntegrationsPage() {
     .not('fbclid', 'is', null)
     .gte('created_at', startOfMonth.toISOString())
 
-  const meta = integrations?.find((i) => i.platform === 'meta') ?? null
-  // Count: Multi-Pixel table + 1 if main Meta integration (form) has a pixel connected
+  const metaRow = integrations?.find((i) => i.platform === 'meta') ?? null
+  // Don't pass email-like values as pixel_id — Meta Pixel IDs are numeric (e.g. 1234567890123456)
+  const metaPixelId = metaRow?.pixel_id && !metaRow.pixel_id.includes('@')
+    ? metaRow.pixel_id
+    : null
+  const meta = metaRow ? { pixel_id: metaPixelId, has_access_token: !!metaRow.access_token, meta_test_event_code: metaRow.meta_test_event_code } : null
+  // Count: Multi-Pixel table + 1 if main Meta integration (form) has a valid pixel connected
   const activePixelsCount =
-    (activePixels?.length ?? 0) + (meta?.pixel_id?.trim() ? 1 : 0)
+    (activePixels?.length ?? 0) + (metaPixelId?.trim() ? 1 : 0)
   const google = integrations?.find((i) => i.platform === 'google') ?? null
   const tiktokRow = integrations?.find((i) => i.platform === 'tiktok') ?? null
   // Don't pass email-like values as pixel_id — TikTok Pixel IDs are alphanumeric (e.g. CXXXXXXXX)
@@ -55,7 +60,7 @@ export default async function IntegrationsPage() {
       <h1 className="text-xl font-semibold text-[var(--dash-text)] mb-2">Integrations</h1>
       <p className="text-[var(--dash-muted)] text-sm mb-8">Connect Meta CAPI, Google, TikTok Events API, and GA4.</p>
       <IntegrationsForms
-        meta={meta ? { pixel_id: meta.pixel_id, has_access_token: !!meta.access_token, meta_test_event_code: meta.meta_test_event_code } : null}
+        meta={meta}
         metaFbclidCount={metaFbclidCount ?? 0}
         activePixelsCount={activePixelsCount ?? 0}
         google={google ? { tag_id: google.tag_id, conversion_label: google.conversion_label } : null}

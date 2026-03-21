@@ -26,6 +26,8 @@ type MetaTrackBody = {
   custom_data?: Record<string, unknown>
   pixel_id?: string
   project_id?: string
+  _client_ip?: string
+  _client_user_agent?: string
 }
 
 function hash(value: string): string {
@@ -46,12 +48,18 @@ export async function POST(request: Request) {
       custom_data = {},
       pixel_id: bodyPixelId,
       project_id,
+      _client_ip: bodyClientIp,
+      _client_user_agent: bodyClientUserAgent,
     } = body as MetaTrackBody
 
-    // Get real client IP
+    // Get real client IP (allow override for internal/server-to-server calls e.g. from playground)
     const forwarded = request.headers.get('x-forwarded-for')
-    const ip = forwarded ? forwarded.split(',')[0].trim() : request.headers.get('x-real-ip') || ''
-    const userAgent = request.headers.get('user-agent') || ''
+    const ip =
+      bodyClientIp ||
+      (forwarded ? forwarded.split(',')[0].trim() : '') ||
+      request.headers.get('x-real-ip') ||
+      ''
+    const userAgent = bodyClientUserAgent || request.headers.get('user-agent') || ''
 
     // Build user_data with every available signal
     const ud: Record<string, unknown> = {
@@ -100,7 +108,7 @@ export async function POST(request: Request) {
           custom_data,
         },
       ],
-      ...(process.env.META_TEST_EVENT_CODE && {
+      ...(process.env.NODE_ENV === 'development' && process.env.META_TEST_EVENT_CODE && {
         test_event_code: process.env.META_TEST_EVENT_CODE,
       }),
     }
