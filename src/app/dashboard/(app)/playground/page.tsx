@@ -191,11 +191,15 @@ export default function PlaygroundPage() {
           raw_preview: text.slice(0, 500) + (text.length > 500 ? '...' : ''),
         }
       }
-      if (typeof data === 'object' && data !== null && Object.keys(data).length === 0 && !res.ok) {
+      // Handle empty response - show helpful message (fixes blank {} in Response tab)
+      if (typeof data === 'object' && data !== null && Object.keys(data).length === 0) {
         data = {
-          error: 'Empty response from API',
+          error: res.ok
+            ? 'Empty response received. Check that Meta/Google/TikTok integration is configured in Settings → Integrations.'
+            : 'Empty response from API',
           status: res.status,
           statusText: res.statusText,
+          hint: 'Ensure your pixel ID and access token are saved, then try again.',
         }
       }
       setLastPayload(payload)

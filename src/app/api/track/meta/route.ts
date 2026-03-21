@@ -193,11 +193,20 @@ export async function POST(request: Request) {
       }
     )
 
-    const data = await res.json()
+    const rawText = await res.text()
+    let data: Record<string, unknown> | null = null
+    try {
+      data = rawText ? (JSON.parse(rawText) as Record<string, unknown>) : {}
+    } catch {
+      throw new Error(`Meta API returned invalid JSON: ${rawText.slice(0, 200)}`)
+    }
     console.log('Meta CAPI response:', JSON.stringify(data, null, 2))
     console.log('Meta CAPI payload sent:', JSON.stringify(payload, null, 2))
 
-    if (data.error) throw new Error(data.error.message)
+    if (data && typeof data === 'object' && data.error) {
+      const err = data.error as { message?: string }
+      throw new Error(err.message ?? String(data.error))
+    }
 
     console.log(
       `Meta CAPI: ${event_name} | pixel: ${pixelId} | fbc: ${!!ud.fbc} | fbp: ${!!ud.fbp}`
@@ -212,7 +221,14 @@ export async function POST(request: Request) {
         .lt('created_at', sevenDaysAgo)
     }
 
-    return NextResponse.json({ success: true, events_received: data.events_received })
+    // Return full Meta API response for visibility (events_received, fbtrace_id, etc.)
+    const metaResponse = (data && typeof data === 'object' ? data : {}) as Record<string, unknown>
+    return NextResponse.json({
+      success: true,
+      events_received: (metaResponse.events_received as number) ?? 1,
+      fbtrace_id: metaResponse.fbtrace_id ?? null,
+      ...metaResponse,
+    })
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err)
     console.error('Meta CAPI error:', message)

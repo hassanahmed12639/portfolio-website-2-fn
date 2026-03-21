@@ -10,7 +10,8 @@ export default function MetaPixelHead() {
 
   useEffect(() => {
     const host = typeof window !== 'undefined' ? window.location.hostname : ''
-    if (host.includes('track.itshassanahmed.com') || host === 'localhost') {
+    // Pixel is in layout head for track.itshassanahmed.com — only render for localhost
+    if (host === 'localhost') {
       setShouldRender(true)
     }
   }, [])

@@ -288,7 +288,8 @@ export async function POST(request: NextRequest) {
       console.log('[Meta] Attempting to send event via /api/track/meta:', body.event_name)
       console.log('[Meta] Pixel ID:', pixelId ? 'found' : 'missing')
       if (pixelId) {
-        const origin = request.nextUrl.origin
+        const origin =
+          request.nextUrl?.origin || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
 
         const trackMetaBody = {
           event_name: getMetaEventName(event_name),
@@ -321,16 +322,24 @@ export async function POST(request: NextRequest) {
 
         originalPayload = trackMetaBody as Record<string, unknown>
 
-        const res = await fetch(`${origin}/api/track/meta`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(trackMetaBody),
-        })
-        const metaJson = await res.json().catch(() => ({}))
-        metaResponse = { status: res.status, body: metaJson }
-        if (res.ok) {
-          status = 'success'
-          platformsFired.push('meta')
+        try {
+          const res = await fetch(`${origin}/api/track/meta`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(trackMetaBody),
+          })
+          const metaJson = (await res.json().catch(() => ({}))) as Record<string, unknown>
+          metaResponse = {
+            status: res.status,
+            body: Object.keys(metaJson).length > 0 ? metaJson : { success: res.ok, message: res.ok ? 'Event sent' : 'Request failed' },
+          }
+          if (res.ok) {
+            status = 'success'
+            platformsFired.push('meta')
+          }
+        } catch (fetchErr) {
+          const errMsg = fetchErr instanceof Error ? fetchErr.message : String(fetchErr)
+          metaResponse = { status: 0, body: { error: errMsg, success: false } }
         }
       }
     } else if (integration.platform === 'google') {
@@ -545,7 +554,7 @@ export async function POST(request: NextRequest) {
     console.log('[Google]', r?.status === 'fulfilled' ? r.value : r?.reason)
   }
 
-  return NextResponse.json({
+  const responsePayload = {
     success: true,
     platforms_fired: platformsFired,
     event_id: event_id ?? null,
@@ -557,5 +566,6 @@ export async function POST(request: NextRequest) {
     quality_score: dataQuality.score,
     data_quality: dataQuality,
     validation,
-  })
+  }
+  return NextResponse.json(responsePayload)
 }
