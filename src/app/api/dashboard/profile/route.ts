@@ -82,20 +82,20 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     const body = await req.json()
+    const allowed = [
+      'full_name', 'business_name', 'website_url', 'business_type',
+      'dashboard_type', 'display_currency', 'avatar_type', 'avatar_url',
+    ] as const
+    const updates: Record<string, unknown> = { updated_at: new Date().toISOString() }
+    for (const key of allowed) {
+      if (body[key] !== undefined && body[key] !== null) {
+        updates[key] = body[key]
+      }
+    }
 
     const { error } = await supabaseAdmin
       .from('profiles')
-      .update({
-        full_name: body.full_name ?? undefined,
-        business_name: body.business_name ?? undefined,
-        website_url: body.website_url ?? undefined,
-        business_type: body.business_type ?? undefined,
-        dashboard_type: body.dashboard_type ?? undefined,
-        display_currency: body.display_currency ?? undefined,
-        avatar_type: body.avatar_type ?? undefined,
-        avatar_url: body.avatar_url ?? undefined,
-        updated_at: new Date().toISOString(),
-      })
+      .update(updates)
       .eq('id', user.id)
 
     if (error)

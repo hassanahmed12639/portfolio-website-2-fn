@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 import { CURRENCY_OPTIONS } from '@/lib/utils'
 
 type Profile = { id: string; dashboard_type?: string | null; business_name?: string | null; display_currency?: string | null } | null
@@ -17,15 +16,15 @@ export default function SettingsClient({ profile, userId }: { profile: Profile; 
   const handleSwitchDashboard = async (type: string) => {
     setSaving(true)
     try {
-      const supabase = createClient()
-      const { error } = await supabase
-        .from('profiles')
-        .update({ dashboard_type: type })
-        .eq('id', userId)
-      if (!error) {
-        setCurrentDashboardType(type)
-        router.refresh()
-      }
+      const res = await fetch('/api/dashboard/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dashboard_type: type }),
+      })
+      if (!res.ok) return
+      setCurrentDashboardType(type)
+      router.refresh()
+      router.push('/dashboard')
     } finally {
       setSaving(false)
     }
@@ -34,15 +33,14 @@ export default function SettingsClient({ profile, userId }: { profile: Profile; 
   const handleCurrencyChange = async (code: string) => {
     setCurrencySaving(true)
     try {
-      const supabase = createClient()
-      const { error } = await supabase
-        .from('profiles')
-        .update({ display_currency: code })
-        .eq('id', userId)
-      if (!error) {
-        setCurrentCurrency(code)
-        router.refresh()
-      }
+      const res = await fetch('/api/dashboard/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ display_currency: code }),
+      })
+      if (!res.ok) return
+      setCurrentCurrency(code)
+      router.refresh()
     } finally {
       setCurrencySaving(false)
     }

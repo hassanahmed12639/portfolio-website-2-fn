@@ -1,10 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import AvatarPicker from '@/components/dashboard/AvatarPicker'
 
 export default function AccountPage() {
+  const pathname = usePathname()
   const [profile, setProfile] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -17,6 +19,8 @@ export default function AccountPage() {
   const [uploadingAvatar, setUploadingAvatar] = useState(false)
 
   useEffect(() => {
+    if (pathname != null && !pathname.includes('/dashboard/account')) return
+    setLoading(true)
     fetch('/api/dashboard/profile')
       .then((r) => r.json())
       .then((d) => {
@@ -25,7 +29,7 @@ export default function AccountPage() {
         setAvatarUrl(d?.avatar_url ?? '')
         setLoading(false)
       })
-  }, [])
+  }, [pathname])
 
   const handleSave = async () => {
     setSaving(true)
