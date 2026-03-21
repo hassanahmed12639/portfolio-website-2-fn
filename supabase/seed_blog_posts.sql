@@ -82,7 +82,7 @@ INSERT INTO blog_posts (title, slug, excerpt, content, category, author, read_ti
 <p>In your <a href="https://track.itshassanahmed.com/dashboard">TrackHive dashboard</a>, go to Integrations and add your Meta Pixel ID and Access Token. TrackHive will immediately start sending events to Meta CAPI.</p>
 <h3>Step 3: Install the Tracking Script</h3>
 <p>Add the TrackHive tracking snippet to your website before the closing head tag:</p>
-<pre><code>&lt;script src="https://track.itshassanahmed.com/th.js?id=YOUR_PIXEL_ID"&gt;&lt;/script&gt;</code></pre>
+<pre><code>&lt;script src="https://track.itshassanahmed.com/th.js?id=YOUR_API_KEY"&gt;&lt;/script&gt;</code></pre>
 <h3>Step 4: Test Your Events</h3>
 <p>Use TrackHive''s <a href="https://track.itshassanahmed.com/dashboard">Playground feature</a> to send test events and verify they appear in your Meta Events Manager.</p>
 <h2>Best Practices for High Match Rates</h2>

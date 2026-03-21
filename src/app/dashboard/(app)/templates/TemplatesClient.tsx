@@ -234,7 +234,7 @@ function createEcomGtmExport(): GtmExport {
         { triggerId: '10', name: 'Custom - generate_lead', type: 'CUSTOM_EVENT', customEventFilter: [{ type: 'EQUALS', parameter: [{ type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' }, { type: 'TEMPLATE', key: 'arg1', value: 'generate_lead' }] }] },
       ],
       tag: [
-        { tagId: '1', name: 'TrackHive Base Pixel', type: 'html', firingTriggerId: ['1'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\nwindow.TRACKHIVE_KEY = 'API_KEY_PLACEHOLDER';\n</script>\n<script src=\"https://track.itshassanahmed.com/th.js?id=PIXEL_ID_PLACEHOLDER\"></script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
+        { tagId: '1', name: 'TrackHive Base Pixel', type: 'html', firingTriggerId: ['1'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\nwindow.TRACKHIVE_KEY = 'API_KEY_PLACEHOLDER';\n</script>\n<script src=\"https://track.itshassanahmed.com/th.js?id=API_KEY_PLACEHOLDER\"></script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
         {
           tagId: '3',
           name: 'GA4 - Purchase',
@@ -493,7 +493,7 @@ function createLeadGenGtmExport(): GtmExport {
         },
       ],
       tag: [
-        { tagId: '1', name: 'TrackHive Base Pixel', type: 'html', firingTriggerId: ['1'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\nwindow.TRACKHIVE_KEY = 'API_KEY_PLACEHOLDER';\n</script>\n<script src=\"https://track.itshassanahmed.com/th.js?id=PIXEL_ID_PLACEHOLDER\"></script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
+        { tagId: '1', name: 'TrackHive Base Pixel', type: 'html', firingTriggerId: ['1'], parameter: [{ type: 'TEMPLATE', key: 'html', value: "<script>\nwindow.TRACKHIVE_KEY = 'API_KEY_PLACEHOLDER';\n</script>\n<script src=\"https://track.itshassanahmed.com/th.js?id=API_KEY_PLACEHOLDER\"></script>" }, { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }] },
         {
           tagId: '3',
           name: 'GA4 - Lead',
@@ -717,14 +717,6 @@ export default function TemplatesClient({
       const pixelId = await fetchUserPixelId(user.id)
       const apiKey = await fetchUserApiKey(user.id)
 
-      if (!pixelId) {
-        setToast({
-          type: 'error',
-          message: 'Please add your Meta Pixel ID in Integrations first',
-        })
-        return
-      }
-
       if (!apiKey) {
         setToast({
           type: 'error',
@@ -739,7 +731,6 @@ export default function TemplatesClient({
           : createLeadGenGtmExport()
       const jsonString = JSON.stringify(json, null, 2)
         .replaceAll('API_KEY_PLACEHOLDER', apiKey)
-        .replaceAll('PIXEL_ID_PLACEHOLDER', pixelId)
       const blob = new Blob([jsonString], {
         type: 'application/json;charset=utf-8',
       })

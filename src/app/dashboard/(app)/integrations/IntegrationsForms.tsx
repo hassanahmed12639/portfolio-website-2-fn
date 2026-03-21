@@ -421,7 +421,7 @@ export default function IntegrationsForms({
   const tiktokConnected = tiktok && (tiktok.pixel_id || tiktok.has_access_token)
   const ga4Connected = ga4 && (ga4.tag_id || ga4.has_access_token)
 
-  const installScript = `<script src="https://track.itshassanahmed.com/th.js?id=YOUR_PIXEL_ID"></script>`
+  const installScript = `<script src="https://track.itshassanahmed.com/th.js?id=YOUR_API_KEY"></script>`
 
   return (
     <div className="space-y-8 overflow-y-auto">
@@ -439,7 +439,7 @@ export default function IntegrationsForms({
           </pre>
         </div>
         <p className="text-xs text-[var(--dash-muted)] mt-2">
-          Replace <code className="px-1.5 py-0.5 rounded bg-[var(--dash-surface)] text-[var(--dash-text)]">YOUR_PIXEL_ID</code> with your actual Meta Pixel ID (you can enter it in the Meta CAPI section below).
+          Replace <code className="px-1.5 py-0.5 rounded bg-[var(--dash-surface)] text-[var(--dash-text)]">YOUR_API_KEY</code> with your API key from the Setup page.
         </p>
       </section>
 

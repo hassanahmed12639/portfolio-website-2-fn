@@ -20,7 +20,6 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
   const [stats, setStats] = useState<Record<string, unknown> | null>(null)
   const [recentEvents, setRecentEvents] = useState<Array<{ id: string; event_name: string; value?: number; created_at: string; meta_status?: string }>>([])
   const [loading, setLoading] = useState(true)
-  const [firstPixelId, setFirstPixelId] = useState<string | null>(null)
 
   useEffect(() => {
     Promise.all([
@@ -31,9 +30,6 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
       setStats(statsData)
       const events = (eventsData.events as Array<{ id: string; event_name: string; value?: number; created_at: string; meta_status?: string }>) || []
       setRecentEvents(events.slice(0, 5))
-      const pixels = pixelsData?.pixels ?? []
-      const first = pixels.find((p: { platform: string }) => p.platform === 'meta') ?? pixels[0]
-      setFirstPixelId(first?.pixel_id ?? null)
       setLoading(false)
     })
   }, [])
@@ -255,13 +251,13 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
           <p className="font-bold mb-1 text-white">Install Tracking Script</p>
           <p className="text-slate-400 text-sm mb-3">Add to your website&apos;s &lt;head&gt; tag</p>
           <div className="bg-slate-800 rounded-lg p-3 font-mono text-xs text-white mb-3 overflow-x-auto">
-            {`<script src="https://track.itshassanahmed.com/th.js?id=${firstPixelId || 'YOUR_PIXEL_ID'}"></script>`}
+            {`<script src="https://track.itshassanahmed.com/th.js?id=${(profile?.api_key as string) || 'YOUR_API_KEY'}"></script>`}
           </div>
           <Link
-            href="/dashboard/pixels"
+            href="/dashboard/setup"
             className="bg-[var(--dash-primary)] hover:bg-[var(--dash-accent-hover)] text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors inline-block"
           >
-            Get Your Pixel ID →
+            Get full snippet →
           </Link>
         </div>
       </div>

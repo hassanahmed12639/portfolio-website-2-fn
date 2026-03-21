@@ -34,9 +34,9 @@ PRICING:
 HOW TO INSTALL TRACKHIVE:
 1. Sign up at track.itshassanahmed.com/dashboard/signup
 2. Complete onboarding — enter business name, website URL, business type
-3. Go to Dashboard → Pixels → Add your Meta Pixel ID and Access Token
+3. Go to Dashboard → Setup to get your tracking snippet (each user has a unique API key)
 4. Copy your tracking snippet and add to your website head tag:
-   <script src="https://track.itshassanahmed.com/th.js?id=YOUR_PIXEL_ID"></script>
+   <script src="https://track.itshassanahmed.com/th.js?id=YOUR_API_KEY"></script>
 5. Go to Integrations and add TikTok and Google credentials if needed
 6. Test in Playground — fire a test Purchase event and verify in Meta Events Manager
 

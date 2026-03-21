@@ -4,13 +4,13 @@ export const dynamic = 'force-dynamic'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
-  const pixelId = searchParams.get('id')
+  const apiKey = searchParams.get('id')
 
   const script = `
 (function() {
   if (window.trackhive) return;
 
-  var pixelId = '${pixelId || ''}';
+  var apiKey = '${apiKey || ''}';
   var apiUrl = 'https://track.itshassanahmed.com/api/event';
 
   function getCookie(name) {
@@ -68,7 +68,7 @@ export async function GET(req: NextRequest) {
 
     var eventId = params.event_id || 'th_' + Date.now() + '_' + Math.random().toString(36).slice(2);
     var payload = {
-      pixel_id: pixelId,
+      api_key: apiKey,
       event_name: eventName,
       event_source_url: window.location.href,
       page_url: window.location.href,
@@ -116,12 +116,12 @@ export async function GET(req: NextRequest) {
 
   // Auto PageView
   window.trackhive('track', 'PageView', {});
-  console.log('[TrackHive] Ready. Pixel:', pixelId);
+  console.log('[TrackHive] Ready. API key:', apiKey ? apiKey.slice(0, 8) + '...' : 'not set');
 
   // Auto-call cookie extender
   (function() {
     var img = new Image();
-    img.src = 'https://track.itshassanahmed.com/api/cookie/set?api_key=' + pixelId;
+    img.src = 'https://track.itshassanahmed.com/api/cookie/set?api_key=' + apiKey;
   })();
 })();
 `

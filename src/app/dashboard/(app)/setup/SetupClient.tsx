@@ -82,7 +82,6 @@ type SetupClientProps = {
 
 export default function SetupClient({ apiKey }: SetupClientProps) {
   const [dashboardType, setDashboardType] = useState<'ecommerce' | 'leadgen'>('ecommerce')
-  const [pixelId, setPixelId] = useState<string>('')
 
   useEffect(() => {
     fetch('/api/dashboard/profile')
@@ -92,28 +91,13 @@ export default function SetupClient({ apiKey }: SetupClientProps) {
       })
   }, [])
 
-  useEffect(() => {
-    fetch('/api/pixels')
-      .then((r) => r.json())
-      .then((data) => {
-        const pixels = data?.pixels ?? []
-        const activeMetaPixel = pixels.find(
-          (p: { platform?: string; is_active?: boolean; pixel_id?: string }) =>
-            p.platform === 'meta' && p.is_active && p.pixel_id
-        )
-        if (activeMetaPixel?.pixel_id) {
-          setPixelId(activeMetaPixel.pixel_id)
-        }
-      })
-  }, [])
-
-  const installSnippet = pixelId
+  const installSnippet = apiKey
     ? `<!-- TrackHive Tracking -->
-<script src="https://track.itshassanahmed.com/th.js?id=${pixelId}"></script>`
+<script src="https://track.itshassanahmed.com/th.js?id=${apiKey}"></script>`
     : ''
 
   const reverseProxySnippet = `<!-- TrackHive with Reverse Proxy -->
-<script src="/th-proxy/th?id=${pixelId || 'YOUR_PIXEL_ID'}"></script>`
+<script src="/th-proxy/th?id=${apiKey || 'YOUR_API_KEY'}"></script>`
 
   const manualEventCode = dashboardType === 'ecommerce' ? ECOMMERCE_EVENT_CODE : LEAD_GEN_EVENT_CODE
 
@@ -141,10 +125,10 @@ export default function SetupClient({ apiKey }: SetupClientProps) {
         <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
           <div className="px-4 py-3 border-b border-[var(--dash-border)] flex items-center justify-between">
             <h2 className="text-sm font-medium text-[var(--dash-text-soft)]">Install Snippet</h2>
-            {pixelId ? <CopyButton text={installSnippet} /> : null}
+            {apiKey ? <CopyButton text={installSnippet} /> : null}
           </div>
           <div className="p-4">
-            {pixelId ? (
+            {apiKey ? (
               <>
                 <pre className="bg-[var(--dash-surface-hover)] rounded-lg border border-[var(--dash-border)] shadow-sm p-4 text-sm text-[var(--dash-text-soft)] font-mono overflow-x-auto whitespace-pre">
                   {installSnippet}
@@ -157,7 +141,7 @@ export default function SetupClient({ apiKey }: SetupClientProps) {
               </>
             ) : (
               <p className="text-sm text-amber-500/90">
-                Add your Meta Pixel ID in Integrations first, then return here for your snippet
+                Your API key is being generated. Refresh the page in a moment.
               </p>
             )}
           </div>
