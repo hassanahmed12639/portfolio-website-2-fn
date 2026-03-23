@@ -359,6 +359,11 @@ export async function POST(request: NextRequest) {
     )
   }
 
+  let metaStatus = 'skipped'
+  let ga4Status = 'skipped'
+  let tiktokStatus = 'skipped'
+  let googleStatus = 'skipped'
+
   // Check for duplicate before processing
   if (event_id) {
     const twentyFourHoursAgoIso = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
@@ -381,6 +386,11 @@ export async function POST(request: NextRequest) {
         is_duplicate: true,
         dedup_reason: 'Duplicate event_id within 24 hours',
       })
+      metaStatus = 'duplicate'
+      ga4Status = 'duplicate'
+      tiktokStatus = 'duplicate'
+      googleStatus = 'duplicate'
+      console.log(`[TrackHive] ${event_name} | user=${profile.id} | meta=${metaStatus} | ga4=${ga4Status} | tiktok=${tiktokStatus} | google=${googleStatus} | ip=unknown`)
 
       return NextResponse.json(
         {
@@ -395,7 +405,7 @@ export async function POST(request: NextRequest) {
 
   const { data: integrations } = await supabase
     .from('integrations')
-    .select('platform, pixel_id, access_token, tag_id, meta_test_event_code')
+    .select('platform, pixel_id, access_token, tag_id, meta_test_event_code, conversion_id, conversion_label')
     .eq('user_id', profile.id)
     .eq('is_active', true)
 
@@ -618,10 +628,9 @@ export async function POST(request: NextRequest) {
   }
 
   const fiveMinutesFromNow = new Date(Date.now() + 5 * 60 * 1000).toISOString()
-  let metaStatus: 'sent' | 'failed' | 'pending' = 'pending'
 
   for (const integration of integrations ?? []) {
-    let status: 'success' | 'failed' = 'failed'
+    let status: 'success' | 'failed' | 'via_ga4' = 'failed'
     let originalPayload: Record<string, unknown> = {}
 
     if (integration.platform === 'meta') {
@@ -746,12 +755,15 @@ export async function POST(request: NextRequest) {
           } else {
             const metaResponseBody = await res.text()
             lastMetaError = `${res.status}: ${metaResponseBody.slice(0, 300)}`
+            metaStatus = `error:${res.status}`
             debugLog(`[MultiPixel] Failed ${px.name} (${px.pixel_id}):`, lastMetaError)
           }
         }
 
         if (status === 'failed') {
-          metaStatus = 'failed'
+          if (!metaStatus.startsWith('error:')) {
+            metaStatus = 'error:unknown'
+          }
         }
         if (status === 'failed' && lastMetaError) {
           const nextRetry = calculateNextRetry(1)
@@ -778,10 +790,31 @@ export async function POST(request: NextRequest) {
             status: 'pending',
           })
         }
+      } else {
+        metaStatus = 'skipped'
       }
     } else if (integration.platform === 'google') {
-      debugLog('[event] Google integration (not implemented):', { event_name, value, currency })
-      status = 'success'
+      const googleConversionId = (integration as { conversion_id?: string | null }).conversion_id?.trim() || null
+      const googleConversionLabel = (integration as { conversion_label?: string | null }).conversion_label?.trim() || null
+
+      if (googleConversionId && googleConversionLabel) {
+        // Google Ads conversion is expected via GA4 import (GA4 is linked to Google Ads)
+        debugLog('[event] Google Ads via GA4 import', {
+          event_name,
+          conversion_id: googleConversionId,
+          conversion_label: googleConversionLabel,
+        })
+        status = 'via_ga4'
+        googleStatus = 'sent'
+      } else {
+        debugLog('[event] Google Ads skipped: missing conversion mapping', {
+          event_name,
+          conversion_id: googleConversionId,
+          conversion_label: googleConversionLabel,
+        })
+        status = 'failed'
+        googleStatus = 'skipped'
+      }
     } else if (integration.platform === 'tiktok') {
       const pixelId = integration.pixel_id
       const accessToken = integration.access_token
@@ -816,8 +849,13 @@ export async function POST(request: NextRequest) {
         )
         if (tiktokResponse.ok) {
           status = 'success'
+          tiktokStatus = 'sent'
           platformsFired.push('tiktok')
+        } else {
+          tiktokStatus = `error:${tiktokResponse.status}`
         }
+      } else {
+        tiktokStatus = 'skipped'
       }
     } else if (integration.platform === 'snapchat') {
       const pixelId = integration.pixel_id
@@ -887,8 +925,13 @@ export async function POST(request: NextRequest) {
         )
         if (ga4Response.ok) {
           status = 'success'
+          ga4Status = 'sent'
           platformsFired.push('ga4')
+        } else {
+          ga4Status = `error:${ga4Response.status}`
         }
+      } else {
+        ga4Status = 'skipped'
       }
     }
 
@@ -962,51 +1005,9 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // Fire GA4, TikTok, Google Enhanced Conversions in parallel (user credentials from integrations, ENV fallback)
+  // Fire Google Enhanced Conversions only (GA4/TikTok already handled in integrations loop)
   const credentials = await getUserCredentials(profile.id)
   const platformResults = await Promise.allSettled([
-    sendGA4Event(
-      event_name,
-      {
-        value,
-        currency,
-        order_id: bodyOrderId,
-        event_source_url: event_source_url_final,
-        fbp,
-        client_ip_address: ip,
-        client_user_agent: userAgent,
-        event_id,
-      },
-      email,
-      credentials.ga4MeasurementId,
-      credentials.ga4ApiSecret
-    ),
-    sendTikTokEvent(
-      event_name,
-      {
-        value,
-        currency,
-        order_id: bodyOrderId,
-        event_source_url: event_source_url_final,
-        client_ip_address: ip,
-        client_user_agent: userAgent,
-        event_id,
-        ttclid: body.ttclid,
-        user_data: {
-          em: email ? [email] : [],
-          ph: phone ? [phone] : [],
-          external_id: external_id ? [external_id] : [],
-        },
-        external_id,
-        content_ids: body.content_ids,
-        content_type: body.content_type,
-        content_name: body.content_name,
-        brand: body.brand,
-      },
-      request,
-      credentials.tiktokPixelId,
-      credentials.tiktokAccessToken
-    ),
     sendGoogleEnhancedConversion(
       event_name,
       {
@@ -1029,7 +1030,7 @@ export async function POST(request: NextRequest) {
     ),
   ])
 
-  const platformNames = ['GA4', 'TikTok', 'Google']
+  const platformNames = ['Google']
   // Detailed logging: all platforms (all events fire to all platforms)
   console.log('[Event API] Results for:', event_name)
   console.log('[Meta]', metaStatus)
@@ -1045,20 +1046,25 @@ export async function POST(request: NextRequest) {
   })
 
   if (event_id) {
-    const ga4Ok = platformResults[0].status === 'fulfilled' && (platformResults[0].value as { success?: boolean })?.success
-    const tiktokOk = platformResults[1].status === 'fulfilled' && (platformResults[1].value as { success?: boolean })?.success
-    const googleOk = platformResults[2].status === 'fulfilled' && (platformResults[2].value as { success?: boolean })?.success === true
+    const googleOk =
+      platformResults[0].status === 'fulfilled' &&
+      (platformResults[0].value as { success?: boolean })?.success === true
+    if (!googleOk && googleStatus === 'sent') {
+      googleStatus = 'error:enhanced_conversion'
+    }
     await supabase
       .from('events')
       .update({
         meta_status: metaStatus,
-        ga4_status: ga4Ok ? 'sent' : 'failed',
-        tiktok_status: tiktokOk ? 'sent' : 'failed',
+        ga4_status: ga4Status === 'sent' ? 'sent' : 'failed',
+        tiktok_status: tiktokStatus === 'sent' ? 'sent' : 'failed',
         google_status: googleOk ? 'sent' : 'failed',
       })
       .eq('event_id', event_id)
       .eq('user_id', profile.id)
   }
+
+  console.log(`[TrackHive] ${event_name} | user=${profile.id} | meta=${metaStatus} | ga4=${ga4Status} | tiktok=${tiktokStatus} | google=${googleStatus} | ip=${ip}`)
 
   // Unified revenue infrastructure: persist touchpoints + canonical conversion rows.
   try {

@@ -47,6 +47,7 @@ export default function TrackHivePixel() {
   if (!isTrackDomain) return null
 
   const pixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID
+  const thApiKey = process.env.NEXT_PUBLIC_TRACKHIVE_API_KEY
 
   return (
     <>
@@ -72,9 +73,9 @@ export default function TrackHivePixel() {
       </Script>
 
       {/* TrackHive Server-Side Script */}
-      {pixelId && (
+      {thApiKey && (
         <Script
-          src={`https://track.itshassanahmed.com/th.js?id=${pixelId}`}
+          src={`https://track.itshassanahmed.com/th.js?id=${thApiKey}`}
           strategy="afterInteractive"
         />
       )}
