@@ -34,7 +34,11 @@ Optional: **`pixels`** table — additional Meta pixels (`platform='meta'`, `pix
 
 For `action_source: website`, Meta requires a **non-empty `event_source_url`** (valid `http(s)` URL) and **`client_user_agent`**. Server-side tests that omit `event_source_url` in the JSON body used to return **400**; the API now falls back to `NEXT_PUBLIC_APP_URL` or the incoming request URL.
 
-If Meta still returns an error, check server logs for `[Meta CAPI]` — the Graph API error body is logged. Typical fixes: invalid/expired access token, pixel ID not tied to that token, or domain verification in Events Manager.
+If Meta still returns an error, check server logs for `[Meta CAPI]` — the Graph API error body is logged. Typical fixes:
+
+- **`error:token_expired` / OAuth `code: 190`** — Short-lived user tokens expire. Regenerate a token in [Meta Events Manager](https://business.facebook.com/) → your Pixel → **Settings** → **Conversions API** → generate access token (or use a System User token with long-lived access). Update `integrations.access_token` (or `pixels.access_token`) and/or `META_ACCESS_TOKEN` in hosting env.
+- Pixel ID must match the Business that issued the token.
+- Domain verification in Events Manager if Meta asks for it.
 
 ## Meta fallback (single-tenant / bootstrap)
 

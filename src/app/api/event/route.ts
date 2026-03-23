@@ -162,6 +162,19 @@ const META_ACTION_SOURCES = new Set([
 const DEFAULT_META_UA =
   'Mozilla/5.0 (compatible; TrackHiveServer/1.0; +https://www.facebook.com/business/help/AboutConversionsAPI)'
 
+/** Map Graph API error JSON to a stable delivery status (OAuth 190 = expired/invalid token). */
+function metaErrorToDeliveryStatus(httpStatus: number, responseBody: string): string {
+  try {
+    const j = JSON.parse(responseBody) as { error?: { code?: number; type?: string } }
+    const code = j?.error?.code
+    if (code === 190 || code === 102) return 'error:token_expired'
+    if (code === 10 || code === 200) return 'error:permission'
+  } catch {
+    // ignore parse errors
+  }
+  return `error:${httpStatus}`
+}
+
 export async function POST(request: NextRequest) {
   try {
     if (!serviceRoleKey || !supabaseUrl) {
@@ -842,7 +855,7 @@ export async function POST(request: NextRequest) {
           } else {
             const metaResponseBody = await res.text()
             lastMetaError = `${res.status}: ${metaResponseBody.slice(0, 300)}`
-            metaStatus = `error:${res.status}`
+            metaStatus = metaErrorToDeliveryStatus(res.status, metaResponseBody)
             console.warn('[Meta CAPI]', px.pixel_id, lastMetaError)
             debugLog(`[MultiPixel] Failed ${px.name} (${px.pixel_id}):`, lastMetaError)
           }
