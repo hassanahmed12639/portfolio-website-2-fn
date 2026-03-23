@@ -252,7 +252,7 @@ export default function TrackHivePage() {
               </div>
               <h3 className="text-xl font-bold leading-tight text-slate-900 sm:text-2xl">Built for Agencies</h3>
               <p className="mt-2.5 text-sm leading-6 text-slate-500">
-                Manage 25 pixels across multiple clients from one dashboard. Invite your team and keep every client's data completely isolated.
+                Manage 25 pixels across multiple clients from one dashboard. Invite your team and keep every client&apos;s data completely isolated.
               </p>
             </article>
           </div>

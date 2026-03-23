@@ -69,7 +69,7 @@ export function Testimonials() {
         {/* Quote Container */}
         <div className="relative px-8 md:px-12">
           <span className="absolute -left-2 -top-8 text-8xl md:text-9xl font-serif text-white/[0.06] select-none pointer-events-none">
-            "
+            &ldquo;
           </span>
 
           <p
@@ -82,7 +82,7 @@ export function Testimonials() {
           </p>
 
           <span className="absolute -right-2 -bottom-10 text-8xl md:text-9xl font-serif text-white/[0.06] select-none pointer-events-none">
-            "
+            &rdquo;
           </span>
         </div>
 
