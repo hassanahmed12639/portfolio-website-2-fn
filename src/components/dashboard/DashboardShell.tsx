@@ -18,8 +18,13 @@ import {
   Sparkles,
 } from 'lucide-react'
 import type { User as SupabaseUser } from '@supabase/supabase-js'
+import { resolveDashboardMode } from '@/lib/dashboard-mode'
 
-type Profile = { dashboard_type?: string | null; display_currency?: string | null } | undefined
+type Profile = {
+  dashboard_type?: string | null
+  business_type?: string | null
+  display_currency?: string | null
+} | undefined
 
 type DashboardShellProps = {
   user: SupabaseUser
@@ -222,7 +227,7 @@ export default function DashboardShell({ user, trialExpired, profile, children }
         )}
         <div className="flex-1 overflow-auto">
           <DashboardProvider
-            dashboardType={(profile?.dashboard_type === 'leadgen' ? 'leadgen' : 'ecommerce') as 'ecommerce' | 'leadgen'}
+            dashboardType={resolveDashboardMode(profile)}
             displayCurrency={profile?.display_currency}
           >
             {children}

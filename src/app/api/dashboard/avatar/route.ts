@@ -69,7 +69,6 @@ export async function POST(req: NextRequest) {
       .update({
         avatar_url: publicUrl,
         avatar_type: 'image',
-        updated_at: new Date().toISOString(),
       })
       .eq('id', user.id)
 

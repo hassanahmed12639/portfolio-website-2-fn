@@ -1,6 +1,8 @@
 export const dynamic = 'force-dynamic'
 
 import { createClient } from '@/lib/supabase/server'
+import { fetchDashboardProfile } from '@/lib/dashboard-profile'
+import { unstable_noStore as noStore } from 'next/cache'
 import { redirect } from 'next/navigation'
 import SessionProvider from '@/components/SessionProvider'
 import DashboardShell from '@/components/dashboard/DashboardShell'
@@ -10,6 +12,7 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode
 }) {
+  noStore()
   const supabase = createClient()
   const { data: { session } } = await supabase.auth.getSession()
 
@@ -17,11 +20,7 @@ export default async function DashboardLayout({
     redirect('/dashboard/login')
   }
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('plan, is_trial, trial_expires_at, dashboard_type, display_currency')
-    .eq('id', session.user.id)
-    .single()
+  const profile = await fetchDashboardProfile(session.user.id)
 
   const trialExpired =
     !!profile?.is_trial &&

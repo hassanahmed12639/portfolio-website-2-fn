@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { resolveDashboardMode } from '@/lib/dashboard-mode'
 import Link from 'next/link'
 import LeadsManagerClient from './LeadsManagerClient'
 
@@ -11,11 +12,11 @@ export default async function LeadsPage() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('dashboard_type')
+    .select('dashboard_type, business_type')
     .eq('id', user!.id)
     .single()
 
-  if (profile?.dashboard_type !== 'leadgen') {
+  if (resolveDashboardMode(profile) !== 'leadgen') {
     return (
       <div className="p-6 md:p-8">
         <p className="text-[var(--dash-muted)] mb-4">

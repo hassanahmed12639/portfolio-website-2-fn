@@ -39,6 +39,7 @@ import type { LucideIcon } from 'lucide-react'
 import { usePlan } from '@/hooks/usePlan'
 import { UpgradeModal } from '@/components/UpgradeModal'
 import type { FeatureKey } from '@/lib/plans'
+import { resolveDashboardMode } from '@/lib/dashboard-mode'
 
 type NavItem = {
   label: string
@@ -53,7 +54,7 @@ export default function DashboardNav({
   profile,
   collapsed = false,
 }: {
-  profile?: { dashboard_type?: string | null }
+  profile?: { dashboard_type?: string | null; business_type?: string | null }
   collapsed?: boolean
 }) {
   const pathname = usePathname()
@@ -276,7 +277,7 @@ export default function DashboardNav({
   const items = nav.map(({ label, href, icon, ...rest }) => {
     const resolvedHref =
       label === 'Webhooks'
-        ? profile?.dashboard_type === 'leadgen'
+        ? resolveDashboardMode(profile) === 'leadgen'
           ? '/dashboard/leadgen/webhooks'
           : '/dashboard/webhooks'
         : href

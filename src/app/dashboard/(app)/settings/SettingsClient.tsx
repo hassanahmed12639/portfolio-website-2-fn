@@ -1,20 +1,44 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { CURRENCY_OPTIONS } from '@/lib/utils'
+import type { DashboardMode } from '@/lib/dashboard-mode'
 
-type Profile = { id: string; dashboard_type?: string | null; business_name?: string | null; display_currency?: string | null } | null
+type Profile = {
+  id: string
+  dashboard_type?: string | null
+  business_type?: string | null
+  business_name?: string | null
+  display_currency?: string | null
+}
 
-export default function SettingsClient({ profile, userId }: { profile: Profile; userId: string }) {
+export default function SettingsClient({
+  profile,
+  userId,
+  resolvedMode,
+}: {
+  profile: Profile
+  userId: string
+  resolvedMode: DashboardMode
+}) {
   const router = useRouter()
-  const [currentDashboardType, setCurrentDashboardType] = useState<string>(profile?.dashboard_type ?? 'ecommerce')
+  const [currentDashboardType, setCurrentDashboardType] = useState<DashboardMode>(resolvedMode)
   const [currentCurrency, setCurrentCurrency] = useState<string>(profile?.display_currency ?? 'USD')
   const [saving, setSaving] = useState(false)
   const [currencySaving, setCurrencySaving] = useState(false)
   const [dashboardError, setDashboardError] = useState<string | null>(null)
+  const DASHBOARD_OPTIONS: { type: DashboardMode; label: string; desc: string }[] = [
+    { type: 'ecommerce', label: 'E-Commerce', desc: 'Purchase tracking, revenue, ROAS' },
+    { type: 'leadgen', label: 'Lead Generation', desc: 'Lead scoring, funnel, Meta feedback' },
+  ]
 
-  const handleSwitchDashboard = async (type: string) => {
+  useEffect(() => {
+    setCurrentDashboardType(resolvedMode)
+    setCurrentCurrency(profile.display_currency ?? 'USD')
+  }, [resolvedMode, profile.display_currency])
+
+  const handleSwitchDashboard = async (type: DashboardMode) => {
     if (type === currentDashboardType) return
     setDashboardError(null)
     setSaving(true)
@@ -22,7 +46,10 @@ export default function SettingsClient({ profile, userId }: { profile: Profile; 
       const res = await fetch('/api/dashboard/profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ dashboard_type: type }),
+        body: JSON.stringify({
+          dashboard_type: type,
+          business_type: type,
+        }),
       })
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
@@ -77,10 +104,7 @@ export default function SettingsClient({ profile, userId }: { profile: Profile; 
         <p className="font-semibold text-slate-900 mb-1">Dashboard Mode</p>
         <p className="text-sm text-slate-500 mb-4">Switch between E-Commerce and Lead Gen dashboard views</p>
         <div className="grid grid-cols-2 gap-3">
-          {[
-            { type: 'ecommerce', label: 'E-Commerce', desc: 'Purchase tracking, revenue, ROAS' },
-            { type: 'leadgen', label: 'Lead Generation', desc: 'Lead scoring, funnel, Meta feedback' }
-          ].map(option => (
+          {DASHBOARD_OPTIONS.map(option => (
             <button
               key={option.type}
               type="button"

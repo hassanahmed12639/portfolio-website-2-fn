@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { normalizeDashboardTypeRaw } from '@/lib/dashboard-mode'
+import { revalidatePath } from 'next/cache'
 
 export const dynamic = 'force-dynamic'
 
@@ -86,11 +88,41 @@ export async function POST(req: NextRequest) {
       'full_name', 'business_name', 'website_url', 'business_type',
       'dashboard_type', 'display_currency', 'avatar_type', 'avatar_url',
     ] as const
-    const updates: Record<string, unknown> = { updated_at: new Date().toISOString() }
+    const updates: Record<string, unknown> = {}
     for (const key of allowed) {
       if (body[key] !== undefined && body[key] !== null) {
         updates[key] = body[key]
       }
+    }
+
+    if (updates.dashboard_type !== undefined) {
+      const m = normalizeDashboardTypeRaw(String(updates.dashboard_type))
+      if (!m) {
+        return NextResponse.json(
+          { error: 'dashboard_type must be ecommerce or leadgen' },
+          { status: 400 }
+        )
+      }
+      updates.dashboard_type = m
+    }
+
+    if (updates.business_type !== undefined) {
+      const raw = String(updates.business_type).trim().toLowerCase()
+      const allowedBt = new Set(['ecommerce', 'leadgen', 'agency', 'saas', 'other'])
+      if (!allowedBt.has(raw)) {
+        return NextResponse.json(
+          { error: 'Invalid business_type' },
+          { status: 400 }
+        )
+      }
+      updates.business_type = raw
+    }
+
+    if (Object.keys(updates).length === 0) {
+      return NextResponse.json(
+        { error: 'No valid fields to update' },
+        { status: 400 }
+      )
     }
 
     const { error } = await supabaseAdmin
@@ -101,6 +133,8 @@ export async function POST(req: NextRequest) {
     if (error)
       return NextResponse.json({ error: error.message }, { status: 500 })
 
+    revalidatePath('/dashboard', 'layout')
+    revalidatePath('/dashboard/settings')
     return NextResponse.json({ success: true })
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Unknown error'

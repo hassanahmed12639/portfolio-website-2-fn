@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { resolveDashboardMode } from '@/lib/dashboard-mode'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Lock } from 'lucide-react'
@@ -12,11 +13,11 @@ export default async function WebhooksPage() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('dashboard_type')
+    .select('dashboard_type, business_type')
     .eq('id', session.user.id)
     .single()
 
-  if (profile?.dashboard_type === 'leadgen') {
+  if (resolveDashboardMode(profile) === 'leadgen') {
     redirect('/dashboard/leadgen/webhooks')
   }
 
