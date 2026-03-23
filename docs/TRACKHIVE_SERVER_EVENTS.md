@@ -30,6 +30,12 @@ Status values are typically: `sent`, `skipped`, `duplicate`, or `error:...`.
 
 Optional: **`pixels`** table — additional Meta pixels (`platform='meta'`, `pixel_id`, `access_token`).
 
+## Meta CAPI (HTTP 400)
+
+For `action_source: website`, Meta requires a **non-empty `event_source_url`** (valid `http(s)` URL) and **`client_user_agent`**. Server-side tests that omit `event_source_url` in the JSON body used to return **400**; the API now falls back to `NEXT_PUBLIC_APP_URL` or the incoming request URL.
+
+If Meta still returns an error, check server logs for `[Meta CAPI]` — the Graph API error body is logged. Typical fixes: invalid/expired access token, pixel ID not tied to that token, or domain verification in Events Manager.
+
 ## Meta fallback (single-tenant / bootstrap)
 
 If a user has **no** `integrations` row with `platform='meta'`, the server can still send Meta CAPI using:

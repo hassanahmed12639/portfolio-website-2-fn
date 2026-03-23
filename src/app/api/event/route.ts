@@ -133,6 +133,35 @@ async function maybeDecryptToken(value?: string | null): Promise<string | undefi
   return trimmed ? trimmed : undefined
 }
 
+/** Meta CAPI rejects website events with empty event_source_url (HTTP 400). */
+function resolveMetaEventSourceUrl(
+  eventSourceUrl: string | undefined,
+  requestUrl: string | undefined
+): string {
+  const candidates = [eventSourceUrl?.trim(), requestUrl?.trim()].filter(Boolean) as string[]
+  for (const u of candidates) {
+    if (/^https?:\/\//i.test(u)) return u.slice(0, 2000)
+  }
+  const base = (process.env.NEXT_PUBLIC_APP_URL || 'https://127.0.0.1').replace(/\/$/, '')
+  return `${base}/`
+}
+
+const META_ACTION_SOURCES = new Set([
+  'website',
+  'app',
+  'phone_call',
+  'chat',
+  'email',
+  'other',
+  'physical_store',
+  'system_generated',
+  'business_messaging',
+])
+
+/** Meta requires client_user_agent for website events; API/curl calls may omit it. */
+const DEFAULT_META_UA =
+  'Mozilla/5.0 (compatible; TrackHiveServer/1.0; +https://www.facebook.com/business/help/AboutConversionsAPI)'
+
 export async function POST(request: NextRequest) {
   try {
     if (!serviceRoleKey || !supabaseUrl) {
@@ -705,6 +734,15 @@ export async function POST(request: NextRequest) {
       }
 
       if (pixelsToFire.length > 0) {
+        let requestFallbackUrl: string | undefined
+        try {
+          requestFallbackUrl = new URL(request.url).href
+        } catch {
+          requestFallbackUrl = undefined
+        }
+        const metaEventSourceUrl = resolveMetaEventSourceUrl(event_source_url_final, requestFallbackUrl)
+        const metaUserAgent = userAgent?.trim() ? userAgent : DEFAULT_META_UA
+
         const hashedEmail = enrichmentData?.hashes?.email_hash ?? (email ? sha256(email) : undefined)
         const hashedPhone = enrichmentData?.hashes?.phone_hash ?? (phone ? sha256(phone.replace(/\D/g, '')) : undefined)
 
@@ -723,7 +761,7 @@ export async function POST(request: NextRequest) {
           db: date_of_birth ? [hashValue(date_of_birth.replace(/-/g, ''))] : undefined,
           ge: gender ? [hashValue(gender.toLowerCase().trim())] : undefined,
           client_ip_address: ip && ip !== '0.0.0.0' ? ip : undefined,
-          client_user_agent: userAgent || undefined,
+          client_user_agent: metaUserAgent,
           fbp: fbp || undefined,
           fbc: effectiveFbc || undefined,
           external_id: external_id ? [hashValue(String(external_id))] : undefined,
@@ -744,9 +782,11 @@ export async function POST(request: NextRequest) {
           userData.st = [hashValue(enrichmentData.geo.region.toLowerCase().trim().replace(/\s/g, ''))]
         }
 
-        const actionSource = (headerSettings?.meta_send_action_source !== false && headerSettings?.meta_action_source)
-          ? headerSettings.meta_action_source
-          : 'website'
+        const rawActionSource =
+          headerSettings?.meta_send_action_source !== false && headerSettings?.meta_action_source
+            ? String(headerSettings.meta_action_source)
+            : 'website'
+        const actionSource = META_ACTION_SOURCES.has(rawActionSource) ? rawActionSource : 'website'
         const customData: Record<string, unknown> = {
           value,
           currency,
@@ -761,7 +801,7 @@ export async function POST(request: NextRequest) {
           event_name: metaEventName,
           event_time: Math.floor(Date.now() / 1000),
           event_id,
-          event_source_url: event_source_url_final ?? '',
+          event_source_url: metaEventSourceUrl,
           action_source: actionSource,
           user_data: userData,
           custom_data: customData,
@@ -782,12 +822,12 @@ export async function POST(request: NextRequest) {
         }
         originalPayload = metaRequestBody
 
-        const metaHeaders = buildHeaders('meta', headerSettings, ip, userAgent, event_source_url_final)
+        const metaHeaders = buildHeaders('meta', headerSettings, ip, metaUserAgent, metaEventSourceUrl)
         let lastMetaError: string | null = null
 
         for (const px of pixelsToFire) {
           const res = await fetch(
-            `https://graph.facebook.com/v19.0/${px.pixel_id}/events?access_token=${encodeURIComponent(px.access_token)}`,
+            `https://graph.facebook.com/v21.0/${px.pixel_id}/events?access_token=${encodeURIComponent(px.access_token)}`,
             {
               method: 'POST',
               headers: metaHeaders,
@@ -803,6 +843,7 @@ export async function POST(request: NextRequest) {
             const metaResponseBody = await res.text()
             lastMetaError = `${res.status}: ${metaResponseBody.slice(0, 300)}`
             metaStatus = `error:${res.status}`
+            console.warn('[Meta CAPI]', px.pixel_id, lastMetaError)
             debugLog(`[MultiPixel] Failed ${px.name} (${px.pixel_id}):`, lastMetaError)
           }
         }
