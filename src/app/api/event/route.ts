@@ -2,12 +2,12 @@ import { validateEvent } from '@/lib/validate-event'
 import { validateEventPayload, sanitizeString, sanitizeEmail, sanitizeNumber, sanitizeUrl } from '@/lib/validate'
 import { enrichEvent } from '@/lib/enrich-event'
 import { calculateNextRetry } from '@/lib/retry-queue'
-import { getUserCredentials } from '@/lib/get-user-credentials'
 import { rateLimit } from '@/lib/rate-limit'
 import { getMetaEventName } from '@/lib/meta'
-import { sendGA4Event, getGA4EventName } from '@/lib/ga4'
-import { sendTikTokEvent, getTikTokEventName } from '@/lib/tiktok'
+import { getGA4EventName } from '@/lib/ga4'
+import { getTikTokEventName } from '@/lib/tiktok'
 import { sendGoogleEnhancedConversion } from '@/lib/google-ads'
+import { decrypt } from '@/lib/encrypt'
 import { createClient } from '@supabase/supabase-js'
 import { createHash } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
@@ -112,6 +112,25 @@ function inferChannelFromSignals(signals: {
   if (medium === 'organic' || source.includes('google')) return 'organic'
   if (medium === 'email') return 'email'
   return 'direct'
+}
+
+const GOOGLE_CONVERSION_EVENTS = new Set([
+  'Purchase',
+  'Lead',
+  'CompleteRegistration',
+  'Subscribe',
+  'Contact',
+  'InitiateCheckout',
+  'AddToCart',
+  'AddPaymentInfo',
+  'BeginCheckout',
+])
+
+async function maybeDecryptToken(value?: string | null): Promise<string | undefined> {
+  if (!value) return undefined
+  const decrypted = await decrypt(value)
+  const trimmed = decrypted?.trim()
+  return trimmed ? trimmed : undefined
 }
 
 export async function POST(request: NextRequest) {
@@ -408,6 +427,25 @@ export async function POST(request: NextRequest) {
     .select('platform, pixel_id, access_token, tag_id, meta_test_event_code, conversion_id, conversion_label')
     .eq('user_id', profile.id)
     .eq('is_active', true)
+  const integrationsList = integrations ?? []
+
+  /** When tenant has no `meta` integration row, use server META_PIXEL_ID + META_ACCESS_TOKEN (single-tenant / bootstrap). */
+  const hasMetaIntegrationRow = integrationsList.some((i) => i.platform === 'meta')
+  const metaEnvFallback =
+    !hasMetaIntegrationRow &&
+    Boolean(process.env.META_PIXEL_ID?.trim()) &&
+    Boolean(process.env.META_ACCESS_TOKEN?.trim())
+      ? {
+          platform: 'meta' as const,
+          pixel_id: process.env.META_PIXEL_ID!.trim(),
+          access_token: process.env.META_ACCESS_TOKEN!,
+          tag_id: null as string | null,
+          meta_test_event_code: null as string | null,
+          conversion_id: null as string | null,
+          conversion_label: null as string | null,
+        }
+      : null
+  const effectiveIntegrations = metaEnvFallback ? [...integrationsList, metaEnvFallback] : integrationsList
 
   const { data: privacySettings } = await supabase
     .from('privacy_settings')
@@ -629,7 +667,7 @@ export async function POST(request: NextRequest) {
 
   const fiveMinutesFromNow = new Date(Date.now() + 5 * 60 * 1000).toISOString()
 
-  for (const integration of integrations ?? []) {
+  for (const integration of effectiveIntegrations) {
     let status: 'success' | 'failed' | 'via_ga4' = 'failed'
     let originalPayload: Record<string, unknown> = {}
 
@@ -642,19 +680,28 @@ export async function POST(request: NextRequest) {
         .eq('platform', 'meta')
         .eq('is_active', true)
 
-      const pixelsToFire: { pixel_id: string; access_token: string; name: string }[] =
-        (additionalPixels || []).map((p) => ({
+      const pixelsToFire: { pixel_id: string; access_token: string; name: string }[] = []
+      for (const p of additionalPixels || []) {
+        const decryptedAccessToken = await maybeDecryptToken(p.access_token)
+        if (!decryptedAccessToken) continue
+        pixelsToFire.push({
           pixel_id: p.pixel_id,
-          access_token: p.access_token,
+          access_token: decryptedAccessToken,
           name: p.name || 'Pixel',
-        }))
+        })
+      }
 
       if (pixelsToFire.length === 0 && integration.pixel_id && integration.access_token) {
+        const fallbackMetaAccessToken = await maybeDecryptToken(integration.access_token)
+        if (!fallbackMetaAccessToken) {
+          metaStatus = 'skipped'
+        } else {
         pixelsToFire.push({
           pixel_id: integration.pixel_id,
-          access_token: integration.access_token,
+          access_token: fallbackMetaAccessToken,
           name: 'Primary',
         })
+        }
       }
 
       if (pixelsToFire.length > 0) {
@@ -719,7 +766,7 @@ export async function POST(request: NextRequest) {
           user_data: userData,
           custom_data: customData,
         }
-        console.log('[Meta CAPI] user_data params:', {
+        debugLog('[Meta CAPI] user_data params:', {
           has_fbp: !!fbp,
           has_fbc: !!fbc,
           has_ip: !!ip,
@@ -805,7 +852,7 @@ export async function POST(request: NextRequest) {
           conversion_label: googleConversionLabel,
         })
         status = 'via_ga4'
-        googleStatus = 'sent'
+        googleStatus = 'sent' // configured; conversion dispatch handled after loop for conversion events only
       } else {
         debugLog('[event] Google Ads skipped: missing conversion mapping', {
           event_name,
@@ -817,7 +864,7 @@ export async function POST(request: NextRequest) {
       }
     } else if (integration.platform === 'tiktok') {
       const pixelId = integration.pixel_id
-      const accessToken = integration.access_token
+      const accessToken = await maybeDecryptToken(integration.access_token)
       if (pixelId && accessToken) {
         const tiktokEventName = getTikTokEventName(event_name)
         const tiktokPayload = {
@@ -898,7 +945,7 @@ export async function POST(request: NextRequest) {
       }
     } else if (integration.platform === 'ga4') {
       const measurementId = integration.tag_id
-      const apiSecret = integration.access_token
+      const apiSecret = await maybeDecryptToken(integration.access_token)
       if (measurementId && apiSecret) {
         const ga4EventName = getGA4EventName(event_name)
         const ga4Payload = {
@@ -1005,60 +1052,76 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // Fire Google Enhanced Conversions only (GA4/TikTok already handled in integrations loop)
-  const credentials = await getUserCredentials(profile.id)
-  const platformResults = await Promise.allSettled([
-    sendGoogleEnhancedConversion(
-      event_name,
-      {
-        fbp,
-        value,
-        currency,
-        order_id: bodyOrderId,
-        event_id,
-        user_data: {
-          em: email ? [email] : [],
-          ph: phone ? [phone] : [],
-          fn: first_name ? [first_name] : [],
-          ln: last_name ? [last_name] : [],
-        },
-      },
-      credentials.googleConversionId,
-      credentials.googleConversionLabel,
-      credentials.ga4MeasurementId,
-      credentials.ga4ApiSecret
-    ),
-  ])
+  // Google Enhanced Conversion dispatch (only for conversion events when google + ga4 are configured)
+  let googleEnhancedSuccess = false
+  const googleRow = integrationsList.find((row) => row.platform === 'google')
+  const ga4Row = integrationsList.find((row) => row.platform === 'ga4')
+  const googleConversionId = (googleRow as { conversion_id?: string | null } | undefined)?.conversion_id?.trim()
+  const googleConversionLabel = (googleRow as { conversion_label?: string | null } | undefined)?.conversion_label?.trim()
+  const ga4MeasurementId = ga4Row?.tag_id?.trim()
+  const ga4ApiSecret = await maybeDecryptToken(ga4Row?.access_token)
 
-  const platformNames = ['Google']
-  // Detailed logging: all platforms (all events fire to all platforms)
-  console.log('[Event API] Results for:', event_name)
-  console.log('[Meta]', metaStatus)
-  platformResults.forEach((result, index) => {
-    const name = platformNames[index]
-    const value = result.status === 'fulfilled' ? result.value : result.reason
-    console.log(`[${name}]`, value)
-    if (result.status === 'fulfilled') {
-      debugLog(`[${name}] ✅`)
+  if (googleStatus === 'sent' && GOOGLE_CONVERSION_EVENTS.has(event_name)) {
+    if (googleConversionId && googleConversionLabel && ga4MeasurementId && ga4ApiSecret) {
+      const googleEnhancedResult = await sendGoogleEnhancedConversion(
+        event_name,
+        {
+          fbp,
+          value,
+          currency,
+          order_id: bodyOrderId,
+          event_id,
+          user_data: {
+            em: email ? [email] : [],
+            ph: phone ? [phone] : [],
+            fn: first_name ? [first_name] : [],
+            ln: last_name ? [last_name] : [],
+          },
+        },
+        googleConversionId,
+        googleConversionLabel,
+        ga4MeasurementId,
+        ga4ApiSecret
+      )
+      const gRes = googleEnhancedResult as { success?: boolean; skipped?: boolean; status?: number }
+      googleEnhancedSuccess = Boolean(gRes.success) && !gRes.skipped
+      if (gRes.skipped) {
+        googleStatus = 'skipped'
+      } else if (!googleEnhancedSuccess) {
+        googleStatus = 'error:enhanced_conversion'
+      } else if (!platformsFired.includes('google')) {
+        platformsFired.push('google')
+      }
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[Google Enhanced]', googleEnhancedResult)
+      }
     } else {
-      debugLog(`[${name}] ❌`, result.reason)
+      googleStatus = 'skipped'
+      debugLog('[Google Enhanced] skipped: missing conversion/ga4 credentials')
     }
-  })
+  } else if (googleStatus === 'sent' && !GOOGLE_CONVERSION_EVENTS.has(event_name)) {
+    googleStatus = 'skipped'
+  }
+
+  const delivery = {
+    meta: metaStatus,
+    ga4: ga4Status,
+    tiktok: tiktokStatus,
+    google: googleStatus,
+  }
+
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[Event API] Results for:', event_name, delivery)
+  }
 
   if (event_id) {
-    const googleOk =
-      platformResults[0].status === 'fulfilled' &&
-      (platformResults[0].value as { success?: boolean })?.success === true
-    if (!googleOk && googleStatus === 'sent') {
-      googleStatus = 'error:enhanced_conversion'
-    }
     await supabase
       .from('events')
       .update({
         meta_status: metaStatus,
-        ga4_status: ga4Status === 'sent' ? 'sent' : 'failed',
-        tiktok_status: tiktokStatus === 'sent' ? 'sent' : 'failed',
-        google_status: googleOk ? 'sent' : 'failed',
+        ga4_status: ga4Status === 'sent' ? 'sent' : ga4Status === 'skipped' ? 'skipped' : 'failed',
+        tiktok_status: tiktokStatus === 'sent' ? 'sent' : tiktokStatus === 'skipped' ? 'skipped' : 'failed',
+        google_status: googleStatus === 'sent' || googleEnhancedSuccess ? 'sent' : googleStatus === 'skipped' ? 'skipped' : 'failed',
       })
       .eq('event_id', event_id)
       .eq('user_id', profile.id)
@@ -1139,7 +1202,14 @@ export async function POST(request: NextRequest) {
       .eq('id', profile.id)
   }
 
-    return NextResponse.json({ success: true, platforms_fired: platformsFired }, { headers: CORS_HEADERS })
+    return NextResponse.json(
+      {
+        success: true,
+        platforms_fired: platformsFired,
+        delivery,
+      },
+      { headers: CORS_HEADERS }
+    )
   } catch (error) {
     console.error('[event] Unexpected error', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500, headers: CORS_HEADERS })

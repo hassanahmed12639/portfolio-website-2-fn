@@ -28,9 +28,13 @@ export async function sendGoogleEnhancedConversion(
     'Subscribe',
     'Contact',
     'InitiateCheckout',
+    'AddToCart',
+    'AddPaymentInfo',
+    'BeginCheckout',
   ]
+  // Defensive: non-conversion events should not call this (route gates); no noisy "error"
   if (!googleConversionEvents.includes(eventName)) {
-    return { success: false, error: 'Not a conversion event' }
+    return { success: false, skipped: true as const }
   }
 
   // Hash function
@@ -84,7 +88,9 @@ export async function sendGoogleEnhancedConversion(
     user_data: userData
   }
 
-  console.log('[Google Enhanced] Sending conversion:', eventName, 'to:', `${conversionId}/${conversionLabel}`)
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[Google Enhanced] Sending conversion:', eventName, 'to:', `${conversionId}/${conversionLabel}`)
+  }
 
   try {
     const response = await fetch(
@@ -96,7 +102,9 @@ export async function sendGoogleEnhancedConversion(
       }
     )
 
-    console.log('[Google Enhanced] Response:', response.status)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[Google Enhanced] Response:', response.status)
+    }
     return { success: response.status === 204, status: response.status }
   } catch (error: any) {
     console.error('[Google Enhanced] Error:', error.message)
