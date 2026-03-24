@@ -21,6 +21,38 @@ function sanitizeSlug(value: string): string {
     .replace(/^-|-$/g, '')
 }
 
+async function ensurePublicBucket() {
+  const admin = createAdminClient()
+  const { data: bucket, error: getBucketError } = await admin.storage.getBucket(BUCKET)
+
+  if (getBucketError && !getBucketError.message?.toLowerCase().includes('not found')) {
+    throw new Error(getBucketError.message)
+  }
+
+  if (!bucket) {
+    const { error: createError } = await admin.storage.createBucket(BUCKET, {
+      public: true,
+      allowedMimeTypes: ALLOWED_TYPES,
+      fileSizeLimit: MAX_SIZE,
+    })
+    if (createError) {
+      const alreadyExists =
+        createError.message?.toLowerCase().includes('already exists') ||
+        createError.message?.includes('BucketAlreadyExists') ||
+        createError.message?.includes('ResourceAlreadyExists')
+      if (!alreadyExists) throw new Error(createError.message)
+    }
+  }
+
+  const { error: updateError } = await admin.storage.updateBucket(BUCKET, {
+    public: true,
+    allowedMimeTypes: ALLOWED_TYPES,
+    fileSizeLimit: MAX_SIZE,
+  })
+  if (updateError) throw new Error(updateError.message)
+  return admin
+}
+
 export async function POST(request: NextRequest) {
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
   const rate = rateLimit(`portfolio-admin-upload:${ip}`, { windowMs: 60_000, maxRequests: 30 })
@@ -44,19 +76,7 @@ export async function POST(request: NextRequest) {
     const random = Math.random().toString(36).slice(2, 10)
     const path = `${projectSlug}/${timestamp}-${random}.${ext}`
 
-    const admin = createAdminClient()
-    const { error: bucketError } = await admin.storage.createBucket(BUCKET, {
-      public: true,
-      allowedMimeTypes: ALLOWED_TYPES,
-      fileSizeLimit: MAX_SIZE,
-    })
-    const bucketExists =
-      bucketError?.message?.toLowerCase().includes('already exists') ||
-      bucketError?.message?.includes('BucketAlreadyExists') ||
-      bucketError?.message?.includes('ResourceAlreadyExists')
-    if (bucketError && !bucketExists) {
-      throw new Error(bucketError.message)
-    }
+    const admin = await ensurePublicBucket()
 
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
