@@ -5,7 +5,7 @@ import Footer from "@/components/layout/Footer";
 import ShareArticleLinks from "@/components/ShareArticleLinks";
 import CaseStudyTOC from "@/components/CaseStudyTOC";
 import SummarizeInChatGPT from "@/components/SummarizeInChatGPT";
-import Image from "next/image";
+import CaseStudyHeroImage from "@/components/CaseStudyHeroImage";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPortfolioProjectBySlug, getPortfolioProjects } from "@/lib/portfolio-projects";
@@ -75,13 +75,10 @@ export default async function CaseStudyPage({ params }: Props) {
             {/* Hero: full-width image */}
             <div id="hero" className="mb-8 md:mb-12">
               <div className="relative min-h-[220px] md:min-h-[280px] rounded-2xl overflow-hidden">
-                <Image
+                <CaseStudyHeroImage
                   src={study.src}
-                  alt=""
-                  fill
-                  className="object-cover"
-                  sizes="100vw"
-                  priority
+                  alt={study.title}
+                  slug={study.slug}
                 />
               </div>
             </div>
