@@ -105,12 +105,29 @@ export default function PortfolioProjectsAdmin() {
     [projects]
   )
 
+  async function readApiResponse(res: Response): Promise<any> {
+    const contentType = res.headers.get('content-type') || ''
+    if (contentType.includes('application/json')) {
+      return res.json()
+    }
+    const text = await res.text()
+    const plain = text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+    return {
+      error:
+        plain.slice(0, 220) ||
+        `Request failed with status ${res.status}`,
+    }
+  }
+
   async function fetchProjects() {
     setLoading(true)
     setError('')
     try {
-      const res = await fetch('/api/admin/portfolio-projects', { cache: 'no-store' })
-      const data = await res.json()
+      const res = await fetch('/api/admin/portfolio-projects', {
+        cache: 'no-store',
+        credentials: 'include',
+      })
+      const data = await readApiResponse(res)
       if (!res.ok) throw new Error(data?.error || 'Failed to fetch projects')
       setProjects(Array.isArray(data) ? data : [])
     } catch (err) {
@@ -175,8 +192,9 @@ export default function PortfolioProjectsAdmin() {
         method: editingId ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
+        credentials: 'include',
       })
-      const data = await res.json()
+      const data = await readApiResponse(res)
       if (!res.ok) throw new Error(data?.error || 'Failed to save project')
 
       await fetchProjects()
@@ -196,8 +214,9 @@ export default function PortfolioProjectsAdmin() {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id }),
+        credentials: 'include',
       })
-      const data = await res.json()
+      const data = await readApiResponse(res)
       if (!res.ok) throw new Error(data?.error || 'Failed to delete project')
       await fetchProjects()
     } catch (err) {
@@ -222,8 +241,9 @@ export default function PortfolioProjectsAdmin() {
       const res = await fetch('/api/admin/portfolio-upload', {
         method: 'POST',
         body: formData,
+        credentials: 'include',
       })
-      const data = await res.json()
+      const data = await readApiResponse(res)
       if (!res.ok) throw new Error(data?.error || 'Upload failed')
       return typeof data?.url === 'string' ? data.url : null
     } catch (err) {
