@@ -473,6 +473,74 @@ export const caseStudies: CaseStudy[] = [
       { src: "/shipping-3.png", alt: "Alliance Shipping" },
     ],
   },
+  {
+    slug: "family-builders-and-developers",
+    date: "Mar 24, 2026",
+    title: "How I Turned Family Builders' Bleeding Meta Ads Account Into a Lead Generation Engine",
+    src: "/seven-tower-zoomed-out.png",
+    author: "Hassan Ahmed",
+    authorTitle: "Meta Ads & Growth Systems Specialist",
+    description:
+      "Inherited a bloated Meta Ads account for Family Builders & Developers with CPLs between Rs579 and Rs1,684. Rebuilt tracking, campaign structure, creative strategy, and lead operations to drive CPL down to as low as Rs216 while maintaining consistent lead volume across multiple projects.",
+    readTime: "10 min read",
+    keyTakeaways: [
+      "Inherited account with CPLs ranging Rs579-Rs1,684 per lead across most campaigns.",
+      "Restructured campaign architecture around project-specific targeting and tighter audience segmentation.",
+      "UGC video creatives drove the lowest CPL: 528 leads at Rs216 per lead on a single campaign.",
+      "Multiple campaigns consistently delivered under Rs500 per lead after restructure.",
+      "35 campaigns were managed across the full account period.",
+    ],
+    sections: [
+      {
+        id: "overview",
+        heading: "Overview",
+        content:
+          "When Family Builders & Developers brought me in, their Meta Ads account had been running for over two years and bleeding budget with little to show for it. CPLs were hitting Rs1,684 on active campaigns and rarely dipping below Rs800. For a real estate brand in a price-sensitive market, those numbers were unsustainable. My first assessment was clear: this was not just an optimization issue, the foundation was broken. I rebuilt the entire system from the ground up, including campaign architecture, tracking infrastructure, creative strategy, and lead management operations.",
+      },
+      {
+        id: "account-before",
+        heading: "What the Account Looked Like Before",
+        content:
+          "The existing campaigns showed broad targeting, inflated CPLs, and no coherent creative direction. Campaigns like Tailored Leads SQFMR Hyderabad were pulling leads at Rs1,684 each. The LeadsIF series sat between Rs579 and Rs1,069. Even better performers rarely broke below Rs483. Audience segmentation was loose, creatives were static and generic, and there was no systematic testing framework. Budget was fragmented across too many campaigns without clear winners being identified and scaled. There was also no reliable post-lead visibility, making it impossible to connect ad performance with sales outcomes.",
+      },
+      {
+        id: "capi-implementation",
+        heading: "Fixing the Foundation - Conversion API Implementation",
+        content:
+          "Before touching campaign-level optimization, I implemented Meta Conversion API to repair the tracking layer. Browser-only tracking was missing lead events due to ad blockers, iOS privacy changes, and page drop-offs. With server-side event tracking, lead data was sent directly to Meta with cleaner attribution and deduplication. This improved optimization quality, reduced wasted spend, and gave the algorithm stronger conversion signals. Lead form submissions, website conversions, and CRM events were all fed back into the ad account in a structured way.",
+      },
+      {
+        id: "campaign-restructure",
+        heading: "Campaign Restructure and Targeting Strategy",
+        content:
+          "With tracking fixed, I restructured the account around projects and buyer intent instead of broad overlapping campaigns. Cold traffic, retargeting, and lookalikes were separated into distinct campaign buckets to avoid internal competition. Ad sets were tightened around geography, income proxies, and behavior signals relevant to serious property buyers in Karachi. Budget was shifted away from underperformers and consolidated behind campaigns showing early efficiency, helping Meta optimize against quality signal rather than noise.",
+      },
+      {
+        id: "ugc-creative",
+        heading: "Creative Strategy - UGC as the Turning Point",
+        content:
+          "The biggest performance lever was moving to UGC-style video creatives. The Rameez Bhai UGC Video campaign became the top performer across all 35 campaigns, generating 528 leads at Rs216 per lead. UGC reduced psychological distance, built trust faster in a high-consideration category, and performed better in Meta delivery due to stronger watch-time and engagement patterns. Additional UGC and carousel formats were tested across the account. Carousel Khi Team Visit delivered 171 leads at Rs413 per lead, while Lead Generation 27/02/2025 generated 357 leads at Rs321 per lead. Static generic creatives were phased out in favor of authentic, people-led messaging tied to buyer hesitation and aspiration.",
+      },
+      {
+        id: "lead-funneling",
+        heading: "Lead Funneling and Sales Team Management",
+        content:
+          "Lower CPL only matters when lead handling is strong. I built and managed the lead funnel behind the campaigns so every inbound lead was captured, categorized by project and intent, and routed across a sales team of around 50 representatives. I introduced response-time targets, lead quality feedback loops, and escalation paths for high-intent prospects. Sales teams were briefed by campaign audience profile so first-touch conversations matched ad messaging, reducing friction and improving show-up and closure rates.",
+      },
+      {
+        id: "sentdm-automation",
+        heading: "Automated Follow-Ups via Sent.dm API",
+        content:
+          "To prevent lead leakage at higher volumes, I integrated Sent.dm API for automated WhatsApp outreach. As soon as a lead was captured, a personalized message was triggered to acknowledge inquiry, share project context, and prompt intent qualification. Follow-up sequences were scheduled for non-responders at strategic intervals. This improved response rates, reduced time-to-first-meaningful-conversation, and freed sales staff to focus on engaged prospects instead of manual chasing.",
+      },
+      {
+        id: "results",
+        heading: "Results",
+        content:
+          "The before-vs-after performance shift was substantial. Where prior campaigns were often in the Rs800-Rs1,684 CPL range, the rebuilt system consistently delivered in the Rs216-Rs500 range across multiple active campaigns. Abdul Rehman and Mutahir campaigns landed around Rs350-Rs353 CPL. Seven Towers video delivered 281 leads at Rs487 CPL. At peak efficiency, CPL dropped by up to 87% while lead quality workflows and volume consistency improved. The outcome came from treating performance as a full system: clean tracking via CAPI, structured campaign architecture, trust-building creative, organized sales execution, and automated follow-up.",
+      },
+    ],
+  },
 ];
 
 export function getCaseStudyBySlug(slug: string): CaseStudy | undefined {
