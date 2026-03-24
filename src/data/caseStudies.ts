@@ -288,7 +288,7 @@ export const caseStudies: CaseStudy[] = [
     slug: "rcc-custom-landscapes",
     date: "Oct 10, 2025",
     title: "RC Custom Landscapes – Google Search Ads Case Study",
-    src: "https://images.unsplash.com/photo-1558904541-efa843a96f01?w=800&q=80",
+    src: "/rcc-featured.png",
     author: "Hassan Ahmed",
     authorTitle: "Google Ads Expert",
     description:

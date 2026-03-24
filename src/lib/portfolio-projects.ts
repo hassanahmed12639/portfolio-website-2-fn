@@ -24,6 +24,27 @@ function asString(value: unknown, fallback = ''): string {
   return typeof value === 'string' ? value : fallback
 }
 
+function normalizeImageSrc(value: unknown): string {
+  const src = asString(value).trim()
+  if (!src) return ''
+  if (
+    src.startsWith('/') ||
+    src.startsWith('http://') ||
+    src.startsWith('https://') ||
+    src.startsWith('data:') ||
+    src.startsWith('blob:')
+  ) {
+    return src
+  }
+
+  const clean = src.replace(/^\.?\//, '')
+  const hasExtension = /\.[a-z0-9]{2,5}$/i.test(clean)
+  if (!hasExtension) {
+    return `/${clean}.png`
+  }
+  return `/${clean}`
+}
+
 function asStringArray(value: unknown): string[] {
   if (!Array.isArray(value)) return []
   return value.filter((item): item is string => typeof item === 'string')
@@ -47,7 +68,7 @@ function asSections(value: unknown): { id: string; heading: string; content: str
 function asContentImage(value: unknown): { src: string; afterSectionId?: string; alt?: string } | undefined {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined
   const record = value as Record<string, unknown>
-  const src = asString(record.src).trim()
+  const src = normalizeImageSrc(record.src)
   if (!src) return undefined
   const afterSectionId = asString(record.afterSectionId).trim()
   const alt = asString(record.alt).trim()
@@ -64,7 +85,7 @@ function asContentImages(value: unknown): { src: string; alt?: string }[] | unde
     .map((img) => {
       if (!img || typeof img !== 'object') return null
       const record = img as Record<string, unknown>
-      const src = asString(record.src).trim()
+      const src = normalizeImageSrc(record.src)
       if (!src) return null
       const alt = asString(record.alt).trim()
       return { src, ...(alt ? { alt } : {}) }
@@ -78,7 +99,7 @@ function normalizeProject(row: PortfolioProjectRow): CaseStudy {
     slug: row.slug,
     date: row.date ?? '',
     title: row.title,
-    src: row.src,
+    src: normalizeImageSrc(row.src),
     author: row.author,
     authorTitle: row.author_title ?? undefined,
     description: row.description,
