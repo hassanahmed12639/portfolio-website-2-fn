@@ -10,6 +10,7 @@ const MAX_EVENTS_PER_DAY = 100
 const PIXEL_WARMUP_HISTORY_KEY = 'pixelWarmupHistory'
 const PIXEL_WARMUP_CURRENT_JOB_KEY = 'pixelWarmupCurrentJobId'
 const PIXEL_WARMUP_LOG_KEY = 'pixelWarmupLogMessages'
+const PIXEL_WARMUP_CREDENTIALS_KEY = 'pixelWarmupCredentials'
 
 type WarmupJobStatus = {
   jobId: string
@@ -129,7 +130,6 @@ export default function DashboardPixelWarmupPage() {
   const [ga4Id, setGa4Id] = React.useState('')
   const [ga4Secret, setGa4Secret] = React.useState('')
   const [pixelId, setPixelId] = React.useState('')
-  const [testEventCode, setTestEventCode] = React.useState('')
   const [isRunning, setIsRunning] = React.useState(false)
   const [sentCount, setSentCount] = React.useState(0)
   const [failedCount, setFailedCount] = React.useState(0)
@@ -185,7 +185,6 @@ export default function DashboardPixelWarmupPage() {
         if (json.ga4?.measurementId) setGa4Id(json.ga4.measurementId)
         if (json.ga4?.apiSecret) setGa4Secret(json.ga4.apiSecret)
         if (json.meta?.pixelId) setPixelId(json.meta.pixelId)
-        if (json.meta?.testEventCode) setTestEventCode(json.meta.testEventCode)
 
         if (json.ga4 && !json.meta) setPlatformOption('ga4')
         else if (json.meta && !json.ga4) setPlatformOption('meta')
@@ -195,7 +194,30 @@ export default function DashboardPixelWarmupPage() {
       }
     }
 
-    loadIntegrationDefaults()
+    const rawCredentials = window.localStorage.getItem(PIXEL_WARMUP_CREDENTIALS_KEY)
+    if (rawCredentials) {
+      try {
+        const parsed = JSON.parse(rawCredentials) as {
+          ga4Id?: string
+          ga4Secret?: string
+          pixelId?: string
+        }
+        if (parsed.ga4Id) setGa4Id(parsed.ga4Id)
+        if (parsed.ga4Secret) setGa4Secret(parsed.ga4Secret)
+        if (parsed.pixelId) setPixelId(parsed.pixelId)
+
+        if (parsed.ga4Id || parsed.ga4Secret) {
+          setPlatformOption(parsed.pixelId ? 'both' : 'ga4')
+        } else if (parsed.pixelId) {
+          setPlatformOption('meta')
+        }
+      } catch {
+        // ignore invalid saved credentials
+        loadIntegrationDefaults()
+      }
+    } else {
+      loadIntegrationDefaults()
+    }
 
     const rawHistory = window.localStorage.getItem(PIXEL_WARMUP_HISTORY_KEY)
     let parsedHistory: Array<{ jobId: string; rows: number; skipped: number; sent?: number; failed?: number; status?: string }> | null = null
@@ -269,10 +291,21 @@ export default function DashboardPixelWarmupPage() {
   }, [logMessages])
 
   React.useEffect(() => {
+    const credentials = {
+      ga4Id: ga4Id || undefined,
+      ga4Secret: ga4Secret || undefined,
+      pixelId: pixelId || undefined,
+    }
+    window.localStorage.setItem(PIXEL_WARMUP_CREDENTIALS_KEY, JSON.stringify(credentials))
+  }, [ga4Id, ga4Secret, pixelId])
+
+  React.useEffect(() => {
     if (!currentJobId) return
+
     const interval = window.setInterval(() => {
       fetchJobStatus(currentJobId)
     }, 10000)
+
     return () => window.clearInterval(interval)
   }, [currentJobId])
 
@@ -370,8 +403,8 @@ export default function DashboardPixelWarmupPage() {
       setError('GA4 selected: provide both measurement ID and API secret.')
       return
     }
-    if ((platformOption === 'meta' || platformOption === 'both') && (!pixelId || !testEventCode)) {
-      setError('Meta selected: provide both pixel ID and test event code.')
+    if ((platformOption === 'meta' || platformOption === 'both') && !pixelId) {
+      setError('Meta selected: provide a pixel ID.')
       return
     }
 
@@ -387,7 +420,7 @@ export default function DashboardPixelWarmupPage() {
         credentials.ga4 = { measurementId: ga4Id, apiSecret: ga4Secret }
       }
       if (platformOption === 'meta' || platformOption === 'both') {
-        credentials.meta = { pixelId, testEventCode }
+        credentials.meta = { pixelId }
       }
 
       const res = await fetch('/api/dashboard/pixel-warmup', {
@@ -451,6 +484,46 @@ export default function DashboardPixelWarmupPage() {
     }
   }
 
+  const handleCancelCurrentJob = async () => {
+    if (!currentJob?.jobId) return
+
+    setIsRunning(true)
+    setError('')
+    setLogMessages((messages) => [...messages, 'Cancelling warmup job...'])
+
+    try {
+      const res = await fetch(`/api/dashboard/pixel-warmup?jobId=${encodeURIComponent(currentJob.jobId)}`, {
+        method: 'DELETE',
+      })
+      const body = await res.json()
+      if (!res.ok || body.success === false) {
+        const message = body.error || body.message || res.statusText
+        setError(message)
+        setLogMessages((messages) => [...messages, `Cancel failed: ${message}`])
+        return
+      }
+
+      const updatedJob = {
+        ...currentJob,
+        status: 'completed' as const,
+        queued: 0,
+        updatedAt: new Date().toISOString(),
+      }
+      setCurrentJob(updatedJob)
+      const updatedHistory = jobHistory.map((entry) =>
+        entry.jobId === updatedJob.jobId ? { ...entry, status: 'completed' as const, queued: 0 } : entry
+      )
+      setJobHistory(updatedHistory)
+      window.localStorage.setItem(PIXEL_WARMUP_HISTORY_KEY, JSON.stringify(updatedHistory))
+      setLogMessages((messages) => [...messages, `Warmup job ${currentJob.jobId} cancelled.`])
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err))
+      setLogMessages((messages) => [...messages, `Cancel failed: ${err instanceof Error ? err.message : String(err)}`])
+    } finally {
+      setIsRunning(false)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[var(--dash-bg)] text-[var(--dash-text)] px-6 py-8">
       <div className="mx-auto max-w-6xl rounded-3xl border border-[var(--dash-border)] bg-[var(--dash-card)] p-8 shadow-[var(--dash-shadow)]">
@@ -458,7 +531,7 @@ export default function DashboardPixelWarmupPage() {
           <p className="text-sm uppercase tracking-[0.2em] text-[var(--dash-primary)] font-semibold">Dashboard Tool</p>
           <h1 className="text-3xl font-bold tracking-tight text-[var(--dash-text)]">Pixel Warmup</h1>
           <p className="max-w-3xl text-sm text-[var(--dash-muted)]">
-            Upload a CSV, choose event type, and start warming up server-side pixels using GA4 debug mode and Meta test events only. The warmup job continues on the server after you close this page.
+            Upload a CSV, choose event type, and start warming up server-side pixels using GA4 and Meta production conversion events. The warmup job continues on the server after you close this page.
           </p>
         </div>
 
@@ -539,7 +612,7 @@ export default function DashboardPixelWarmupPage() {
             )}
 
             {platformOption !== 'ga4' && (
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-1">
                 <div>
                   <label className="mb-2 block text-sm font-medium text-[var(--dash-text)]">Meta Pixel ID</label>
                   <Input
@@ -547,16 +620,6 @@ export default function DashboardPixelWarmupPage() {
                     onChange={(e) => setPixelId(e.target.value)}
                     disabled={isRunning}
                     placeholder="YOUR_PIXEL_ID"
-                  />
-                </div>
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-[var(--dash-text)]">Meta Test Event Code</label>
-                  <Input
-                    type="text"
-                    value={testEventCode}
-                    onChange={(e) => setTestEventCode(e.target.value)}
-                    disabled={isRunning}
-                    placeholder="YOUR_TEST_EVENT_CODE"
                   />
                 </div>
               </div>
@@ -572,6 +635,15 @@ export default function DashboardPixelWarmupPage() {
                   className="w-full sm:w-auto h-11 rounded-2xl bg-[#3B82F6] text-white hover:bg-[#2563EB] font-semibold px-6 sm:px-8 shadow-sm"
                 >
                   {isRunning ? 'Warming up…' : 'Start warming up'}
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={handleCancelCurrentJob}
+                  disabled={isRunning || currentJob?.status !== 'running'}
+                  className="inline-flex h-11 items-center justify-center rounded-2xl border border-[var(--dash-border)] bg-[var(--dash-surface)] px-6 text-sm font-semibold text-[var(--dash-text)] hover:bg-[var(--dash-bg)]"
+                >
+                  Cancel job
                 </Button>
                 <Link
                   href="/dashboard/pixel-warmup/history"
@@ -616,14 +688,14 @@ export default function DashboardPixelWarmupPage() {
 
             <div>
               <h3 className="text-base font-semibold text-[var(--dash-text)] mb-2">Live status</h3>
-              <div className="h-48 overflow-y-auto rounded-2xl border border-[var(--dash-border)] bg-[var(--dash-card)] p-4 text-xs text-black" style={{ color: 'black' }}>
+              <div className="h-48 overflow-y-auto rounded-2xl border border-[var(--dash-border)] bg-[var(--dash-card)] p-4 text-xs text-black">
                 {currentJob ? (
                   <div className="mb-3 rounded-2xl bg-[var(--dash-surface)] p-3 text-black">
-                    <p className="text-sm font-semibold">Current warmup job</p>
-                    <p className="text-sm">Job ID: {currentJob.jobId}</p>
-                    <p className="text-sm">Status: {currentJob.status}</p>
-                    <p className="text-sm">Sent: {currentJob.sent} · Failed: {currentJob.failed} · Skipped: {currentJob.skipped}</p>
-                    <p className="text-sm">Queued: {currentJob.queued}</p>
+                    <p className="text-sm font-semibold text-black">Current warmup job</p>
+                    <p className="text-sm text-black">Job ID: {currentJob.jobId}</p>
+                    <p className="text-sm text-black">Status: {currentJob.status}</p>
+                    <p className="text-sm text-black">Sent: {currentJob.sent} · Failed: {currentJob.failed} · Skipped: {currentJob.skipped}</p>
+                    <p className="text-sm text-black">Queued: {currentJob.queued}</p>
                   </div>
                 ) : null}
                 {currentJob ? null : isRestoringJob ? (
@@ -631,9 +703,9 @@ export default function DashboardPixelWarmupPage() {
                 ) : logMessages.length === 0 ? (
                   <p className="text-black">No warmup activity yet. Upload a CSV and start warming up to see live status.</p>
                 ) : (
-                  <ul className="space-y-2 text-black">
+                  <ul className="space-y-2">
                     {logMessages.map((message, index) => (
-                      <li key={index}>{message}</li>
+                      <li key={index} className="text-black">{message}</li>
                     ))}
                   </ul>
                 )}

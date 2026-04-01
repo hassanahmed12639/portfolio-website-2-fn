@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import crypto from 'crypto'
 import { createClient } from '@/lib/supabase/server'
 import { decrypt } from '@/lib/encrypt'
-import { getWarmupJob, startWarmupJob, waitForWarmupStore, type PixelWarmupCredentials } from '@/lib/pixelWarmupWorker'
+import { cancelWarmupJob, getWarmupJob, startWarmupJob, waitForWarmupStore, type PixelWarmupCredentials } from '@/lib/pixelWarmupWorker'
 
 export const runtime = 'nodejs'
 
@@ -10,7 +10,7 @@ const MANDATORY_FIELDS = ['email', 'phone', 'first_name', 'last_name']
 
 type Credentials = {
   ga4?: { measurementId: string; apiSecret: string }
-  meta?: { pixelId: string; testEventCode: string; accessToken?: string }
+  meta?: { pixelId: string; accessToken?: string }
 }
 
 type RequestBody = {
@@ -33,7 +33,7 @@ async function getSavedMetaCredentials() {
 
   const { data: integrations, error } = await supabase
     .from('integrations')
-    .select('pixel_id, access_token, meta_test_event_code')
+    .select('pixel_id, access_token')
     .eq('user_id', user.id)
     .eq('platform', 'meta')
     .limit(1)
@@ -42,15 +42,14 @@ async function getSavedMetaCredentials() {
     return null
   }
 
-  const row = integrations[0] as { pixel_id?: string | null; access_token?: string | null; meta_test_event_code?: string | null }
+  const row = integrations[0] as { pixel_id?: string | null; access_token?: string | null }
   const pixelId = row.pixel_id?.trim() || null
-  const testEventCode = row.meta_test_event_code?.trim() || null
   const accessToken = row.access_token ? (await decrypt(row.access_token)) : null
   if (!pixelId || !accessToken) {
     return null
   }
 
-  return { pixelId, testEventCode, accessToken }
+  return { pixelId, accessToken }
 }
 
 function normalizeKey(value: string) {
@@ -94,7 +93,6 @@ function buildGa4Payload(eventType: string, record: Record<string, string>) {
   const clientId = hashValue(email || phone || String(Date.now()))
 
   const params: Record<string, unknown> = {
-    debug_mode: true,
     first_name: record.first_name || '',
     last_name: record.last_name || '',
   }
@@ -147,7 +145,7 @@ function buildMetaPayload(eventType: string, record: Record<string, string>) {
 }
 
 async function sendGa4Event(credentials: NonNullable<Credentials['ga4']>, eventType: string, record: Record<string, string>) {
-  const endpoint = `https://www.google-analytics.com/debug/mp/collect?measurement_id=${encodeURIComponent(
+  const endpoint = `https://www.google-analytics.com/mp/collect?measurement_id=${encodeURIComponent(
     credentials.measurementId
   )}&api_secret=${encodeURIComponent(credentials.apiSecret)}`
   const payload = buildGa4Payload(eventType, record)
@@ -166,7 +164,7 @@ async function sendGa4Event(credentials: NonNullable<Credentials['ga4']>, eventT
 async function sendMetaEvent(credentials: NonNullable<Credentials['meta']>, eventType: string, record: Record<string, string>) {
   const endpoint = `https://graph.facebook.com/v18.0/${encodeURIComponent(credentials.pixelId)}/events?access_token=${encodeURIComponent(
     credentials.accessToken || ''
-  )}&test_event_code=${encodeURIComponent(credentials.testEventCode)}`
+  )}`
   const payload = buildMetaPayload(eventType, record)
   const res = await fetch(endpoint, {
     method: 'POST',
@@ -202,6 +200,27 @@ export async function GET(request: Request) {
     return NextResponse.json({ success: false, error: message }, { status: 500 })
   }
 }
+
+export async function DELETE(request: Request) {
+  try {
+    const url = new URL(request.url)
+    const jobId = url.searchParams.get('jobId')
+    if (!jobId) {
+      return NextResponse.json({ success: false, error: 'jobId query parameter is required' }, { status: 400 })
+    }
+
+    const cancelled = cancelWarmupJob(jobId)
+    if (!cancelled) {
+      return NextResponse.json({ success: false, error: 'Warmup job not found' }, { status: 404 })
+    }
+
+    return NextResponse.json({ success: true, jobId })
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown server error'
+    console.error('[pixel-warmup] DELETE ', message)
+    return NextResponse.json({ success: false, error: message }, { status: 500 })
+  }
+}
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as RequestBody
@@ -218,19 +237,29 @@ export async function POST(request: Request) {
     const rawMeta = credentials.meta
       ? {
           pixelId: credentials.meta.pixelId || savedMeta?.pixelId,
-          testEventCode: credentials.meta.testEventCode || savedMeta?.testEventCode,
           accessToken: credentials.meta.accessToken || savedMeta?.accessToken,
         }
       : savedMeta
 
     const effectiveMeta =
-      rawMeta && rawMeta.pixelId && rawMeta.testEventCode && rawMeta.accessToken
+      rawMeta && rawMeta.pixelId && rawMeta.accessToken
         ? {
             pixelId: rawMeta.pixelId,
-            testEventCode: rawMeta.testEventCode,
             accessToken: rawMeta.accessToken,
           }
         : null
+
+    const metaRequested = Boolean(credentials.meta && credentials.meta.pixelId)
+    if (metaRequested && !effectiveMeta) {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            'Meta warmup requires a saved Meta access token. Please connect your Meta integration in dashboard integrations before warming up Meta events.',
+        },
+        { status: 400 }
+      )
+    }
 
     if (!credentials.ga4 && !effectiveMeta) {
       return NextResponse.json({ success: false, error: 'Provide GA4 or Meta credentials' }, { status: 400 })
@@ -269,10 +298,10 @@ export async function POST(request: Request) {
     }
 
     if (effectiveMeta) {
-      const { pixelId, testEventCode, accessToken } = effectiveMeta
-      if (!pixelId || !testEventCode || !accessToken) {
+      const { pixelId, accessToken } = effectiveMeta
+      if (!pixelId || !accessToken) {
         return NextResponse.json(
-          { success: false, error: 'Meta credentials require pixelId, testEventCode, and accessToken' },
+          { success: false, error: 'Meta credentials require pixelId and accessToken' },
           { status: 400 }
         )
       }

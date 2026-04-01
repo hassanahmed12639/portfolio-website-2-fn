@@ -9,7 +9,7 @@ export type PixelWarmupCredentials = {
   }
   meta?: {
     pixelId: string
-    testEventCode: string
+    testEventCode?: string
     accessToken?: string
   }
 }
@@ -123,7 +123,6 @@ async function sendGa4Event(credentials: NonNullable<PixelWarmupCredentials['ga4
   const clientId = hashValue(email || phone || String(Date.now()))
 
   const params: Record<string, unknown> = {
-    debug_mode: true,
     first_name: record.first_name || '',
     last_name: record.last_name || '',
   }
@@ -138,7 +137,7 @@ async function sendGa4Event(credentials: NonNullable<PixelWarmupCredentials['ga4
     ],
   }
 
-  const endpoint = `https://www.google-analytics.com/debug/mp/collect?measurement_id=${encodeURIComponent(
+  const endpoint = `https://www.google-analytics.com/mp/collect?measurement_id=${encodeURIComponent(
     credentials.measurementId
   )}&api_secret=${encodeURIComponent(credentials.apiSecret)}`
 
@@ -157,10 +156,34 @@ async function sendGa4Event(credentials: NonNullable<PixelWarmupCredentials['ga4
 async function sendMetaEvent(credentials: NonNullable<PixelWarmupCredentials['meta']>, eventType: string, record: PixelWarmupRecord) {
   const email = sanitizeEmail(record.email)
   const phone = sanitizePhone(record.phone)
+  const firstName = String(record.first_name || '').trim()
+  const lastName = String(record.last_name || '').trim()
+  const city = String(record.city || '').trim()
+  const state = String(record.state || '').trim()
+  const zip = String(record.zip || '').trim()
+  const country = String(record.country || '').trim()
+  const externalId = String(record.external_id || record.externalId || '').trim()
+  const fbp = String(record.fbp || '').trim()
+  const fbc = String(record.fbc || '').trim()
+  const fbLoginId = String(record.fb_login_id || record.fbLoginId || '').trim()
+  const clientIp = String(record.client_ip || record.ip || '').trim()
+  const clientUserAgent = String(record.client_user_agent || record.user_agent || '').trim()
 
   const userData: Record<string, string> = {}
   if (email) userData.em = hashValue(email)
   if (phone) userData.ph = hashValue(phone)
+  if (firstName) userData.fn = hashValue(firstName)
+  if (lastName) userData.ln = hashValue(lastName)
+  if (city) userData.ct = hashValue(city)
+  if (state) userData.st = hashValue(state)
+  if (zip) userData.zp = hashValue(zip)
+  if (country) userData.country = hashValue(country)
+  if (externalId) userData.external_id = hashValue(externalId)
+  if (fbp) userData.fbp = fbp
+  if (fbc) userData.fbc = fbc
+  if (fbLoginId) userData.fb_login_id = fbLoginId
+  if (clientIp) userData.client_ip_address = clientIp
+  if (clientUserAgent) userData.client_user_agent = clientUserAgent
 
   const payload = {
     data: [
@@ -171,8 +194,8 @@ async function sendMetaEvent(credentials: NonNullable<PixelWarmupCredentials['me
         action_source: 'website',
         user_data: userData,
         custom_data: {
-          first_name: record.first_name || '',
-          last_name: record.last_name || '',
+          first_name: firstName || undefined,
+          last_name: lastName || undefined,
         },
       },
     ],
@@ -180,7 +203,7 @@ async function sendMetaEvent(credentials: NonNullable<PixelWarmupCredentials['me
 
   const endpoint = `https://graph.facebook.com/v18.0/${encodeURIComponent(credentials.pixelId)}/events?access_token=${encodeURIComponent(
     credentials.accessToken || ''
-  )}&test_event_code=${encodeURIComponent(credentials.testEventCode)}`
+  )}`
 
   const res = await fetch(endpoint, {
     method: 'POST',
@@ -330,6 +353,23 @@ export function startWarmupJob(
     failed: job.failed,
     job,
   }
+}
+
+export function cancelWarmupJob(jobId: string) {
+  const job = jobs.get(jobId)
+  if (!job) return false
+
+  for (let i = tasks.length - 1; i >= 0; i -= 1) {
+    if (tasks[i].jobId === jobId) {
+      tasks.splice(i, 1)
+    }
+  }
+
+  job.queued = 0
+  job.status = 'completed'
+  job.updatedAt = nowIso()
+  void persistStore()
+  return true
 }
 
 export function getWarmupJob(jobId: string) {

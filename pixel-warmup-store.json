@@ -25,7 +25,466 @@
       "createdAt": "2026-04-01T22:22:09.838Z",
       "updatedAt": "2026-04-01T22:24:07.399Z",
       "errors": []
+    },
+    {
+      "jobId": "8b6759b5-36f7-4286-9662-7784f81d762b",
+      "eventType": "Lead",
+      "rows": 20,
+      "queued": 0,
+      "sent": 20,
+      "failed": 0,
+      "skipped": 0,
+      "status": "completed",
+      "createdAt": "2026-04-01T22:45:41.701Z",
+      "updatedAt": "2026-04-01T22:47:42.367Z",
+      "errors": []
+    },
+    {
+      "jobId": "4d97a7b8-8f53-4555-a606-c5d21d4b5e62",
+      "eventType": "Lead",
+      "rows": 20,
+      "queued": 0,
+      "sent": 20,
+      "failed": 0,
+      "skipped": 0,
+      "status": "completed",
+      "createdAt": "2026-04-01T22:50:46.865Z",
+      "updatedAt": "2026-04-01T22:52:48.356Z",
+      "errors": []
+    },
+    {
+      "jobId": "8ca53d70-0e0b-4184-88b8-cf16374f7f24",
+      "eventType": "Lead",
+      "rows": 20,
+      "queued": 0,
+      "sent": 20,
+      "failed": 0,
+      "skipped": 0,
+      "status": "completed",
+      "createdAt": "2026-04-01T22:51:22.618Z",
+      "updatedAt": "2026-04-01T22:53:24.650Z",
+      "errors": []
+    },
+    {
+      "jobId": "b6f4fb87-391f-44e8-84e9-86172b3d2bee",
+      "eventType": "Lead",
+      "rows": 20,
+      "queued": 0,
+      "sent": 20,
+      "failed": 0,
+      "skipped": 0,
+      "status": "completed",
+      "createdAt": "2026-04-01T23:10:46.108Z",
+      "updatedAt": "2026-04-01T23:12:34.618Z",
+      "errors": []
+    },
+    {
+      "jobId": "4b3f033c-0a5b-4f02-86d4-33d15405f986",
+      "eventType": "Lead",
+      "rows": 20,
+      "queued": 0,
+      "sent": 20,
+      "failed": 0,
+      "skipped": 0,
+      "status": "completed",
+      "createdAt": "2026-04-01T23:17:19.134Z",
+      "updatedAt": "2026-04-01T23:19:19.674Z",
+      "errors": []
+    },
+    {
+      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
+      "eventType": "Purchase",
+      "rows": 20,
+      "queued": 20,
+      "sent": 0,
+      "failed": 0,
+      "skipped": 0,
+      "status": "running",
+      "createdAt": "2026-04-01T23:20:10.794Z",
+      "updatedAt": "2026-04-01T23:20:10.794Z",
+      "errors": []
     }
   ],
-  "tasks": []
+  "tasks": [
+    {
+      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
+      "rowIndex": 2,
+      "eventType": "Purchase",
+      "record": {
+        "email": "james.carter@gmail.com",
+        "phone": "+13125550192",
+        "first_name": "James",
+        "last_name": "Carter"
+      },
+      "credentials": {
+        "meta": {
+          "pixelId": "1567554294333336",
+          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
+        }
+      },
+      "attempts": 0,
+      "nextRun": 1775085671651
+    },
+    {
+      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
+      "rowIndex": 3,
+      "eventType": "Purchase",
+      "record": {
+        "email": "sofia.reyes@yahoo.com",
+        "phone": "+14155550347",
+        "first_name": "Sofia",
+        "last_name": "Reyes"
+      },
+      "credentials": {
+        "meta": {
+          "pixelId": "1567554294333336",
+          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
+        }
+      },
+      "attempts": 0,
+      "nextRun": 1775085684778
+    },
+    {
+      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
+      "rowIndex": 4,
+      "eventType": "Purchase",
+      "record": {
+        "email": "michael.nguyen@outlook.com",
+        "phone": "+12135550481",
+        "first_name": "Michael",
+        "last_name": "Nguyen"
+      },
+      "credentials": {
+        "meta": {
+          "pixelId": "1567554294333336",
+          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
+        }
+      },
+      "attempts": 0,
+      "nextRun": 1775085723397
+    },
+    {
+      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
+      "rowIndex": 5,
+      "eventType": "Purchase",
+      "record": {
+        "email": "emily.johnson@gmail.com",
+        "phone": "+16465550723",
+        "first_name": "Emily",
+        "last_name": "Johnson"
+      },
+      "credentials": {
+        "meta": {
+          "pixelId": "1567554294333336",
+          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
+        }
+      },
+      "attempts": 0,
+      "nextRun": 1775085717023
+    },
+    {
+      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
+      "rowIndex": 6,
+      "eventType": "Purchase",
+      "record": {
+        "email": "daniel.smith@hotmail.com",
+        "phone": "+15125550856",
+        "first_name": "Daniel",
+        "last_name": "Smith"
+      },
+      "credentials": {
+        "meta": {
+          "pixelId": "1567554294333336",
+          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
+        }
+      },
+      "attempts": 0,
+      "nextRun": 1775085698962
+    },
+    {
+      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
+      "rowIndex": 7,
+      "eventType": "Purchase",
+      "record": {
+        "email": "olivia.brown@gmail.com",
+        "phone": "+17025550134",
+        "first_name": "Olivia",
+        "last_name": "Brown"
+      },
+      "credentials": {
+        "meta": {
+          "pixelId": "1567554294333336",
+          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
+        }
+      },
+      "attempts": 0,
+      "nextRun": 1775085702040
+    },
+    {
+      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
+      "rowIndex": 8,
+      "eventType": "Purchase",
+      "record": {
+        "email": "ethan.davis@yahoo.com",
+        "phone": "+13055550267",
+        "first_name": "Ethan",
+        "last_name": "Davis"
+      },
+      "credentials": {
+        "meta": {
+          "pixelId": "1567554294333336",
+          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
+        }
+      },
+      "attempts": 0,
+      "nextRun": 1775085705275
+    },
+    {
+      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
+      "rowIndex": 9,
+      "eventType": "Purchase",
+      "record": {
+        "email": "isabella.wilson@outlook.com",
+        "phone": "+14045550398",
+        "first_name": "Isabella",
+        "last_name": "Wilson"
+      },
+      "credentials": {
+        "meta": {
+          "pixelId": "1567554294333336",
+          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
+        }
+      },
+      "attempts": 0,
+      "nextRun": 1775085711202
+    },
+    {
+      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
+      "rowIndex": 10,
+      "eventType": "Purchase",
+      "record": {
+        "email": "liam.martinez@gmail.com",
+        "phone": "+16175550512",
+        "first_name": "Liam",
+        "last_name": "Martinez"
+      },
+      "credentials": {
+        "meta": {
+          "pixelId": "1567554294333336",
+          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
+        }
+      },
+      "attempts": 0,
+      "nextRun": 1775085715223
+    },
+    {
+      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
+      "rowIndex": 11,
+      "eventType": "Purchase",
+      "record": {
+        "email": "ava.thompson@hotmail.com",
+        "phone": "+15035550645",
+        "first_name": "Ava",
+        "last_name": "Thompson"
+      },
+      "credentials": {
+        "meta": {
+          "pixelId": "1567554294333336",
+          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
+        }
+      },
+      "attempts": 0,
+      "nextRun": 1775085703690
+    },
+    {
+      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
+      "rowIndex": 12,
+      "eventType": "Purchase",
+      "record": {
+        "email": "noah.garcia@gmail.com",
+        "phone": "+12145550789",
+        "first_name": "Noah",
+        "last_name": "Garcia"
+      },
+      "credentials": {
+        "meta": {
+          "pixelId": "1567554294333336",
+          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
+        }
+      },
+      "attempts": 0,
+      "nextRun": 1775085680171
+    },
+    {
+      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
+      "rowIndex": 13,
+      "eventType": "Purchase",
+      "record": {
+        "email": "mia.anderson@yahoo.com",
+        "phone": "+16025550913",
+        "first_name": "Mia",
+        "last_name": "Anderson"
+      },
+      "credentials": {
+        "meta": {
+          "pixelId": "1567554294333336",
+          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
+        }
+      },
+      "attempts": 0,
+      "nextRun": 1775085725971
+    },
+    {
+      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
+      "rowIndex": 14,
+      "eventType": "Purchase",
+      "record": {
+        "email": "mason.taylor@outlook.com",
+        "phone": "+17185550037",
+        "first_name": "Mason",
+        "last_name": "Taylor"
+      },
+      "credentials": {
+        "meta": {
+          "pixelId": "1567554294333336",
+          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
+        }
+      },
+      "attempts": 0,
+      "nextRun": 1775085695737
+    },
+    {
+      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
+      "rowIndex": 15,
+      "eventType": "Purchase",
+      "record": {
+        "email": "charlotte.lee@gmail.com",
+        "phone": "+13015550174",
+        "first_name": "Charlotte",
+        "last_name": "Lee"
+      },
+      "credentials": {
+        "meta": {
+          "pixelId": "1567554294333336",
+          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
+        }
+      },
+      "attempts": 0,
+      "nextRun": 1775085705006
+    },
+    {
+      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
+      "rowIndex": 16,
+      "eventType": "Purchase",
+      "record": {
+        "email": "logan.harris@hotmail.com",
+        "phone": "+12065550258",
+        "first_name": "Logan",
+        "last_name": "Harris"
+      },
+      "credentials": {
+        "meta": {
+          "pixelId": "1567554294333336",
+          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
+        }
+      },
+      "attempts": 0,
+      "nextRun": 1775085701914
+    },
+    {
+      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
+      "rowIndex": 17,
+      "eventType": "Purchase",
+      "record": {
+        "email": "amelia.clark@gmail.com",
+        "phone": "+14805550391",
+        "first_name": "Amelia",
+        "last_name": "Clark"
+      },
+      "credentials": {
+        "meta": {
+          "pixelId": "1567554294333336",
+          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
+        }
+      },
+      "attempts": 0,
+      "nextRun": 1775085678718
+    },
+    {
+      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
+      "rowIndex": 18,
+      "eventType": "Purchase",
+      "record": {
+        "email": "elijah.lewis@yahoo.com",
+        "phone": "+16155550427",
+        "first_name": "Elijah",
+        "last_name": "Lewis"
+      },
+      "credentials": {
+        "meta": {
+          "pixelId": "1567554294333336",
+          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
+        }
+      },
+      "attempts": 0,
+      "nextRun": 1775085698029
+    },
+    {
+      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
+      "rowIndex": 19,
+      "eventType": "Purchase",
+      "record": {
+        "email": "harper.robinson@outlook.com",
+        "phone": "+18325550563",
+        "first_name": "Harper",
+        "last_name": "Robinson"
+      },
+      "credentials": {
+        "meta": {
+          "pixelId": "1567554294333336",
+          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
+        }
+      },
+      "attempts": 0,
+      "nextRun": 1775085672443
+    },
+    {
+      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
+      "rowIndex": 20,
+      "eventType": "Purchase",
+      "record": {
+        "email": "lucas.walker@gmail.com",
+        "phone": "+13365550682",
+        "first_name": "Lucas",
+        "last_name": "Walker"
+      },
+      "credentials": {
+        "meta": {
+          "pixelId": "1567554294333336",
+          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
+        }
+      },
+      "attempts": 0,
+      "nextRun": 1775085729439
+    },
+    {
+      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
+      "rowIndex": 21,
+      "eventType": "Purchase",
+      "record": {
+        "email": "evelyn.hall@hotmail.com",
+        "phone": "+14695550715",
+        "first_name": "Evelyn",
+        "last_name": "Hall"
+      },
+      "credentials": {
+        "meta": {
+          "pixelId": "1567554294333336",
+          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
+        }
+      },
+      "attempts": 0,
+      "nextRun": 1775085712804
+    }
+  ]
 }
