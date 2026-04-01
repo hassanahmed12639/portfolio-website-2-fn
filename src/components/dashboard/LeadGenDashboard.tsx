@@ -80,7 +80,7 @@ export default function LeadGenDashboard({ profile }: { profile: Record<string, 
             </h3>
             <p className="text-sm text-slate-500 dark:text-zinc-400">
               {isUnlimited
-                ? 'Unlimited'
+                ? `${eventsThisMonth.toLocaleString()} used`
                 : `${eventsThisMonth.toLocaleString()} / ${eventsLimit.toLocaleString()}`}
             </p>
           </div>

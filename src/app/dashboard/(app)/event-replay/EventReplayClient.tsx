@@ -35,8 +35,16 @@ const PLATFORM_LABEL: Record<string, string> = {
   tiktok: 'TikTok',
 }
 
+function parseTimestamp(iso: string): Date {
+  const raw = iso.trim().replace(' ', 'T')
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?$/.test(raw)) {
+    return new Date(`${raw}Z`)
+  }
+  return new Date(raw)
+}
+
 function formatDate(iso: string): string {
-  const d = new Date(iso)
+  const d = parseTimestamp(iso)
   return d.toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })
 }
 

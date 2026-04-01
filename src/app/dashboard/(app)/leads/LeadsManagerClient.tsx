@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState, useMemo } from 'react'
+import { formatLocalTimestamp, formatLocalTime } from '@/lib/utils'
 
 type Lead = {
   id: string
@@ -310,7 +311,7 @@ export default function LeadsManagerClient({ initialLeads }: { initialLeads: Lea
                     </td>
                     <td className="px-4 py-3 text-slate-600">
                       {lead.created_at
-                        ? new Date(lead.created_at).toLocaleString()
+                        ? formatLocalTimestamp(lead.created_at)
                         : '—'}
                     </td>
                   </tr>
@@ -473,7 +474,7 @@ export default function LeadsManagerClient({ initialLeads }: { initialLeads: Lea
                 ) : selectedLead.meta_feedback_sent ? (
                   <span className="text-xs text-green-600 font-medium">
                     Sent ✓ {selectedLead.meta_feedback_at
-                      ? new Date(selectedLead.meta_feedback_at).toLocaleTimeString()
+                      ? formatLocalTime(selectedLead.meta_feedback_at)
                       : ''}
                   </span>
                 ) : (

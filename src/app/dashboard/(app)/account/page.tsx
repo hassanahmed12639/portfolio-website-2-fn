@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
+import { formatLocalDate } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
 import AvatarPicker from '@/components/dashboard/AvatarPicker'
 
@@ -324,7 +325,7 @@ export default function AccountPage() {
             <span className="text-sm text-slate-500">Member Since</span>
             <span className="text-sm text-slate-700">
               {profile?.created_at
-                ? new Date(profile.created_at).toLocaleDateString('en-US', {
+                ? formatLocalDate(profile.created_at, {
                     month: 'long',
                     year: 'numeric',
                   })

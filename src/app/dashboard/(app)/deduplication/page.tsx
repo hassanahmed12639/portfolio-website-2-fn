@@ -120,7 +120,7 @@ export default function DeduplicationPage() {
                 (data?.recent_duplicates ?? []).map((row, i) => (
                   <tr key={i} className="border-b border-[var(--dash-border)]/80 hover:bg-[var(--dash-surface-hover)]/30">
                     <td className="px-4 py-3 text-[var(--dash-muted)]">
-                      {row.created_at ? new Date(row.created_at).toLocaleString() : '—'}
+                      {row.created_at ? formatLocalTimestamp(row.created_at) : '—'}
                     </td>
                     <td className="px-4 py-3 text-[var(--dash-text)]">{row.event_name ?? '—'}</td>
                     <td className="px-4 py-3 text-[var(--dash-muted)]">{row.value != null ? row.value : '—'}</td>

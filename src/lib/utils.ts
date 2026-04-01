@@ -66,3 +66,43 @@ export const CURRENCY_OPTIONS = [
   { code: 'MXN', label: 'Mexican Peso (MXN)' },
   { code: 'BRL', label: 'Brazilian Real (BRL)' },
 ] as const
+
+export function parseTimestamp(value: string | number | null | undefined): Date {
+  if (value == null || value === '') {
+    return new Date(NaN)
+  }
+
+  const raw = String(value).trim().replace(' ', 'T')
+  const isPlainUtc = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?$/.test(raw)
+  if (isPlainUtc) {
+    return new Date(`${raw}Z`)
+  }
+  return new Date(raw)
+}
+
+export function formatLocalTimestamp(
+  value: string | number | null | undefined,
+  options?: Intl.DateTimeFormatOptions
+): string {
+  const dt = parseTimestamp(value)
+  if (Number.isNaN(dt.getTime())) return String(value ?? '')
+  return dt.toLocaleString(undefined, options)
+}
+
+export function formatLocalDate(
+  value: string | number | null | undefined,
+  options?: Intl.DateTimeFormatOptions
+): string {
+  const dt = parseTimestamp(value)
+  if (Number.isNaN(dt.getTime())) return String(value ?? '')
+  return dt.toLocaleDateString(undefined, options)
+}
+
+export function formatLocalTime(
+  value: string | number | null | undefined,
+  options?: Intl.DateTimeFormatOptions
+): string {
+  const dt = parseTimestamp(value)
+  if (Number.isNaN(dt.getTime())) return String(value ?? '')
+  return dt.toLocaleTimeString(undefined, options)
+}

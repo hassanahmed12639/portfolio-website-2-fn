@@ -10,6 +10,7 @@ import {
   YAxis,
 } from 'recharts'
 import { useCallback, useEffect, useState } from 'react'
+import { formatLocalTimestamp } from '@/lib/utils'
 
 const TABS = [
   { id: 'overview', label: 'Truth Score Overview' },
@@ -252,7 +253,7 @@ export default function AttributionClient() {
                           >
                             <td className="px-4 py-3 text-[var(--dash-text)]">{row.event_name}</td>
                             <td className="px-4 py-3 text-[var(--dash-muted)]">
-                              {new Date(row.created_at).toLocaleString()}
+                              {formatLocalTimestamp(row.created_at)}
                             </td>
                             <td className="px-4 py-3 text-[var(--dash-muted)]">{row.value ?? '—'}</td>
                             <td className="px-4 py-3 text-[var(--dash-muted)]">{row.meta_score}</td>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
+import { formatLocalTime } from '@/lib/utils'
 import { validatePayload, type ValidationResult } from '@/lib/payload-validator'
 import { useDashboardType } from '@/contexts/DashboardContext'
 import { getMetaCookies } from '@/lib/meta-pixel'
@@ -850,7 +851,7 @@ export default function PlaygroundPage() {
                           <div>
                             <span className="text-[var(--dash-text)] font-medium">{item.event_name}</span>
                             <span className="text-[var(--dash-muted)] text-xs ml-2">
-                              {new Date(item.time).toLocaleTimeString()}
+                              {formatLocalTime(item.time)}
                             </span>
                             <span
                               className={`ml-2 text-xs ${

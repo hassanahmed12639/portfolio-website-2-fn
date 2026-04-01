@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react'
 import type { AlertRule, AlertLog } from '@/lib/email-alerts'
+import { formatLocalTimestamp } from '@/lib/utils'
 import { Bell, ChevronDown } from 'lucide-react'
 
 const ALERT_CONDITIONS = [
@@ -600,7 +601,7 @@ export default function AlertsPage() {
                       Notify: {rule.notifyEmail} | Cooldown: {rule.cooldownMinutes} min
                     </p>
                     <p className="text-xs text-[var(--dash-muted)] mt-1">
-                      Last triggered: {rule.lastTriggeredAt ? new Date(rule.lastTriggeredAt).toLocaleString() : 'Never'}
+                      Last triggered: {rule.lastTriggeredAt ? formatLocalTimestamp(rule.lastTriggeredAt) : 'Never'}
                       {badge.label !== 'Never' && (
                         <span className={`ml-2 px-2 py-0.5 rounded text-xs ${badge.className}`}>{badge.label}</span>
                       )}
@@ -643,7 +644,7 @@ export default function AlertsPage() {
                 {[...logs].reverse().map((log) => (
                   <tr key={log.id} className="hover:bg-[var(--dash-surface-hover)]/30">
                     <td className="px-4 py-3 text-[var(--dash-muted)]">
-                      {new Date(log.triggeredAt).toLocaleString()}
+                      {formatLocalTimestamp(log.triggeredAt)}
                     </td>
                     <td className="px-4 py-3 text-[var(--dash-text)]">{log.ruleName}</td>
                     <td className="px-4 py-3 text-[var(--dash-muted)]">{log.condition}</td>

@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic'
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { formatLocalDate } from '@/lib/utils'
 import { UpgradeModal } from '@/components/UpgradeModal'
 import { usePlan } from '@/hooks/usePlan'
 
@@ -219,7 +220,7 @@ export default function ConnectorsPage() {
                       <p className="font-medium text-slate-900 text-sm">{platform?.name}</p>
                       <p className="text-xs text-slate-500">{conn.account_name || conn.account_id}</p>
                       {conn.last_synced_at && (
-                        <p className="text-xs text-slate-400">Synced {new Date(conn.last_synced_at).toLocaleDateString()}</p>
+                        <p className="text-xs text-slate-400">Synced {formatLocalDate(conn.last_synced_at)}</p>
                       )}
                     </div>
                   </div>

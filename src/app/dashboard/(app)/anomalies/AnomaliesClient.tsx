@@ -10,6 +10,7 @@ import {
   YAxis,
 } from 'recharts'
 import { useCallback, useEffect, useState } from 'react'
+import { formatLocalTimestamp } from '@/lib/utils'
 
 type AnomalyType =
   | 'event_drop'
@@ -322,7 +323,7 @@ export default function AnomaliesClient() {
                     </span>
                     <span className="text-[var(--dash-muted)] text-sm flex-1 min-w-0">{a.description}</span>
                     <span className="text-[var(--dash-muted)] text-xs shrink-0">
-                      {new Date(a.timestamp).toLocaleString()}
+                      {formatLocalTimestamp(a.timestamp)}
                     </span>
                     <button
                       type="button"
@@ -455,7 +456,7 @@ export default function AnomaliesClient() {
                         )}
                         <span className="font-medium text-[var(--dash-text)]">{row.event_name}</span>
                         <span className="text-[var(--dash-muted)] text-sm">
-                          {new Date(row.created_at).toLocaleString()}
+                          {formatLocalTimestamp(row.created_at)}
                         </span>
                         <span className="text-[var(--dash-muted)] text-sm">Score: {score}</span>
                       </div>
