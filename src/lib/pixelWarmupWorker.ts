@@ -9,7 +9,6 @@ export type PixelWarmupCredentials = {
   }
   meta?: {
     pixelId: string
-    testEventCode?: string
     accessToken?: string
   }
 }
@@ -163,11 +162,10 @@ async function sendMetaEvent(credentials: NonNullable<PixelWarmupCredentials['me
   const zip = String(record.zip || '').trim()
   const country = String(record.country || '').trim()
   const externalId = String(record.external_id || record.externalId || '').trim()
-  const fbp = String(record.fbp || '').trim()
-  const fbc = String(record.fbc || '').trim()
   const fbLoginId = String(record.fb_login_id || record.fbLoginId || '').trim()
-  const clientIp = String(record.client_ip || record.ip || '').trim()
-  const clientUserAgent = String(record.client_user_agent || record.user_agent || '').trim()
+  const currency = String(record.currency || record.purchase_currency || '').trim().toUpperCase()
+  const rawValue = String(record.value || record.purchase_value || '').trim()
+  const value = rawValue ? Number(rawValue) : undefined
 
   const userData: Record<string, string> = {}
   if (email) userData.em = hashValue(email)
@@ -179,11 +177,15 @@ async function sendMetaEvent(credentials: NonNullable<PixelWarmupCredentials['me
   if (zip) userData.zp = hashValue(zip)
   if (country) userData.country = hashValue(country)
   if (externalId) userData.external_id = hashValue(externalId)
-  if (fbp) userData.fbp = fbp
-  if (fbc) userData.fbc = fbc
   if (fbLoginId) userData.fb_login_id = fbLoginId
-  if (clientIp) userData.client_ip_address = clientIp
-  if (clientUserAgent) userData.client_user_agent = clientUserAgent
+
+  const customData: Record<string, unknown> = {}
+  if (firstName) customData.first_name = firstName
+  if (lastName) customData.last_name = lastName
+  if (currency) customData.currency = currency
+  else if (eventType.toLowerCase() === 'purchase') customData.currency = 'USD'
+  if (value !== undefined && !Number.isNaN(value)) customData.value = value
+  else if (eventType.toLowerCase() === 'purchase') customData.value = 1.0
 
   const payload = {
     data: [
@@ -193,10 +195,7 @@ async function sendMetaEvent(credentials: NonNullable<PixelWarmupCredentials['me
         event_source_url: 'https://track.itshassanahmed.com/dashboard/pixel-warmup',
         action_source: 'website',
         user_data: userData,
-        custom_data: {
-          first_name: firstName || undefined,
-          last_name: lastName || undefined,
-        },
+        custom_data: customData,
       },
     ],
   }

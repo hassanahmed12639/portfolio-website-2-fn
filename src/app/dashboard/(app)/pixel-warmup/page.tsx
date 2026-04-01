@@ -360,7 +360,19 @@ export default function DashboardPixelWarmupPage() {
   }
 
   const downloadTemplateCsv = () => {
-    const headers = ['email', 'phone', 'first_name', 'last_name']
+    const headers = [
+      'email',
+      'phone',
+      'first_name',
+      'last_name',
+      'city',
+      'state',
+      'zip',
+      'country',
+      'external_id',
+      'currency',
+      'value',
+    ]
 
     const sampleValues = headers.map((header) => {
       switch (header) {
@@ -372,6 +384,20 @@ export default function DashboardPixelWarmupPage() {
           return 'Jane'
         case 'last_name':
           return 'Doe'
+        case 'city':
+          return 'Austin'
+        case 'state':
+          return 'TX'
+        case 'zip':
+          return '78701'
+        case 'country':
+          return 'US'
+        case 'external_id':
+          return '12345'
+        case 'currency':
+          return 'USD'
+        case 'value':
+          return '1.00'
         default:
           return ''
       }
@@ -677,6 +703,7 @@ export default function DashboardPixelWarmupPage() {
             <div>
               <h2 className="text-xl font-semibold text-[var(--dash-text)] mb-3">Instructions</h2>
               <p className="text-sm text-[var(--dash-muted)]">Upload a CSV file with the exact required columns for the selected event type. Then click start and the page will send each row with a random 1–2 minute delay.</p>
+              <p className="text-sm text-[var(--dash-muted)]">Required: email, phone, first_name, last_name. Optional fields for better Meta match rate: city, state, zip, country, external_id. Purchase events should also include currency and value.</p>
             </div>
 
             <div>

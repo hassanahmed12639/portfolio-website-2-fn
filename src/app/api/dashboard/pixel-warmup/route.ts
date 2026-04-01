@@ -120,15 +120,37 @@ function buildGa4Payload(eventType: string, record: Record<string, string>) {
 function buildMetaPayload(eventType: string, record: Record<string, string>) {
   const email = sanitizeEmail(record.email || '')
   const phone = sanitizePhone(record.phone || '')
+  const firstName = String(record.first_name || '').trim()
+  const lastName = String(record.last_name || '').trim()
+  const city = String(record.city || '').trim()
+  const state = String(record.state || '').trim()
+  const zip = String(record.zip || '').trim()
+  const country = String(record.country || '').trim()
+  const externalId = String(record.external_id || record.externalId || '').trim()
+  const fbLoginId = String(record.fb_login_id || record.fbLoginId || '').trim()
+  const currency = String(record.currency || record.purchase_currency || '').trim().toUpperCase()
+  const rawValue = String(record.value || record.purchase_value || '').trim()
+  const value = rawValue ? Number(rawValue) : undefined
 
   const userData: Record<string, string> = {}
   if (email) userData.em = hashValue(email)
   if (phone) userData.ph = hashValue(phone)
+  if (firstName) userData.fn = hashValue(firstName)
+  if (lastName) userData.ln = hashValue(lastName)
+  if (city) userData.ct = hashValue(city)
+  if (state) userData.st = hashValue(state)
+  if (zip) userData.zp = hashValue(zip)
+  if (country) userData.country = hashValue(country)
+  if (externalId) userData.external_id = hashValue(externalId)
+  if (fbLoginId) userData.fb_login_id = fbLoginId
 
-  const customData: Record<string, unknown> = {
-    first_name: record.first_name || '',
-    last_name: record.last_name || '',
-  }
+  const customData: Record<string, unknown> = {}
+  if (firstName) customData.first_name = firstName
+  if (lastName) customData.last_name = lastName
+  if (currency) customData.currency = currency
+  else if (eventType.toLowerCase() === 'purchase') customData.currency = 'USD'
+  if (value !== undefined && !Number.isNaN(value)) customData.value = value
+  else if (eventType.toLowerCase() === 'purchase') customData.value = 1.0
 
   return {
     data: [
@@ -162,6 +184,13 @@ async function sendGa4Event(credentials: NonNullable<Credentials['ga4']>, eventT
 }
 
 async function sendMetaEvent(credentials: NonNullable<Credentials['meta']>, eventType: string, record: Record<string, string>) {
+  // Warmup events must be sent as real Meta CAPI conversions.
+  // Do not include any test_event_code or testEventCode in the payload.
+  const unsafeMeta = credentials as Record<string, unknown>
+  if (unsafeMeta.testEventCode || unsafeMeta.test_event_code) {
+    console.warn('[pixel-warmup] Ignoring Meta test event code in warmup request')
+  }
+
   const endpoint = `https://graph.facebook.com/v18.0/${encodeURIComponent(credentials.pixelId)}/events?access_token=${encodeURIComponent(
     credentials.accessToken || ''
   )}`
