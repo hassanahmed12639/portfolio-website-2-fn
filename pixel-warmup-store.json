@@ -95,396 +95,349 @@
       "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
       "eventType": "Purchase",
       "rows": 20,
-      "queued": 20,
+      "queued": 0,
       "sent": 0,
+      "failed": 20,
+      "skipped": 0,
+      "status": "completed",
+      "createdAt": "2026-04-01T23:20:10.794Z",
+      "updatedAt": "2026-04-01T23:27:17.878Z",
+      "errors": [
+        {
+          "rowIndex": 2,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AK437cFukhAIrQfxgII67Kt\"}}"
+        },
+        {
+          "rowIndex": 19,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"A_0fE1Pu296JUgbpBULmMSH\"}}"
+        },
+        {
+          "rowIndex": 17,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"A2MVObm0NiGtY7ugQrDwdM-\"}}"
+        },
+        {
+          "rowIndex": 12,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AXvWu2JSaQrfpm4VFNwrDKS\"}}"
+        },
+        {
+          "rowIndex": 3,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AMncS5GgDJikXSciJe_KE86\"}}"
+        },
+        {
+          "rowIndex": 14,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"A7D9GYmcbMhwl2ikPewSlZk\"}}"
+        },
+        {
+          "rowIndex": 6,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AkBEtP9Z7ym_Mb1URkLa2ke\"}}"
+        },
+        {
+          "rowIndex": 18,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"A4TVVsmRkoMEFC9Tmo5E8ka\"}}"
+        },
+        {
+          "rowIndex": 7,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"A4j7OM8smBPS1zpogKbncBR\"}}"
+        },
+        {
+          "rowIndex": 11,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AOeuseVCkCjNJE-gzthhPxc\"}}"
+        },
+        {
+          "rowIndex": 16,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AKR_A1AMsWI_ZDqf-AwPz80\"}}"
+        },
+        {
+          "rowIndex": 8,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AWEwqmKnr1x2vWCeTQdw2nY\"}}"
+        },
+        {
+          "rowIndex": 15,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AHRWrASEu6JkhN8np14A1Ap\"}}"
+        },
+        {
+          "rowIndex": 9,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AHjjszqQRd8ku3vdevTrbuM\"}}"
+        },
+        {
+          "rowIndex": 10,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"A6YmJgZkJiuNb5Uxgdd4Pvv\"}}"
+        },
+        {
+          "rowIndex": 21,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"ANL2sUnJccOSpt-rO9su9Y7\"}}"
+        },
+        {
+          "rowIndex": 5,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AbaxzJvY-RN5Iysl7oUH3WT\"}}"
+        },
+        {
+          "rowIndex": 4,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AOwRCvyKqMqxalrM89C_7pN\"}}"
+        },
+        {
+          "rowIndex": 13,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AehiM2AMgXkJy0JH4rP8Alo\"}}"
+        },
+        {
+          "rowIndex": 20,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AbKC83QFPy9WlbPai0qhOu3\"}}"
+        },
+        {
+          "rowIndex": 19,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"A3EzFzGGKyTb2TXnfpffQIy\"}}"
+        },
+        {
+          "rowIndex": 17,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AaERqrEjmwyiQBv7eS1F2_W\"}}"
+        },
+        {
+          "rowIndex": 2,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AWYCqpcbv2EmsvR-Wj9s1Jw\"}}"
+        },
+        {
+          "rowIndex": 3,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AK5Wzyd2rBTIC_Ci7oehARw\"}}"
+        },
+        {
+          "rowIndex": 5,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AQVmWU0n_MyOqxRyQjEGOLR\"}}"
+        },
+        {
+          "rowIndex": 11,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"Ai-_M-a_XGrD0X2AmNRbJHL\"}}"
+        },
+        {
+          "rowIndex": 12,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"Ac6FBiWi3ohEf7doAHmo_Dv\"}}"
+        },
+        {
+          "rowIndex": 15,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AlsZCoO6WWP61gDn_xIWmxo\"}}"
+        },
+        {
+          "rowIndex": 13,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"Aj3vVaqTiIPMcEPsYen6Qug\"}}"
+        },
+        {
+          "rowIndex": 20,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AGBOp-y6m5yVqj6B5LpDNAl\"}}"
+        },
+        {
+          "rowIndex": 16,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AfkU44WaQK1zpDt2ZF6K38H\"}}"
+        },
+        {
+          "rowIndex": 8,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"ATo6Dklnkp4m9vnnIFt4V7p\"}}"
+        },
+        {
+          "rowIndex": 18,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"ASczpPwe3I4LFZXWGSDf4B2\"}}"
+        },
+        {
+          "rowIndex": 10,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"ACgDBDQi3JxLDtVj8WZlERD\"}}"
+        },
+        {
+          "rowIndex": 19,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"Av3ljwTBGKsSt-e2_MhYE_g\"}}"
+        },
+        {
+          "rowIndex": 4,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"A_oooMTgL1KolrO9sqZtb76\"}}"
+        },
+        {
+          "rowIndex": 14,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AkekvBuDu4mDpo-JR59onnm\"}}"
+        },
+        {
+          "rowIndex": 21,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"ArM-BEjsijQbeo6yJXsbIWA\"}}"
+        },
+        {
+          "rowIndex": 6,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AilQIA9INOLNAB9q5JSLJN6\"}}"
+        },
+        {
+          "rowIndex": 7,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AedTnQTNWf7z5Mbc6z0HCT2\"}}"
+        },
+        {
+          "rowIndex": 9,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AeLgLqzgd8p0PmvqmPgf1Pf\"}}"
+        },
+        {
+          "rowIndex": 15,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AJxIhpQEg4fbZNk4hWmrQPo\"}}"
+        },
+        {
+          "rowIndex": 11,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AqWQYWmh-y1M2EcgtuEtD9F\"}}"
+        },
+        {
+          "rowIndex": 16,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AgIKViffMxapP_7Wk3W0pdW\"}}"
+        },
+        {
+          "rowIndex": 17,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"ApRlOkP7kySkJVXvhv-Mg6H\"}}"
+        },
+        {
+          "rowIndex": 3,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AS_IrRynLb5s6T_CzNGCy3M\"}}"
+        },
+        {
+          "rowIndex": 18,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AraNp-nEYaOeA5oa_MgDXhL\"}}"
+        },
+        {
+          "rowIndex": 4,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"Aia8SzAcbd70dl96K9WM1ui\"}}"
+        },
+        {
+          "rowIndex": 21,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AVWyI7tRkm5PgSOqn3OvHoc\"}}"
+        },
+        {
+          "rowIndex": 13,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AJ4TgWJrExvL1ZXd_CvaHFo\"}}"
+        },
+        {
+          "rowIndex": 14,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"Am6Av-loyMdXCmE50y2y_eR\"}}"
+        },
+        {
+          "rowIndex": 2,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"Adnf9jZRlMaxsilP-ZSzIhG\"}}"
+        },
+        {
+          "rowIndex": 10,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AWftY6HQ6wRLVN3PaCSD-fZ\"}}"
+        },
+        {
+          "rowIndex": 5,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AH6dilyZCWjpktlf4tihqow\"}}"
+        },
+        {
+          "rowIndex": 8,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"Ag6SerBQwow2M8uj4LYodmz\"}}"
+        },
+        {
+          "rowIndex": 12,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AjhMgDg9NioBLn7HGigWBpd\"}}"
+        },
+        {
+          "rowIndex": 19,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"Ajhxau5CyJifb04cA1mXcaq\"}}"
+        },
+        {
+          "rowIndex": 20,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"A4G797GmBaADCcEKorHCQVj\"}}"
+        },
+        {
+          "rowIndex": 7,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AzGXdcOvf3rR0J_fv0NlZUJ\"}}"
+        },
+        {
+          "rowIndex": 6,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"A_ETPaabuW3eqMhh2qtdYtP\"}}"
+        },
+        {
+          "rowIndex": 11,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"APD_mSG76ldpavnBtqe0exz\"}}"
+        },
+        {
+          "rowIndex": 9,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"Al64MQTYGgySKKswgrGxFjw\"}}"
+        },
+        {
+          "rowIndex": 15,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AXo_Ko459v35E1nigM7ttJE\"}}"
+        },
+        {
+          "rowIndex": 16,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"A6Da8p8OR5WxStXzENS7Ki-\"}}"
+        },
+        {
+          "rowIndex": 4,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"A0BEXVMeDdPT6Xy1xcFBSb5\"}}"
+        },
+        {
+          "rowIndex": 14,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AbCGMiuuV1bsgLLXT3dpCD-\"}}"
+        },
+        {
+          "rowIndex": 18,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"An4dyVfzNNQd9ZMnLN-x9yy\"}}"
+        },
+        {
+          "rowIndex": 12,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AUWpVHM8JW3r6DRyinc6ZuM\"}}"
+        },
+        {
+          "rowIndex": 10,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"A6I55jaGLn2a2UHNnbtMjPa\"}}"
+        },
+        {
+          "rowIndex": 21,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AACFzzlYP4m5-iHK2cA6tOv\"}}"
+        },
+        {
+          "rowIndex": 3,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"ACFxYoK9CEvpqnglwi6-lD5\"}}"
+        },
+        {
+          "rowIndex": 5,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AB4o0aJA920q1dU9TK9J7TO\"}}"
+        },
+        {
+          "rowIndex": 17,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AhO_W0S3EeKYGaIAQ8C5X5K\"}}"
+        },
+        {
+          "rowIndex": 8,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AxA9SBaa8_K-cOopz-fnuNt\"}}"
+        },
+        {
+          "rowIndex": 13,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AcjPkCrjnk6BjYG9-YtdGwk\"}}"
+        },
+        {
+          "rowIndex": 2,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"A_UKphuaMZPqO1HFtjrYAPT\"}}"
+        },
+        {
+          "rowIndex": 20,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"AXYCpQI4Kwe52X65cY_lRlm\"}}"
+        },
+        {
+          "rowIndex": 7,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"ANZc1F4obFbgXzY837sdK-k\"}}"
+        },
+        {
+          "rowIndex": 9,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"A20-HE2y4ht0gPEVK5q0xw7\"}}"
+        },
+        {
+          "rowIndex": 6,
+          "message": "Meta CAPI error 400: {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":2804010,\"is_transient\":false,\"error_user_title\":\"Missing currency for purchase event\",\"error_user_msg\":\"Your purchase event doesn't include a currency parameter. Enter a currency parameter. For example: USD\",\"fbtrace_id\":\"A59yvA_dlu-tjffNmVlGMVJ\"}}"
+        }
+      ]
+    },
+    {
+      "jobId": "2e02890e-0fd4-4327-b47e-9b19d49aa1f6",
+      "eventType": "Lead",
+      "rows": 20,
+      "queued": 0,
+      "sent": 20,
       "failed": 0,
       "skipped": 0,
-      "status": "running",
-      "createdAt": "2026-04-01T23:20:10.794Z",
-      "updatedAt": "2026-04-01T23:20:10.794Z",
+      "status": "completed",
+      "createdAt": "2026-04-01T23:27:57.800Z",
+      "updatedAt": "2026-04-01T23:29:54.072Z",
       "errors": []
     }
   ],
-  "tasks": [
-    {
-      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
-      "rowIndex": 2,
-      "eventType": "Purchase",
-      "record": {
-        "email": "james.carter@gmail.com",
-        "phone": "+13125550192",
-        "first_name": "James",
-        "last_name": "Carter"
-      },
-      "credentials": {
-        "meta": {
-          "pixelId": "1567554294333336",
-          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
-        }
-      },
-      "attempts": 0,
-      "nextRun": 1775085671651
-    },
-    {
-      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
-      "rowIndex": 3,
-      "eventType": "Purchase",
-      "record": {
-        "email": "sofia.reyes@yahoo.com",
-        "phone": "+14155550347",
-        "first_name": "Sofia",
-        "last_name": "Reyes"
-      },
-      "credentials": {
-        "meta": {
-          "pixelId": "1567554294333336",
-          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
-        }
-      },
-      "attempts": 0,
-      "nextRun": 1775085684778
-    },
-    {
-      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
-      "rowIndex": 4,
-      "eventType": "Purchase",
-      "record": {
-        "email": "michael.nguyen@outlook.com",
-        "phone": "+12135550481",
-        "first_name": "Michael",
-        "last_name": "Nguyen"
-      },
-      "credentials": {
-        "meta": {
-          "pixelId": "1567554294333336",
-          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
-        }
-      },
-      "attempts": 0,
-      "nextRun": 1775085723397
-    },
-    {
-      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
-      "rowIndex": 5,
-      "eventType": "Purchase",
-      "record": {
-        "email": "emily.johnson@gmail.com",
-        "phone": "+16465550723",
-        "first_name": "Emily",
-        "last_name": "Johnson"
-      },
-      "credentials": {
-        "meta": {
-          "pixelId": "1567554294333336",
-          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
-        }
-      },
-      "attempts": 0,
-      "nextRun": 1775085717023
-    },
-    {
-      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
-      "rowIndex": 6,
-      "eventType": "Purchase",
-      "record": {
-        "email": "daniel.smith@hotmail.com",
-        "phone": "+15125550856",
-        "first_name": "Daniel",
-        "last_name": "Smith"
-      },
-      "credentials": {
-        "meta": {
-          "pixelId": "1567554294333336",
-          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
-        }
-      },
-      "attempts": 0,
-      "nextRun": 1775085698962
-    },
-    {
-      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
-      "rowIndex": 7,
-      "eventType": "Purchase",
-      "record": {
-        "email": "olivia.brown@gmail.com",
-        "phone": "+17025550134",
-        "first_name": "Olivia",
-        "last_name": "Brown"
-      },
-      "credentials": {
-        "meta": {
-          "pixelId": "1567554294333336",
-          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
-        }
-      },
-      "attempts": 0,
-      "nextRun": 1775085702040
-    },
-    {
-      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
-      "rowIndex": 8,
-      "eventType": "Purchase",
-      "record": {
-        "email": "ethan.davis@yahoo.com",
-        "phone": "+13055550267",
-        "first_name": "Ethan",
-        "last_name": "Davis"
-      },
-      "credentials": {
-        "meta": {
-          "pixelId": "1567554294333336",
-          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
-        }
-      },
-      "attempts": 0,
-      "nextRun": 1775085705275
-    },
-    {
-      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
-      "rowIndex": 9,
-      "eventType": "Purchase",
-      "record": {
-        "email": "isabella.wilson@outlook.com",
-        "phone": "+14045550398",
-        "first_name": "Isabella",
-        "last_name": "Wilson"
-      },
-      "credentials": {
-        "meta": {
-          "pixelId": "1567554294333336",
-          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
-        }
-      },
-      "attempts": 0,
-      "nextRun": 1775085711202
-    },
-    {
-      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
-      "rowIndex": 10,
-      "eventType": "Purchase",
-      "record": {
-        "email": "liam.martinez@gmail.com",
-        "phone": "+16175550512",
-        "first_name": "Liam",
-        "last_name": "Martinez"
-      },
-      "credentials": {
-        "meta": {
-          "pixelId": "1567554294333336",
-          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
-        }
-      },
-      "attempts": 0,
-      "nextRun": 1775085715223
-    },
-    {
-      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
-      "rowIndex": 11,
-      "eventType": "Purchase",
-      "record": {
-        "email": "ava.thompson@hotmail.com",
-        "phone": "+15035550645",
-        "first_name": "Ava",
-        "last_name": "Thompson"
-      },
-      "credentials": {
-        "meta": {
-          "pixelId": "1567554294333336",
-          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
-        }
-      },
-      "attempts": 0,
-      "nextRun": 1775085703690
-    },
-    {
-      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
-      "rowIndex": 12,
-      "eventType": "Purchase",
-      "record": {
-        "email": "noah.garcia@gmail.com",
-        "phone": "+12145550789",
-        "first_name": "Noah",
-        "last_name": "Garcia"
-      },
-      "credentials": {
-        "meta": {
-          "pixelId": "1567554294333336",
-          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
-        }
-      },
-      "attempts": 0,
-      "nextRun": 1775085680171
-    },
-    {
-      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
-      "rowIndex": 13,
-      "eventType": "Purchase",
-      "record": {
-        "email": "mia.anderson@yahoo.com",
-        "phone": "+16025550913",
-        "first_name": "Mia",
-        "last_name": "Anderson"
-      },
-      "credentials": {
-        "meta": {
-          "pixelId": "1567554294333336",
-          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
-        }
-      },
-      "attempts": 0,
-      "nextRun": 1775085725971
-    },
-    {
-      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
-      "rowIndex": 14,
-      "eventType": "Purchase",
-      "record": {
-        "email": "mason.taylor@outlook.com",
-        "phone": "+17185550037",
-        "first_name": "Mason",
-        "last_name": "Taylor"
-      },
-      "credentials": {
-        "meta": {
-          "pixelId": "1567554294333336",
-          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
-        }
-      },
-      "attempts": 0,
-      "nextRun": 1775085695737
-    },
-    {
-      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
-      "rowIndex": 15,
-      "eventType": "Purchase",
-      "record": {
-        "email": "charlotte.lee@gmail.com",
-        "phone": "+13015550174",
-        "first_name": "Charlotte",
-        "last_name": "Lee"
-      },
-      "credentials": {
-        "meta": {
-          "pixelId": "1567554294333336",
-          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
-        }
-      },
-      "attempts": 0,
-      "nextRun": 1775085705006
-    },
-    {
-      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
-      "rowIndex": 16,
-      "eventType": "Purchase",
-      "record": {
-        "email": "logan.harris@hotmail.com",
-        "phone": "+12065550258",
-        "first_name": "Logan",
-        "last_name": "Harris"
-      },
-      "credentials": {
-        "meta": {
-          "pixelId": "1567554294333336",
-          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
-        }
-      },
-      "attempts": 0,
-      "nextRun": 1775085701914
-    },
-    {
-      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
-      "rowIndex": 17,
-      "eventType": "Purchase",
-      "record": {
-        "email": "amelia.clark@gmail.com",
-        "phone": "+14805550391",
-        "first_name": "Amelia",
-        "last_name": "Clark"
-      },
-      "credentials": {
-        "meta": {
-          "pixelId": "1567554294333336",
-          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
-        }
-      },
-      "attempts": 0,
-      "nextRun": 1775085678718
-    },
-    {
-      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
-      "rowIndex": 18,
-      "eventType": "Purchase",
-      "record": {
-        "email": "elijah.lewis@yahoo.com",
-        "phone": "+16155550427",
-        "first_name": "Elijah",
-        "last_name": "Lewis"
-      },
-      "credentials": {
-        "meta": {
-          "pixelId": "1567554294333336",
-          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
-        }
-      },
-      "attempts": 0,
-      "nextRun": 1775085698029
-    },
-    {
-      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
-      "rowIndex": 19,
-      "eventType": "Purchase",
-      "record": {
-        "email": "harper.robinson@outlook.com",
-        "phone": "+18325550563",
-        "first_name": "Harper",
-        "last_name": "Robinson"
-      },
-      "credentials": {
-        "meta": {
-          "pixelId": "1567554294333336",
-          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
-        }
-      },
-      "attempts": 0,
-      "nextRun": 1775085672443
-    },
-    {
-      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
-      "rowIndex": 20,
-      "eventType": "Purchase",
-      "record": {
-        "email": "lucas.walker@gmail.com",
-        "phone": "+13365550682",
-        "first_name": "Lucas",
-        "last_name": "Walker"
-      },
-      "credentials": {
-        "meta": {
-          "pixelId": "1567554294333336",
-          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
-        }
-      },
-      "attempts": 0,
-      "nextRun": 1775085729439
-    },
-    {
-      "jobId": "956af7dd-20e1-481d-88a4-0c52e00f4289",
-      "rowIndex": 21,
-      "eventType": "Purchase",
-      "record": {
-        "email": "evelyn.hall@hotmail.com",
-        "phone": "+14695550715",
-        "first_name": "Evelyn",
-        "last_name": "Hall"
-      },
-      "credentials": {
-        "meta": {
-          "pixelId": "1567554294333336",
-          "accessToken": "EAACkhOCmspkBROQAdvQlwVAP99UYZC1fkpBDnLYzfAhcDxqjHxxhw6jZCZCPAE1AdSH7Cyi7Hn4NmoGUTOxFAZBKEq5Er2JbMDiob5IHsYRZAPksOJPAsbJ3IOCkOblK52YPtL9kKwRxcWZAWxn1Vna6ShlXbUgsh6Yx3tgNxfe2SdENtdZBwgMGmnZBxGRyWLHYEAZDZD"
-        }
-      },
-      "attempts": 0,
-      "nextRun": 1775085712804
-    }
-  ]
+  "tasks": []
 }
