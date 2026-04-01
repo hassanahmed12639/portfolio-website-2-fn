@@ -1,0 +1,31 @@
+{
+  "jobs": [
+    {
+      "jobId": "c6560079-2d92-4268-9cbd-5744f41ce02c",
+      "eventType": "Lead",
+      "rows": 20,
+      "queued": 0,
+      "sent": 20,
+      "failed": 0,
+      "skipped": 0,
+      "status": "completed",
+      "createdAt": "2026-04-01T22:17:54.282Z",
+      "updatedAt": "2026-04-01T22:19:54.817Z",
+      "errors": []
+    },
+    {
+      "jobId": "9b06e53e-0089-4922-a852-edb1eaabab9f",
+      "eventType": "Lead",
+      "rows": 20,
+      "queued": 0,
+      "sent": 20,
+      "failed": 0,
+      "skipped": 0,
+      "status": "completed",
+      "createdAt": "2026-04-01T22:22:09.838Z",
+      "updatedAt": "2026-04-01T22:24:07.399Z",
+      "errors": []
+    }
+  ],
+  "tasks": []
+}

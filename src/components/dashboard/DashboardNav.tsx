@@ -119,6 +119,7 @@ export default function DashboardNav({
       feature: 'raw_data',
     },
     { label: 'Pixels', href: '/dashboard/pixels', icon: Link2 },
+    { label: 'Pixel Warmup', href: '/dashboard/pixel-warmup', icon: Sparkles },
     { label: 'Webhooks', href: '/dashboard/leadgen/webhooks', icon: Webhook },
     { label: 'Playground', href: '/dashboard/playground', icon: PlaySquare },
     {
