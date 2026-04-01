@@ -61,6 +61,7 @@ export const CURRENCY_OPTIONS = [
   { code: 'AUD', label: 'Australian Dollar (AUD)' },
   { code: 'JPY', label: 'Japanese Yen (JPY)' },
   { code: 'INR', label: 'Indian Rupee (INR)' },
+  { code: 'PKR', label: 'Pakistani Rupee (PKR)' },
   { code: 'CHF', label: 'Swiss Franc (CHF)' },
   { code: 'MXN', label: 'Mexican Peso (MXN)' },
   { code: 'BRL', label: 'Brazilian Real (BRL)' },

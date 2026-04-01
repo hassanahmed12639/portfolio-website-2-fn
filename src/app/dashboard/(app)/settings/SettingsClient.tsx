@@ -28,6 +28,7 @@ export default function SettingsClient({
   const [saving, setSaving] = useState(false)
   const [currencySaving, setCurrencySaving] = useState(false)
   const [dashboardError, setDashboardError] = useState<string | null>(null)
+  const [currencyError, setCurrencyError] = useState<string | null>(null)
   const DASHBOARD_OPTIONS: { type: DashboardMode; label: string; desc: string }[] = [
     { type: 'ecommerce', label: 'E-Commerce', desc: 'Purchase tracking, revenue, ROAS' },
     { type: 'leadgen', label: 'Lead Generation', desc: 'Lead scoring, funnel, Meta feedback' },
@@ -67,16 +68,29 @@ export default function SettingsClient({
   }
 
   const handleCurrencyChange = async (code: string) => {
+    const previousCurrency = currentCurrency
+    setCurrencyError(null)
+    setCurrentCurrency(code)
     setCurrencySaving(true)
+
     try {
       const res = await fetch('/api/dashboard/profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ display_currency: code }),
       })
-      if (!res.ok) return
-      setCurrentCurrency(code)
+
+      if (!res.ok) {
+        setCurrentCurrency(previousCurrency)
+        const errBody = await res.json().catch(() => ({}))
+        setCurrencyError((errBody as { error?: string })?.error ?? 'Unable to save currency')
+        return
+      }
+
       router.refresh()
+    } catch (error) {
+      setCurrentCurrency(previousCurrency)
+      setCurrencyError(error instanceof Error ? error.message : 'Network error')
     } finally {
       setCurrencySaving(false)
     }
@@ -101,6 +115,7 @@ export default function SettingsClient({
           ))}
         </select>
         {currencySaving && <span className="ml-2 text-xs text-[var(--dash-muted)]">Saving…</span>}
+        {currencyError && <p className="mt-2 text-xs text-red-600">{currencyError}</p>}
       </div>
 
       <div
