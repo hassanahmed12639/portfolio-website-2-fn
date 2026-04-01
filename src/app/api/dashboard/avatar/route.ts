@@ -10,7 +10,7 @@ const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 
 export async function POST(req: NextRequest) {
   try {
-    const supabase = await createClient()
+    const supabase = await await createClient()
     const supabaseAdmin = createAdminClient()
     const {
       data: { user },
@@ -79,3 +79,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }
+

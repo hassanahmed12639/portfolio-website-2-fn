@@ -57,8 +57,8 @@ export default function SettingsClient({
         return
       }
       setCurrentDashboardType(type)
-      router.refresh()
-      router.push('/dashboard')
+      // Use a hard navigation to avoid intermittent stale RSC/prefetch state.
+      window.location.assign('/dashboard')
     } catch (e) {
       setDashboardError(e instanceof Error ? e.message : 'Network error')
     } finally {
@@ -84,25 +84,31 @@ export default function SettingsClient({
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-5">
-        <p className="font-semibold text-slate-900 mb-1">Display Currency</p>
-        <p className="text-sm text-slate-500 mb-4">Choose how revenue and monetary values are displayed across the dashboard</p>
+      <div
+        className="dash-card dash-card-gradient-top rounded-2xl border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-5"
+        style={{ background: 'var(--dash-card)' }}
+      >
+        <p className="font-semibold text-[var(--dash-text)] mb-1">Display Currency</p>
+        <p className="text-sm text-[var(--dash-muted)] mb-4">Choose how revenue and monetary values are displayed across the dashboard</p>
         <select
           value={currentCurrency}
           onChange={(e) => handleCurrencyChange(e.target.value)}
           disabled={currencySaving}
-          className="w-full max-w-xs rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-60"
+          className="w-full max-w-xs rounded-lg border border-[var(--dash-border)] px-3 py-2 text-sm font-medium text-[var(--dash-text)] bg-[var(--dash-bg)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)] focus:border-[var(--dash-primary)] disabled:opacity-60"
         >
           {CURRENCY_OPTIONS.map(({ code, label }) => (
             <option key={code} value={code}>{label}</option>
           ))}
         </select>
-        {currencySaving && <span className="ml-2 text-xs text-slate-500">Saving…</span>}
+        {currencySaving && <span className="ml-2 text-xs text-[var(--dash-muted)]">Saving…</span>}
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-5">
-        <p className="font-semibold text-slate-900 mb-1">Dashboard Mode</p>
-        <p className="text-sm text-slate-500 mb-4">Switch between E-Commerce and Lead Gen dashboard views</p>
+      <div
+        className="dash-card dash-card-gradient-top rounded-2xl border border-[var(--dash-border)] shadow-[var(--dash-shadow)] p-5"
+        style={{ background: 'var(--dash-card)' }}
+      >
+        <p className="font-semibold text-[var(--dash-text)] mb-1">Dashboard Mode</p>
+        <p className="text-sm text-[var(--dash-muted)] mb-4">Switch between E-Commerce and Lead Gen dashboard views</p>
         <div className="grid grid-cols-2 gap-3">
           {DASHBOARD_OPTIONS.map(option => (
             <button
@@ -112,14 +118,14 @@ export default function SettingsClient({
               disabled={saving}
               className={`border-2 rounded-xl p-4 cursor-pointer transition-all text-left disabled:opacity-60 ${
                 currentDashboardType === option.type
-                  ? 'border-blue-500 bg-blue-50'
-                  : 'border-slate-100 hover:border-blue-200'
+                  ? 'border-[var(--dash-primary)] bg-[var(--dash-primary-soft)]'
+                  : 'border-[var(--dash-border)] hover:border-[var(--dash-primary-soft-strong)]'
               }`}
             >
-              <p className="font-bold text-slate-900 text-sm">{option.label}</p>
-              <p className="text-xs text-slate-500 mt-1">{option.desc}</p>
+              <p className="font-bold text-[var(--dash-text)] text-sm">{option.label}</p>
+              <p className="text-xs text-[var(--dash-muted)] mt-1">{option.desc}</p>
               {currentDashboardType === option.type && (
-                <span className="text-xs text-blue-600 font-semibold mt-2 block">✓ Active</span>
+                <span className="text-xs text-[var(--dash-primary)] font-semibold mt-2 block">✓ Active</span>
               )}
             </button>
           ))}

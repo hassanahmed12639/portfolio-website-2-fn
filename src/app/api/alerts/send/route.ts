@@ -62,7 +62,7 @@ async function appendLog(supabase: Awaited<ReturnType<typeof createClient>>, use
 }
 
 export async function POST(request: NextRequest) {
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
@@ -120,3 +120,4 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: String(err) }, { status: 500 })
   }
 }
+

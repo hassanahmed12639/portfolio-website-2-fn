@@ -15,7 +15,7 @@ function checkAdminRateLimit(request: NextRequest): NextResponse | null {
 }
 
 async function verifyAdmin() {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { ok: false as const, status: 401 }
   const admin = createAdminClient()

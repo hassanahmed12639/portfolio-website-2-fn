@@ -15,7 +15,7 @@ function checkAdminRateLimit(request: NextRequest): NextResponse | null {
 }
 
 async function verifyAdmin() {
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { ok: false as const, status: 401 }
   const admin = createAdminClient()
@@ -84,3 +84,4 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
+

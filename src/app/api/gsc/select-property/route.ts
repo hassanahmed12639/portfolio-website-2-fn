@@ -6,7 +6,7 @@ import { normalizeGscSiteUrl } from '@/lib/gsc'
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const admin = createAdminClient()
   const {
     data: { user },
@@ -77,3 +77,4 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json({ success: true, site_url: siteUrl })
 }
+

@@ -13,7 +13,7 @@ export default async function DashboardLayout({
   children: React.ReactNode
 }) {
   noStore()
-  const supabase = createClient()
+  const supabase = await await createClient()
   const { data: { session } } = await supabase.auth.getSession()
 
   if (!session) {
@@ -39,3 +39,4 @@ export default async function DashboardLayout({
     </SessionProvider>
   )
 }
+

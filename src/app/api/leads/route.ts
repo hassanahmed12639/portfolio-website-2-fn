@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic'
 
 export async function PUT(req: NextRequest) {
   try {
-    const supabase = await createClient()
+    const supabase = await await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
@@ -42,7 +42,7 @@ export async function PUT(req: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await createClient()
+    const supabase = await await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -84,3 +84,4 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }
+

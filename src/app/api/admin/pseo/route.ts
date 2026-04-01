@@ -24,7 +24,7 @@ async function verifyAdmin(request: NextRequest) {
     return { ok: true as const, admin }
   }
 
-  const supabase = createClient()
+  const supabase = await await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { ok: false as const, status: 401 }
   const admin = createAdminClient()
@@ -139,3 +139,4 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }
+

@@ -62,7 +62,7 @@ function calculateTruthScore(event: EventRow): { score: number; breakdown: Recor
 }
 
 export async function GET() {
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -137,3 +137,4 @@ export async function GET() {
 
   return NextResponse.json({ conversions: scored })
 }
+

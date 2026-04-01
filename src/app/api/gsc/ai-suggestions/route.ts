@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -76,3 +76,4 @@ Context: ${body.context ?? ''}`
     return NextResponse.json({ error: 'AI returned invalid JSON', raw: String(content).slice(0, 500) }, { status: 502 })
   }
 }
+

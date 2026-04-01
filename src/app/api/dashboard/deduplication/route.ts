@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 export const dynamic = 'force-dynamic'
 
 export async function GET(req: NextRequest) {
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -78,4 +78,5 @@ export async function GET(req: NextRequest) {
     last_updated: new Date().toISOString(),
   })
 }
+
 

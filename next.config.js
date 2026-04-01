@@ -27,21 +27,17 @@ const nextConfig = {
       }
     ]
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   typescript: {
     ignoreBuildErrors: false,
   },
-  experimental: {
-    serverComponentsExternalPackages: [],
-    outputFileTracingExcludes: {
-      '*': [
-        'node_modules/@swc/core-linux-x64-gnu',
-        'node_modules/@swc/core-linux-x64-musl',
-      ],
-    },
+  serverExternalPackages: [],
+  outputFileTracingExcludes: {
+    '*': [
+      'node_modules/@swc/core-linux-x64-gnu',
+      'node_modules/@swc/core-linux-x64-musl',
+    ],
   },
+  turbopack: {},
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "img.clerk.com", pathname: "/**" },

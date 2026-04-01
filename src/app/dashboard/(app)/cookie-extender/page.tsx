@@ -3,7 +3,7 @@ import { FeatureGate } from '@/components/FeatureGate'
 import CookieExtenderClient from './CookieExtenderClient'
 
 export default async function CookieExtenderPage() {
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const { data: { session } } = await supabase.auth.getSession()
   const user = session?.user
 
@@ -38,6 +38,7 @@ export default async function CookieExtenderPage() {
     </div>
   )
 }
+
 
 
 

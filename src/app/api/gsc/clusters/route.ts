@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: Request) {
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -20,3 +20,4 @@ export async function GET(request: Request) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ clusters: data ?? [] })
 }
+

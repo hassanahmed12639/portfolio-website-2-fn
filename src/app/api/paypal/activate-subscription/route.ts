@@ -36,7 +36,7 @@ async function getPayPalAccessToken() {
 
 export async function POST(req: NextRequest) {
   try {
-    const supabase = await createClient()
+    const supabase = await await createClient()
     const {
       data: { user },
     } = await supabase.auth.getUser()
@@ -117,4 +117,5 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
+
 

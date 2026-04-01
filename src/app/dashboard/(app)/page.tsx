@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic'
 
 export default async function DashboardPage() {
   noStore()
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const { data: { session } } = await supabase.auth.getSession()
   const user = session?.user
   // Auth is enforced by middleware; no duplicate check here to avoid race conditions
@@ -34,3 +34,4 @@ export default async function DashboardPage() {
     </>
   )
 }
+

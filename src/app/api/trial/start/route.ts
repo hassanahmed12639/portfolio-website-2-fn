@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 export const dynamic = 'force-dynamic'
 
 export async function POST(req: NextRequest) {
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -82,3 +82,4 @@ export async function POST(req: NextRequest) {
     trial_expires_at: trialExpiresAt.toISOString(),
   })
 }
+

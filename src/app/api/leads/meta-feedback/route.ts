@@ -18,7 +18,7 @@ async function hashData(data: string): Promise<string> {
 
 export async function POST(req: NextRequest) {
   try {
-    const supabase = await createClient()
+    const supabase = await await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
@@ -173,7 +173,7 @@ export async function POST(req: NextRequest) {
       error instanceof Error ? error.message : 'Internal server error'
     console.error('[Meta Feedback] Error:', message)
     try {
-      const supabaseAuth = await createClient()
+      const supabaseAuth = await await createClient()
       const { data: { user: authUser } } = await supabaseAuth.auth.getUser()
       if (authUser) {
         const supabaseAdmin = createAdminClient()
@@ -188,3 +188,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }
+

@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 // GET — fetch all pixels for user
 export async function GET() {
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
@@ -28,7 +28,7 @@ export async function GET() {
 
 // POST — add new pixel
 export async function POST(req: NextRequest) {
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
 
 // PUT — update pixel (toggle active, rename, set primary)
 export async function PUT(req: NextRequest) {
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
@@ -112,7 +112,7 @@ export async function PUT(req: NextRequest) {
 
 // DELETE — remove pixel
 export async function DELETE(req: NextRequest) {
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
@@ -132,3 +132,4 @@ export async function DELETE(req: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ success: true })
 }
+

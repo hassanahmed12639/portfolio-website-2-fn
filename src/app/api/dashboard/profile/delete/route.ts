@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 
 export async function DELETE() {
   try {
-    const supabase = await createClient()
+    const supabase = await await createClient()
     const supabaseAdmin = createAdminClient()
     const {
       data: { user },
@@ -32,3 +32,4 @@ export async function DELETE() {
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }
+

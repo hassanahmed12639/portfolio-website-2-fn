@@ -10,7 +10,7 @@ export const metadata = {
 }
 
 export default async function BillingPage() {
-  const supabase = createClient()
+  const supabase = await await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -29,3 +29,4 @@ export default async function BillingPage() {
     </div>
   )
 }
+

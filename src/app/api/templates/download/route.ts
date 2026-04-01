@@ -11,7 +11,7 @@ import { readFile } from 'fs/promises'
 import path from 'path'
 
 export async function GET(request: Request) {
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -87,3 +87,4 @@ export async function GET(request: Request) {
 
   return new NextResponse(content, { headers })
 }
+

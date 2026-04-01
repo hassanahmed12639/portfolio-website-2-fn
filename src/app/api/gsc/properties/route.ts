@@ -11,7 +11,7 @@ import {
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: Request) {
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const admin = createAdminClient()
   const {
     data: { user },
@@ -90,3 +90,4 @@ export async function GET(request: Request) {
     properties: properties ?? [],
   })
 }
+

@@ -68,7 +68,7 @@ async function getAiFix(anomaly: Anomaly): Promise<{ fix_description: string; co
 }
 
 export async function GET() {
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -229,3 +229,4 @@ export async function GET() {
     avgHourly: avgHourlyForChart,
   })
 }
+

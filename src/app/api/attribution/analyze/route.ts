@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server'
 export const dynamic = 'force-dynamic'
 
 export async function POST() {
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -106,3 +106,4 @@ Event data: ${JSON.stringify(eventsWithScores)}`
 
   return NextResponse.json(result)
 }
+

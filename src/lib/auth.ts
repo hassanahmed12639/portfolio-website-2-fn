@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 import type { User } from '@supabase/supabase-js'
 
-type SupabaseServerClient = ReturnType<typeof createClient>
+type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>
 
 type AuthResult =
   | { user: User; supabase: SupabaseServerClient; error: null; response?: undefined }
@@ -14,7 +14,7 @@ type AuthResult =
     }
 
 export async function getAuthenticatedUser(): Promise<AuthResult> {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const { data: { user }, error: userError } = await supabase.auth.getUser()
 
@@ -31,3 +31,4 @@ export async function getAuthenticatedUser(): Promise<AuthResult> {
     response: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }),
   }
 }
+

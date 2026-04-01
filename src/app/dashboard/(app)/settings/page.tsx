@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic'
 export default async function SettingsPage() {
   noStore()
   headers()
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const { data: { session } } = await supabase.auth.getSession()
   const user = session?.user
 
@@ -40,3 +40,4 @@ export default async function SettingsPage() {
     </div>
   )
 }
+

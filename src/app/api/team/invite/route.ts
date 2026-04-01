@@ -6,7 +6,7 @@ import crypto from 'crypto'
 
 export async function POST(req: NextRequest) {
   try {
-    const supabase = await createClient()
+    const supabase = await await createClient()
     const {
       data: { user },
       error: authError,
@@ -188,3 +188,4 @@ export async function POST(req: NextRequest) {
     )
   }
 }
+

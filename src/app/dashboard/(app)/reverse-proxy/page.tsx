@@ -5,7 +5,7 @@ import { FeatureGate } from '@/components/FeatureGate'
 import ReverseProxyClient from './ReverseProxyClient'
 
 export default async function ReverseProxyPage() {
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const { data: { session } } = await supabase.auth.getSession()
   const user = session?.user
 
@@ -29,6 +29,7 @@ export default async function ReverseProxyPage() {
     </div>
   )
 }
+
 
 
 

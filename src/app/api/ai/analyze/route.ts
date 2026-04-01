@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
@@ -129,3 +129,4 @@ Event data: ${JSON.stringify(payload)}`,
 
   return NextResponse.json(result)
 }
+

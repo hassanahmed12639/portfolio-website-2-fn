@@ -12,7 +12,7 @@ function debugLog(...args: unknown[]) {
 export async function GET(req: NextRequest) {
   try {
     debugLog('[MatchRate] GET started')
-    const supabase = await createClient()
+    const supabase = await await createClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
 
     debugLog('[MatchRate] Auth check:', user?.id ?? 'no user', authError?.message ?? 'ok')
@@ -167,3 +167,4 @@ export async function GET(req: NextRequest) {
     )
   }
 }
+

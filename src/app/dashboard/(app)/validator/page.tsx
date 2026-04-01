@@ -84,15 +84,20 @@ export default function ValidatorPage() {
   const [jsonInput, setJsonInput] = useState(DEFAULT_JSON)
   const [result, setResult] = useState<ValidationResult | null>(null)
   const [parseError, setParseError] = useState<string | null>(null)
+  const [validatedAt, setValidatedAt] = useState<number | null>(null)
 
   const runValidation = useCallback(() => {
     setParseError(null)
     try {
       const parsed = JSON.parse(jsonInput) as Record<string, unknown>
       setResult(validatePayload(parsed))
+      setValidatedAt(Date.now())
     } catch (e) {
-      setParseError(e instanceof Error ? e.message : 'Invalid JSON')
+      setParseError(
+        `Invalid JSON: ${e instanceof Error ? e.message : 'Please check your payload format.'}`
+      )
       setResult(null)
+      setValidatedAt(null)
     }
   }, [jsonInput])
 
@@ -100,12 +105,14 @@ export default function ValidatorPage() {
     setJsonInput(JSON.stringify(payload, null, 2))
     setParseError(null)
     setResult(validatePayload(payload))
+    setValidatedAt(Date.now())
   }
 
   const clear = () => {
     setJsonInput('{}')
     setResult(null)
     setParseError(null)
+    setValidatedAt(null)
   }
 
   const payloadForMatchRate = result
@@ -122,8 +129,8 @@ export default function ValidatorPage() {
     <div className="p-6 md:p-8 min-h-screen max-w-6xl mx-auto">
       {/* Section 1 — Header */}
       <header className="mb-8">
-        <div className="flex items-center gap-2 text-blue-600 mb-2">
-          <ShieldCheck className="w-6 h-6" />
+        <div className="flex items-center gap-2 mb-2">
+          <ShieldCheck className="w-6 h-6 text-[var(--dash-primary)]" />
           <h1 className="text-2xl font-bold text-[var(--dash-text)]">Payload Validator</h1>
         </div>
         <p className="text-[var(--dash-muted)] text-base mb-1">
@@ -136,12 +143,15 @@ export default function ValidatorPage() {
 
       {/* Section 2 — Input */}
       <section className="mb-8">
-        <div className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
+        <div
+          className="dash-card dash-card-gradient-top rounded-2xl border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden"
+          style={{ background: 'var(--dash-card)' }}
+        >
           <div className="px-4 py-3 border-b border-[var(--dash-border)] flex flex-wrap items-center justify-between gap-3">
             <span className="text-sm font-medium text-[var(--dash-muted)]">Event payload (JSON)</span>
             <div className="flex flex-wrap items-center gap-2">
               <select
-                className="border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="border border-[var(--dash-border)] rounded-lg px-3 py-2 text-sm text-[var(--dash-text)] bg-[var(--dash-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)]"
                 value=""
                 onChange={(e) => {
                   const idx = Number(e.target.value)
@@ -158,29 +168,42 @@ export default function ValidatorPage() {
               <button
                 type="button"
                 onClick={clear}
-                className="bg-white hover:bg-slate-50 text-slate-700 font-medium px-4 py-2 rounded-lg text-sm border border-slate-200 transition-colors"
+                className="bg-[var(--dash-surface)] hover:bg-[var(--dash-surface-hover)] text-[var(--dash-text)] font-medium px-4 py-2 rounded-lg text-sm border border-[var(--dash-border)] transition-colors"
               >
                 Clear
               </button>
               <button
                 type="button"
                 onClick={runValidation}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg text-sm transition-colors shadow-sm"
+                className="bg-[var(--dash-primary)] hover:bg-[var(--dash-accent-hover)] text-white font-medium px-4 py-2 rounded-lg text-sm transition-colors shadow-sm"
               >
                 Validate Payload
               </button>
+              {validatedAt && !parseError && (
+                <span className="text-xs text-[var(--dash-success)] font-medium">
+                  Validated just now
+                </span>
+              )}
             </div>
           </div>
           <div className="p-4">
             <textarea
               value={jsonInput}
               onChange={(e) => setJsonInput(e.target.value)}
-              className="w-full h-48 font-mono text-sm bg-slate-950 text-green-400 border border-slate-200 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none placeholder:text-slate-500"
+              onKeyDown={(e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                  e.preventDefault()
+                  runValidation()
+                }
+              }}
+              className="w-full h-48 font-mono text-sm bg-slate-950 text-green-400 border border-[var(--dash-border)] rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)] resize-none placeholder:text-slate-500"
               placeholder='{"event_name": "Purchase", ...}'
               spellCheck={false}
             />
             {parseError && (
-              <p className="mt-2 text-sm text-red-400">Parse error: {parseError}</p>
+              <div className="mt-3 rounded-lg border border-[var(--dash-danger-border)] bg-[var(--dash-danger-soft)] px-3 py-2">
+                <p className="text-sm text-[var(--dash-danger-strong)]">{parseError}</p>
+              </div>
             )}
           </div>
         </div>
@@ -203,7 +226,7 @@ export default function ValidatorPage() {
                   {result.willBeAccepted ? (
                     <CheckCircle className="w-5 h-5 text-[var(--dash-success)]" />
                   ) : (
-                    <XCircle className="w-5 h-5 text-red-400" />
+                    <XCircle className="w-5 h-5 text-[var(--dash-danger)]" />
                   )}
                   <span className="font-medium text-[var(--dash-text)]">
                     {result.willBeAccepted ? 'Valid' : 'Invalid'}
@@ -213,23 +236,23 @@ export default function ValidatorPage() {
                   {result.willBeAccepted ? 'Meta will accept this event' : 'Fix errors before sending'}
                 </p>
               </div>
-              <div className="rounded-xl border border-[var(--dash-border)] bg-white shadow-[var(--dash-shadow)] p-4">
+              <div className="rounded-xl border border-[var(--dash-border)] bg-[var(--dash-card)] shadow-[var(--dash-shadow)] p-4">
                 <p className="text-xs text-[var(--dash-muted)] mb-1">Score</p>
                 <p
                   className={`text-2xl font-bold ${
-                    result.score >= 80 ? 'text-[var(--dash-success)]' : result.score >= 50 ? 'text-amber-400' : 'text-red-400'
+                    result.score >= 80 ? 'text-[var(--dash-success)]' : result.score >= 50 ? 'text-[var(--dash-warning)]' : 'text-[var(--dash-danger)]'
                   }`}
                 >
                   {result.score}/100
                 </p>
               </div>
-              <div className="rounded-xl border border-[var(--dash-border)] bg-white shadow-[var(--dash-shadow)] p-4">
+              <div className="rounded-xl border border-[var(--dash-border)] bg-[var(--dash-card)] shadow-[var(--dash-shadow)] p-4">
                 <p className="text-xs text-[var(--dash-muted)] mb-1">Match rate</p>
                 <p className="text-2xl font-bold text-[var(--dash-text)]">~{result.estimatedMatchRate}%</p>
               </div>
-              <div className="rounded-xl border border-[var(--dash-border)] bg-white shadow-[var(--dash-shadow)] p-4">
+              <div className="rounded-xl border border-[var(--dash-border)] bg-[var(--dash-card)] shadow-[var(--dash-shadow)] p-4">
                 <p className="text-xs text-[var(--dash-muted)] mb-1">Warnings</p>
-                <p className="text-2xl font-bold text-amber-400">{result.warnings.length}</p>
+                <p className="text-2xl font-bold text-[var(--dash-warning)]">{result.warnings.length}</p>
               </div>
             </div>
           </section>
@@ -238,7 +261,7 @@ export default function ValidatorPage() {
           <section className="mb-8 space-y-6">
             {result.errors.length > 0 && (
               <div>
-                <h3 className="text-sm font-medium text-red-400 mb-2 flex items-center gap-2">
+                <h3 className="text-sm font-medium text-[var(--dash-danger)] mb-2 flex items-center gap-2">
                   <XCircle className="w-4 h-4" />
                   ERRORS
                 </h3>
@@ -249,7 +272,7 @@ export default function ValidatorPage() {
                       className="rounded-lg border border-red-500/30 bg-[var(--dash-danger)]/10 p-3 text-sm"
                     >
                       <span className="font-mono text-[var(--dash-danger-strong)]">❌ {issue.field}</span>
-                      <span className="text-red-200/90"> — {issue.message}</span>
+                      <span className="text-[var(--dash-text)]"> — {issue.message}</span>
                       <p className="text-[var(--dash-danger-strong)]/80 text-xs mt-1">Impact: {issue.impact}</p>
                     </li>
                   ))}
@@ -258,7 +281,7 @@ export default function ValidatorPage() {
             )}
             {result.warnings.length > 0 && (
               <div>
-                <h3 className="text-sm font-medium text-amber-400 mb-2 flex items-center gap-2">
+                <h3 className="text-sm font-medium text-[var(--dash-warning)] mb-2 flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4" />
                   WARNINGS
                 </h3>
@@ -268,9 +291,9 @@ export default function ValidatorPage() {
                       key={`w-${i}`}
                       className="rounded-lg border border-amber-500/30 bg-[var(--dash-warning)]/10 p-3 text-sm"
                     >
-                      <span className="font-mono text-amber-300">⚠️ {issue.field}</span>
-                      <span className="text-amber-200/90"> — {issue.message}</span>
-                      <p className="text-amber-300/80 text-xs mt-1">Impact: {issue.impact}</p>
+                      <span className="font-mono text-[var(--dash-warning)]">⚠️ {issue.field}</span>
+                      <span className="text-[var(--dash-text)]"> — {issue.message}</span>
+                      <p className="text-[var(--dash-text-secondary)] text-xs mt-1">Impact: {issue.impact}</p>
                     </li>
                   ))}
                 </ul>
@@ -289,8 +312,8 @@ export default function ValidatorPage() {
                       className="rounded-lg border border-[var(--dash-primary)]/40 bg-[var(--dash-primary)]/10 p-3 text-sm"
                     >
                       <span className="font-mono text-[var(--dash-primary)]">💡 {issue.field}</span>
-                      <span className="text-[var(--dash-primary)]"> — {issue.message}</span>
-                      <p className="text-[var(--dash-primary)]/80 text-xs mt-1">Impact: {issue.impact}</p>
+                      <span className="text-[var(--dash-text)]"> — {issue.message}</span>
+                      <p className="text-[var(--dash-text-secondary)] text-xs mt-1">Impact: {issue.impact}</p>
                     </li>
                   ))}
                 </ul>
@@ -301,7 +324,7 @@ export default function ValidatorPage() {
           {/* Section 4 — Match rate breakdown */}
           <section className="mb-8">
             <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">Match rate breakdown</h2>
-            <div className="rounded-xl border border-[var(--dash-border)] bg-white shadow-[var(--dash-shadow)] p-4 space-y-3">
+            <div className="rounded-xl border border-[var(--dash-border)] bg-[var(--dash-card)] shadow-[var(--dash-shadow)] p-4 space-y-3">
               {MATCH_RATE_FIELDS.map(({ key, label, pct }) => {
                 const present = getMatchRatePresent(payloadForMatchRate, key)
                 return (
@@ -332,7 +355,7 @@ export default function ValidatorPage() {
           {(result.errors.length > 0 || result.warnings.length > 0 || result.suggestions.length > 0) && (
             <section>
               <h2 className="text-sm font-medium text-[var(--dash-muted)] mb-4">Fix suggestions</h2>
-              <div className="rounded-xl border border-[var(--dash-border)] bg-white shadow-[var(--dash-shadow)] p-4">
+              <div className="rounded-xl border border-[var(--dash-border)] bg-[var(--dash-card)] shadow-[var(--dash-shadow)] p-4">
                 <p className="text-[var(--dash-muted)] text-sm mb-3">
                   Add missing fields to your TrackHive.track() call:
                 </p>

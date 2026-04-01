@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
   const rateLimitResponse = enforceRateLimit(req, 'webhooks-read', 60, 60_000)
   if (rateLimitResponse) return rateLimitResponse
 
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
@@ -50,3 +50,4 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json({ logs: logsWithName })
 }
+

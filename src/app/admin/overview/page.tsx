@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 
 export default async function AdminOverviewPage() {
-  const supabase = createClient()
+  const supabase = await await createClient()
   const { data: { session } } = await supabase.auth.getSession()
 
   if (!session) redirect('/admin/login')
@@ -40,3 +40,4 @@ export default async function AdminOverviewPage() {
     </div>
   )
 }
+

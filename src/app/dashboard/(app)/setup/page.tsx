@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import SetupClient from './SetupClient'
 
 export default async function SetupPage() {
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const { data: { session } } = await supabase.auth.getSession()
   const user = session?.user
 
@@ -18,3 +18,4 @@ export default async function SetupPage() {
 
   return <SetupClient apiKey={apiKey} />
 }
+

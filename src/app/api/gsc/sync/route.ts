@@ -104,7 +104,7 @@ function aggregateQueryRows(rows: QueryDailyRow[]): QueryDailyRow[] {
 export async function POST(request: NextRequest) {
   let debugContext: { userId?: string; property?: string; days?: number } = {}
   try {
-    const supabase = await createClient()
+    const supabase = await await createClient()
     const admin = createAdminClient()
     const {
       data: { user },
@@ -399,3 +399,4 @@ export async function POST(request: NextRequest) {
     )
   }
 }
+

@@ -7,7 +7,7 @@ export async function POST(request: Request) {
     const body = await request.json()
     const { platform, account_id, access_token } = body
 
-    const supabase = await createClient()
+    const supabase = await await createClient()
     const supabaseAdmin = createAdminClient()
 
     const { data: { user } } = await supabase.auth.getUser()
@@ -47,3 +47,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: message }, { status: 400 })
   }
 }
+

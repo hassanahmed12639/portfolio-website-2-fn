@@ -9,7 +9,7 @@ function asNumber(value: unknown) {
 }
 
 export async function GET(request: NextRequest) {
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -67,3 +67,4 @@ export async function GET(request: NextRequest) {
     pages,
   })
 }
+

@@ -31,7 +31,7 @@ const detectionPatterns = {
 }
 
 export async function POST(request: NextRequest) {
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -637,3 +637,4 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Scan failed' }, { status: 500 })
   }
 }
+

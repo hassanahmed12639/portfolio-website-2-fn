@@ -15,7 +15,7 @@ function checkAdminRateLimit(request: NextRequest): NextResponse | null {
 }
 
 async function verifyAdmin() {
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -141,3 +141,4 @@ export async function DELETE(req: NextRequest) {
     )
   }
 }
+

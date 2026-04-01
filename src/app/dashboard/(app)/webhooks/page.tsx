@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { fetchDashboardProfile } from '@/lib/dashboard-profile'
 import { resolveDashboardMode } from '@/lib/dashboard-mode'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
@@ -7,15 +8,21 @@ import { Lock } from 'lucide-react'
 export const dynamic = 'force-dynamic'
 
 export default async function WebhooksPage() {
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const { data: { session } } = await supabase.auth.getSession()
   if (!session?.user) redirect('/dashboard/login')
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('dashboard_type, business_type')
-    .eq('id', session.user.id)
-    .single()
+  const profile = await fetchDashboardProfile(session.user.id)
+
+  if (!profile) {
+    return (
+      <div className="p-6 md:p-8 max-w-lg mx-auto">
+        <p className="text-red-600">
+          Could not load your profile right now. Please refresh and try again.
+        </p>
+      </div>
+    )
+  }
 
   if (resolveDashboardMode(profile) === 'leadgen') {
     redirect('/dashboard/leadgen/webhooks')
@@ -51,3 +58,4 @@ export default async function WebhooksPage() {
     </div>
   )
 }
+

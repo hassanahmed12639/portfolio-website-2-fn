@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 
 export async function POST(request: Request) {
   try {
-    const supabase = createClient()
+    const supabase = await await createClient()
     const supabaseAdmin = createAdminClient()
 
     const { data: { user } } = await supabase.auth.getUser()
@@ -82,3 +82,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }
+

@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: false, message: 'Server misconfiguration' }, { status: 500 })
   }
 
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
     return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 })
@@ -104,3 +104,4 @@ export async function POST(request: NextRequest) {
   }
   return NextResponse.json({ success: false, message: 'Retry failed; will retry again later' })
 }
+

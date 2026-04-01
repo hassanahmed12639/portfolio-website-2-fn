@@ -5,7 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 export async function POST(request: Request) {
   try {
     const { connectionId } = await request.json()
-    const supabase = await createClient()
+    const supabase = await await createClient()
     const supabaseAdmin = createAdminClient()
 
     const { data: { user } } = await supabase.auth.getUser()
@@ -31,3 +31,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: message }, { status: 400 })
   }
 }
+

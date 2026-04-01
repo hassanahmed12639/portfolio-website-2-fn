@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 }
 
 export default async function BlogPage() {
-  const supabase = await createClient()
+  const supabase = await await createClient()
   const { data: posts } = await supabase
     .from('blog_posts')
     .select('*')
@@ -182,3 +182,4 @@ export default async function BlogPage() {
     </div>
   )
 }
+
