@@ -8,6 +8,7 @@ import { getGA4EventName } from '@/lib/ga4'
 import { getTikTokEventName } from '@/lib/tiktok'
 import { sendGoogleEnhancedConversion } from '@/lib/google-ads'
 import { decrypt } from '@/lib/encrypt'
+import { EMQAutoFixEngine, type EventData } from '@/lib/emq-auto-fix'
 import { createClient } from '@supabase/supabase-js'
 import { createHash } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
@@ -1036,6 +1037,25 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // EMQ Auto-Fix Engine: Run on every event
+    const eventDataForEMQ: EventData = {
+      email,
+      phone,
+      first_name,
+      last_name,
+      city,
+      state,
+      zip,
+      country: userCountry,
+      external_id,
+      fbp,
+      fbc,
+      client_ip_address: ip,
+      client_user_agent: userAgent,
+    }
+
+    const emqResult = EMQAutoFixEngine.fix(eventDataForEMQ, request.headers)
+
     const insertRow: Record<string, unknown> = {
       user_id: profile.id,
       event_name,
@@ -1048,13 +1068,43 @@ export async function POST(request: NextRequest) {
       validation_issues: validation.issues,
       validation_checks: validation.checks,
       payload: internalPayload,
-      fbc: fbc || null,
-      fbp: fbp || null,
+      fbc: emqResult.fixed_event.fbc || fbc || null,
+      fbp: emqResult.fixed_event.fbp || fbp || null,
       fbclid: fbclid || null,
-      data_quality_score: qualityScore,
-      data_quality_label: qualityLabel,
-      data_quality_breakdown: qualityBreakdown,
+      data_quality_score: emqResult.score,
+      data_quality_label: emqResult.score >= 9 ? 'Excellent' : emqResult.score >= 7 ? 'Good' : emqResult.score >= 5 ? 'Fair' : 'Poor',
+      data_quality_breakdown: {
+        email: !!emqResult.fixed_event.email,
+        phone: !!emqResult.fixed_event.phone,
+        fbp: !!emqResult.fixed_event.fbp,
+        fbc: !!emqResult.fixed_event.fbc,
+        name: !!(emqResult.fixed_event.first_name && emqResult.fixed_event.last_name),
+        location: !!(emqResult.fixed_event.city || emqResult.fixed_event.state || emqResult.fixed_event.zip || emqResult.fixed_event.country),
+        fbclid: !!fbclid,
+      },
     }
+
+    // Store EMQ fix result
+    const { data: eventRecord } = await supabase
+      .from('events')
+      .insert(insertRow)
+      .select('id')
+      .single()
+
+    if (eventRecord) {
+      // Store EMQ fix result
+      await supabase.from('event_emq_fixes').insert({
+        event_id: eventRecord.id,
+        user_id: profile.id,
+        score: emqResult.score,
+        fixed_fields: emqResult.fixed_fields,
+        suggested_fields: emqResult.suggested_fields,
+        original_event: emqResult.original_event,
+        fixed_event: emqResult.fixed_event,
+      })
+    }
+
+    // Update insertRow with enrichment data
     if (enrichmentData) {
       insertRow.country = enrichmentData.geo.country || null
       insertRow.city = enrichmentData.geo.city || null
@@ -1067,11 +1117,6 @@ export async function POST(request: NextRequest) {
       insertRow.retry_count = 0
       insertRow.next_retry_at = fiveMinutesFromNow
     }
-    insertRow.data_quality_score = qualityScore
-    insertRow.data_quality_label = qualityLabel
-    insertRow.data_quality_breakdown = qualityBreakdown
-    debugLog('[QS]', { qualityScore, qualityLabel, qualityBreakdown })
-    await supabase.from('events').insert(insertRow)
   }
 
   // After saving to events table, check if it's a lead event and save to leads table

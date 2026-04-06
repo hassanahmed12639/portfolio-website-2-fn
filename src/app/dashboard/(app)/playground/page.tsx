@@ -632,12 +632,6 @@ export default function PlaygroundPage() {
                 — send anyway or fix first?
               </p>
               <div className="flex flex-wrap gap-2">
-                <Link
-                  href="/dashboard/validator"
-                  className="px-3 py-2 rounded-lg bg-[var(--dash-surface-hover)] hover:bg-[var(--dash-border)] text-[var(--dash-text)] text-sm transition-colors"
-                >
-                  Fix in Validator
-                </Link>
                 <button
                   type="button"
                   onClick={() => {

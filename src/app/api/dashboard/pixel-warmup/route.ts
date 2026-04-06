@@ -10,7 +10,7 @@ const MANDATORY_FIELDS = ['email', 'phone', 'first_name', 'last_name']
 
 type Credentials = {
   ga4?: { measurementId: string; apiSecret: string }
-  meta?: { pixelId: string; accessToken?: string }
+  meta?: { pixelId: string; accessToken?: string; proxies?: string[] }
 }
 
 type RequestBody = {
@@ -143,6 +143,10 @@ function buildMetaPayload(eventType: string, record: Record<string, string>) {
   if (country) userData.country = hashValue(country)
   if (externalId) userData.external_id = hashValue(externalId)
   if (fbLoginId) userData.fb_login_id = fbLoginId
+  if (record.fbp) userData.fbp = String(record.fbp).trim()
+  if (record.fbc) userData.fbc = String(record.fbc).trim()
+  if (record.client_ip_address) userData.client_ip_address = String(record.client_ip_address).trim()
+  if (record.client_user_agent) userData.client_user_agent = String(record.client_user_agent).trim()
 
   const customData: Record<string, unknown> = {}
   if (firstName) customData.first_name = firstName
@@ -195,11 +199,32 @@ async function sendMetaEvent(credentials: NonNullable<Credentials['meta']>, even
     credentials.accessToken || ''
   )}`
   const payload = buildMetaPayload(eventType, record)
-  const res = await fetch(endpoint, {
+
+  const fetchOptions: RequestInit = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
-  })
+  }
+
+  // Add proxy support if configured
+  if (credentials.proxies && credentials.proxies.length > 0) {
+    try {
+      // For Node.js environments, we can use https-proxy-agent
+      const { HttpsProxyAgent } = await import('https-proxy-agent')
+      const proxyUrl = credentials.proxies[Math.floor(Math.random() * credentials.proxies.length)]
+      const agent = new HttpsProxyAgent(proxyUrl)
+      ;(fetchOptions as any).agent = agent
+    } catch (error) {
+      console.warn('[pixel-warmup] Proxy support requires https-proxy-agent package. Install with: npm install https-proxy-agent')
+      // Fallback: add proxy info as header for logging/debugging
+      fetchOptions.headers = {
+        ...fetchOptions.headers,
+        'X-Requested-With-Proxy': credentials.proxies[Math.floor(Math.random() * credentials.proxies.length)],
+      }
+    }
+  }
+
+  const res = await fetch(endpoint, fetchOptions)
 
   if (!res.ok) {
     const body = await res.text()

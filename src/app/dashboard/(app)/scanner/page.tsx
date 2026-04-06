@@ -3,6 +3,7 @@
 export const dynamic = 'force-dynamic'
 
 import { useState } from 'react'
+import { FeatureGate } from '@/components/FeatureGate'
 
 const SCAN_STEPS = [
   'Fetching page...',
@@ -260,7 +261,8 @@ export default function ScannerPage() {
   }
 
   return (
-    <div className="p-6 md:p-8">
+    <FeatureGate feature="scanner" requiredPlan="pro">
+      <div className="p-6 md:p-8">
       <h1 className="text-xl font-semibold text-[var(--dash-text)] mb-2">Website Scanner</h1>
       <p className="text-[var(--dash-muted)] text-sm mb-8">
         Enter any website URL to get a full tracking health report.
@@ -644,6 +646,7 @@ export default function ScannerPage() {
         </div>
       )}
     </div>
+    </FeatureGate>
   )
 }
 

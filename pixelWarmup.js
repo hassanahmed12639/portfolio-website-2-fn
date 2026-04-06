@@ -8,7 +8,11 @@ const xlsx = require('xlsx');
 // Pass credential values through the `options` object when calling startWarmup().
 // Example:
 // {
-//   meta: { pixelId: 'YOUR_PIXEL_ID', testEventCode: 'YOUR_TEST_EVENT_CODE' },
+//   meta: {
+//     pixelId: 'YOUR_PIXEL_ID',
+//     testEventCode: 'YOUR_TEST_EVENT_CODE',
+//     proxies: ['http://user:pass@ip:port', 'socks5://user:pass@ip:port'] // Optional: proxy pool for IP rotation
+//   },
 //   ga4: { measurementId: 'G-XXXXXXX', apiSecret: 'YOUR_API_SECRET' }
 // }
 // -----------------------------------------------------------------------------
@@ -93,6 +97,16 @@ function hashSha256(value) {
   return crypto.createHash('sha256').update(String(value || '').trim().toLowerCase()).digest('hex');
 }
 
+const JOURNEY_EVENT_SEQUENCE = [
+  'page_view',
+  'view_content',
+  'add_to_cart',
+  'initiate_checkout',
+  'quality_lead',
+  'lead',
+  'purchase',
+]
+
 function sanitizeEmail(value) {
   return String(value || '').trim().toLowerCase();
 }
@@ -164,6 +178,10 @@ function buildMetaPayload(eventType, record) {
   const userData = {};
   if (email) userData.em = hashSha256(email);
   if (phone) userData.ph = hashSha256(phone);
+  if (record.fbp) userData.fbp = String(record.fbp).trim();
+  if (record.fbc) userData.fbc = String(record.fbc).trim();
+  if (record.client_ip_address) userData.client_ip_address = String(record.client_ip_address).trim();
+  if (record.client_user_agent) userData.client_user_agent = String(record.client_user_agent).trim();
 
   const customData = {
     first_name: sanitizeValue(record.first_name),
@@ -195,6 +213,24 @@ function isNumericField(field) {
   return ['budget', 'value'].includes(field);
 }
 
+function parseProxyUrl(proxyUrl) {
+  try {
+    const url = new URL(proxyUrl);
+    return {
+      protocol: url.protocol.replace(':', ''),
+      host: url.hostname,
+      port: parseInt(url.port) || (url.protocol === 'https:' ? 443 : 80),
+      auth: url.username && url.password ? {
+        username: url.username,
+        password: url.password,
+      } : undefined,
+    };
+  } catch (error) {
+    console.warn(`[pixelWarmup] Invalid proxy URL: ${proxyUrl}`);
+    return null;
+  }
+}
+
 async function sendGa4Event(ga4Config, eventType, record) {
   const endpoint = 'https://www.google-analytics.com/debug/mp/collect';
   const url = `${endpoint}?measurement_id=${encodeURIComponent(ga4Config.measurementId)}&api_secret=${encodeURIComponent(ga4Config.apiSecret)}`;
@@ -215,10 +251,21 @@ async function sendMetaEvent(metaConfig, eventType, record) {
   const url = `${endpoint}?test_event_code=${encodeURIComponent(metaConfig.testEventCode)}`;
   const payload = buildMetaPayload(eventType, record);
 
-  const response = await axios.post(url, payload, {
+  const axiosConfig = {
     headers: { 'Content-Type': 'application/json' },
     timeout: 15000,
-  });
+  };
+
+  // Add proxy support if configured
+  if (metaConfig.proxies && metaConfig.proxies.length > 0) {
+    const proxyUrl = metaConfig.proxies[Math.floor(Math.random() * metaConfig.proxies.length)];
+    const proxy = parseProxyUrl(proxyUrl);
+    if (proxy) {
+      axiosConfig.proxy = proxy;
+    }
+  }
+
+  const response = await axios.post(url, payload, axiosConfig);
 
   if (response.status !== 200) {
     throw new Error(`Meta CAPI request failed with status ${response.status}`);
@@ -316,12 +363,16 @@ async function loadCsvFile(csvFilePath) {
 /**
  * startWarmup(eventType, csvFilePath, options)
  *
- * eventType: Lead | Purchase | FormStart | FormComplete | etc.
+ * eventType: Lead | Purchase | Journey | etc.
  * csvFilePath: path to local CSV file
  * options: {
  *   credentials: {
  *     ga4?: { measurementId: string; apiSecret: string },
- *     meta?: { pixelId: string; testEventCode: string }
+ *     meta?: {
+ *       pixelId: string;
+ *       testEventCode: string;
+ *       proxies?: string[] // Optional: array of proxy URLs for IP rotation
+ *     }
  *   }
  * }
  */
@@ -359,6 +410,8 @@ async function startWarmup(eventType, csvFilePath, options = {}) {
   }
 
   let skippedRows = 0;
+  const seenKeys = new Set();
+  const eventSequence = eventType.toLowerCase() === 'journey' ? JOURNEY_EVENT_SEQUENCE : [eventType];
 
   records.forEach((record, index) => {
     const rowIndex = index + 2;
@@ -370,22 +423,43 @@ async function startWarmup(eventType, csvFilePath, options = {}) {
       return;
     }
 
-    const task = {
-      rowIndex,
-      eventType,
-      record: {
-        ...record,
-        email: sanitizeEmail(record.email),
-        phone: sanitizePhone(record.phone),
-        first_name: sanitizeValue(record.first_name),
-        last_name: sanitizeValue(record.last_name),
-      },
-      credentials,
-      attempts: 0,
-      nextRun: Date.now() + getRandomDelayMs(),
+    const dedupeKey = hashSha256([
+      record.email || '',
+      record.phone || '',
+      record.first_name || '',
+      record.last_name || '',
+      record.external_id || record.externalId || '',
+    ].join('|'));
+
+    if (seenKeys.has(dedupeKey)) {
+      skippedRows += 1;
+      stats.skipped.push({ rowIndex, duplicate: true, rawRecord: record });
+      console.warn(`[pixelWarmup] Skipped duplicate row ${rowIndex}`);
+      return;
+    }
+
+    seenKeys.add(dedupeKey);
+
+    const sanitizedRecord = {
+      ...record,
+      email: sanitizeEmail(record.email),
+      phone: sanitizePhone(record.phone),
+      first_name: sanitizeValue(record.first_name),
+      last_name: sanitizeValue(record.last_name),
     };
 
-    enqueueTask(task);
+    eventSequence.forEach((sequenceEvent) => {
+      const task = {
+        rowIndex,
+        eventType: sequenceEvent,
+        record: sanitizedRecord,
+        credentials,
+        attempts: 0,
+        nextRun: Date.now() + getRandomDelayMs(),
+      };
+
+      enqueueTask(task);
+    });
   });
 
   return {

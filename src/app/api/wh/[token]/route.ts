@@ -17,6 +17,8 @@ const TRACKHIVE_FIELDS = [
   'order_id',
   'city',
   'zip',
+  'country',
+  'source_url',
   'ignore',
 ] as const
 
@@ -33,11 +35,46 @@ const xmlParser = new XMLParser({
 
 const MAX_WEBHOOK_BODY_BYTES = 1024 * 1024 // 1MB hard cap
 
+function parseMultipartFormData(rawText: string, contentType: string): Record<string, unknown> {
+  const boundaryMatch = /boundary=(?:"([^"]+)"|([^;\s]+))/i.exec(contentType)
+  if (!boundaryMatch) return {}
+
+  const boundary = `--${boundaryMatch[1] || boundaryMatch[2]}`
+  const sections = rawText.split(boundary).slice(1, -1)
+  const data: Record<string, unknown> = {}
+
+  for (const section of sections) {
+    const [rawHeaders, ...rest] = section.split('\r\n\r\n')
+    if (!rawHeaders || rest.length === 0) continue
+
+    const nameMatch = /name="([^"\]]+)"/i.exec(rawHeaders)
+    if (!nameMatch) continue
+
+    let value = rest.join('\r\n\r\n').trim()
+    if (value.endsWith('--')) {
+      value = value.slice(0, -2).trim()
+    }
+
+    const jsonMatch = /Content-Type:\s*application\/json/i.test(rawHeaders)
+    if (jsonMatch) {
+      try {
+        data[nameMatch[1]] = JSON.parse(value)
+        continue
+      } catch {
+        // fall back to raw field value
+      }
+    }
+
+    data[nameMatch[1]] = value
+  }
+
+  return data
+}
+
 async function parseBody(
   rawText: string,
   contentType: string
 ): Promise<Record<string, unknown>> {
-
   if (contentType.includes('application/json')) {
     try {
       const parsed = JSON.parse(rawText)
@@ -54,6 +91,10 @@ async function parseBody(
       obj[k] = v
     })
     return obj
+  }
+
+  if (contentType.includes('multipart/form-data')) {
+    return parseMultipartFormData(rawText, contentType)
   }
 
   if (contentType.includes('application/xml') || contentType.includes('text/xml')) {
@@ -84,13 +125,22 @@ function verifyWebhookSignature(
   receivedHeader: string | null
 ): boolean {
   if (!receivedHeader) return false
-  const signature = receivedHeader.startsWith('sha256=')
-    ? receivedHeader.slice('sha256='.length)
-    : receivedHeader
+
+  const header = receivedHeader.trim()
+  const algorithm = header.startsWith('sha256=')
+    ? 'sha256'
+    : header.startsWith('sha1=')
+    ? 'sha1'
+    : 'sha256'
+  const signature = header.startsWith('sha256=')
+    ? header.slice('sha256='.length)
+    : header.startsWith('sha1=')
+    ? header.slice('sha1='.length)
+    : header
   if (!signature) return false
 
   const expected = crypto
-    .createHmac('sha256', signingSecret)
+    .createHmac(algorithm, signingSecret)
     .update(rawBody, 'utf8')
     .digest('hex')
 
@@ -142,6 +192,11 @@ async function processWebhookInBackground(
     field_map: FieldMap
   },
   rawPayload: Record<string, unknown>,
+  requestMeta: {
+    ip_address: string | null
+    user_agent: string | null
+    source_url: string | null
+  },
   supabaseAdmin: ReturnType<typeof createClient>
 ) {
   try {
@@ -156,6 +211,7 @@ async function processWebhookInBackground(
     const city = (mapped.city as string) || null
     const zip = (mapped.zip as string) || null
     const order_id = (mapped.order_id as string) || null
+    const source_url = (mapped.source_url as string) || requestMeta.source_url || null
 
     const eventId = `wh_${webhook.id}_${Date.now()}_${Math.random().toString(36).slice(2)}`
     const platformResponses: Record<string, unknown> = {}
@@ -172,9 +228,9 @@ async function processWebhookInBackground(
       event_name: webhook.event_name,
       value,
       currency,
-      source_url: null,
-      ip_address: null,
-      user_agent: null,
+      source_url,
+      ip_address: requestMeta.ip_address,
+      user_agent: requestMeta.user_agent,
       score: 'new',
       stage: 'new',
       raw_data: rawPayload,
@@ -364,13 +420,26 @@ export async function POST(
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
 
+  const signature =
+    request.headers.get('x-trackhive-signature') ||
+    request.headers.get('x-hub-signature-256') ||
+    request.headers.get('x-hub-signature')
+
   if (webhook.signing_secret) {
-    const signature = request.headers.get('x-trackhive-signature')
     const verified = verifyWebhookSignature(rawBody, webhook.signing_secret, signature)
     if (!verified) {
       return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
     }
   }
+
+  const ipAddress = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null
+  const userAgent = request.headers.get('user-agent') || null
+  const sourceUrl =
+    (typeof rawPayload.source_url === 'string' && rawPayload.source_url) ||
+    (typeof rawPayload.url === 'string' && rawPayload.url) ||
+    (typeof rawPayload.page_url === 'string' && rawPayload.page_url) ||
+    request.headers.get('referer') ||
+    null
 
   const { data: logRow, error: logError } = await supabaseAdmin
     .from('webhook_logs')
@@ -400,6 +469,11 @@ export async function POST(
       field_map: (webhook.field_map as FieldMap) || {},
     },
     rawPayload,
+    {
+      ip_address: ipAddress,
+      user_agent: userAgent,
+      source_url: sourceUrl,
+    },
     supabaseAdmin as any
   )
 

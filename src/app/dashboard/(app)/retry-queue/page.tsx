@@ -6,6 +6,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { getRetryLabel } from '@/lib/retry-queue'
 import type { RetryJob } from '@/lib/retry-queue'
 import { RefreshCw } from 'lucide-react'
+import { FeatureGate } from '@/components/FeatureGate'
 
 type JobRow = RetryJob & { payload?: Record<string, unknown> }
 
@@ -126,7 +127,8 @@ export default function RetryQueuePage() {
   const pendingJobs = jobs.filter((j) => j.status === 'pending')
 
   return (
-    <div className="p-6 md:p-8">
+    <FeatureGate feature="retry_queue" requiredPlan="pro">
+      <div className="p-6 md:p-8">
       <div className="flex items-center gap-3 mb-6">
         <h1 className="text-xl font-semibold text-[var(--dash-text)]">Retry Queue</h1>
         <button
@@ -235,6 +237,7 @@ export default function RetryQueuePage() {
         </section>
       )}
     </div>
+    </FeatureGate>
   )
 }
 

@@ -208,7 +208,6 @@ export default function EcommerceDashboard({ profile }: { profile: Record<string
               { href: '/dashboard/pixels', label: 'Manage Pixels', desc: 'Add or configure your pixels' },
               { href: '/dashboard/data-quality', label: 'Check Match Rate', desc: 'See your Meta match rate' },
               { href: '/dashboard/live', label: 'Live Stream', desc: 'Watch events in real-time' },
-              { href: '/dashboard/validator', label: 'Validate Payload', desc: 'Check your event data quality' },
               { href: '/dashboard/billing', label: 'Upgrade Plan', desc: 'Unlock more events per month' }
             ].map(action => (
               <Link

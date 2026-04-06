@@ -10,6 +10,7 @@ export type PixelWarmupCredentials = {
   meta?: {
     pixelId: string
     accessToken?: string
+    proxies?: string[] // Array of proxy URLs like 'http://ip:port' or 'http://user:pass@ip:port'
   }
 }
 
@@ -116,6 +117,30 @@ function nowIso() {
   return new Date().toISOString()
 }
 
+const JOURNEY_EVENT_SEQUENCE = [
+  'page_view',
+  'view_content',
+  'add_to_cart',
+  'initiate_checkout',
+  'quality_lead',
+  'lead',
+  'purchase',
+]
+
+function getRecordDedupeKey(record: PixelWarmupRecord) {
+  const values = [
+    record.email || '',
+    record.phone || '',
+    record.first_name || '',
+    record.last_name || '',
+    record.external_id || record.externalId || '',
+  ]
+    .map((value) => String(value).trim().toLowerCase())
+    .join('|')
+
+  return hashValue(values)
+}
+
 async function sendGa4Event(credentials: NonNullable<PixelWarmupCredentials['ga4']>, eventType: string, record: PixelWarmupRecord) {
   const email = sanitizeEmail(record.email)
   const phone = sanitizePhone(record.phone)
@@ -178,6 +203,10 @@ async function sendMetaEvent(credentials: NonNullable<PixelWarmupCredentials['me
   if (country) userData.country = hashValue(country)
   if (externalId) userData.external_id = hashValue(externalId)
   if (fbLoginId) userData.fb_login_id = fbLoginId
+  if (record.fbp) userData.fbp = String(record.fbp).trim()
+  if (record.fbc) userData.fbc = String(record.fbc).trim()
+  if (record.client_ip_address) userData.client_ip_address = String(record.client_ip_address).trim()
+  if (record.client_user_agent) userData.client_user_agent = String(record.client_user_agent).trim()
 
   const customData: Record<string, unknown> = {}
   if (firstName) customData.first_name = firstName
@@ -214,6 +243,14 @@ async function sendMetaEvent(credentials: NonNullable<PixelWarmupCredentials['me
     const bodyText = await res.text()
     throw new Error(`Meta CAPI error ${res.status}: ${bodyText}`)
   }
+
+  // Note: For true IP rotation, you would need to configure proxy agents here
+  // Example with https-proxy-agent (if installed):
+  // if (credentials.proxies && credentials.proxies.length > 0) {
+  //   const proxyUrl = credentials.proxies[Math.floor(Math.random() * credentials.proxies.length)]
+  //   const agent = new HttpsProxyAgent(proxyUrl)
+  //   fetchOptions.agent = agent
+  // }
 }
 
 async function processTask(task: PixelWarmupTask) {
@@ -298,7 +335,7 @@ export function startWarmupJob(
   const job: PixelWarmupJob = {
     jobId,
     eventType,
-    rows: rows.length,
+    rows: 0,
     queued: 0,
     sent: 0,
     failed: 0,
@@ -308,6 +345,9 @@ export function startWarmupJob(
     updatedAt: nowIso(),
     errors: [],
   }
+
+  const seenKeys = new Set<string>()
+  const eventSequence = eventType.toLowerCase() === 'journey' ? JOURNEY_EVENT_SEQUENCE : [eventType]
 
   rows.forEach((row, index) => {
     const missing = ['email', 'phone', 'first_name', 'last_name'].filter((field) => {
@@ -320,25 +360,39 @@ export function startWarmupJob(
       return
     }
 
-    const task: PixelWarmupTask = {
-      jobId,
-      rowIndex: index + 2,
-      eventType,
-      record: {
-        ...row,
-        email: sanitizeEmail(row.email),
-        phone: sanitizePhone(row.phone),
-        first_name: String(row.first_name || '').trim(),
-        last_name: String(row.last_name || '').trim(),
-      },
-      credentials,
-      attempts: 0,
-      nextRun: Date.now() + getRandomDelayMs(),
+    const dedupeKey = getRecordDedupeKey(row)
+    if (seenKeys.has(dedupeKey)) {
+      job.skipped += 1
+      job.errors.push({ rowIndex: index + 2, message: 'Duplicate row skipped to prevent duplicate warmup events' })
+      return
+    }
+    seenKeys.add(dedupeKey)
+
+    const sanitizedRecord: PixelWarmupRecord = {
+      ...row,
+      email: sanitizeEmail(row.email),
+      phone: sanitizePhone(row.phone),
+      first_name: String(row.first_name || '').trim(),
+      last_name: String(row.last_name || '').trim(),
     }
 
-    tasks.push(task)
-    job.queued += 1
+    eventSequence.forEach((sequenceEvent) => {
+      const task: PixelWarmupTask = {
+        jobId,
+        rowIndex: index + 2,
+        eventType: sequenceEvent,
+        record: sanitizedRecord,
+        credentials,
+        attempts: 0,
+        nextRun: Date.now() + getRandomDelayMs(),
+      }
+
+      tasks.push(task)
+      job.queued += 1
+    })
   })
+
+  job.rows = job.queued + job.skipped
 
   jobs.set(jobId, job)
   void persistStore()

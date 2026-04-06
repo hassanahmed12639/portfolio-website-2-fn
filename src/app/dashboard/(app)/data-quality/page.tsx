@@ -60,6 +60,24 @@ type MatchRateResponse = {
   error?: string
 }
 
+type EMQFixResult = {
+  score: number
+  fixed_fields: Record<string, string>
+  suggested_fields: Record<string, string>
+  original_event: Record<string, any>
+  fixed_event: Record<string, any>
+  timestamp: string
+}
+
+type RecentEvent = {
+  id: string
+  event_name: string
+  created_at: string
+  data_quality_score: number
+  data_quality_label: string
+  emq_fix?: EMQFixResult
+}
+
 function ScoreRing({ score }: { score: number }) {
   const clamped = Math.min(100, Math.max(0, score))
   const r = 56
@@ -117,6 +135,8 @@ export default function DataQualityPage() {
   const [matchRate, setMatchRate] = useState<MatchRateResponse | null>(null)
   const [matchRateLoading, setMatchRateLoading] = useState(true)
   const [matchRateRefreshing, setMatchRateRefreshing] = useState(false)
+  const [recentEvents, setRecentEvents] = useState<RecentEvent[]>([])
+  const [fixingEventId, setFixingEventId] = useState<string | null>(null)
   const estimatedMatchRate = matchRate?.estimated_match_rate ?? 0
 
   useEffect(() => {
@@ -125,6 +145,59 @@ export default function DataQualityPage() {
       .then(setData)
       .finally(() => setLoading(false))
   }, [])
+
+  const fetchRecentEvents = async () => {
+    try {
+      const res = await fetch('/api/dashboard/events?limit=10')
+      if (res.ok) {
+        const events = await res.json()
+        // Fetch EMQ fixes for these events
+        const eventsWithFixes = await Promise.all(
+          events.map(async (event: RecentEvent) => {
+            try {
+              const fixRes = await fetch(`/api/dashboard/data-quality/fix/${event.id}`)
+              if (fixRes.ok) {
+                const fixData = await fixRes.json()
+                return { ...event, emq_fix: fixData.fix }
+              }
+            } catch {
+              // Ignore errors
+            }
+            return event
+          })
+        )
+        setRecentEvents(eventsWithFixes)
+      }
+    } catch (error) {
+      console.error('Failed to fetch recent events:', error)
+    }
+  }
+
+  const runEMQFix = async (eventId: string) => {
+    setFixingEventId(eventId)
+    try {
+      const res = await fetch('/api/dashboard/data-quality/fix', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ eventId }),
+      })
+
+      if (res.ok) {
+        const result = await res.json()
+        // Refresh data and recent events
+        fetch('/api/dashboard/data-quality')
+          .then((res) => res.ok ? res.json() : null)
+          .then(setData)
+        fetchRecentEvents()
+      } else {
+        console.error('Failed to fix event')
+      }
+    } catch (error) {
+      console.error('Error fixing event:', error)
+    } finally {
+      setFixingEventId(null)
+    }
+  }
 
   const fetchMatchRate = (isRefresh = false) => {
     if (isRefresh) setMatchRateRefreshing(true)
@@ -141,6 +214,7 @@ export default function DataQualityPage() {
 
   useEffect(() => {
     fetchMatchRate()
+    fetchRecentEvents()
   }, [])
 
   useEffect(() => {
@@ -474,6 +548,83 @@ export default function DataQualityPage() {
           </ResponsiveContainer>
         </div>
       </section>
+
+      <section className="rounded-xl bg-white border border-[var(--dash-border)] shadow-[var(--dash-shadow)] overflow-hidden">
+        <div className="px-4 py-3 border-b border-[var(--dash-border)] flex items-center justify-between">
+          <h2 className="text-sm font-medium text-[var(--dash-muted)]">EMQ Auto-Fix Engine</h2>
+          <button
+            onClick={fetchRecentEvents}
+            className="text-xs text-[var(--dash-text)] hover:text-[var(--dash-success)] underline"
+          >
+            Refresh
+          </button>
+        </div>
+        <div className="p-4">
+          <p className="text-sm text-[var(--dash-muted)] mb-4">
+            Recent events with EMQ scores. Click "Fix" to manually run the auto-fix engine on any event.
+          </p>
+          <div className="space-y-3">
+            {recentEvents.length === 0 ? (
+              <p className="text-sm text-[var(--dash-muted)]">No recent events found.</p>
+            ) : (
+              recentEvents.map((event) => (
+                <div key={event.id} className="border border-[var(--dash-border)] rounded-lg p-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm font-medium text-[var(--dash-text)]">{event.event_name}</span>
+                      <span className={`text-xs px-2 py-1 rounded ${
+                        event.data_quality_label === 'Excellent' ? 'bg-[var(--dash-success)]/10 text-[var(--dash-success)]' :
+                        event.data_quality_label === 'Good' ? 'bg-blue-50 text-blue-600' :
+                        event.data_quality_label === 'Fair' ? 'bg-amber-50 text-amber-600' :
+                        'bg-red-50 text-red-600'
+                      }`}>
+                        {event.data_quality_score}/10 - {event.data_quality_label}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-[var(--dash-muted)]">
+                        {new Date(event.created_at).toLocaleString()}
+                      </span>
+                      <button
+                        onClick={() => runEMQFix(event.id)}
+                        disabled={fixingEventId === event.id}
+                        className="text-xs bg-[var(--dash-success)] text-white px-2 py-1 rounded hover:bg-[var(--dash-success)]/80 disabled:opacity-50"
+                      >
+                        {fixingEventId === event.id ? 'Fixing...' : 'Fix'}
+                      </button>
+                    </div>
+                  </div>
+                  {event.emq_fix && (
+                    <div className="mt-3 space-y-2">
+                      {Object.keys(event.emq_fix.fixed_fields).length > 0 && (
+                        <div>
+                          <p className="text-xs font-medium text-[var(--dash-success)]">✅ Fixed:</p>
+                          <ul className="text-xs text-[var(--dash-muted)] ml-4">
+                            {Object.entries(event.emq_fix.fixed_fields).map(([field, description]) => (
+                              <li key={field}>• {field}: {description}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      {Object.keys(event.emq_fix.suggested_fields).length > 0 && (
+                        <div>
+                          <p className="text-xs font-medium text-amber-600">⚠️ Suggestions:</p>
+                          <ul className="text-xs text-[var(--dash-muted)] ml-4">
+                            {Object.entries(event.emq_fix.suggested_fields).map(([field, suggestion]) => (
+                              <li key={field}>• {field}: {suggestion}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </section>
+
     </div>
   )
 }

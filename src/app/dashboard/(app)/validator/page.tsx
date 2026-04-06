@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react'
 import { validatePayload, type ValidationResult } from '@/lib/payload-validator'
 import { ShieldCheck, CheckCircle, XCircle, AlertTriangle, Lightbulb } from 'lucide-react'
+import { FeatureGate } from '@/components/FeatureGate'
 
 const EXAMPLES: { label: string; payload: Record<string, unknown> }[] = [
   {
@@ -126,7 +127,8 @@ export default function ValidatorPage() {
     : {}
 
   return (
-    <div className="p-6 md:p-8 min-h-screen max-w-6xl mx-auto">
+    <FeatureGate feature="validator" requiredPlan="pro">
+      <div className="p-6 md:p-8 min-h-screen max-w-6xl mx-auto">
       {/* Section 1 — Header */}
       <header className="mb-8">
         <div className="flex items-center gap-2 mb-2">
@@ -375,6 +377,7 @@ export default function ValidatorPage() {
         </>
       )}
     </div>
+    </FeatureGate>
   )
 }
 

@@ -4,6 +4,7 @@ import * as React from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 
 const REQUIRED_FIELDS = ['email', 'phone', 'first_name', 'last_name']
 const MAX_EVENTS_PER_DAY = 100
@@ -122,7 +123,8 @@ function getRandomDelay() {
 }
 
 export default function DashboardPixelWarmupPage() {
-  const [eventType, setEventType] = React.useState<'Lead' | 'Purchase'>('Lead')
+  const [eventType, setEventType] = React.useState<'Lead' | 'Purchase' | 'Journey'>('Lead')
+  const [eventMode, setEventMode] = React.useState<'test' | 'production'>('test')
   const [fileName, setFileName] = React.useState('')
   const [recordCount, setRecordCount] = React.useState(0)
   const [records, setRecords] = React.useState<Array<Record<string, string>>>([])
@@ -130,6 +132,7 @@ export default function DashboardPixelWarmupPage() {
   const [ga4Id, setGa4Id] = React.useState('')
   const [ga4Secret, setGa4Secret] = React.useState('')
   const [pixelId, setPixelId] = React.useState('')
+  const [metaProxies, setMetaProxies] = React.useState('')
   const [isRunning, setIsRunning] = React.useState(false)
   const [sentCount, setSentCount] = React.useState(0)
   const [failedCount, setFailedCount] = React.useState(0)
@@ -201,10 +204,14 @@ export default function DashboardPixelWarmupPage() {
           ga4Id?: string
           ga4Secret?: string
           pixelId?: string
+          metaProxies?: string
+          eventMode?: 'test' | 'production'
         }
         if (parsed.ga4Id) setGa4Id(parsed.ga4Id)
         if (parsed.ga4Secret) setGa4Secret(parsed.ga4Secret)
         if (parsed.pixelId) setPixelId(parsed.pixelId)
+        if (parsed.metaProxies) setMetaProxies(parsed.metaProxies)
+        if (parsed.eventMode) setEventMode(parsed.eventMode)
 
         if (parsed.ga4Id || parsed.ga4Secret) {
           setPlatformOption(parsed.pixelId ? 'both' : 'ga4')
@@ -295,9 +302,23 @@ export default function DashboardPixelWarmupPage() {
       ga4Id: ga4Id || undefined,
       ga4Secret: ga4Secret || undefined,
       pixelId: pixelId || undefined,
+      metaProxies: metaProxies || undefined,
+      eventMode: eventMode || undefined,
     }
     window.localStorage.setItem(PIXEL_WARMUP_CREDENTIALS_KEY, JSON.stringify(credentials))
-  }, [ga4Id, ga4Secret, pixelId])
+  }, [ga4Id, ga4Secret, pixelId, metaProxies, eventMode])
+
+  React.useEffect(() => {
+    if (eventMode === 'production' && !metaProxies.trim()) {
+      // Pre-fill with example proxy URLs when switching to production
+      setMetaProxies(`http://user:pass@proxy1.com:8080
+http://user:pass@proxy2.com:8080
+socks5://user:pass@proxy3.com:1080`)
+    } else if (eventMode === 'test') {
+      // Clear proxies when switching to test mode
+      setMetaProxies('')
+    }
+  }, [eventMode])
 
   React.useEffect(() => {
     if (!currentJobId) return
@@ -372,6 +393,10 @@ export default function DashboardPixelWarmupPage() {
       'external_id',
       'currency',
       'value',
+      'fbp',
+      'fbc',
+      'client_ip_address',
+      'client_user_agent',
     ]
 
     const sampleValues = headers.map((header) => {
@@ -398,6 +423,14 @@ export default function DashboardPixelWarmupPage() {
           return 'USD'
         case 'value':
           return '1.00'
+        case 'fbp':
+          return 'fb.1.1678893600.1234567890'
+        case 'fbc':
+          return 'fb.1.1678893600.1AbCdEfGhIjKlMnOpQrStUvWxYz'
+        case 'client_ip_address':
+          return '203.0.113.45'
+        case 'client_user_agent':
+          return 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36'
         default:
           return ''
       }
@@ -433,6 +466,10 @@ export default function DashboardPixelWarmupPage() {
       setError('Meta selected: provide a pixel ID.')
       return
     }
+    if ((platformOption === 'meta' || platformOption === 'both') && eventMode === 'production' && !metaProxies.trim()) {
+      setError('Production mode selected: provide at least one proxy URL for IP rotation.')
+      return
+    }
 
     setIsRunning(true)
     setSentCount(0)
@@ -446,7 +483,11 @@ export default function DashboardPixelWarmupPage() {
         credentials.ga4 = { measurementId: ga4Id, apiSecret: ga4Secret }
       }
       if (platformOption === 'meta' || platformOption === 'both') {
-        credentials.meta = { pixelId }
+        const metaCreds: Record<string, unknown> = { pixelId }
+        if (metaProxies.trim()) {
+          metaCreds.proxies = metaProxies.split('\n').map(p => p.trim()).filter(p => p)
+        }
+        credentials.meta = metaCreds
       }
 
       const res = await fetch('/api/dashboard/pixel-warmup', {
@@ -568,14 +609,28 @@ export default function DashboardPixelWarmupPage() {
                 <label className="mb-2 block text-sm font-medium text-[var(--dash-text)]">Event type</label>
                 <select
                   value={eventType}
-                  onChange={(event) => setEventType(event.target.value as 'Lead' | 'Purchase')}
+                  onChange={(event) => setEventType(event.target.value as 'Lead' | 'Purchase' | 'Journey')}
                   disabled={isRunning}
                   className="w-full rounded-xl border border-[var(--dash-border)] bg-[var(--dash-bg)] px-3 py-2 text-sm text-[var(--dash-text)] outline-none"
                 >
                   <option value="Lead">Lead</option>
                   <option value="Purchase">Purchase</option>
+                  <option value="Journey">Journey (page_view → add_to_cart → initiate_checkout → lead → purchase)</option>
                 </select>
               </div>
+              <div>
+                <label className="mb-2 block text-sm font-medium text-[var(--dash-text)]">Event mode</label>
+                <select
+                  value={eventMode}
+                  onChange={(event) => setEventMode(event.target.value as 'test' | 'production')}
+                  disabled={isRunning}
+                  className="w-full rounded-xl border border-[var(--dash-border)] bg-[var(--dash-bg)] px-3 py-2 text-sm text-[var(--dash-text)] outline-none"
+                >
+                  <option value="test">Test Events (No proxy needed)</option>
+                  <option value="production">Production Events (Proxy required)</option>
+                </select>
+              </div>
+            </div>
               <div>
                 <label className="mb-2 block text-sm font-medium text-[var(--dash-text)]">CSV file</label>
                 <input
@@ -594,7 +649,6 @@ export default function DashboardPixelWarmupPage() {
                 {recordCount > 0 && <p className="text-xs text-[var(--dash-muted)]">Rows: {recordCount}</p>}
                 {warning && <p className="mt-2 text-xs text-yellow-600">{warning}</p>}
               </div>
-            </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
@@ -648,6 +702,23 @@ export default function DashboardPixelWarmupPage() {
                     placeholder="YOUR_PIXEL_ID"
                   />
                 </div>
+                {eventMode === 'production' && (
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-[var(--dash-text)]">
+                      Proxy Pool (Required for production events - One proxy URL per line)
+                    </label>
+                    <Textarea
+                      value={metaProxies}
+                      onChange={(e) => setMetaProxies(e.target.value)}
+                      disabled={isRunning}
+                      placeholder="http://user:pass@proxy1.com:8080&#10;http://user:pass@proxy2.com:8080&#10;socks5://user:pass@proxy3.com:1080"
+                      rows={3}
+                    />
+                    <p className="mt-1 text-xs text-[var(--dash-muted)]">
+                      Proxies rotate outbound IPs to appear as real user conversions. Requires https-proxy-agent package.
+                    </p>
+                  </div>
+                )}
               </div>
             )}
 
